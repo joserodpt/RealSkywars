@@ -96,6 +96,7 @@ public class PlayerEvents implements Listener {
 		GamePlayer p = PlayerManager.getPlayer(e.getPlayer());
 		if (p.room != null) {
 			p.room.removePlayer(p);
+			p.room.checkWin();
 		}
 
 		p.saveData();

@@ -1,6 +1,7 @@
 package pt.josegamerpt.realskywars.gui;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -35,7 +36,7 @@ public class GUIManager {
 				ShopViewer v = new ShopViewer(p.p.getUniqueId(), ShopCategory.KITS);
 				v.openInventory(p);
 			}
-		}, Itens.createItemLore(Material.CHEST, 1, "&9Kits", Arrays.asList("&fClick here to open this category.")), 1);
+		}, Itens.createItemLore(Material.CHEST, 1, "&9Kits", Collections.singletonList("&fClick here to open this category.")), 1);
 
 		inventory.addItem(new ClickRunnable() {
 			public void run(InventoryClickEvent e) {
@@ -52,7 +53,7 @@ public class GUIManager {
 				v.openInventory(p);
 			}
 		}, Itens.createItemLore(Material.GLOWSTONE_DUST, 1, "&9Win Particles",
-				Arrays.asList("&fClick here to open this category.")), 3);
+				Collections.singletonList("&fClick here to open this category.")), 3);
 
 		inventory.openInventory(p.p);
 	}
@@ -126,7 +127,7 @@ public class GUIManager {
 				p.p.closeInventory();
 				GUIManager.openLanguage(p);
 			}
-		}, Itens.createItemLore(Material.JUNGLE_SIGN, 1, "&9Languages",
+		}, Itens.createItemLore(Material.JUNGLE_SIGN, 1, "&9Language",
 				Arrays.asList("&fCurrently set: " + p.Language)), 7);
 		
 		inventory.addItem(new ClickRunnable() {

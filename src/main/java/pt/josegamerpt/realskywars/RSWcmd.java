@@ -178,7 +178,7 @@ public class RSWcmd implements CommandExecutor {
 								int zfinal = zCert.intValue();
 
 								p.setup.POS1 = new Location(p.setup.worldMap, xfinal, 0, zfinal);
-								p.sendMessage(Text.addColor("&aSet POS1 > X:" + xfinal + " - Z:" + zfinal));
+								p.sendMessage(Text.addColor("&aPOS1 > X:" + xfinal + " - Z:" + zfinal));
 							} else {
 								p.sendMessage(LanguageManager.getString(p, TS.NO_SETUPMODE, true));
 							}
@@ -196,7 +196,7 @@ public class RSWcmd implements CommandExecutor {
 								int zfinal = zCert.intValue();
 
 								p.setup.POS2 = new Location(p.setup.worldMap, xfinal, 0, zfinal);
-								p.sendMessage(Text.addColor("&aSet POS2 > X:" + xfinal + " - Z:" + zfinal));
+								p.sendMessage(Text.addColor("&aPOS2 > X:" + xfinal + " - Z:" + zfinal));
 							} else {
 								p.sendMessage(LanguageManager.getString(p, TS.NO_SETUPMODE, true));
 							}
@@ -258,7 +258,7 @@ public class RSWcmd implements CommandExecutor {
 						}
 						return false;
 					} else if (args[0].equals("leave")) {
-						if (gp.hasPermission("RealSkywars.leave")) {
+						if (gp.hasPermission("RealSkywars.Leave")) {
 							if (p.room != null) {
 								p.room.removePlayer(p);
 							} else {
@@ -581,23 +581,25 @@ public class RSWcmd implements CommandExecutor {
 					}
 				} else if (args.length == 4) {
 					if (args[0].equals("create")) {
-						String mapname = args[1];
-						int teams = Integer.valueOf(args[2]);
-						int pperteam = Integer.valueOf(args[3]);
-						if (Config.file().isConfigurationSection("Config.Lobby") == true) {
-							if (!MapManager.getRegisteredMaps().contains(mapname)) {
-								if (p.setup != null) {
-									p.sendMessage(LanguageManager.getString(p, TS.SETUP_NOT_FINISHED, true));
-								} else {
-									MapManager.setupTeams(p, mapname, teams, pperteam);
-								}
-							} else {
-								p.sendMessage(LanguageManager.getString(p, TS.MAP_EXISTS, true));
-							}
-
-						} else {
-							p.sendMessage(LanguageManager.getString(p, TS.LOBBYLOC_NOT_SET, true));
-						}
+						p.sendMessage(LanguageManager.getPrefix() + " &fThe ability to create team rooms is coming in a future update.");
+						//teams coming soon
+						//String mapname = args[1];
+						//int teams = Integer.valueOf(args[2]);
+						//int pperteam = Integer.valueOf(args[3]);
+						//if (Config.file().isConfigurationSection("Config.Lobby") == true) {
+						//	if (!MapManager.getRegisteredMaps().contains(mapname)) {
+						//		if (p.setup != null) {
+					//				p.sendMessage(LanguageManager.getString(p, TS.SETUP_NOT_FINISHED, true));
+						//		} else {
+					//				MapManager.setupTeams(p, mapname, teams, pperteam);
+					//			}
+					//		} else {
+					//			p.sendMessage(LanguageManager.getString(p, TS.MAP_EXISTS, true));
+					//		}
+//
+					//	} else {
+					//		p.sendMessage(LanguageManager.getString(p, TS.LOBBYLOC_NOT_SET, true));
+					//	}
 					}
 				} else {
 					p.sendMessage(LanguageManager.getString(p, TS.CMD_NOT_FOUND, true));

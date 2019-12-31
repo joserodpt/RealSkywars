@@ -67,7 +67,6 @@ public class GameRoomSolo {
 	public Boolean dragonEnabled;
 	public Countdown untilEnd;
 	public GameType gameType = GameType.SOLO;
-	//public GameScoreboard scoreb = new GameScoreboard(this);
 	public List<Entity> spawnedEntities = new ArrayList<Entity>();
 	private HashMap<String, Integer> counters = new HashMap<String, Integer>();
 	public int timePassed = 0;
@@ -446,6 +445,9 @@ public class GameRoomSolo {
 	public void kickPlayers() {
 		for (GamePlayer p : GamePlayers) {
 			if (p.p != null) {
+
+				//TODO correct this system
+				p.p.showPlayer(RealSkywars.pl, p.p);
 
 				p.p.removeMetadata("invencivel", RealSkywars.pl);
 

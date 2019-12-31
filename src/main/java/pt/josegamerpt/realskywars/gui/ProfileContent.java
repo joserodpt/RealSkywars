@@ -184,6 +184,11 @@ public class ProfileContent {
 						if (current.display.containsKey(e.getRawSlot())) {
 							ShopItem a = current.display.get(e.getRawSlot());
 
+							if (a.buyable == false)
+							{
+								return;
+							}
+
 							if (current.cat == ProfileCategory.CAGEBLOCK) {
 								gp.cageBlock = a.i.getType();
 								gp.sendMessage(LanguageManager.getString(gp, TS.PROFILE_SELECTED, true).replace("%name%", a.name).replace("%type%", LanguageManager.getString(gp, TS.CAGEBLOCK, false)));

@@ -5,38 +5,38 @@ import java.util.ArrayList;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import pt.josegamerpt.realskywars.classes.Enum.GameState;
-import pt.josegamerpt.realskywars.classes.Enum.GameType;
-import pt.josegamerpt.realskywars.classes.Enum.TierType;
-import pt.josegamerpt.realskywars.player.GamePlayer;
 import pt.josegamerpt.realskywars.player.GameScoreboard;
 import pt.josegamerpt.realskywars.utils.Calhau;
+import pt.josegamerpt.realskywars.classes.Enum.GameState;
+import pt.josegamerpt.realskywars.player.GamePlayer;
+import pt.josegamerpt.realskywars.classes.Enum.GameType;
+import pt.josegamerpt.realskywars.classes.Enum.TierType;
 
 public class GameRoom {
 
 	public GameRoomSolo gs;
 	public GameRoomTeams gt;
-	public GameType mode;
+	public Enum.GameType mode;
 	public GameScoreboard scoreboard;
 
 	int error = -16;
 
 	public GameRoom(GameRoomSolo g) {
 		this.gs = g;
-		mode = GameType.SOLO;
+		mode = Enum.GameType.SOLO;
 		scoreboard = new GameScoreboard(this);
 		scoreboard.run();
 	}
 
 	public GameRoom(GameRoomTeams g) {
 		this.gt = g;
-		mode = GameType.TEAMS;
+		mode = Enum.GameType.TEAMS;
 		scoreboard = new GameScoreboard(this);
 		scoreboard.run();
 	}
 
 	public String getName() {
-		if (mode == GameType.SOLO) {
+		if (mode == Enum.GameType.SOLO) {
 			return gs.Name;
 		}
 		if (mode == GameType.TEAMS) {
@@ -321,8 +321,12 @@ public class GameRoom {
 	}
 
 	public void checkWin() {
-		gt.checkWin();
-	}
+		if (mode == GameType.SOLO) {
+			gs.checkWin();
+		}
+		if (mode == GameType.TEAMS) {
+			gt.checkWin();
+		}	}
 
 	public boolean getType() {
 		// TODO Auto-generated method stub
