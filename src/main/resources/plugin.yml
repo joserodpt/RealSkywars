@@ -1,0 +1,13 @@
+name: RealSkywars
+version: ${project.version}
+main: pt.josegamerpt.realskywars.RealSkywars
+api-version: 1.14
+depend: [ProtocolLib]
+softdepend: [Multiworld, Multiverse-Core]
+authors: [JoseGamer_PT]
+description: Simple Skywars plugin.
+
+commands:
+  realskywars:
+    description: Main realskywars command.
+    aliases: [rsw, skywars, sw]

@@ -1,0 +1,452 @@
+Kits:
+  '1':
+    Name: Ecologist
+    Price: 10.0
+    Icon: LEATHER_CHESTPLATE
+    Contents:
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: STRIPPED_OAK_WOOD
+        amount: 8
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: IRON_AXE
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: OAK_SAPLING
+        amount: 32
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: BONE_MEAL
+        amount: 32
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+    Permission: RealSkywars.Kit
+    Perks:
+      DoubleJump: true
+      EnderPearl: true
+  '2':
+    Name: Enderman
+    Price: 20.0
+    Icon: LEATHER_CHESTPLATE
+    Contents:
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: ENDER_EYE
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: ENDERMAN_SPAWN_EGG
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: ENDER_CHEST
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: END_STONE
+        amount: 32
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: CLOCK
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: DRAGON_HEAD
+      - null
+    Permission: RealSkywars.Kit
+    Perks:
+      DoubleJump: false
+      EnderPearl: true
+  '3':
+    Name: '&9Default'
+    Price: 0.0
+    Icon: LEATHER_CHESTPLATE
+    Contents:
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: WOODEN_SWORD
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: WOODEN_SHOVEL
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: WOODEN_PICKAXE
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: WOODEN_AXE
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+    Permission: RealSkywars.Kit
+    Perks:
+      DoubleJump: false
+      EnderPearl: false
+  '4':
+    Name: '&9Warrior'
+    Price: 10.0
+    Icon: LEATHER_CHESTPLATE
+    Contents:
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: IRON_SWORD
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: BOW
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: ARROW
+        amount: 32
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: ARROW
+        amount: 32
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: IRON_BOOTS
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: GOLDEN_LEGGINGS
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: GOLDEN_CHESTPLATE
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: IRON_HELMET
+      - null
+    Permission: RealSkywars.Kit
+    Perks:
+      DoubleJump: false
+      EnderPearl: false
+  '5':
+    Name: '&aMiner'
+    Price: 10.0
+    Icon: LEATHER_CHESTPLATE
+    Contents:
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: IRON_PICKAXE
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          lore:
+            - §7§oEfficiency I
+            - §7§oFortune II
+          enchants:
+            DIG_SPEED: 1
+            LOOT_BONUS_BLOCKS: 2
+          ItemFlags:
+            - HIDE_ENCHANTS
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: LEAD
+      - null
+      - null
+      - null
+      - null
+      - null
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: COOKED_COD
+        amount: 16
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: TORCH
+        amount: 64
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: CHAINMAIL_HELMET
+      - null
+    Permission: RealSkywars.Kit
+    Perks:
+      DoubleJump: false
+      EnderPearl: false
+  '6':
+    Name: '&5Life'
+    Price: 10.0
+    Icon: LEATHER_CHESTPLATE
+    Contents:
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: TOTEM_OF_UNDYING
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+    Permission: RealSkywars.Kit
+    Perks:
+      DoubleJump: false
+      EnderPearl: false
+  '7':
+    Name: '&eDJ'
+    Price: 20.0
+    Icon: LEATHER_CHESTPLATE
+    Contents:
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: JUKEBOX
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: MUSIC_DISC_CAT
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: MUSIC_DISC_BLOCKS
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: MUSIC_DISC_CHIRP
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: MUSIC_DISC_FAR
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: MUSIC_DISC_MALL
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: MUSIC_DISC_MELLOHI
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: MUSIC_DISC_STAL
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: MUSIC_DISC_STRAD
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: MUSIC_DISC_WARD
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: MUSIC_DISC_11
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: MUSIC_DISC_WAIT
+      - ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: MUSIC_DISC_13
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+    Permission: RealSkywars.Kit
+    Perks:
+      DoubleJump: true
+      EnderPearl: false
