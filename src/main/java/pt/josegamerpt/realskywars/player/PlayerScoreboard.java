@@ -55,6 +55,10 @@ public class PlayerScoreboard {
                             lista = LanguageManager.getList(linked, TL.SCOREBOARD_SPECTATOR_LINES);
                             tit = LanguageManager.getString(linked, TS.SCOREBOARD_SPECTATOR_TITLE, false).replace("%map%", linked.room.getName());
                             break;
+                        case EXTERNAL_SPECTATOR:
+                            lista = LanguageManager.getList(linked, TL.SCOREBOARD_SPECTATOR_LINES);
+                            tit = LanguageManager.getString(linked, TS.SCOREBOARD_SPECTATOR_TITLE, false).replace("%map%", linked.room.getName());
+                            break;
                         case PLAYING:
                             lista = LanguageManager.getList(linked, TL.SCOREBOARD_PLAYING_LINES);
                             tit = LanguageManager.getString(linked, TS.SCOREBOARD_PLAYING_TITLE, false).replace("%map%", linked.room.getName());

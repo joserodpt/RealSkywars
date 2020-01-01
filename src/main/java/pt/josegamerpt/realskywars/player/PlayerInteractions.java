@@ -45,37 +45,44 @@ public class PlayerInteractions implements Listener {
 						.equals(Items.SPECTATE)) {
 					GUIManager.openSpectate(gp);
 					e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 50, 50);
+					e.setCancelled(true);
 				}
 				if (e.getPlayer().getInventory().getItemInMainHand()
 						.equals(Items.KITS)) {
 					ProfileContent ds = new ProfileContent(e.getPlayer(), Enum.Categories.KITS, "&9Kits");
 					ds.openInventory(gp);
 					e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 50, 50);
+					e.setCancelled(true);
 				}
 				if (e.getPlayer().getInventory().getItemInMainHand()
 						.equals(Items.MAPS)) {
 					MapsViewer v = new MapsViewer(gp, PlayerManager.getSelection(gp, Selection.MAPVIEWER), "Maps");
 					v.openInventory(gp);
 					e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 50, 50);
+					e.setCancelled(true);
 				}
 				if (e.getPlayer().getInventory().getItemInMainHand()
 						.equals(Items.LEAVE)) {
 					gp.room.removePlayer(gp);
+					e.setCancelled(true);
 				}
 				if (e.getPlayer().getInventory().getItemInMainHand()
 						.equals(Items.CHESTS)) {
 					ChestTierVote v = new ChestTierVote(gp.p.getUniqueId());
 					v.openInventory(gp);
+					e.setCancelled(true);
 				}
 				if (e.getPlayer().getInventory().getItemInMainHand()
 						.equals(Items.SHOP)) {
 					GUIManager.openShopMenu(gp);
 					e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 50, 50);
+					e.setCancelled(true);
 				}
 				if (e.getPlayer().getInventory().getItemInMainHand()
 						.getType().equals(Material.PLAYER_HEAD)) {
 					GUIManager.openPlayerMenu(gp);
 					e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 50, 50);
+					e.setCancelled(true);
 				}
 			}
 		}

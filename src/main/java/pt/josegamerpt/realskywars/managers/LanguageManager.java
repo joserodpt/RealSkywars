@@ -54,8 +54,14 @@ public class LanguageManager {
 			case SCOREBOARD_SPECTATOR_LINES:
 				trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Scoreboards.Spectate.Lines"));
 				break;
-		default:
-			trad.add("List not found.");
+			case ITEMS_MAP_DESCRIPTION:
+				trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Itens.Map.Description"));
+				break;
+			case TITLE_ROOMJOIN:
+				trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Messages.System.Titles.Join-Room"));
+				break;
+			default:
+				trad.add("List not found.");
 		}
 
 		return trad;
@@ -105,22 +111,28 @@ public class LanguageManager {
 				case CMD_CANT_FORCESTART:
 					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.Commands.Match-Force-Start-Denial"));
 					break;
-			case ARENA_CANCEL:
-				tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.Arena.Match-Cancelled"));
-				break;
-			case ARENA_START_COUNTDOWN:
-				tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.Arena.Start-Countdown"));
-				break;
-			case LOBBY_TELEPORT:
-				tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Lobby-Teleport"));
-				break;
-			case MATCH_END:
-				tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.Arena.Match-End"));
-				break;
-			case MATCH_LEAVE:
-				tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Arena.Leave"));
-				break;
-			case MATCH_SPECTATE:
+				case ARENA_CANCEL:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.Arena.Match-Cancelled"));
+					break;
+				case ARENA_START_COUNTDOWN:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.Arena.Start-Countdown"));
+					break;
+				case ITEMS_MAP_TITLE:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Itens.Map.Title"));
+					break;
+				case ITEMS_MAP_NOTFOUND_TITLE:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Itens.Map.Not-Found"));
+					break;
+				case LOBBY_TELEPORT:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Lobby-Teleport"));
+					break;
+				case MATCH_END:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.Arena.Match-End"));
+					break;
+				case MATCH_LEAVE:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Arena.Leave"));
+					break;
+				case MATCH_SPECTATE:
 				tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.Arena.Player-Spectate"));
 				break;
 			case PLAYER_JOIN_ARENA:
@@ -325,8 +337,38 @@ public class LanguageManager {
 				case CAGEBLOCK:
 					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Categories.Cage-Blocks"));
 					break;
-			default:
-				tr = "String not found.";
+				case MAP_ALL:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.States.All"));
+					break;
+				case MAP_WAITING:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.States.Waiting"));
+					break;
+				case MAP_SPECTATE:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.States.Spectating"));
+					break;
+				case MAP_STARTING:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.States.Starting"));
+					break;
+				case MAP_AVAILABLE:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.States.Available"));
+					break;
+				case MAP_PLAYING:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.States.Playing"));
+					break;
+				case MAP_FINISHING:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.States.Finishing"));
+					break;
+				case MAP_RESETTING:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.States.Resetting"));
+					break;
+				case COMPASS_TELEPORT:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Compass-Teleport"));
+					break;
+				case BOWPARTICLE:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Categories.Bow-Particles"));
+					break;
+				default:
+					tr = "String not found.";
 			}
 		} catch (Exception e) {
 			tr = "Error finding translation.";

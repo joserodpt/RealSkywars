@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 
+import pt.josegamerpt.realskywars.classes.Enum;
 import pt.josegamerpt.realskywars.classes.Enum.GameState;
 import pt.josegamerpt.realskywars.classes.Enum.Selections;
 import pt.josegamerpt.realskywars.classes.GameRoom;
@@ -85,8 +87,8 @@ public class GameManager {
 				}
 			}
 			break;
-		default:
-			break;
+			default:
+				break;
 		}
 		if (f.size() == 0) {
 			GameRoom g = new GameRoomSolo("No Maps Found");
@@ -95,7 +97,22 @@ public class GameManager {
 		return f;
 	}
 
-    public static String getStateString(GamePlayer gp, GameState state) {
-		return "Aguardando";
-    }
+	public static String getStateString(GamePlayer gp, GameState t) {
+		switch (t) {
+			case WAITING:
+				return LanguageManager.getString(gp, Enum.TS.MAP_WAITING, false);
+			case AVAILABLE:
+				return LanguageManager.getString(gp, Enum.TS.MAP_AVAILABLE, false);
+			case STARTING:
+				return LanguageManager.getString(gp, Enum.TS.MAP_STARTING, false);
+			case PLAYING:
+				return LanguageManager.getString(gp, Enum.TS.MAP_PLAYING, false);
+			case FINISHING:
+				return LanguageManager.getString(gp, Enum.TS.MAP_FINISHING, false);
+			case RESETTING:
+				return LanguageManager.getString(gp, Enum.TS.MAP_RESETTING, false);
+			default:
+				return "NaN";
+		}
+	}
 }

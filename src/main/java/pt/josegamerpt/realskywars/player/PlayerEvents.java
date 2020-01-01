@@ -1,18 +1,25 @@
 package pt.josegamerpt.realskywars.player;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import pt.josegamerpt.realskywars.RealSkywars;
+import pt.josegamerpt.realskywars.classes.Enum;
+import pt.josegamerpt.realskywars.classes.Trail;
 import pt.josegamerpt.realskywars.configuration.Items;
+import pt.josegamerpt.realskywars.effects.BowTrail;
+import pt.josegamerpt.realskywars.managers.EffectsManager;
 import pt.josegamerpt.realskywars.managers.GameManager;
 import pt.josegamerpt.realskywars.managers.PlayerManager;
 
@@ -95,14 +102,28 @@ public class PlayerEvents implements Listener {
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		GamePlayer p = PlayerManager.getPlayer(e.getPlayer());
 		if (p.room != null) {
-			p.room.removePlayer(p);
 			p.room.checkWin();
+			p.room.removePlayer(p);
 		}
 
 		p.saveData();
+		p.stopTrails();
 
 		p.ps.stop();
 		PlayerManager.tpLobby(p);
 		PlayerManager.players.remove(p);
+	}
+
+	@EventHandler
+	public void onPlayerShootArrow(ProjectileLaunchEvent e) {
+		if (e.getEntity().getShooter() != null &&
+				e.getEntity().getShooter() instanceof Player &&
+				e.getEntity() instanceof Arrow) {
+			Player p = (Player) e.getEntity().getShooter();
+			GamePlayer gp = PlayerManager.getPlayer(p);
+			if (gp.bowParticle != null) {
+				gp.trails.add(new BowTrail(gp.bowParticle, e.getEntity()));
+			}
+		}
 	}
 }

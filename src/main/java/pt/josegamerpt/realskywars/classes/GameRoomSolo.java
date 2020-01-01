@@ -193,7 +193,7 @@ public class GameRoomSolo implements GameRoom {
 
 	public void addPlayer(GamePlayer gp) {
 		if (State == GameState.RESETTING) {
-			gp.sendMessage("&cYou cant join this map.");
+			gp.sendMessage(LanguageManager.getPrefix() + "&cYou cant join this map.");
 			return;
 		}
 		if (State == GameState.FINISHING || State == GameState.PLAYING
@@ -211,6 +211,8 @@ public class GameRoomSolo implements GameRoom {
 		if (gp.p != null) {
 			gameTimer.addPlayer(gp.p);
 			gp.p.setHealth(20);
+			ArrayList<String> up = LanguageManager.getList(gp, TL.TITLE_ROOMJOIN);
+			gp.p.sendTitle(up.get(0), up.get(1), 10, 120, 10);
 		}
 
 		Players.add(gp);
@@ -433,20 +435,22 @@ public class GameRoomSolo implements GameRoom {
 		p.p.setFlying(false);
 		p.state = PlayerState.LOBBY_OR_NOGAME;
 
-		p.p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-
 		if (State == GameState.PLAYING) {
 			checkWin();
 		}
 	}
 
 	public void kickPlayers() {
+		for (GamePlayer p : Players) {
+			for (GamePlayer s : Spectators) {
+				if (p.p != null) {
+					p.p.showPlayer(RealSkywars.pl, s.p);
+				}
+			}
+		}
+
 		for (GamePlayer p : GamePlayers) {
 			if (p.p != null) {
-
-				//TODO correct this system
-				p.p.showPlayer(RealSkywars.pl, p.p);
-
 				p.p.removeMetadata("invencivel", RealSkywars.pl);
 
 				p.sendMessage(LanguageManager.getString(p, TS.MATCH_LEAVE, true));
@@ -461,8 +465,6 @@ public class GameRoomSolo implements GameRoom {
 				p.p.setFlying(false);
 
 				p.saveData();
-
-				p.p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 			}
 		}
 

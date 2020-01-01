@@ -7,7 +7,7 @@ import pt.josegamerpt.realskywars.managers.MapManager;
 
 public class EntityEvents implements Listener {
 
-	public void EntitySpawnEvent(org.bukkit.event.entity.EntitySpawnEvent e) {
+	public void EntitySpawnEvent(org.bukkit.event.entity.CreatureSpawnEvent e) {
 		for (String s : MapManager.getRegisteredMaps()) {
 			if (e.getEntity().getLocation().getWorld().getName().equalsIgnoreCase(s)) {
 				if (e.getEntity().getType() == EntityType.ENDERMAN) {

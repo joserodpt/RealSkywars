@@ -1,10 +1,14 @@
 package pt.josegamerpt.realskywars.classes;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import pt.josegamerpt.realskywars.managers.LanguageManager;
+import pt.josegamerpt.realskywars.player.GamePlayer;
 import pt.josegamerpt.realskywars.utils.Itens;
 
 public class MapItem {
@@ -12,34 +16,42 @@ public class MapItem {
 	public GameRoom g;
 	public ItemStack icon;
 
-	public MapItem(GameRoom g) {
+	public MapItem(GameRoom g, GamePlayer gp) {
 		this.g = g;
-		makeIcon();
+		makeIcon(gp);
 	}
 
-	private void makeIcon() {
+	private void makeIcon(GamePlayer p) {
 		int count = 1;
 		if (g.isPlaceHolder() == true) {
-			icon = Itens.createItemLore(getState(), count, "&9" + g.getName(), Arrays.asList("&fNo maps"));
+			icon = Itens.createItem(Material.BUCKET, count, LanguageManager.getString(p, Enum.TS.ITEMS_MAP_NOTFOUND_TITLE, false));
 		} else {
 			if (g.getCurrentPlayers() > 0) {
 				count = g.getCurrentPlayers();
 			}
 
-			icon = Itens.createItemLore(getState(), count, "&9" + g.getName() + " &7| &f" + g.getMode(),
-					Arrays.asList("&b" + g.getCurrentPlayers() + "&f/&b" + g.getMaxPlayers(), "&fClick to join!"));
+			icon = Itens.createItemLore(getState(), count, LanguageManager.getString(p, Enum.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getName()).replace("%mode%", g.getMode().name()),
+					variableList(LanguageManager.getList(p, Enum.TL.ITEMS_MAP_DESCRIPTION)));
 		}
+	}
+
+	private List<String> variableList(ArrayList<String> list) {
+		List<String> a = new ArrayList<String>();
+		for (String s : list) {
+			a.add(s.replace("%players%", g.getCurrentPlayers() + "").replace("%maxplayers%", g.getMaxPlayers() + ""));
+		}
+		return a;
 	}
 
 	private Material getState() {
 		Material m;
 		switch (g.getState()) {
-		case WAITING:
-			m = Material.LIGHT_BLUE_CONCRETE;
-			break;
-		case AVAILABLE:
-			m = Material.GREEN_CONCRETE;
-			break;
+			case WAITING:
+				m = Material.LIGHT_BLUE_CONCRETE;
+				break;
+			case AVAILABLE:
+				m = Material.GREEN_CONCRETE;
+				break;
 		case STARTING:
 			m = Material.YELLOW_CONCRETE;
 			break;

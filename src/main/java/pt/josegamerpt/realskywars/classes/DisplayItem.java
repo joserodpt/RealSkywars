@@ -1,12 +1,14 @@
 package pt.josegamerpt.realskywars.classes;
 
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.inventory.ItemStack;
 import pt.josegamerpt.realskywars.managers.KitManager;
 import pt.josegamerpt.realskywars.utils.Itens;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class DisplayItem {
 
@@ -17,7 +19,8 @@ public class DisplayItem {
 	public String name;
 	public String permission;
     public Boolean interactable = true;
-    public Enum.Categories it;
+	public Enum.Categories it;
+	public HashMap<String, Object> info = new HashMap<String, Object>();
 
 	public DisplayItem(int id, Material m, String n, Double per, Boolean b, String perm, Enum.Categories t) {
 		this.id = id;
@@ -30,9 +33,12 @@ public class DisplayItem {
 		makeItemStack(m);
 	}
 
+	public void addInfo(String a, Object b) {
+		info.put(a, b);
+	}
+
 	private void makeItemStack(Material m) {
-	    switch (it)
-        {
+		switch (it) {
 			case KITS:
 				if (!bought) {
 					assert KitManager.getKit(name) != null;
@@ -54,13 +60,19 @@ public class DisplayItem {
 				} else {
 					i = Itens.createItemLore(m, 1, name, Arrays.asList("&fPrice: &b" + price, "&fClick to Buy."));
 				}
-                break;
-        }
+				break;
+		}
 	}
 
-	public DisplayItem()
-	{
+	public DisplayItem() {
 		this.interactable = false;
 		this.i = Itens.createItemLore(Material.BUCKET, 1, "&aEmpty", Collections.singletonList("&fNothing found in this category."));
+	}
+
+	public Object getInfo(String particle) {
+		if (info.containsKey(particle)) {
+			return info.get(particle);
+		}
+		return null;
 	}
 }

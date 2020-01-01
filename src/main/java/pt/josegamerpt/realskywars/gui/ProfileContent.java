@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -183,20 +184,25 @@ public class ProfileContent {
 						if (current.display.containsKey(e.getRawSlot())) {
 							DisplayItem a = current.display.get(e.getRawSlot());
 
-							if (a.interactable == false)
-							{
+							if (a.interactable == false) {
 								gp.sendMessage(LanguageManager.getString(gp, TS.NOT_BUYABLE, true));
 								return;
 							}
 
-							if (current.cat == Enum.Categories.CAGEBLOCK) {
-								gp.cageBlock = a.i.getType();
-								gp.sendMessage(LanguageManager.getString(gp, TS.PROFILE_SELECTED, true).replace("%name%", a.name).replace("%type%", LanguageManager.getString(gp, TS.CAGEBLOCK, false)));
-							}
-							if (current.cat == Enum.Categories.KITS) {
-								Kit k = KitManager.getKit(a.id);
-								gp.selectedKit = k;
-								gp.sendMessage(LanguageManager.getString(gp, TS.PROFILE_SELECTED, true).replace("%name%", a.name).replace("%type%", LanguageManager.getString(gp, TS.KITS, false)));
+							switch (current.cat) {
+								case KITS:
+									Kit k = KitManager.getKit(a.id);
+									gp.selectedKit = k;
+									gp.sendMessage(LanguageManager.getString(gp, TS.PROFILE_SELECTED, true).replace("%name%", a.name).replace("%type%", LanguageManager.getString(gp, TS.KITS, false)));
+									break;
+								case BOWPARTICLE:
+									gp.bowParticle = (Particle) a.getInfo("Particle");
+									gp.sendMessage(LanguageManager.getString(gp, TS.PROFILE_SELECTED, true).replace("%name%", a.name).replace("%type%", LanguageManager.getString(gp, TS.BOWPARTICLE, false)));
+									break;
+								case CAGEBLOCK:
+									gp.cageBlock = a.i.getType();
+									gp.sendMessage(LanguageManager.getString(gp, TS.PROFILE_SELECTED, true).replace("%name%", a.name).replace("%type%", LanguageManager.getString(gp, TS.CAGEBLOCK, false)));
+									break;
 							}
 						}
 					}

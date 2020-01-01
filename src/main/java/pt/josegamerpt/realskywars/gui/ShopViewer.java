@@ -179,12 +179,7 @@ public class ShopViewer {
 									if (cm.canMakeOperation() == true) {
 										cm.removeCoins();
 
-										if (current.cat.equals(Categories.CAGEBLOCK)) {
-											gp.bought.add(ChatColor.stripColor(a.name) + "|CAGEBLOCK");
-										}
-										if (current.cat.equals(Categories.KITS)) {
-											gp.bought.add(a.id + "|KITS");
-										}
+										gp.bought.add(ChatColor.stripColor(a.name) + "|" + current.cat.name());
 
 										gp.saveData();
 										a.bought = true;

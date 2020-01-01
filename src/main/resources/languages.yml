@@ -8,6 +8,15 @@ Strings:
     Starting: "&fStarting in &b%time% &fseconds"
 Languages:
   ENGLISH:
+    Itens:
+      Map:
+        Not-Found: "&9No Maps Found"
+        Title: "&9%map% &7| &f%mode%"
+        Description:
+          - ""
+          - "&fPlayers: &b%players%&f/&b%maxplayers%"
+          - "&fClick to join!"
+          - ""
     Scoreboards:
       Lobby:
         Lines:
@@ -55,9 +64,19 @@ Languages:
         Title: " &fMap: &b%map% "
     Messages:
       System:
+        States:
+          All: "&2All"
+          Available: "&aAvailable"
+          Waiting: "&fWaiting"
+          Starting: "&eStarting"
+          Playing: "&cPlaying"
+          Finishing: "&4Finishing"
+          Resetting: "&0Resetting"
+          Spectating: "&5Spectating"
         Categories:
           Cage-Blocks: "&7Cage Blocks"
           Kits: "&9Kits"
+          Bow-Particles: "&aBow Particles"
         Kits:
           Not-Found: "&eNo kit has been found with that name."
           Delete-Done: "&fKit &adeleted&f."
@@ -68,12 +87,17 @@ Languages:
           Sender: "&fYou sent &b%coins% coins &fto %player%."
           Reciever: "&fYou recieved &b%coins% coins &ffrom %player%."
         Lobby-Teleport: "&fTeleported to the lobby."
+        Compass-Teleport: "&fTeleported to &b%name%&f."
         Selection-Made: "&fYou selected &b%name% &fin %type%&f."
         Game-Status-Set: "&fThe game status has been set to &b%status%"
         Language-Set: "&fYour language now is &b%language%&f."
         Generating-World: "&aGenerating a new world.."
         Tier-Set: "&fThe tier has been set to &b%chest%"
         Cages-Done: "&fThe cages have been placed. Set the spectator location with /rsw setspectator."
+        Titles:
+          Join-Room:
+            - "&fSelect your kit"
+            - "&fand vote for the Chest Tier"
         Shop:
           Buy: "&fYou bought &b%name% &ffor &a%coins% &fcoins."
           Already-Bought: "&fYou already bought &b%name%&f."

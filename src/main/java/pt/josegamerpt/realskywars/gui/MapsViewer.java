@@ -18,11 +18,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
+import pt.josegamerpt.realskywars.classes.Enum;
 import pt.josegamerpt.realskywars.classes.Enum.Selection;
 import pt.josegamerpt.realskywars.classes.Enum.Selections;
 import pt.josegamerpt.realskywars.classes.GameRoom;
 import pt.josegamerpt.realskywars.classes.MapItem;
 import pt.josegamerpt.realskywars.managers.GameManager;
+import pt.josegamerpt.realskywars.managers.LanguageManager;
 import pt.josegamerpt.realskywars.managers.PlayerManager;
 import pt.josegamerpt.realskywars.player.GamePlayer;
 import pt.josegamerpt.realskywars.utils.Itens;
@@ -41,6 +43,7 @@ public class MapsViewer {
 			Arrays.asList("&fClick here to go back to the next page."));
 
 	private UUID uuid;
+	private GamePlayer gp;
 	private List<GameRoom> items;
 	private HashMap<Integer, GameRoom> display = new HashMap<Integer, GameRoom>();
 
@@ -50,114 +53,16 @@ public class MapsViewer {
 
 	public MapsViewer(GamePlayer as, Selections t, String invName) {
 		this.uuid = as.p.getUniqueId();
-		inv = Bukkit.getServer().createInventory(null, 54, Text.addColor(invName) + " " + t.name());
+		inv = Bukkit.getServer().createInventory(null, 54, Text.addColor(invName) + ": " + LanguageManager.getString(as, select(t), false));
 
-		load(t);
-
-		this.register();
-	}
-
-	public void load(Selections t) {
+		gp = as;
 		this.selMap = t;
 		items = GameManager.getRooms(t);
 
 		p = new Pagination<GameRoom>(28, items);
-		fillChest(p.getPage(pageNumber));
-	}
+		fillChest(p.getPage(pageNumber), as);
 
-	public void fillChest(List<GameRoom> items) {
-
-		inv.clear();
-		display.clear();
-		
-		for (int i = 0; i < 9; i++) {
-			inv.setItem(i, placeholder);
-		}
-
-		inv.setItem(45, placeholder);
-		inv.setItem(46, placeholder);
-		inv.setItem(47, placeholder);
-		inv.setItem(48, placeholder);
-		inv.setItem(49, placeholder);
-		inv.setItem(50, placeholder);
-		inv.setItem(51, placeholder);
-		inv.setItem(52, placeholder);
-		inv.setItem(53, placeholder);
-		inv.setItem(36, placeholder);
-		inv.setItem(44, placeholder);
-		inv.setItem(9, placeholder);
-		inv.setItem(17, placeholder);
-
-		inv.setItem(18, back);
-		inv.setItem(27, back);
-		inv.setItem(26, next);
-		inv.setItem(35, next);
-
-		int slot = 0;
-		for (ItemStack i : inv.getContents()) {
-			if (i == null) {
-				if (items.size() != 0) {
-					GameRoom s = items.get(0);
-					MapItem a = new MapItem(s);
-					inv.setItem(slot, a.icon);
-					display.put(slot, s);
-					items.remove(0);
-				}
-			}
-			slot++;
-		}
-		
-		inv.setItem(49, makeSelIcon());
-	}
-
-	private ItemStack makeSelIcon() {
-		ItemStack i;
-		switch (selMap) {
-		case MAPV_ALL:
-			i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
-					Arrays.asList("&7Click to select the next filter.", "&9", "&9◼ &bAll Maps", "&9- &fAvailable",
-							"&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate"));
-			break;
-		case MAPV_AVAILABLE:
-			i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
-					Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9◼ &bAvailable",
-							"&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate"));
-			break;
-		case MAPV_STARTING:
-			i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
-					Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
-							"&9- &fWaiting", "&9◼ &bStarting", "&9- &fSpectate"));
-			break;
-		case MAPV_WAITING:
-			i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
-					Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
-							"&9◼ &bWaiting", "&9- &fStarting", "&9- &fSpectate"));
-			break;
-		case MAPV_SPECTATE:
-			i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
-					Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
-							"&9- &fWaiting", "&9- &fStarting", "&9◼ &bSpectate"));
-			break;
-		default:
-			i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
-					Arrays.asList("&7Click to select the next filter.", "&9", "&9◼ &fAll Maps", "&9- &fAvailable",
-							"&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate"));
-			break;
-		}
-		return i;
-	}
-
-	public void openInventory(GamePlayer player) {
-		Inventory inv = getInventory();
-		InventoryView openInv = player.p.getOpenInventory();
-		if (openInv != null) {
-			Inventory openTop = player.p.getOpenInventory().getTopInventory();
-			if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
-				openTop.setContents(inv.getContents());
-			} else {
-				player.p.openInventory(inv);
-			}
-		}
+		this.register();
 	}
 
 	public static Listener getListener() {
@@ -239,7 +144,7 @@ public class MapsViewer {
 					asd.pageNumber--;
 				}
 
-				asd.fillChest(asd.p.getPage(asd.pageNumber));
+				asd.fillChest(asd.p.getPage(asd.pageNumber), asd.gp);
 			}
 
 			private void nextPage(MapsViewer asd) {
@@ -247,7 +152,7 @@ public class MapsViewer {
 					asd.pageNumber++;
 				}
 
-				asd.fillChest(asd.p.getPage(asd.pageNumber));
+				asd.fillChest(asd.p.getPage(asd.pageNumber), asd.gp);
 			}
 
 			@EventHandler
@@ -264,6 +169,117 @@ public class MapsViewer {
 				}
 			}
 		};
+	}
+
+	private Enum.TS select(Selections t) {
+		switch (t) {
+			case MAPV_ALL:
+				return Enum.TS.MAP_ALL;
+			case MAPV_WAITING:
+				return Enum.TS.MAP_WAITING;
+			case MAPV_SPECTATE:
+				return Enum.TS.MAP_SPECTATE;
+			case MAPV_STARTING:
+				return Enum.TS.MAP_STARTING;
+			case MAPV_AVAILABLE:
+				return Enum.TS.MAP_AVAILABLE;
+		}
+		return null;
+	}
+
+	private ItemStack makeSelIcon() {
+		ItemStack i;
+		switch (selMap) {
+			case MAPV_ALL:
+				i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
+						Arrays.asList("&7Click to select the next filter.", "&9", "&9◼ &bAll Maps", "&9- &fAvailable",
+								"&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate"));
+				break;
+			case MAPV_AVAILABLE:
+				i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
+						Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9◼ &bAvailable",
+								"&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate"));
+				break;
+			case MAPV_STARTING:
+				i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
+						Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
+								"&9- &fWaiting", "&9◼ &bStarting", "&9- &fSpectate"));
+				break;
+			case MAPV_WAITING:
+				i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
+						Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
+								"&9◼ &bWaiting", "&9- &fStarting", "&9- &fSpectate"));
+				break;
+			case MAPV_SPECTATE:
+				i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
+						Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
+								"&9- &fWaiting", "&9- &fStarting", "&9◼ &bSpectate"));
+				break;
+			default:
+				i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
+						Arrays.asList("&7Click to select the next filter.", "&9", "&9◼ &fAll Maps", "&9- &fAvailable",
+								"&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate"));
+				break;
+		}
+		return i;
+	}
+
+	public void openInventory(GamePlayer player) {
+		Inventory inv = getInventory();
+		InventoryView openInv = player.p.getOpenInventory();
+		if (openInv != null) {
+			Inventory openTop = player.p.getOpenInventory().getTopInventory();
+			if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
+				openTop.setContents(inv.getContents());
+			} else {
+				player.p.openInventory(inv);
+			}
+		}
+	}
+
+	public void fillChest(List<GameRoom> items, GamePlayer p) {
+
+		inv.clear();
+		display.clear();
+
+		for (int i = 0; i < 9; i++) {
+			inv.setItem(i, placeholder);
+		}
+
+		inv.setItem(45, placeholder);
+		inv.setItem(46, placeholder);
+		inv.setItem(47, placeholder);
+		inv.setItem(48, placeholder);
+		inv.setItem(49, placeholder);
+		inv.setItem(50, placeholder);
+		inv.setItem(51, placeholder);
+		inv.setItem(52, placeholder);
+		inv.setItem(53, placeholder);
+		inv.setItem(36, placeholder);
+		inv.setItem(44, placeholder);
+		inv.setItem(9, placeholder);
+		inv.setItem(17, placeholder);
+
+		inv.setItem(18, back);
+		inv.setItem(27, back);
+		inv.setItem(26, next);
+		inv.setItem(35, next);
+
+		int slot = 0;
+		for (ItemStack i : inv.getContents()) {
+			if (i == null) {
+				if (items.size() != 0) {
+					GameRoom s = items.get(0);
+					MapItem a = new MapItem(s, p);
+					inv.setItem(slot, a.icon);
+					display.put(slot, s);
+					items.remove(0);
+				}
+			}
+			slot++;
+		}
+
+		inv.setItem(49, makeSelIcon());
 	}
 
 	public Inventory getInventory() {

@@ -435,7 +435,6 @@ public class GameRoomTeams implements GameRoom {
 
 				p.saveData();
 
-				p.p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 			}
 		}
 

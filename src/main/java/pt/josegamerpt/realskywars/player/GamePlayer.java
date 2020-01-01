@@ -6,12 +6,10 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
-import pt.josegamerpt.realskywars.classes.GameRoom;
-import pt.josegamerpt.realskywars.classes.Kit;
-import pt.josegamerpt.realskywars.classes.SetupRoom;
-import pt.josegamerpt.realskywars.classes.Team;
+import pt.josegamerpt.realskywars.classes.*;
 import pt.josegamerpt.realskywars.classes.Enum.InteractionState;
 import pt.josegamerpt.realskywars.classes.Enum.PlayerState;
 import pt.josegamerpt.realskywars.classes.Enum.Selection;
@@ -51,10 +49,11 @@ public class GamePlayer {
 	public Boolean bot = false;
 
 	public Kit selectedKit;
-
+	public Particle bowParticle;
+	public List<Trail> trails = new ArrayList<Trail>();
 
 	public GamePlayer(Player jog, PlayerState estado, GameRoom rom, int tk, int d, Double coi, String lang,
-			List<String> bgh) {
+					  List<String> bgh) {
 		this.p = jog;
 		this.state = estado;
 		this.room = rom;
@@ -135,6 +134,12 @@ public class GamePlayer {
 	public void teleport(Location l) {
 		if (p != null) {
 			p.teleport(l);
+		}
+	}
+
+	public void stopTrails() {
+		for (Trail t : trails) {
+			t.cancelTask();
 		}
 	}
 }
