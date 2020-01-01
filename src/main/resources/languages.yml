@@ -8,26 +8,51 @@ Strings:
     Starting: "&fStarting in &b%time% &fseconds"
 Languages:
   ENGLISH:
-    Lobby-Scoreboard:
-      Lines:
-        - "%space%"
-        - "&fCoins: &b%coins%"
-        - "&fKills: &b%kills%"
-        - "&fDeaths: &b%deaths%"
-        - "%space%"
-        - "&eserver.com"
-      Title: "&bLobby EN"
-    Game-Scoreboard:
-      Lines:
-        - "%space%"
-        - "&fPlayers: &b%players%"
-        - "&fSpectators: &b%spectators%"
-        - "&fKills: &b%kills%"
-        - "%space%"
-        - "&fTime passed: &b%runtime%"
-        - "%space%"
-        - "&eserver.com"
-      Title: "&fMap: &b%map%"
+    Scoreboards:
+      Lobby:
+        Lines:
+          - "%space%"
+          - " &fCoins: &b%coins%"
+          - " &fKills: &b%kills%"
+          - " &fDeaths: &b%deaths%"
+          - " &fPlaying: &b%playing% &fplayers"
+          - "%space%"
+          - "&eserver.com"
+        Title: " &9Real&bSkywars &aLobby "
+      Cage:
+        Lines:
+          - "%space%"
+          - " &fPlayers: &b%players%"
+          - " &fMode: &b%mode%"
+          - " &fState: &b%state%"
+          - "%space%"
+          - " &fWaiting for players..."
+          - "%space%"
+          - "&eserver.com"
+        Title: " &fMap: &b%map%"
+      Game:
+        Lines:
+          - "%space%"
+          - " &fPlayers: &b%players%"
+          - " &fSpectators: &b%spectators%"
+          - " &fMode: &b%mode%"
+          - " &fKills: &b%kills%"
+          - "%space%"
+          - " &fTime passed: &b%runtime%"
+          - "%space%"
+          - "&eserver.com"
+        Title: " &fMap: &b%map%"
+      Spectate:
+        Lines:
+          - "%space%"
+          - " &fPlayers: &b%players%"
+          - " &fSpectators: &b%spectators%"
+          - " &fMode: &b%mode%"
+          - "%space%"
+          - " &fTime passed: &b%runtime%"
+          - "%space%"
+          - "&eserver.com"
+        Title: " &fMap: &b%map% "
     Messages:
       System:
         Categories:
@@ -65,6 +90,7 @@ Languages:
         Config-Reload: "&aConfiguration reloaded."
         Coins: "&fYou have &b%coins% &fcoins."
         Match-Force-Start: "&fThe match has been &aforcefully &fstarted."
+        Match-Force-Start-Denial: "&fYou &ccant &fforce start this match because there are insuficient players."
         No-Match: "&cYou aren't in a match."
         Lobby-Set: "&fThe lobby &ahas been set&f."
         Setup-Not-Finished: "&cThe setup isn't finished."

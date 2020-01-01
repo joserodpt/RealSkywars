@@ -90,7 +90,7 @@ public class GameRoomTeams {
 		border.setCenter(w.getSpawnLocation());
 		border.setSize(borderSize);
 		bordSize = borderSize;
-		Debugger.printValue("[ARENA]" + Name + " - SETTING BORDER SIZE TO " + borderSize);
+		Debugger.print("[ARENA]" + Name + " - SETTING BORDER SIZE TO " + borderSize);
 
 		votes.add(2);
 
@@ -272,8 +272,6 @@ public class GameRoomTeams {
 
 					p.state = PlayerState.PLAYING;
 					p.save();
-
-					p.p.getInventory().addItem(Itens.createItem(Material.DIAMOND_SWORD, 1, "lol"));
 				}
 			}
 		}
@@ -304,7 +302,7 @@ public class GameRoomTeams {
 			gameTimer.setProgress(div);
 
 			for (Team te : teams) {
-				System.out.print(te.getName() + " |NAMES " + te.getNames() + " |PLAYING " + te.playing + " |ELIMINATED "
+				Debugger.print(te.getName() + " |NAMES " + te.getNames() + " |PLAYING " + te.playing + " |ELIMINATED "
 						+ te.eliminated);
 			}
 		});

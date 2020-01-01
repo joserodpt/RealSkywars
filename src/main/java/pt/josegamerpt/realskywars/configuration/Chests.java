@@ -35,7 +35,7 @@ public class Chests implements Listener {
 		try {
 			customFile.save(file);
 		} catch (IOException e) {
-			System.out.println("Couldn't save " + name + "!");
+			RealSkywars.print("Couldn't save " + name + "!");
 		}
 	}
 

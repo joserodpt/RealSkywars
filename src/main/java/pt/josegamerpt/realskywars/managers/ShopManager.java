@@ -1,10 +1,8 @@
 package pt.josegamerpt.realskywars.managers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 import pt.josegamerpt.realskywars.Debugger;
 import pt.josegamerpt.realskywars.classes.DisplayItem;
@@ -12,9 +10,7 @@ import pt.josegamerpt.realskywars.classes.Enum;
 import pt.josegamerpt.realskywars.classes.Kit;
 import pt.josegamerpt.realskywars.configuration.Shops;
 import pt.josegamerpt.realskywars.player.GamePlayer;
-import pt.josegamerpt.realskywars.utils.Itens;
 import pt.josegamerpt.realskywars.utils.Text;
-import sun.security.ssl.Debug;
 
 public class ShopManager {
 
@@ -41,7 +37,7 @@ public class ShopManager {
                 Material m = Material.getMaterial(parse[0]);
                 if (m == null) {
                     m = Material.BARRIER;
-                    Debugger.printValue("[FATAL] [REALSKYWARS] MATERIAL ISNT VALID: " + material);
+                    Debugger.print("[FATAL] [REALSKYWARS] MATERIAL ISNT VALID: " + material);
                 }
 
                 DisplayItem s = new DisplayItem(i, m, name, price, bought, perm, Enum.Categories.CAGEBLOCK);

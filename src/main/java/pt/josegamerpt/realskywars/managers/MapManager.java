@@ -1,7 +1,6 @@
 package pt.josegamerpt.realskywars.managers;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
@@ -134,7 +133,7 @@ public class MapManager {
 		float pitch = (float) Maps.file().getDouble(nome + ".Locations.Spectator.Pitch");
 		float yaw = (float) Maps.file().getDouble(nome + ".Locations.Spectator.Yaw");
 		Location l = new Location(Bukkit.getWorld(nome), x, y, z, pitch, yaw);
-		Debugger.printValue(clas + "SPECLOC FOR " + nome + " - " + l);
+		Debugger.print(clas + "SPECLOC FOR " + nome + " - " + l);
 		return l;
 
 	}
@@ -159,7 +158,7 @@ public class MapManager {
 			double z = Maps.file().getDouble(map + ".Locations.Cages." + i + ".Z");
 			World w = Bukkit.getWorld(Maps.file().getString(map + ".world"));
 			Location loc = new Location(w, x, y, z);
-			Debugger.printValue(clas + "[GETLOCS] " + loc.toString());
+			Debugger.print(clas + "[GETLOCS] " + loc.toString());
 			loc.add(0.5, 0, 0.5);
 			locs.add(loc);
 		}

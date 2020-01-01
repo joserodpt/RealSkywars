@@ -39,15 +39,21 @@ public class LanguageManager {
 		case END_LOG:
 			trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Messages.Arena.End-Log"));
 			break;
-		case SCOREBOARD_ARENA_LINES:
-			trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Game-Scoreboard.Lines"));
-			break;
-		case SCOREBOARD_LINES:
-			trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Lobby-Scoreboard.Lines"));
-			break;
 		case INITSETUP_ARENA:
 			trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Messages.System.Arena.Init-Setup"));
 			break;
+			case SCOREBOARD_LOBBY_LINES:
+				trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Scoreboards.Lobby.Lines"));
+				break;
+			case SCOREBOARD_CAGE_LINES:
+				trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Scoreboards.Cage.Lines"));
+				break;
+			case SCOREBOARD_PLAYING_LINES:
+				trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Scoreboards.Game.Lines"));
+				break;
+			case SCOREBOARD_SPECTATOR_LINES:
+				trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Scoreboards.Spectate.Lines"));
+				break;
 		default:
 			trad.add("List not found.");
 		}
@@ -96,6 +102,9 @@ public class LanguageManager {
 
 		try {
 			switch (ts) {
+				case CMD_CANT_FORCESTART:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.Commands.Match-Force-Start-Denial"));
+					break;
 			case ARENA_CANCEL:
 				tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.Arena.Match-Cancelled"));
 				break;
@@ -120,12 +129,18 @@ public class LanguageManager {
 			case PLAYER_LEAVE:
 				tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.Arena.Player-Leave"));
 				break;
-			case SCOREBOARD_ARENA_TITLE:
-				tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Game-Scoreboard.Title"));
+				case SCOREBOARD_PLAYING_TITLE:
+				tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Scoreboards.Game.Title"));
 				break;
-			case SCOREBOARD_TITLE:
-				tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Lobby-Scoreboard.Title"));
+				case SCOREBOARD_LOBBY_TITLE:
+				tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Scoreboards.Lobby.Title"));
 				break;
+				case SCOREBOARD_CAGE_TITLE:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Scoreboards.Cage.Title"));
+					break;
+				case SCOREBOARD_SPECTATOR_TITLE:
+					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Scoreboards.Spectate.Title"));
+					break;
 			case TITLE_DEATHMATCH:
 				tr = Text
 						.addColor(Languages.file().getString("Languages." + lang + ".Messages.Arena.Title.DeathMatch"));

@@ -94,7 +94,7 @@ public class GameRoomSolo {
 		border.setCenter(w.getSpawnLocation());
 		border.setSize(borderSize);
 		bordSize = borderSize;
-		Debugger.printValue("[ARENA]" + Name + " - SETTING BORDER SIZE TO " + borderSize);
+		Debugger.print("[ARENA]" + Name + " - SETTING BORDER SIZE TO " + borderSize);
 
 		votes.add(2);
 
@@ -185,7 +185,7 @@ public class GameRoomSolo {
 		}
 		Cages.addAll(MapManager.getCages(Name));
 
-		Debugger.printValue("[GAMEROOM-RESETVALUES] CAGES" + Cages.toString());
+		Debugger.print("[GAMEROOM-RESETVALUES] CAGES" + Cages.toString());
 
 		border.setCenter(worldMap.getSpawnLocation());
 		border.setSize(bordSize);
@@ -211,29 +211,36 @@ public class GameRoomSolo {
 
 		GamePlayers.add(gp);
 
-		gameTimer.addPlayer(gp.p);
+		if (gp.p != null) {
+			gameTimer.addPlayer(gp.p);
+			gp.p.setHealth(20);
+		}
 
 		Players.add(gp);
-
-		gp.p.setHealth(20);
 
 		Location lugar = getCage();
 		gp.cageLoc = lugar;
 
 		for (GamePlayer ws : Players) {
 			if (ws.p != null) {
-				ws.p.sendMessage(variables(LanguageManager.getString(ws, TS.PLAYER_JOIN_ARENA, true).replace("%player%",
-						gp.p.getDisplayName())));
+				if (gp.p != null) {
+					ws.p.sendMessage(variables(LanguageManager.getString(ws, TS.PLAYER_JOIN_ARENA, true).replace("%player%",
+							gp.p.getDisplayName())));
+				}
 			}
 		}
 
 		if (Players.size() < maxPlayers) {
-			gp.p.teleport(lugar);
-			Cage.setCage(gp.p, gp.cageBlock, CageType.SOLO);
+			if (gp.p != null) {
+				gp.p.teleport(lugar);
+				Cage.setCage(gp.p, gp.cageBlock, CageType.SOLO);
+			}
 			this.State = GameState.WAITING;
 		} else {
-			gp.p.teleport(lugar);
-			Cage.setCage(gp.p, gp.cageBlock, CageType.SOLO);
+			if (gp.p != null) {
+				gp.p.teleport(lugar);
+				Cage.setCage(gp.p, gp.cageBlock, CageType.SOLO);
+			}
 			this.State = GameState.STARTING;
 			startRoom();
 		}
@@ -288,8 +295,6 @@ public class GameRoomSolo {
 
 				p.state = PlayerState.PLAYING;
 				p.save();
-
-				p.p.getInventory().addItem(Itens.createItem(Material.DIAMOND_SWORD, 1, "lol"));
 			}
 		}
 

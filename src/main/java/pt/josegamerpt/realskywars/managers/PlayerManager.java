@@ -27,20 +27,22 @@ public class PlayerManager {
 	public static ArrayList<GamePlayer> players = new ArrayList<GamePlayer>();
 
 	public static void giveItems(Player p, int i) {
-		p.getInventory().clear();
-		if (i == 0) {
-			p.getInventory().setItem(2, Itens.getHead(p, 1, "&9Your Profile"));
-			p.getInventory().setItem(4, Items.MAPS);
-			p.getInventory().setItem(6, Items.SHOP);
-		}
-		if (i == 1) {
-			p.getInventory().setItem(0, Items.SPECTATE);
-			p.getInventory().setItem(8, Items.LEAVE);
-		}
-		if (i == 2) {
-			p.getInventory().setItem(0, Items.KITS);
-			p.getInventory().setItem(4, Items.CHESTS);
-			p.getInventory().setItem(8, Items.LEAVE);
+		if (p != null) {
+			p.getInventory().clear();
+			if (i == 0) {
+				p.getInventory().setItem(2, Itens.getHead(p, 1, "&9Your Profile"));
+				p.getInventory().setItem(4, Items.MAPS);
+				p.getInventory().setItem(6, Items.SHOP);
+			}
+			if (i == 1) {
+				p.getInventory().setItem(0, Items.SPECTATE);
+				p.getInventory().setItem(8, Items.LEAVE);
+			}
+			if (i == 2) {
+				p.getInventory().setItem(0, Items.KITS);
+				p.getInventory().setItem(4, Items.CHESTS);
+				p.getInventory().setItem(8, Items.LEAVE);
+			}
 		}
 	}
 
@@ -157,6 +159,7 @@ public class PlayerManager {
 	}
 
 	public static void loadPlayers() {
+		PlayerManager.players.clear();
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			PlayerManager.loadPlayer(p);
 		}
@@ -233,5 +236,22 @@ public class PlayerManager {
 			p.selections.remove(s);
 			p.selections.put(s, ss);
 		}
+	}
+
+	public static void tpLobby(Player p) {
+		if (GameManager.lobbyscoreboard)
+		{
+			p.teleport(GameManager.lobby);
+		}
+	}
+
+	public static int countPlayingPlayers() {
+		int i = 0;
+		for (GamePlayer g : players) {
+			if (g.room != null) {
+				i++;
+			}
+		}
+		return i;
 	}
 }

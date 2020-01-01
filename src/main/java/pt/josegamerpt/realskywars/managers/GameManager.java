@@ -10,6 +10,7 @@ import pt.josegamerpt.realskywars.classes.Enum.GameState;
 import pt.josegamerpt.realskywars.classes.Enum.Selections;
 import pt.josegamerpt.realskywars.classes.GameRoom;
 import pt.josegamerpt.realskywars.classes.GameRoomSolo;
+import pt.josegamerpt.realskywars.player.GamePlayer;
 import pt.josegamerpt.realskywars.utils.Text;
 
 public class GameManager {
@@ -93,4 +94,8 @@ public class GameManager {
 		}
 		return f;
 	}
+
+    public static String getStateString(GamePlayer gp, GameState state) {
+		return "Aguardando";
+    }
 }

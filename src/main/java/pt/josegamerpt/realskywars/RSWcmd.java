@@ -234,8 +234,12 @@ public class RSWcmd implements CommandExecutor {
 						case "forcestart":
 							if (gp.hasPermission("RealSkywars.Forcestart")) {
 								if (p.room != null) {
-									p.room.forceStart();
-									p.sendMessage(LanguageManager.getString(p, TS.CMD_MATCH_FORCESTART, true));
+									if (p.room.getGamePlayers().size() == 1) {
+										p.sendMessage(LanguageManager.getString(p, TS.CMD_CANT_FORCESTART, true));
+									} else {
+										p.room.forceStart();
+										p.sendMessage(LanguageManager.getString(p, TS.CMD_MATCH_FORCESTART, true));
+									}
 								} else {
 									p.sendMessage(LanguageManager.getString(p, TS.NO_MATCH, true));
 								}
@@ -243,10 +247,10 @@ public class RSWcmd implements CommandExecutor {
 								p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
 							}
 							return false;
-						case "addNullPlayer":
+						case "addnullplayer":
 							if (gp.hasPermission("RealSkywars.Admin")) {
 								if (p.room != null) {
-									p.room.addPlayer(new GamePlayer(null));
+									p.room.addPlayer(new GamePlayer());
 									p.sendMessage(Text.addColor(
 											"&4EXPERIMENTAL FEATURE. CAN RESULT IN SERVER & CLIENT CRASHES. &cAdded Null Player"));
 								} else {
@@ -608,7 +612,7 @@ public class RSWcmd implements CommandExecutor {
 				}
 			}
 		} else {
-			System.out.print("[RealSkyWars] Only players can execute this command.");
+			RealSkywars.print("Only players can execute this command.");
 		}
 		return false;
 

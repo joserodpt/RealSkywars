@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
+import pt.josegamerpt.realskywars.RealSkywars;
 
 public class Players implements Listener {
 
@@ -33,7 +34,7 @@ public class Players implements Listener {
 		try {
 			customFile.save(file);
 		} catch (IOException e) {
-			System.out.println("Couldn't save " + name + "!");
+			RealSkywars.print("Couldn't save " + name + "!");
 		}
 	}
 

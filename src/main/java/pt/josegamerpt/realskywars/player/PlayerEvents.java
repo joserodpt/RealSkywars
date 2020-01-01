@@ -101,7 +101,8 @@ public class PlayerEvents implements Listener {
 
 		p.saveData();
 
-		p.p.teleport(GameManager.lobby);
+		p.ps.stop();
+		PlayerManager.tpLobby(p.p);
 		PlayerManager.players.remove(p);
 	}
 }

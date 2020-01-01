@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import pt.josegamerpt.realskywars.player.GameScoreboard;
 import pt.josegamerpt.realskywars.utils.Calhau;
 import pt.josegamerpt.realskywars.classes.Enum.GameState;
 import pt.josegamerpt.realskywars.player.GamePlayer;
@@ -17,22 +16,17 @@ public class GameRoom {
 	public GameRoomSolo gs;
 	public GameRoomTeams gt;
 	public Enum.GameType mode;
-	public GameScoreboard scoreboard;
 
 	int error = -16;
 
 	public GameRoom(GameRoomSolo g) {
 		this.gs = g;
 		mode = Enum.GameType.SOLO;
-		scoreboard = new GameScoreboard(this);
-		scoreboard.run();
 	}
 
 	public GameRoom(GameRoomTeams g) {
 		this.gt = g;
 		mode = Enum.GameType.TEAMS;
-		scoreboard = new GameScoreboard(this);
-		scoreboard.run();
 	}
 
 	public String getName() {
@@ -326,10 +320,15 @@ public class GameRoom {
 		}
 		if (mode == GameType.TEAMS) {
 			gt.checkWin();
-		}	}
+		}
+	}
 
 	public boolean getType() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public GameType getMode() {
+		return mode;
 	}
 }

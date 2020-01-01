@@ -42,13 +42,16 @@ public class GamePlayer {
 	public Double Coins;
 	public Double balanceGame = 0D;
 	public Location cageLoc;
+	public PlayerScoreboard ps;
 
 	public Material cageBlock = Material.GLASS;
 
 	public List<String> bought = new ArrayList<String>();
 	public HashMap<Selection, Selections> selections = new HashMap<Selection, Selections>();
+	public Boolean bot = false;
 
 	public Kit selectedKit;
+
 
 	public GamePlayer(Player jog, PlayerState estado, GameRoom rom, int tk, int d, Double coi, String lang,
 			List<String> bgh) {
@@ -60,13 +63,24 @@ public class GamePlayer {
 		this.Coins = coi;
 		this.Language = lang;
 		this.bought = bgh;
+		ps = new PlayerScoreboard(this);
 	}
 
-	public GamePlayer(Object object) {
+	public GamePlayer() {
+		bot = true;
 	}
 
 	public void save() {
-		if (!PlayerManager.players.contains(this)) {
+		for (GamePlayer gp : PlayerManager.players)
+		{
+			if (p != null) {
+				if (gp.p.getUniqueId().equals(p.getUniqueId())) {
+					return;
+				}
+			}
+		}
+		if (bot == false)
+		{
 			PlayerManager.players.add(this);
 		}
 	}

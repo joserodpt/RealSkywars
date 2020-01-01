@@ -155,7 +155,6 @@ public class ProfileContent {
 					if (inventories.containsKey(uuid)) {
 						ProfileContent current = inventories.get(uuid);
 						if (e.getInventory().getHolder() != current.getInventory().getHolder()) {
-							System.out.print("asd");
 							return;
 						}
 

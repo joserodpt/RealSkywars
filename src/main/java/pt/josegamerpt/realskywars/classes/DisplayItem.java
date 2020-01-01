@@ -38,19 +38,19 @@ public class DisplayItem {
 					assert KitManager.getKit(name) != null;
 					i = Itens.createItemLore(m, 1, name, KitManager.getKit(name).getDescription(true));
 				} else {
-					i = Itens.createItemLoreEnchanted(m, 1, name, Collections.singletonList("&aYou already bought this kit."));
+					i = Itens.createItemLoreEnchanted(m, 1, name, KitManager.getKit(name).getDescription(false));
 				}
                 break;
 			case CAGEBLOCK:
 				if (bought) {
 					i = Itens.createItemLoreEnchanted(m, 1, name, Collections.singletonList("&aYou already bought this block."));
 				} else {
-					i = Itens.createItemLore(m, 1, name, Arrays.asList("&fTier: &aNormal", "&fPrice: &b" + price, "&fClick to Buy."));
+					i = Itens.createItemLore(m, 1, name, Arrays.asList("&fPrice: &b" + price, "&fClick to Buy."));
 				}
 				break;
             default:
 				if (bought) {
-					i = Itens.createItemLoreEnchanted(m, 1, name, Collections.singletonList("&aYou already bought this block."));
+					i = Itens.createItemLoreEnchanted(m, 1, name, Collections.singletonList("&aYou already bought this."));
 				} else {
 					i = Itens.createItemLore(m, 1, name, Arrays.asList("&fPrice: &b" + price, "&fClick to Buy."));
 				}
