@@ -4,16 +4,16 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Cat;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import pt.josegamerpt.realskywars.classes.Enum.ProfileCategory;
-import pt.josegamerpt.realskywars.classes.Enum.ShopCategory;
 import pt.josegamerpt.realskywars.managers.LanguageManager;
 import pt.josegamerpt.realskywars.managers.PlayerManager;
 import pt.josegamerpt.realskywars.player.GamePlayer;
 import pt.josegamerpt.realskywars.utils.GUIBuilder;
 import pt.josegamerpt.realskywars.utils.GUIBuilder.ClickRunnable;
 import pt.josegamerpt.realskywars.utils.Itens;
+import pt.josegamerpt.realskywars.classes.Enum.Categories;
 
 public class GUIManager {
 
@@ -24,7 +24,7 @@ public class GUIManager {
 		inventory.addItem(new ClickRunnable() {
 			public void run(InventoryClickEvent e) {
 				p.p.closeInventory();
-				ShopViewer v = new ShopViewer(p.p.getUniqueId(), ShopCategory.CAGEBLOCK);
+				ShopViewer v = new ShopViewer(p.p.getUniqueId(), Categories.CAGEBLOCK);
 				v.openInventory(p);
 			}
 		}, Itens.createItemLore(Material.SPAWNER, 1, "&9Cage Blocks",
@@ -33,7 +33,7 @@ public class GUIManager {
 		inventory.addItem(new ClickRunnable() {
 			public void run(InventoryClickEvent e) {
 				p.p.closeInventory();
-				ShopViewer v = new ShopViewer(p.p.getUniqueId(), ShopCategory.KITS);
+				ShopViewer v = new ShopViewer(p.p.getUniqueId(), Categories.KITS);
 				v.openInventory(p);
 			}
 		}, Itens.createItemLore(Material.CHEST, 1, "&9Kits", Collections.singletonList("&fClick here to open this category.")), 1);
@@ -41,7 +41,7 @@ public class GUIManager {
 		inventory.addItem(new ClickRunnable() {
 			public void run(InventoryClickEvent e) {
 				p.p.closeInventory();
-				ShopViewer v = new ShopViewer(p.p.getUniqueId(), ShopCategory.WINBLOCKS);
+				ShopViewer v = new ShopViewer(p.p.getUniqueId(), Categories.WINBLOCKS);
 				v.openInventory(p);
 			}
 		}, Itens.createItemLore(Material.FIREWORK_ROCKET, 1, "&9Win Blocks",
@@ -49,7 +49,7 @@ public class GUIManager {
 		inventory.addItem(new ClickRunnable() {
 			public void run(InventoryClickEvent e) {
 				p.p.closeInventory();
-				ShopViewer v = new ShopViewer(p.p.getUniqueId(), ShopCategory.WINPARTICLE);
+				ShopViewer v = new ShopViewer(p.p.getUniqueId(), Categories.WINPARTICLE);
 				v.openInventory(p);
 			}
 		}, Itens.createItemLore(Material.GLOWSTONE_DUST, 1, "&9Win Particles",
@@ -88,7 +88,7 @@ public class GUIManager {
 		inventory.addItem(new ClickRunnable() {
 			public void run(InventoryClickEvent e) {
 				p.p.closeInventory();
-				ProfileContent v = new ProfileContent(p.p, ProfileCategory.KITS);
+				ProfileContent v = new ProfileContent(p.p, Categories.KITS);
 				v.openInventory(p);
 			}
 		}, Itens.createItemLore(Material.CHEST, 1, "&bYour &9Kits",
@@ -97,7 +97,7 @@ public class GUIManager {
 		inventory.addItem(new ClickRunnable() {
 			public void run(InventoryClickEvent e) {
 				p.p.closeInventory();
-				ProfileContent v = new ProfileContent(p.p, ProfileCategory.CAGEBLOCK);
+				ProfileContent v = new ProfileContent(p.p, Categories.CAGEBLOCK);
 				v.openInventory(p);
 			}
 		}, Itens.createItemLore(Material.SPAWNER, 1, "&bYour &9Cage Blocks",
@@ -106,7 +106,7 @@ public class GUIManager {
 		inventory.addItem(new ClickRunnable() {
 			public void run(InventoryClickEvent e) {
 				p.p.closeInventory();
-				ProfileContent v = new ProfileContent(p.p, ProfileCategory.WINBLOCKS);
+				ProfileContent v = new ProfileContent(p.p, Categories.WINBLOCKS);
 				v.openInventory(p);
 			}
 		}, Itens.createItemLore(Material.FIREWORK_ROCKET, 1, "&bYour &9Win Blocks",
@@ -114,7 +114,7 @@ public class GUIManager {
 		inventory.addItem(new ClickRunnable() {
 			public void run(InventoryClickEvent e) {
 				p.p.closeInventory();
-				ProfileContent v = new ProfileContent(p.p, ProfileCategory.WINPARTICLE);
+				ProfileContent v = new ProfileContent(p.p, Categories.WINPARTICLE);
 				v.openInventory(p);
 			}
 		}, Itens.createItemLore(Material.GLOWSTONE_DUST, 1, "&bYour &9Win Particles",

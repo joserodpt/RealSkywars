@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Cat;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,9 +20,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-import pt.josegamerpt.realskywars.classes.Enum.ShopCategory;
+import pt.josegamerpt.realskywars.classes.Enum.Categories;
 import pt.josegamerpt.realskywars.classes.Enum.TS;
-import pt.josegamerpt.realskywars.classes.ShopItem;
+import pt.josegamerpt.realskywars.classes.DisplayItem;
 import pt.josegamerpt.realskywars.managers.CurrencyManager;
 import pt.josegamerpt.realskywars.managers.LanguageManager;
 import pt.josegamerpt.realskywars.managers.PlayerManager;
@@ -45,28 +46,28 @@ public class ShopViewer {
 			Arrays.asList("&fClick here to go back to the next page."));
 
 	private UUID uuid;
-	private List<ShopItem> items;
-	private HashMap<Integer, ShopItem> display = new HashMap<Integer, ShopItem>();
+	private List<DisplayItem> items;
+	private HashMap<Integer, DisplayItem> display = new HashMap<Integer, DisplayItem>();
 
 	int pageNumber = 0;
-	Pagination<ShopItem> p;
-	private ShopCategory cat;
+	Pagination<DisplayItem> p;
+	private Categories cat;
 
-	public ShopViewer(UUID id, ShopCategory t) {
+	public ShopViewer(UUID id, Categories t) {
 		this.uuid = id;
 		this.cat = t;
 		inv = Bukkit.getServer().createInventory(null, 54, Text.addColor("&b" + t.name()));
 
 		items = ShopManager.getCategoryContents(PlayerManager.getPlayer(PlayerManager.searchPlayer(id)), t);
 
-		p = new Pagination<ShopItem>(28, items);
+		p = new Pagination<DisplayItem>(28, items);
 
 		fillChest(p.getPage(pageNumber));
 
 		this.register();
 	}
 
-	public void fillChest(List<ShopItem> items) {
+	public void fillChest(List<DisplayItem> items) {
 
 		inv.clear();
 
@@ -101,7 +102,7 @@ public class ShopViewer {
 		for (ItemStack i : inv.getContents()) {
 			if (i == null) {
 				if (items.size() != 0) {
-					ShopItem s = items.get(0);
+					DisplayItem s = items.get(0);
 					inv.setItem(slot, s.i);
 					display.put(slot, s);
 					items.remove(0);
@@ -161,10 +162,10 @@ public class ShopViewer {
 						}
 
 						if (current.display.containsKey(e.getRawSlot())) {
-							ShopItem a = current.display.get(e.getRawSlot());
+							DisplayItem a = current.display.get(e.getRawSlot());
 							Boolean b = a.bought;
 
-							if (a.buyable == false) {
+							if (a.interactable == false) {
 								gp.sendMessage(LanguageManager.getString(gp, TS.NOT_BUYABLE, true));
 								return;
 							}
@@ -178,10 +179,10 @@ public class ShopViewer {
 									if (cm.canMakeOperation() == true) {
 										cm.removeCoins();
 
-										if (current.cat.equals(ShopCategory.CAGEBLOCK)) {
+										if (current.cat.equals(Categories.CAGEBLOCK)) {
 											gp.bought.add(ChatColor.stripColor(a.name) + "|CAGEBLOCK");
 										}
-										if (current.cat.equals(ShopCategory.KITS)) {
+										if (current.cat.equals(Categories.KITS)) {
 											gp.bought.add(a.id + "|KITS");
 										}
 

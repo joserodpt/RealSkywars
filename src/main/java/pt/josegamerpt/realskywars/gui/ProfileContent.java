@@ -18,10 +18,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-import pt.josegamerpt.realskywars.classes.Enum.ProfileCategory;
+import pt.josegamerpt.realskywars.classes.DisplayItem;
+import pt.josegamerpt.realskywars.classes.Enum;
 import pt.josegamerpt.realskywars.classes.Enum.TS;
 import pt.josegamerpt.realskywars.classes.Kit;
-import pt.josegamerpt.realskywars.classes.ShopItem;
 import pt.josegamerpt.realskywars.managers.KitManager;
 import pt.josegamerpt.realskywars.managers.LanguageManager;
 import pt.josegamerpt.realskywars.managers.PlayerManager;
@@ -44,35 +44,35 @@ public class ProfileContent {
 			Arrays.asList("&fClick here to go back to the next page."));
 
 	private UUID uuid;
-	private List<ShopItem> items;
-	private HashMap<Integer, ShopItem> display = new HashMap<Integer, ShopItem>();
+	private List<DisplayItem> items;
+	private HashMap<Integer, DisplayItem> display = new HashMap<Integer, DisplayItem>();
 	private Boolean disableMenu = false;
 
 	int pageNumber = 0;
-	Pagination<ShopItem> p;
-	private ProfileCategory cat;
+	Pagination<DisplayItem> p;
+	private Enum.Categories cat;
 
-	public ProfileContent(Player as, ProfileCategory t) {
+	public ProfileContent(Player as, Enum.Categories t) {
 		this.uuid = as.getUniqueId();
 		this.cat = t;
 		inv = Bukkit.getServer().createInventory(null, 54, Text.addColor("&bSeeing " + t.name()));
 
 		items = PlayerManager.getBoughtItems(PlayerManager.getPlayer(as), t);
 
-		p = new Pagination<ShopItem>(28, items);
+		p = new Pagination<DisplayItem>(28, items);
 		fillChest(p.getPage(pageNumber), false);
 
 		this.register();
 	}
 
-	public ProfileContent(Player as, ProfileCategory t, String invName) {
+	public ProfileContent(Player as, Enum.Categories t, String invName) {
 		this.uuid = as.getUniqueId();
 		this.cat = t;
 		inv = Bukkit.getServer().createInventory(null, 54, Text.addColor(invName));
 
 		items = PlayerManager.getBoughtItems(PlayerManager.getPlayer(as), t);
 
-		p = new Pagination<ShopItem>(28, items);
+		p = new Pagination<DisplayItem>(28, items);
 		fillChest(p.getPage(pageNumber), true);
 
 		disableMenu = true;
@@ -80,7 +80,7 @@ public class ProfileContent {
 		this.register();
 	}
 
-	public void fillChest(List<ShopItem> items, Boolean b) {
+	public void fillChest(List<DisplayItem> items, Boolean b) {
 
 		inv.clear();
 
@@ -119,7 +119,7 @@ public class ProfileContent {
 		for (ItemStack i : inv.getContents()) {
 			if (i == null) {
 				if (items.size() != 0) {
-					ShopItem s = items.get(0);
+					DisplayItem s = items.get(0);
 					inv.setItem(slot, s.i);
 					display.put(slot, s);
 					items.remove(0);
@@ -182,18 +182,19 @@ public class ProfileContent {
 						}
 
 						if (current.display.containsKey(e.getRawSlot())) {
-							ShopItem a = current.display.get(e.getRawSlot());
+							DisplayItem a = current.display.get(e.getRawSlot());
 
-							if (a.buyable == false)
+							if (a.interactable == false)
 							{
+								gp.sendMessage(LanguageManager.getString(gp, TS.NOT_BUYABLE, true));
 								return;
 							}
 
-							if (current.cat == ProfileCategory.CAGEBLOCK) {
+							if (current.cat == Enum.Categories.CAGEBLOCK) {
 								gp.cageBlock = a.i.getType();
 								gp.sendMessage(LanguageManager.getString(gp, TS.PROFILE_SELECTED, true).replace("%name%", a.name).replace("%type%", LanguageManager.getString(gp, TS.CAGEBLOCK, false)));
 							}
-							if (current.cat == ProfileCategory.KITS) {
+							if (current.cat == Enum.Categories.KITS) {
 								Kit k = KitManager.getKit(a.id);
 								gp.selectedKit = k;
 								gp.sendMessage(LanguageManager.getString(gp, TS.PROFILE_SELECTED, true).replace("%name%", a.name).replace("%type%", LanguageManager.getString(gp, TS.KITS, false)));

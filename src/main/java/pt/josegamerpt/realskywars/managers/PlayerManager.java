@@ -9,16 +9,14 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import pt.josegamerpt.realskywars.classes.DisplayItem;
+import pt.josegamerpt.realskywars.classes.Enum;
 import pt.josegamerpt.realskywars.classes.Enum.PlayerState;
-import pt.josegamerpt.realskywars.classes.Enum.ProfileCategory;
 import pt.josegamerpt.realskywars.classes.Enum.Selection;
 import pt.josegamerpt.realskywars.classes.Enum.Selections;
-import pt.josegamerpt.realskywars.classes.Enum.ShopCategory;
 import pt.josegamerpt.realskywars.classes.Enum.TS;
-import pt.josegamerpt.realskywars.classes.ShopItem;
 import pt.josegamerpt.realskywars.configuration.Items;
 import pt.josegamerpt.realskywars.configuration.Players;
 import pt.josegamerpt.realskywars.player.GamePlayer;
@@ -148,7 +146,7 @@ public class PlayerManager {
 		player.p.sendMessage(LanguageManager.getString(player, TS.LANGUAGE_SET, true).replace("%language%", "" + s));
 	}
 
-	public static Boolean boughtItem(GamePlayer p, String string, ShopCategory c) {
+	public static Boolean boughtItem(GamePlayer p, String string, Enum.Categories c) {
 		List<String> bought = p.bought;
 		String prod = string + "|" + c.name();
 		if (bought.contains(ChatColor.stripColor(prod))) {
@@ -164,11 +162,11 @@ public class PlayerManager {
 		}
 	}
 
-	public static List<ShopItem> getBoughtItems(GamePlayer player, ProfileCategory t) {
-		List<ShopItem> bought = new ArrayList<ShopItem>();
+	public static List<DisplayItem> getBoughtItems(GamePlayer player, Enum.Categories t) {
+		List<DisplayItem> bought = new ArrayList<DisplayItem>();
 		switch (t) {
 		case CAGEBLOCK:
-			for (ShopItem a : ShopManager.getCategoryContents(player, ShopCategory.CAGEBLOCK)) {
+			for (DisplayItem a : ShopManager.getCategoryContents(player, Enum.Categories.CAGEBLOCK)) {
 				if (a != null) {
 					if (a.bought == true) {
 						bought.add(a);
@@ -177,7 +175,7 @@ public class PlayerManager {
 			}
 			break;
 		case WINPARTICLE:
-			for (ShopItem a : ShopManager.getCategoryContents(player, ShopCategory.WINPARTICLE)) {
+			for (DisplayItem a : ShopManager.getCategoryContents(player, Enum.Categories.WINPARTICLE)) {
 				if (a != null) {
 					if (a.bought == true) {
 						bought.add(a);
@@ -186,7 +184,7 @@ public class PlayerManager {
 			}
 			break;
 		case BOWPARTICLE:
-			for (ShopItem a : ShopManager.getCategoryContents(player, ShopCategory.BOWPARTICLE)) {
+			for (DisplayItem a : ShopManager.getCategoryContents(player, Enum.Categories.BOWPARTICLE)) {
 				if (a != null) {
 					if (a.bought == true) {
 						bought.add(a);
@@ -195,7 +193,7 @@ public class PlayerManager {
 			}
 			break;
 		case WINBLOCKS:
-			for (ShopItem a : ShopManager.getCategoryContents(player, ShopCategory.WINBLOCKS)) {
+			for (DisplayItem a : ShopManager.getCategoryContents(player, Enum.Categories.WINBLOCKS)) {
 				if (a != null) {
 					if (a.bought == true) {
 						bought.add(a);
@@ -204,7 +202,7 @@ public class PlayerManager {
 			}
 			break;
 		case KITS:
-			for (ShopItem a : ShopManager.getCategoryContents(player, ShopCategory.KITS)) {
+			for (DisplayItem a : ShopManager.getCategoryContents(player, Enum.Categories.KITS)) {
 				if (a != null) {
 					if (a.bought == true) {
 						bought.add(a);
@@ -216,20 +214,8 @@ public class PlayerManager {
 			//
 			break;
 		}
-		for (ShopItem e : bought) {
-			switch (t)
-			{
-				case KITS:
-					e.i = Itens.setLore(e.i, KitManager.getKit(e.name).getDescription(false));
-					break;
-				default:
-					e.i = Itens.setLore(e.i, Arrays.asList("&fClick to use this."));
-			}
-		}
 		if (bought.size() == 0) {
-			bought.add(new ShopItem(
-					Itens.createItemLore(Material.DEAD_BUSH, 1, "&9Empty", Arrays.asList("&fNothing bought yet.")), -1,
-					false));
+			bought.add(new DisplayItem());
 		}
 		return bought;
 	}

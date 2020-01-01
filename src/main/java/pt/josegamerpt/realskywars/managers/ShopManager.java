@@ -7,19 +7,20 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import pt.josegamerpt.realskywars.Debugger;
-import pt.josegamerpt.realskywars.classes.Enum.ShopCategory;
+import pt.josegamerpt.realskywars.classes.DisplayItem;
+import pt.josegamerpt.realskywars.classes.Enum;
 import pt.josegamerpt.realskywars.classes.Kit;
 import pt.josegamerpt.realskywars.configuration.Shops;
 import pt.josegamerpt.realskywars.player.GamePlayer;
 import pt.josegamerpt.realskywars.utils.Itens;
 import pt.josegamerpt.realskywars.utils.Text;
-import pt.josegamerpt.realskywars.classes.ShopItem;
+import sun.security.ssl.Debug;
 
 public class ShopManager {
 
-    public static ArrayList<ShopItem> getCategoryContents(GamePlayer p, ShopCategory t) {
-        ArrayList<ShopItem> items = new ArrayList<ShopItem>();
-        if (t == ShopCategory.CAGEBLOCK) {
+    public static ArrayList<DisplayItem> getCategoryContents(GamePlayer p, Enum.Categories t) {
+        ArrayList<DisplayItem> items = new ArrayList<DisplayItem>();
+        if (t == Enum.Categories.CAGEBLOCK) {
             int i = 1;
             for (String sa : Shops.file().getStringList("Main-Shop.Cage-Blocks")) {
                 String[] parse = sa.split(">");
@@ -28,7 +29,7 @@ public class ShopManager {
                 String material = parse[0];
                 String name = Text.addColor(parse[2]);
                 String perm = parse[3];
-                Boolean bought = PlayerManager.boughtItem(p, name, ShopCategory.CAGEBLOCK);
+                Boolean bought = PlayerManager.boughtItem(p, name, Enum.Categories.CAGEBLOCK);
 
                 try {
                     price = Double.parseDouble(parse[1]);
@@ -40,44 +41,26 @@ public class ShopManager {
                 Material m = Material.getMaterial(parse[0]);
                 if (m == null) {
                     m = Material.BARRIER;
-                    System.out.print("[FATAL] [REALSKYWARS] MATERIAL ISNT VALID: " + material);
+                    Debugger.printValue("[FATAL] [REALSKYWARS] MATERIAL ISNT VALID: " + material);
                 }
 
-                ItemStack item;
-                if (bought == true) {
-                    item = Itens.createItemLoreEnchanted(m, 1, name, Arrays.asList("&aYou already bought this!"));
-                } else {
-                    item = Itens.createItemLore(m, 1, name, Arrays.asList("&fPrice: &b" + price, "&fClick to Buy!"));
-                }
-
-
-                ShopItem s = new ShopItem(item, i, price, bought, name, perm);
+                DisplayItem s = new DisplayItem(i, m, name, price, bought, perm, Enum.Categories.CAGEBLOCK);
                 items.add(s);
                 i++;
             }
 
-        } else if (t == ShopCategory.KITS) {
+        } else if (t == Enum.Categories.KITS) {
             for (Kit a : KitManager.getKits()) {
-                Boolean bought = PlayerManager.boughtItem(p, a.id + "", ShopCategory.KITS);
+                Boolean bought = PlayerManager.boughtItem(p, a.id + "", Enum.Categories.KITS);
 
-                ShopItem s = new ShopItem(makeKitsIcon(a.icon, a.permission, a.price, a.name, bought), a.id, a.price,
-                        bought, a.name, a.permission);
+                DisplayItem s = new DisplayItem(a.id, a.icon, a.name, a.price,
+                        bought, a.permission, Enum.Categories.KITS);
                 items.add(s);
             }
         }
         if (items.size() == 0) {
-            items.add(new ShopItem(Itens.createItemLore(Material.DEAD_BUSH, 1, "&9Empty",
-                    Arrays.asList("&fNothing found in this category.")), -1, false));
+            items.add(new DisplayItem());
         }
         return items;
     }
-
-    private static ItemStack makeKitsIcon(Material icon, String permission, Double cost, String name, Boolean bought) {
-        if (bought == false) {
-            return Itens.createItemLore(icon, 1, name, KitManager.getKit(name).getDescription(true));
-        } else {
-            return Itens.createItemLoreEnchanted(icon, 1, name, Arrays.asList("&aYou already bought this!"));
-        }
-    }
-
 }

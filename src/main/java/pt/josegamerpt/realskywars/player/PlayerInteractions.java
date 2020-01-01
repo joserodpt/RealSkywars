@@ -1,19 +1,14 @@
 package pt.josegamerpt.realskywars.player;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Chest;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-
 import pt.josegamerpt.realskywars.classes.Enum;
 import pt.josegamerpt.realskywars.classes.Enum.GameState;
 import pt.josegamerpt.realskywars.classes.Enum.Selection;
@@ -27,9 +22,11 @@ import pt.josegamerpt.realskywars.managers.ChestManager;
 import pt.josegamerpt.realskywars.managers.PlayerManager;
 import pt.josegamerpt.realskywars.utils.Itens;
 
-public class PlayerInteractions implements Listener {
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Random;
 
-	int debug = 1;
+public class PlayerInteractions implements Listener {
 
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent e) {
@@ -40,6 +37,7 @@ public class PlayerInteractions implements Listener {
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) {
 			if (e.getPlayer().getInventory().getItemInMainHand().hasItemMeta()) {
 				GamePlayer gp = PlayerManager.getPlayer(e.getPlayer());
+				assert gp != null;
 				if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
 					return;
 				}
@@ -50,7 +48,7 @@ public class PlayerInteractions implements Listener {
 				}
 				if (e.getPlayer().getInventory().getItemInMainHand()
 						.equals(Items.KITS)) {
-					ProfileContent ds = new ProfileContent(e.getPlayer(), Enum.ProfileCategory.KITS, "&9Kits");
+					ProfileContent ds = new ProfileContent(e.getPlayer(), Enum.Categories.KITS, "&9Kits");
 					ds.openInventory(gp);
 					e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 50, 50);
 				}
@@ -86,11 +84,12 @@ public class PlayerInteractions implements Listener {
 	@EventHandler
 	public void fillChest(PlayerInteractEvent event) {
 		if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-			if (event.getClickedBlock().getState() instanceof Chest) {
+			if (Objects.requireNonNull(event.getClickedBlock()).getState() instanceof Chest) {
 				GamePlayer gp = PlayerManager.getPlayer(event.getPlayer());
 				Location chestloc = event.getClickedBlock().getLocation();
 				Chest bau = (Chest) event.getClickedBlock().getState();
 
+				assert gp != null;
 				if (gp.room != null) {
 					if (gp.room.getState().equals(GameState.PLAYING)) {
 

@@ -26,16 +26,12 @@ public class Enum {
 		BASIC, NORMAL, OP, CAOS
 	}
 	
-	public enum ShopCategory {
+	public enum Categories {
 		CAGEBLOCK, WINPARTICLE, BOWPARTICLE, KITS, WINBLOCKS
 	}
 	
 	public enum Selection {
 		MAPVIEWER
-	}
-	
-	public enum ProfileCategory {
-		CAGEBLOCK, WINPARTICLE, BOWPARTICLE, WINBLOCKS, KITS
 	}
 	
 	public enum Selections {
