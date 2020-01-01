@@ -26,7 +26,7 @@ public class MapItem {
 				count = g.getCurrentPlayers();
 			}
 
-			icon = Itens.createItemLore(getState(), count, "&9" + g.getName() + " &7| &f" + g.mode.name(),
+			icon = Itens.createItemLore(getState(), count, "&9" + g.getName() + " &7| &f" + g.getMode(),
 					Arrays.asList("&b" + g.getCurrentPlayers() + "&f/&b" + g.getMaxPlayers(), "&fClick to join!"));
 		}
 	}

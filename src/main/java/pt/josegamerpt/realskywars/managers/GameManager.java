@@ -89,7 +89,7 @@ public class GameManager {
 			break;
 		}
 		if (f.size() == 0) {
-			GameRoom g = new GameRoom(new GameRoomSolo("No Maps Found"));
+			GameRoom g = new GameRoomSolo("No Maps Found");
 			f.add(g);
 		}
 		return f;

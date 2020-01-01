@@ -213,9 +213,7 @@ public class MapManager {
 		Maps.file().set(p.setup.Name, null);
 		Maps.save();
 		p.setup = null;
-		p.p.teleport(GameManager.lobby);
-		String tp = LanguageManager.getString(p, TS.LOBBY_TELEPORT, true);
-		p.sendMessage(tp);
+		PlayerManager.tpLobby(p);
 	}
 
 	public static void setupTeams(GamePlayer p, String mapname, int teams, int pperteam) {
@@ -263,7 +261,7 @@ public class MapManager {
 			return;
 		}
 
-		p.p.teleport(GameManager.lobby);
+		PlayerManager.tpLobby(p);
 		ArrayList<String> list = new ArrayList<String>();
 		list.add(LanguageManager.getString(p, TS.SAVING_ARENA, true));
 		Text.sendList(p.p, list);

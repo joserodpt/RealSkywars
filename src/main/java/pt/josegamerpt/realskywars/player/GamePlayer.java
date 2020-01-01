@@ -39,7 +39,7 @@ public class GamePlayer {
 	public int Deaths;
 	public int Wins;
 	public int KDratio;
-	public Double Coins;
+	public Double Coins = 0D;
 	public Double balanceGame = 0D;
 	public Location cageLoc;
 	public PlayerScoreboard ps;

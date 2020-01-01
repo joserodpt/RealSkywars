@@ -100,18 +100,20 @@ public class PlayerManager {
 	}
 
 	public static void savePlayer(GamePlayer p) {
-		Players.file().set(p.p.getUniqueId() + ".Coins", p.Coins);
-		Players.file().set(p.p.getUniqueId() + ".Kills", p.TotalKills);
-		Players.file().set(p.p.getUniqueId() + ".Deaths", p.Deaths);
-		Players.file().set(p.p.getUniqueId() + ".Name", p.p.getName());
-		Players.file().set(p.p.getUniqueId() + ".Language", p.Language);
-		for (Entry<Selection, Selections> entry : p.selections.entrySet()) {
-			Selection key = entry.getKey();
-			Selections value = entry.getValue();
-			Players.file().set(p.p.getUniqueId() + ".Preferences." + key.name(), value.name());
+		if (p.p != null) {
+			Players.file().set(p.p.getUniqueId() + ".Coins", p.Coins);
+			Players.file().set(p.p.getUniqueId() + ".Kills", p.TotalKills);
+			Players.file().set(p.p.getUniqueId() + ".Deaths", p.Deaths);
+			Players.file().set(p.p.getUniqueId() + ".Name", p.p.getName());
+			Players.file().set(p.p.getUniqueId() + ".Language", p.Language);
+			for (Entry<Selection, Selections> entry : p.selections.entrySet()) {
+				Selection key = entry.getKey();
+				Selections value = entry.getValue();
+				Players.file().set(p.p.getUniqueId() + ".Preferences." + key.name(), value.name());
+			}
+			Players.file().set(p.p.getUniqueId() + ".Bought-Items", p.bought);
+			Players.save();
 		}
-		Players.file().set(p.p.getUniqueId() + ".Bought-Items", p.bought);
-		Players.save();
 	}
 
 	public static Player searchPlayer(String name) {
@@ -238,10 +240,10 @@ public class PlayerManager {
 		}
 	}
 
-	public static void tpLobby(Player p) {
-		if (GameManager.lobbyscoreboard)
-		{
+	public static void tpLobby(GamePlayer p) {
+		if (GameManager.lobbyscoreboard) {
 			p.teleport(GameManager.lobby);
+			p.sendMessage(LanguageManager.getString(p, TS.LOBBY_TELEPORT, true));
 		}
 	}
 

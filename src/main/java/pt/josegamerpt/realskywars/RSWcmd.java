@@ -225,8 +225,7 @@ public class RSWcmd implements CommandExecutor {
 							return false;
 						case "lobby":
 							if (p.room == null) {
-								p.p.teleport(GameManager.lobby);
-								p.sendMessage(LanguageManager.getString(p, TS.LOBBY_TELEPORT, true));
+								PlayerManager.tpLobby(p);
 							} else {
 								p.sendMessage(LanguageManager.getString(p, TS.CMD_MATCH_CANCEL, true));
 							}

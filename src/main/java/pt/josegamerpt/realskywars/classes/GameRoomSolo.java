@@ -48,7 +48,7 @@ import pt.josegamerpt.realskywars.utils.Itens;
 import pt.josegamerpt.realskywars.utils.MathUtils;
 import pt.josegamerpt.realskywars.utils.Text;
 
-public class GameRoomSolo {
+public class GameRoomSolo implements GameRoom {
 
 	public String Name;
 	public GameState State;
@@ -131,7 +131,7 @@ public class GameRoomSolo {
 	}
 
 	public void saveRoom() {
-		GameManager.rooms.add(new GameRoom(this));
+		GameManager.rooms.add(this);
 	}
 
 	public void resetArena() {
@@ -146,9 +146,7 @@ public class GameRoomSolo {
 		this.votes.clear();
 		votes.add(2);
 
-		// Task Cancel
-
-		if (State == GameState.PLAYING || State == GameState.FINISHING) {
+		if (counters.containsKey("countTime")) {
 			Bukkit.getScheduler().cancelTask(counters.get("countTime"));
 		}
 
@@ -194,8 +192,7 @@ public class GameRoomSolo {
 	}
 
 	public void addPlayer(GamePlayer gp) {
-		if (State == GameState.RESETTING)
-		{
+		if (State == GameState.RESETTING) {
 			gp.sendMessage("&cYou cant join this map.");
 			return;
 		}
@@ -205,7 +202,7 @@ public class GameRoomSolo {
 			return;
 		}
 
-		gp.room = new GameRoom(this);
+		gp.room = this;
 		gp.state = PlayerState.CAGE;
 		gp.save();
 
@@ -377,8 +374,6 @@ public class GameRoomSolo {
 	}
 
 	public void removePlayer(GamePlayer p) {
-
-		String tp = variables(Text.addColor(LanguageManager.getString(p, TS.LOBBY_TELEPORT, true)));
 		String lv = variables(Text.addColor(LanguageManager.getString(p, TS.MATCH_LEAVE, true)));
 
 		GamePlayers.remove(p);
@@ -391,8 +386,7 @@ public class GameRoomSolo {
 			p.p.setAllowFlight(false);
 			p.p.setFlying(false);
 
-			p.p.teleport(GameManager.lobby);
-			p.sendMessage(tp);
+			PlayerManager.tpLobby(p);
 
 			for (GamePlayer ws : Players) {
 				if (ws.p != null) {
@@ -406,15 +400,14 @@ public class GameRoomSolo {
 		}
 		if (p.state == PlayerState.CAGE) {
 			Cages.add(p.p.getLocation());
-			p.p.teleport(GameManager.lobby);
 			p.sendMessage(lv);
-			p.sendMessage(tp);
+			PlayerManager.tpLobby(p);
 			Players.remove(p);
 			PlayerManager.giveItems(p.p, 0);
 		} else {
-			p.p.teleport(GameManager.lobby);
+			PlayerManager.tpLobby(p);
 			p.sendMessage(lv);
-			p.sendMessage(tp);
+			PlayerManager.tpLobby(p);
 			Spectators.remove(p);
 			PlayerManager.giveItems(p.p, 0);
 		}
@@ -456,13 +449,9 @@ public class GameRoomSolo {
 
 				p.p.removeMetadata("invencivel", RealSkywars.pl);
 
-				p.p.teleport(GameManager.lobby);
+				p.sendMessage(LanguageManager.getString(p, TS.MATCH_LEAVE, true));
+				PlayerManager.tpLobby(p);
 
-				String tp = variables(Text.addColor(LanguageManager.getString(p, TS.LOBBY_TELEPORT, true)));
-				String lv = variables(Text.addColor(LanguageManager.getString(p, TS.MATCH_LEAVE, true)));
-
-				p.sendMessage(lv);
-				p.sendMessage(tp);
 				p.room = null;
 				p.cageLoc = null;
 				PlayerManager.giveItems(p.p, 0);
@@ -496,27 +485,22 @@ public class GameRoomSolo {
 			Countdown timer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), Config.file().getInt("Config.Time-EndGame"),
 					() -> {
 						untilEnd.killTask();
+						Bukkit.getScheduler().cancelTask(counters.get("countTime"));
 
 						for (GamePlayer p : Players) {
 							if (p.p != null) {
-								p.sendMessage(variables(LanguageManager.getString(p, TS.MATCH_END, true)));
-								p.p.setMetadata("invencivel", new FixedMetadataValue(RealSkywars.pl, 0));
-								if (Players.get(0).p != null) {
-									p.p.sendTitle("",
-											Text.addColor(LanguageManager.getString(p, TS.TITLE_WIN, false)
-													.replace("%player%", Players.get(0).p.getDisplayName())),
-											10, 40, 10);
-								}
 								if (dragonEnabled == true) {
 									rideDragon(p.p);
 								}
 								p.addWin(1);
-								sendLog(p);
 							}
+
+							sendLog(p);
 						}
-						for (GamePlayer p : Spectators) {
+
+						for (GamePlayer p : GamePlayers) {
 							if (p.p != null) {
-								p.sendMessage(variables(LanguageManager.getString(p, TS.MATCH_END, true)));
+								p.sendMessage(variables(LanguageManager.getString(p, TS.MATCH_END, true)).replace("%time%", "" + Config.file().getInt("Config.Time-EndGame")));
 								p.p.setMetadata("invencivel", new FixedMetadataValue(RealSkywars.pl, 0));
 								if (Players.get(0).p != null) {
 									p.p.sendTitle("",
@@ -524,7 +508,6 @@ public class GameRoomSolo {
 													.replace("%player%", Players.get(0).p.getDisplayName())),
 											10, 40, 10);
 								}
-								sendLog(p);
 							}
 						}
 					}, () -> {
@@ -561,10 +544,8 @@ public class GameRoomSolo {
 
 	private void spectateFromExternal(GamePlayer p) {
 		if (specEnabled == true) {
-
 			GamePlayers.add(p);
-
-			p.room = new GameRoom(this);
+			p.room = this;
 
 			for (GamePlayer ws : Players) {
 				if (ws.p != null) {
@@ -618,14 +599,9 @@ public class GameRoomSolo {
 
 			p.p.setFoodLevel(20);
 
-			p.p.teleport(GameManager.lobby);
+			p.sendMessage(LanguageManager.getString(p, TS.MATCH_LEAVE, true));
+			PlayerManager.tpLobby(p);
 			PlayerManager.giveItems(p.p, 0);
-
-			String tp = variables(Text.addColor(LanguageManager.getString(p, TS.LOBBY_TELEPORT, true)));
-			String lv = variables(Text.addColor(LanguageManager.getString(p, TS.MATCH_LEAVE, true)));
-
-			p.sendMessage(Text.addColor(lv));
-			p.sendMessage(Text.addColor(tp));
 		}
 
 		sendLog(p);
@@ -641,7 +617,112 @@ public class GameRoomSolo {
 		p.saveData();
 	}
 
+	//methods
 	public void forceStart() {
 		startGameFunction();
+	}
+
+	public String getName() {
+		return this.Name;
+	}
+
+	public int getCurrentPlayers() {
+		return this.getGamePlayers().size();
+	}
+
+	public int getMaxPlayers() {
+		return this.maxPlayers;
+	}
+
+	public World getWorld() {
+		return this.worldMap;
+	}
+
+	public int getCurrentSpectators() {
+		return this.Spectators.size();
+	}
+
+
+	public Enum.GameState getState() {
+		return this.State;
+	}
+
+
+	public boolean isPlaceHolder() {
+		return this.placeholder;
+	}
+
+	public ArrayList<GamePlayer> getPlayerList() {
+		return this.Players;
+	}
+
+	public void setTierType(Enum.TierType b) {
+		this.tierType = b;
+	}
+
+
+	public ArrayList<GamePlayer> getVoters() {
+		return this.voters;
+	}
+
+
+	public ArrayList<Integer> getVoteList() {
+		return this.votes;
+	}
+
+	public boolean isSpectatorEnabled() {
+		return this.specEnabled;
+	}
+
+
+	public boolean isDragonEnabled() {
+		return this.dragonEnabled;
+	}
+
+
+	public Enum.TierType getTierType() {
+		return this.tierType;
+	}
+
+
+	public ArrayList<Calhau> getBlocksPlaced() {
+		return this.blockplace;
+	}
+
+
+	public ArrayList<Calhau> getBlocksDestroyed() {
+		return this.blockbreak;
+	}
+
+
+	public int getTimePassed() {
+		return this.timePassed;
+	}
+
+	public void setState(Enum.GameState w) {
+		this.State = w;
+	}
+
+
+	public void setSpectator(boolean b) {
+		this.specEnabled = b;
+	}
+
+
+	public void setDragon(boolean b) {
+		this.dragonEnabled = b;
+	}
+
+	public ArrayList<Location> getOpenChests() {
+		return this.openedChests;
+	}
+
+
+	public ArrayList<GamePlayer> getGamePlayers() {
+		return this.GamePlayers;
+	}
+
+	public Enum.GameType getMode() {
+		return this.gameType;
 	}
 }

@@ -46,7 +46,7 @@ import pt.josegamerpt.realskywars.utils.Itens;
 import pt.josegamerpt.realskywars.utils.MathUtils;
 import pt.josegamerpt.realskywars.utils.Text;
 
-public class GameRoomTeams {
+public class GameRoomTeams implements GameRoom {
 
 	public String Name;
 	public GameState State;
@@ -113,7 +113,7 @@ public class GameRoomTeams {
 	}
 
 	public void saveRoom() {
-		GameManager.rooms.add(new GameRoom(this));
+		GameManager.rooms.add(this);
 	}
 
 	public void resetArena() {
@@ -360,20 +360,15 @@ public class GameRoomTeams {
 	}
 
 	public void removePlayer(GamePlayer p) {
-
-		String tp = variables(Text.addColor(LanguageManager.getString(p, TS.LOBBY_TELEPORT, true)));
-		String lv = variables(Text.addColor(LanguageManager.getString(p, TS.MATCH_LEAVE, true)));
-
 		if (p.state == PlayerState.EXTERNAL_SPECTATOR) {
 
 			Spectators.remove(p);
-			p.sendMessage(lv);
 			PlayerManager.giveItems(p.p, 0);
 			p.p.setAllowFlight(false);
 			p.p.setFlying(false);
 
-			p.p.teleport(GameManager.lobby);
-			p.sendMessage(tp);
+			p.sendMessage(LanguageManager.getString(p, TS.MATCH_LEAVE, true));
+			PlayerManager.tpLobby(p);
 
 			for (Team t : teams) {
 				for (GamePlayer ws : t.members) {
@@ -389,18 +384,15 @@ public class GameRoomTeams {
 		}
 		if (p.state == PlayerState.CAGE) {
 			p.team.removePlayer(p);
-			p.p.teleport(GameManager.lobby);
-			p.sendMessage(lv);
-			p.sendMessage(tp);
+			p.sendMessage(LanguageManager.getString(p, TS.MATCH_LEAVE, true));
+			PlayerManager.tpLobby(p);
 			PlayerManager.giveItems(p.p, 0);
 		} else {
-
-			p.p.teleport(GameManager.lobby);
-			p.sendMessage(lv);
-			p.sendMessage(tp);
+			p.sendMessage(LanguageManager.getString(p, TS.MATCH_LEAVE, true));
+			PlayerManager.tpLobby(p);
 			Spectators.remove(p);
 			PlayerManager.giveItems(p.p, 0);
-			
+
 			gameTimer.removePlayer(p.p);
 			this.GamePlayers.remove(p);
 
@@ -431,13 +423,8 @@ public class GameRoomTeams {
 
 				p.p.removeMetadata("invencivel", RealSkywars.pl);
 
-				p.p.teleport(GameManager.lobby);
-
-				String tp = variables(Text.addColor(LanguageManager.getString(p, TS.LOBBY_TELEPORT, true)));
-				String lv = variables(Text.addColor(LanguageManager.getString(p, TS.MATCH_LEAVE, true)));
-
-				p.sendMessage(lv);
-				p.sendMessage(tp);
+				p.sendMessage(LanguageManager.getString(p, TS.MATCH_LEAVE, true));
+				PlayerManager.tpLobby(p);
 				p.room = null;
 				p.cageLoc = null;
 				PlayerManager.giveItems(p.p, 0);
@@ -609,14 +596,10 @@ public class GameRoomTeams {
 
 			p.p.setFoodLevel(20);
 
-			p.p.teleport(GameManager.lobby);
+			p.sendMessage(LanguageManager.getString(p, TS.MATCH_LEAVE, true));
+			PlayerManager.tpLobby(p);
 			PlayerManager.giveItems(p.p, 0);
 
-			String tp = variables(Text.addColor(LanguageManager.getString(p, TS.LOBBY_TELEPORT, true)));
-			String lv = variables(Text.addColor(LanguageManager.getString(p, TS.MATCH_LEAVE, true)));
-
-			p.sendMessage(Text.addColor(lv));
-			p.sendMessage(Text.addColor(tp));
 		}
 	}
 
@@ -638,5 +621,107 @@ public class GameRoomTeams {
 			alive = alive + t.members.size();
 		}
 		return alive;
+	}
+
+	//methods
+
+	public String getName() {
+		return this.Name;
+	}
+
+	public int getMaxPlayers() {
+		return this.maxPlayers;
+	}
+
+	public World getWorld() {
+		return this.worldMap;
+	}
+
+	public int getCurrentSpectators() {
+		return this.Spectators.size();
+	}
+
+
+	public Enum.GameState getState() {
+		return this.State;
+	}
+
+
+	public boolean isPlaceHolder() {
+		return this.placeholder;
+	}
+
+	public ArrayList<GamePlayer> getPlayerList() {
+		return this.GamePlayers;
+	}
+
+	public void setTierType(Enum.TierType b) {
+		this.tierType = b;
+	}
+
+
+	public ArrayList<GamePlayer> getVoters() {
+		return this.voters;
+	}
+
+
+	public ArrayList<Integer> getVoteList() {
+		return this.votes;
+	}
+
+	public boolean isSpectatorEnabled() {
+		return this.specEnabled;
+	}
+
+
+	public boolean isDragonEnabled() {
+		return this.dragonEnabled;
+	}
+
+
+	public Enum.TierType getTierType() {
+		return this.tierType;
+	}
+
+
+	public ArrayList<Calhau> getBlocksPlaced() {
+		return this.blockplace;
+	}
+
+
+	public ArrayList<Calhau> getBlocksDestroyed() {
+		return this.blockbreak;
+	}
+
+
+	public int getTimePassed() {
+		return this.timePassed;
+	}
+
+	public void setState(Enum.GameState w) {
+		this.State = w;
+	}
+
+
+	public void setSpectator(boolean b) {
+		this.specEnabled = b;
+	}
+
+
+	public void setDragon(boolean b) {
+		this.dragonEnabled = b;
+	}
+
+	public ArrayList<Location> getOpenChests() {
+		return this.openedChests;
+	}
+
+
+	public ArrayList<GamePlayer> getGamePlayers() {
+		return this.getGamePlayers();
+	}
+
+	public Enum.GameType getMode() {
+		return this.gameType;
 	}
 }

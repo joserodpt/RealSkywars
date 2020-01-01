@@ -11,324 +11,65 @@ import pt.josegamerpt.realskywars.player.GamePlayer;
 import pt.josegamerpt.realskywars.classes.Enum.GameType;
 import pt.josegamerpt.realskywars.classes.Enum.TierType;
 
-public class GameRoom {
+public interface GameRoom {
 
-	public GameRoomSolo gs;
-	public GameRoomTeams gt;
-	public Enum.GameType mode;
+	String getName();
 
-	int error = -16;
+	int getCurrentPlayers();
 
-	public GameRoom(GameRoomSolo g) {
-		this.gs = g;
-		mode = Enum.GameType.SOLO;
-	}
+	int getMaxPlayers();
 
-	public GameRoom(GameRoomTeams g) {
-		this.gt = g;
-		mode = Enum.GameType.TEAMS;
-	}
+	World getWorld();
 
-	public String getName() {
-		if (mode == Enum.GameType.SOLO) {
-			return gs.Name;
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.Name;
-		}
-		return "No Name";
-	}
+	void broadcastMessage(String s);
 
-	public int getCurrentPlayers() {
-		if (mode == GameType.SOLO) {
-			return gs.Players.size();
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.getCurrentPlayers();
-		}
-		return error;
-	}
+	void kickPlayers();
 
-	public int getMaxPlayers() {
-		if (mode == GameType.SOLO) {
-			return gs.maxPlayers;
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.maxPlayers;
-		}
-		return error;
-	}
+	int getCurrentSpectators();
 
-	public World getWorld() {
-		if (mode == GameType.SOLO) {
-			return gs.worldMap;
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.worldMap;
-		}
-		return null;
-	}
+	GameState getState();
 
-	public void broadcastMessage(String s) {
-		if (mode == GameType.SOLO) {
-			for (GamePlayer p : gs.GamePlayers) {
-				if (p.p != null) {
-					p.sendMessage(s);
-				}
-			}
-		}
-		if (mode == GameType.TEAMS) {
-			for (GamePlayer p : gt.GamePlayers) {
-				if (p.p != null) {
-					p.sendMessage(s);
-				}
-			}
-		}
-	}
+	boolean isPlaceHolder();
 
-	public void kickPlayers() {
-		if (mode == GameType.SOLO) {
-			gs.kickPlayers();
-		}
-		if (mode == GameType.TEAMS) {
-			gt.kickPlayers();
-		}
-	}
+	void forceStart();
 
-	public int getCurrentSpectators() {
-		if (mode == GameType.SOLO) {
-			return gs.Spectators.size();
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.Spectators.size();
-		}
-		return error;
-	}
+	void removePlayer(GamePlayer p);
 
-	public GameState getState() {
-		if (mode == GameType.SOLO) {
-			return gs.State;
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.State;
-		}
-		return null;
-	}
+	void setTierType(TierType b);
 
-	public boolean isPlaceHolder() {
-		if (mode == GameType.SOLO) {
-			return gs.placeholder;
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.placeholder;
-		}
-		return true;
-	}
+	ArrayList<GamePlayer> getVoters();
 
-	public void forceStart() {
-		if (mode == GameType.SOLO) {
-			gs.forceStart();
-		}
-		if (mode == GameType.TEAMS) {
-			gt.forceStart();
-			;
-		}
-	}
+	ArrayList<Integer> getVoteList();
 
-	public ArrayList<GamePlayer> getPlayerList() {
-		if (mode == GameType.SOLO) {
-			return gs.Players;
-		}
-		return null;
-	}
+	void addPlayer(GamePlayer gp);
 
-	public void removePlayer(GamePlayer p) {
-		if (mode == GameType.SOLO) {
-			gs.removePlayer(p);
-		}
-		if (mode == GameType.TEAMS) {
-			gt.removePlayer(p);
-		}
-	}
+	boolean isSpectatorEnabled();
 
-	public void setTierType(TierType b) {
-		if (mode == GameType.SOLO) {
-			gs.tierType = b;
-		}
-		if (mode == GameType.TEAMS) {
-			gt.tierType = b;
-		}
-	}
+	boolean isDragonEnabled();
 
-	public ArrayList<GamePlayer> getVoters() {
-		if (mode == GameType.SOLO) {
-			return gs.voters;
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.voters;
-		}
-		return null;
-	}
+	TierType getTierType();
 
-	public ArrayList<Integer> getVoteList() {
-		if (mode == GameType.SOLO) {
-			return gs.votes;
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.votes;
-		}
-		return null;
-	}
+	ArrayList<Calhau> getBlocksPlaced();
 
-	public void addPlayer(GamePlayer gp) {
-		if (mode == GameType.SOLO) {
-			gs.addPlayer(gp);
-		}
-		if (mode == GameType.TEAMS) {
-			gt.addPlayer(gp);
-		}
-	}
+	ArrayList<Calhau> getBlocksDestroyed();
 
-	public boolean isSpectatorEnabled() {
-		if (mode == GameType.SOLO) {
-			return gs.specEnabled;
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.specEnabled;
-		}
-		return false;
-	}
+	int getTimePassed();
 
-	public boolean isDragonEnabled() {
-		if (mode == GameType.SOLO) {
-			return gs.dragonEnabled;
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.dragonEnabled;
-		}
-		return false;
-	}
+	void resetArena();
 
-	public TierType getTierType() {
-		if (mode == GameType.SOLO) {
-			return gs.tierType;
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.tierType;
-		}
-		return null;
-	}
+	void setState(GameState w);
 
-	public ArrayList<Calhau> getBlocksPlaced() {
-		if (mode == GameType.SOLO) {
-			return gs.blockplace;
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.blockplace;
-		}
-		return null;
-	}
-	
-	public ArrayList<Calhau> getBlocksDestroyed() {
-		if (mode == GameType.SOLO) {
-			return gs.blockbreak;
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.blockbreak;
-		}
-		return null;
-	}
+	void setSpectator(boolean b);
 
-	public int getTimePassed() {
-		if (mode == GameType.SOLO) {
-			return gs.timePassed;
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.timePassed;
-		}
-		return error;
-	}
+	void setDragon(boolean b);
 
-	public void resetArena() {
-		if (mode == GameType.SOLO) {
-			gs.resetArena();
-		}
-		if (mode == GameType.TEAMS) {
-			gt.resetArena();
-		}
-	}
+	void spectate(GamePlayer p);
 
-	public void setState(GameState w) {
-		if (mode == GameType.SOLO) {
-			gs.State = w;
-		}
-		if (mode == GameType.TEAMS) {
-			gt.State = w;
-		}
-	}
+	ArrayList<Location> getOpenChests();
 
-	public void setSpectator(boolean b) {
-		if (mode == GameType.SOLO) {
-			gs.specEnabled = b;
-		}
-		if (mode == GameType.TEAMS) {
-			gt.specEnabled = b;
-		}
-	}
+	ArrayList<GamePlayer> getGamePlayers();
 
-	public void setDragon(boolean b) {
-		if (mode == GameType.SOLO) {
-			gs.dragonEnabled = b;
-		}
-		if (mode == GameType.TEAMS) {
-			gt.dragonEnabled = b;
-		}
-	}
+	void checkWin();
 
-	public void spectate(GamePlayer p) {
-		if (mode == GameType.SOLO) {
-			gs.spectate(p);
-		}
-		if (mode == GameType.TEAMS) {
-			gt.spectate(p);
-		}
-	}
-
-	public ArrayList<Location> getOpenChests() {
-		if (mode == GameType.SOLO) {
-			return gs.openedChests;
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.openedChests;
-		}
-		return null;
-	}
-
-	public ArrayList<GamePlayer> getGamePlayers() {
-		if (mode == GameType.SOLO) {
-			return gs.GamePlayers;
-		}
-		if (mode == GameType.TEAMS) {
-			return gt.GamePlayers;
-		}
-		return null;
-	}
-
-	public void checkWin() {
-		if (mode == GameType.SOLO) {
-			gs.checkWin();
-		}
-		if (mode == GameType.TEAMS) {
-			gt.checkWin();
-		}
-	}
-
-	public boolean getType() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public GameType getMode() {
-		return mode;
-	}
+	GameType getMode();
 }
