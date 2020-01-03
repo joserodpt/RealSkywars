@@ -2,6 +2,7 @@ package pt.josegamerpt.realskywars;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -15,16 +16,7 @@ import pt.josegamerpt.realskywars.configuration.Languages;
 import pt.josegamerpt.realskywars.configuration.Maps;
 import pt.josegamerpt.realskywars.configuration.Players;
 import pt.josegamerpt.realskywars.configuration.Shops;
-import pt.josegamerpt.realskywars.gui.ChestTierMenu;
-import pt.josegamerpt.realskywars.gui.ChestTierViewer;
-import pt.josegamerpt.realskywars.gui.ChestTierVote;
-import pt.josegamerpt.realskywars.gui.KitSettings;
-import pt.josegamerpt.realskywars.gui.MapSettings;
-import pt.josegamerpt.realskywars.gui.MapsViewer;
-import pt.josegamerpt.realskywars.gui.PlayerGUI;
-import pt.josegamerpt.realskywars.gui.ProfileContent;
-import pt.josegamerpt.realskywars.gui.RoomSettings;
-import pt.josegamerpt.realskywars.gui.ShopViewer;
+import pt.josegamerpt.realskywars.gui.*;
 import pt.josegamerpt.realskywars.managers.*;
 import pt.josegamerpt.realskywars.player.BlockBreak;
 import pt.josegamerpt.realskywars.player.BlockPlace;
@@ -32,6 +24,9 @@ import pt.josegamerpt.realskywars.player.EntityEvents;
 import pt.josegamerpt.realskywars.player.PlayerEvents;
 import pt.josegamerpt.realskywars.player.PlayerInteractions;
 import pt.josegamerpt.realskywars.utils.GUIBuilder;
+import pt.josegamerpt.realskywars.utils.Holograms;
+import pt.josegamerpt.realskywars.utils.MaterialPicker;
+import pt.josegamerpt.realskywars.utils.PlayerInput;
 
 public class RealSkywars extends JavaPlugin implements Listener {
 
@@ -81,9 +76,12 @@ public class RealSkywars extends JavaPlugin implements Listener {
         pm.registerEvents(ChestTierViewer.getListener(), this);
         pm.registerEvents(ChestTierVote.getListener(), this);
         pm.registerEvents(ShopViewer.getListener(), this);
+        pm.registerEvents(TrailEditor.getListener(), this);
         pm.registerEvents(ProfileContent.getListener(), this);
         pm.registerEvents(KitSettings.getListener(), this);
         pm.registerEvents(MapsViewer.getListener(), this);
+        pm.registerEvents(PlayerInput.getListener(), this);
+        pm.registerEvents(MaterialPicker.getListener(), this);
 
         print("Setting up commands.");
         getCommand("realskywars").setExecutor(new RSWcmd());
@@ -116,6 +114,7 @@ public class RealSkywars extends JavaPlugin implements Listener {
 
     public void onDisable() {
         GameManager.endGames();
+        Holograms.removeAll();
     }
 
     public static void print(String s)

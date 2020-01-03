@@ -1,7 +1,7 @@
 name: RealSkywars
 version: ${project.version}
 main: pt.josegamerpt.realskywars.RealSkywars
-api-version: 1.14
+api-version: 1.13
 depend: [ProtocolLib]
 softdepend: [Multiworld, Multiverse-Core]
 authors: [JoseGamer_PT]

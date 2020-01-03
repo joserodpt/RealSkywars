@@ -19,7 +19,7 @@ public class ShopManager {
         ArrayList<DisplayItem> items = new ArrayList<>();
         switch (t) {
             case CAGEBLOCK:
-                int i = 1;
+                int i = 0;
                 for (String sa : Shops.file().getStringList("Main-Shop.Cage-Blocks")) {
                     String[] parse = sa.split(">");
 
@@ -57,7 +57,7 @@ public class ShopManager {
                 }
                 break;
             case BOWPARTICLE:
-                int i2 = 1;
+                int i2 = 0;
                 for (String sa : Shops.file().getStringList("Main-Shop.Bow-Particles")) {
                     String[] parse = sa.split(">");
 

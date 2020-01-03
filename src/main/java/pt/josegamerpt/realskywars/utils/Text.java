@@ -19,12 +19,12 @@ public class Text {
 		Text.texto = "";
 	}
 
-	public static String addColor(final String string) {
+	public static String addColor(String string) {
 		return ChatColor.translateAlternateColorCodes('&', string);
 	}
 
-	public static String rainbow(final String original) {
-		final char[] chars = { 'c', '6', 'e', 'a', 'b', '3', 'd' };
+	public static String rainbow(String original) {
+		final char[] chars = {'c', '6', 'e', 'a', 'b', '3', 'd'};
 		int index = 0;
 		String returnValue = "";
 		char[] charArray;

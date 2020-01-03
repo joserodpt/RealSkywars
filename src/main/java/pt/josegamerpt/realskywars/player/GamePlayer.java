@@ -9,12 +9,14 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
+import pt.josegamerpt.realskywars.Debugger;
 import pt.josegamerpt.realskywars.classes.*;
 import pt.josegamerpt.realskywars.classes.Enum.InteractionState;
 import pt.josegamerpt.realskywars.classes.Enum.PlayerState;
 import pt.josegamerpt.realskywars.classes.Enum.Selection;
 import pt.josegamerpt.realskywars.classes.Enum.Selections;
 import pt.josegamerpt.realskywars.configuration.Config;
+import pt.josegamerpt.realskywars.effects.BowTrail;
 import pt.josegamerpt.realskywars.managers.LanguageManager;
 import pt.josegamerpt.realskywars.managers.PlayerManager;
 import pt.josegamerpt.realskywars.utils.Text;
@@ -141,5 +143,19 @@ public class GamePlayer {
 		for (Trail t : trails) {
 			t.cancelTask();
 		}
+	}
+
+	public boolean isInGame() {
+		return this.room != null;
+	}
+
+	public void addTrail(Trail t) {
+		this.trails.add(t);
+		Debugger.print(trails + "");
+	}
+
+	public void removeTrail(Trail t) {
+		this.trails.remove(t);
+		Debugger.print(trails + "");
 	}
 }

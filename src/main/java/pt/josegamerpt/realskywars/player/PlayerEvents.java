@@ -122,7 +122,9 @@ public class PlayerEvents implements Listener {
 			Player p = (Player) e.getEntity().getShooter();
 			GamePlayer gp = PlayerManager.getPlayer(p);
 			if (gp.bowParticle != null) {
-				gp.trails.add(new BowTrail(gp.bowParticle, e.getEntity()));
+				if (gp.isInGame()) {
+					gp.addTrail(new BowTrail(gp.bowParticle, e.getEntity(), gp));
+				}
 			}
 		}
 	}

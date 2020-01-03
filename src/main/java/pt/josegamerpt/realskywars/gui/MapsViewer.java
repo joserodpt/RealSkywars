@@ -129,14 +129,15 @@ public class MapsViewer {
 				case MAPV_SPECTATE:
 					PlayerManager.setSelection(gp, Selection.MAPVIEWER, Selections.MAPV_ALL);
 					break;
-				default:
-					PlayerManager.setSelection(gp, Selection.MAPVIEWER, Selections.MAPV_ALL);
-					break;
+					default:
+						PlayerManager.setSelection(gp, Selection.MAPVIEWER, Selections.MAPV_ALL);
+						break;
 				}
 
 				gp.p.closeInventory();
 				MapsViewer v = new MapsViewer(gp, PlayerManager.getSelection(gp, Selection.MAPVIEWER), "Maps");
 				v.openInventory(gp);
+				gp.p.playSound(gp.p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 50, 50);
 			}
 
 			private void backPage(MapsViewer asd) {

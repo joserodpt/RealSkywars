@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Cat;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import org.bukkit.event.inventory.InventoryType;
 import pt.josegamerpt.realskywars.classes.Enum;
 import pt.josegamerpt.realskywars.managers.LanguageManager;
 import pt.josegamerpt.realskywars.managers.PlayerManager;
@@ -86,6 +86,40 @@ public class GUIManager {
 				i++;
 			}
 		}
+		inventory.openInventory(p.p);
+	}
+
+	public static void openTrailEditor(GamePlayer p) {
+		GUIBuilder inventory = new GUIBuilder("&9Trail Editor", p.p.getUniqueId(),
+				Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""), InventoryType.HOPPER);
+
+		inventory.addItem(new ClickRunnable() {
+			public void run(InventoryClickEvent e) {
+				p.p.closeInventory();
+				TrailEditor v = new TrailEditor(p.p, Categories.BOWPARTICLE, "&9Editing &bBow Particles");
+				v.openInventory(p.p);
+			}
+		}, Itens.createItemLore(Material.BOW, 1, "&9Bow &bParticles",
+				Arrays.asList("&fClick here to edit this trail.")), 0);
+
+		inventory.addItem(new ClickRunnable() {
+			public void run(InventoryClickEvent e) {
+				p.p.closeInventory();
+				TrailEditor v = new TrailEditor(p.p, Categories.WINPARTICLE, "&9Editing &bWin Particles");
+				v.openInventory(p.p);
+			}
+		}, Itens.createItemLore(Material.GLOWSTONE_DUST, 1, "&9Win Particles",
+				Collections.singletonList("&fClick here to edit this trail.")), 2);
+
+		inventory.addItem(new ClickRunnable() {
+			public void run(InventoryClickEvent e) {
+				p.p.closeInventory();
+				TrailEditor v = new TrailEditor(p.p, Categories.BOWPARTICLE, "&9Editing &bWin Blocks");
+				v.openInventory(p.p);
+			}
+		}, Itens.createItemLore(Material.FIREWORK_ROCKET, 1, "&9Win &bBlocks",
+				Collections.singletonList("&fClick here to edit this trail.")), 4);
+
 		inventory.openInventory(p.p);
 	}
 

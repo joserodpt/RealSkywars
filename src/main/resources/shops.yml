@@ -1,121 +1,102 @@
 Main-Shop:
- Cage-Blocks:
-  - "SPAWNER>50>&5Spawner>RealSkywars.Spawner"
-  - "DIAMOND_BLOCK>20>&bDiamond Cage>RealSkywars.Cage"
-  - "COAL_BLOCK>30>&bCoal Cage>RealSkywars.Cage"
-  - "STONE>20>&bSTONE>RealSkywars.Cage"
-  - "PODZOL>20>&bPODZOL>RealSkywars.Cage"
-  - "GLASS>20>&bGLASS>RealSkywars.Cage"
-  - "WHITE_STAINED_GLASS>20>&bWHITE_STAINED_GLASS>RealSkywars.Cage"
-  - "ORANGE_STAINED_GLASS>20>&bORANGE_STAINED_GLASS>RealSkywars.Cage"
-  - "MAGENTA_STAINED_GLASS>20>&bMAGENTA_STAINED_GLASS>RealSkywars.Cage"
-  - "LIGHT_BLUE_STAINED_GLASS>20>&bLIGHT_BLUE_STAINED_GLASS>RealSkywars.Cage"
-  - "YELLOW_STAINED_GLASS>20>&bYELLOW_STAINED_GLASS>RealSkywars.Cage"
-  - "LIME_STAINED_GLASS>20>&bLIME_STAINED_GLASS>RealSkywars.Cage"
-  - "PINK_STAINED_GLASS>20>&bPINK_STAINED_GLASS>RealSkywars.Cage"
-  - "GRAY_STAINED_GLASS>20>&bGRAY_STAINED_GLASS>RealSkywars.Cage"
-  - "LIGHT_GRAY_STAINED_GLASS>20>&bLIGHT_GRAY_STAINED_GLASS>RealSkywars.Cage"
-  - "CYAN_STAINED_GLASS>20>&bCYAN_STAINED_GLASS>RealSkywars.Cage"
-  - "PURPLE_STAINED_GLASS>20>&bPURPLE_STAINED_GLASS>RealSkywars.Cage"
-  - "BLUE_STAINED_GLASS>20>&bBLUE_STAINED_GLASS>RealSkywars.Cage"
-  - "BROWN_STAINED_GLASS>20>&bBROWN_STAINED_GLASS>RealSkywars.Cage"
-  - "GREEN_STAINED_GLASS>20>&bGREEN_STAINED_GLASS>RealSkywars.Cage"
-  - "RED_STAINED_GLASS>20>&bRED_STAINED_GLASS>RealSkywars.Cage"
-  - "BLACK_STAINED_GLASS>20>&bBLACK_STAINED_GLASS>RealSkywars.Cage"
-  - "OAK_LOG>20>&bOAK_LOG>RealSkywars.Cage"
-  - "SPRUCE_LOG>20>&bSPRUCE_LOG>RealSkywars.Cage"
-  - "BIRCH_LOG>20>&bBIRCH_LOG>RealSkywars.Cage"
-  - "JUNGLE_LOG>20>&bJUNGLE_LOG>RealSkywars.Cage"
-  - "ACACIA_LOG>20>&bACACIA_LOG>RealSkywars.Cage"
-  - "DARK_OAK_LOG>20>&bDARK_OAK_LOG>RealSkywars.Cage"
-  - "STRIPPED_OAK_WOOD>20>&bSTRIPPED_OAK_WOOD>RealSkywars.Cage"
-  - "STRIPPED_OAK_LOG>20>&bSTRIPPED_OAK_LOG>RealSkywars.Cage"
-  - "ACACIA_WOOD>20>&bACACIA_WOOD>RealSkywars.Cage"
-  - "BIRCH_WOOD>20>&bBIRCH_WOOD>RealSkywars.Cage"
-  - "GLASS>20>&bGLASS>RealSkywars.Cage"
-  - "LAPIS_BLOCK>20>&bLAPIS_BLOCK>RealSkywars.Cage"
-  - "CHISELED_SANDSTONE>20>&bCHISELED_SANDSTONE>RealSkywars.Cage"
-  - "IRON_BLOCK>20>&bIRON_BLOCK>RealSkywars.Cage"
-  - "SMOOTH_STONE>20>&bSMOOTH_STONE>RealSkywars.Cage"
-  - "BOOKSHELF>20>&bBOOKSHELF>RealSkywars.Cage"
-  - "DIAMOND_BLOCK>20>&bDIAMOND_BLOCK>RealSkywars.Cage"
-  - "DIAMOND_ORE>20>&bDIAMOND_ORE>RealSkywars.Cage"
-  - "REDSTONE_ORE>20>&bREDSTONE_ORE>RealSkywars.Cage"
-  - "PURPUR_BLOCK>20>&bPURPUR_BLOCK>RealSkywars.Cage"
-  - "OBSIDIAN>20>&bOBSIDIAN>RealSkywars.Cage"
-  - "GLOWSTONE>20>&bGLOWSTONE>RealSkywars.Cage"
-  - "JACK_O_LANTERN>20>&bJACK_O_LANTERN>RealSkywars.Cage"
-  - "PUMPKIN>20>&bPUMPKIN>RealSkywars.Cage"
-  - "EMERALD_BLOCK>20>&bEMERALD_BLOCK>RealSkywars.Cage"
-  - "EMERALD_ORE>20>&bEMERALD_ORE>RealSkywars.Cage"
-  - "SEA_LANTERN>20>&bSEA_LANTERN>RealSkywars.Cage"
-  - "PRISMARINE_BRICKS>20>&bPRISMARINE_BRICKS>RealSkywars.Cage"
-  - "BLUE_ICE>20>&bBLUE_ICE>RealSkywars.Cage"
-  - "RED_MUSHROOM_BLOCK>20>&bRED_MUSHROOM_BLOCK>RealSkywars.Cage"
-  - "INFESTED_STONE_BRICKS>20>&bINFESTED_STONE_BRICKS>RealSkywars.Cage"
-  - "INFESTED_MOSSY_STONE_BRICKS>20>&bINFESTED_MOSSY_STONE_BRICKS>RealSkywars.Cage"
-  - "INFESTED_CRACKED_STONE_BRICKS>20>&bINFESTED_CRACKED_STONE_BRICKS>RealSkywars.Cage"
-  - "REDSTONE_BLOCK>20>&bREDSTONE_BLOCK>RealSkywars.Cage"
-  - "TNT>20>&bTNT Block>RealSkywars.Cage"
- Bow-Particles:
-   - "EXPLOSION_NORMAL>10>&aEXPLOSION_NORMAL>RealSkywars.Particle>EMERALD_BLOCK"
-   - "EXPLOSION_LARGE>10>&aEXPLOSION_LARGE>RealSkywars.Particle>EMERALD_BLOCK"
-   - "EXPLOSION_HUGE>10>&aEXPLOSION_HUGE>RealSkywars.Particle>EMERALD_BLOCK"
-   - "FIREWORKS_SPARK>10>&aFIREWORKS_SPARK>RealSkywars.Particle>EMERALD_BLOCK"
-   - "WATER_BUBBLE>10>&aWATER_BUBBLE>RealSkywars.Particle>EMERALD_BLOCK"
-   - "WATER_SPLASH>10>&aWATER_SPLASH>RealSkywars.Particle>EMERALD_BLOCK"
-   - "WATER_WAKE>10>&aWATER_WAKE>RealSkywars.Particle>EMERALD_BLOCK"
-   - "SUSPENDED>10>&aSUSPENDED>RealSkywars.Particle>EMERALD_BLOCK"
-   - "SUSPENDED_DEPTH>10>&aSUSPENDED_DEPTH>RealSkywars.Particle>EMERALD_BLOCK"
-   - "CRIT>10>&aCRIT>RealSkywars.Particle>EMERALD_BLOCK"
-   - "CRIT_MAGIC>10>&aCRIT_MAGIC>RealSkywars.Particle>EMERALD_BLOCK"
-   - "SMOKE_NORMAL>10>&aSMOKE_NORMAL>RealSkywars.Particle>EMERALD_BLOCK"
-   - "SMOKE_LARGE>10>&aSMOKE_LARGE>RealSkywars.Particle>EMERALD_BLOCK"
-   - "SPELL>10>&aSPELL>RealSkywars.Particle>EMERALD_BLOCK"
-   - "SPELL_INSTANT>10>&aSPELL_INSTANT>RealSkywars.Particle>EMERALD_BLOCK"
-   - "SPELL_MOB>10>&aSPELL_MOB>RealSkywars.Particle>EMERALD_BLOCK"
-   - "SPELL_MOB_AMBIENT>10>&aSPELL_MOB_AMBIENT>RealSkywars.Particle>EMERALD_BLOCK"
-   - "SPELL_WITCH>10>&aSPELL_WITCH>RealSkywars.Particle>EMERALD_BLOCK"
-   - "DRIP_WATER>10>&aDRIP_WATER>RealSkywars.Particle>EMERALD_BLOCK"
-   - "DRIP_LAVA>10>&aDRIP_LAVA>RealSkywars.Particle>EMERALD_BLOCK"
-   - "VILLAGER_ANGRY>10>&aVILLAGER_ANGRY>RealSkywars.Particle>EMERALD_BLOCK"
-   - "VILLAGER_HAPPY>10>&aVILLAGER_HAPPY>RealSkywars.Particle>EMERALD_BLOCK"
-   - "TOWN_AURA>10>&aTOWN_AURA>RealSkywars.Particle>EMERALD_BLOCK"
-   - "NOTE>10>&aNOTE>RealSkywars.Particle>EMERALD_BLOCK"
-   - "PORTAL>10>&aPORTAL>RealSkywars.Particle>EMERALD_BLOCK"
-   - "ENCHANTMENT_TABLE>10>&aENCHANTMENT_TABLE>RealSkywars.Particle>EMERALD_BLOCK"
-   - "FLAME>10>&aFLAME>RealSkywars.Particle>EMERALD_BLOCK"
-   - "LAVA>10>&aLAVA>RealSkywars.Particle>EMERALD_BLOCK"
-   - "CLOUD>10>&aCLOUD>RealSkywars.Particle>EMERALD_BLOCK"
-   - "REDSTONE>10>&aREDSTONE>RealSkywars.Particle>EMERALD_BLOCK"
-   - "SNOWBALL>10>&aSNOWBALL>RealSkywars.Particle>EMERALD_BLOCK"
-   - "SNOW_SHOVEL>10>&aSNOW_SHOVEL>RealSkywars.Particle>EMERALD_BLOCK"
-   - "SLIME>10>&aSLIME>RealSkywars.Particle>EMERALD_BLOCK"
-   - "HEART>10>&aHEART>RealSkywars.Particle>EMERALD_BLOCK"
-   - "BARRIER>10>&aBARRIER>RealSkywars.Particle>EMERALD_BLOCK"
-   - "ITEM_CRACK>10>&aITEM_CRACK>RealSkywars.Particle>EMERALD_BLOCK"
-   - "BLOCK_CRACK>10>&aBLOCK_CRACK>RealSkywars.Particle>EMERALD_BLOCK"
-   - "BLOCK_DUST>10>&aBLOCK_DUST>RealSkywars.Particle>EMERALD_BLOCK"
-   - "WATER_DROP>10>&aWATER_DROP>RealSkywars.Particle>EMERALD_BLOCK"
-   - "MOB_APPEARANCE>10>&aMOB_APPEARANCE>RealSkywars.Particle>EMERALD_BLOCK"
-   - "DRAGON_BREATH>10>&aDRAGON_BREATH>RealSkywars.Particle>EMERALD_BLOCK"
-   - "END_ROD>10>&aEND_ROD>RealSkywars.Particle>EMERALD_BLOCK"
-   - "DAMAGE_INDICATOR>10>&aDAMAGE_INDICATOR>RealSkywars.Particle>EMERALD_BLOCK"
-   - "SWEEP_ATTACK>10>&aSWEEP_ATTACK>RealSkywars.Particle>EMERALD_BLOCK"
-   - "FALLING_DUST>10>&aFALLING_DUST>RealSkywars.Particle>EMERALD_BLOCK"
-   - "TOTEM>10>&aTOTEM>RealSkywars.Particle>EMERALD_BLOCK"
-   - "SPIT>10>&aSPIT>RealSkywars.Particle>EMERALD_BLOCK"
-   - "SQUID_INK>10>&aSQUID_INK>RealSkywars.Particle>EMERALD_BLOCK"
-   - "BUBBLE_POP>10>&aBUBBLE_POP>RealSkywars.Particle>EMERALD_BLOCK"
-   - "CURRENT_DOWN>10>&aCURRENT_DOWN>RealSkywars.Particle>EMERALD_BLOCK"
-   - "BUBBLE_COLUMN_UP>10>&aBUBBLE_COLUMN_UP>RealSkywars.Particle>EMERALD_BLOCK"
-   - "NAUTILUS>10>&aNAUTILUS>RealSkywars.Particle>EMERALD_BLOCK"
-   - "DOLPHIN>10>&aDOLPHIN>RealSkywars.Particle>EMERALD_BLOCK"
-   - "SNEEZE>10>&aSNEEZE>RealSkywars.Particle>EMERALD_BLOCK"
-   - "CAMPFIRE_COSY_SMOKE>10>&aCAMPFIRE_COSY_SMOKE>RealSkywars.Particle>EMERALD_BLOCK"
-   - "CAMPFIRE_SIGNAL_SMOKE>10>&aCAMPFIRE_SIGNAL_SMOKE>RealSkywars.Particle>EMERALD_BLOCK"
-   - "COMPOSTER>10>&aCOMPOSTER>RealSkywars.Particle>EMERALD_BLOCK"
-   - "FLASH>10>&aFLASH>RealSkywars.Particle>EMERALD_BLOCK"
-   - "FALLING_LAVA>10>&aFALLING_LAVA>RealSkywars.Particle>EMERALD_BLOCK"
-   - "LANDING_LAVA>10>&aLANDING_LAVA>RealSkywars.Particle>EMERALD_BLOCK"
-   - "FALLING_WATER>10>&aFALLING_WATER>RealSkywars.Particle>EMERALD_BLOCK"
+  Cage-Blocks:
+    - SPAWNER>50>&5Spawner>RealSkywars.Spawner
+    - DIAMOND_BLOCK>20>&bDiamond Cage>RealSkywars.Cage
+    - COAL_BLOCK>30>&bCoal Cage>RealSkywars.Cage
+    - STONE>20>&bSTONE>RealSkywars.Cage
+    - PODZOL>20>&bPODZOL>RealSkywars.Cage
+    - GLASS>20>&bGLASS>RealSkywars.Cage
+    - WHITE_STAINED_GLASS>20>&bWHITE_STAINED_GLASS>RealSkywars.Cage
+    - ORANGE_STAINED_GLASS>20>&bORANGE_STAINED_GLASS>RealSkywars.Cage
+    - MAGENTA_STAINED_GLASS>20>&bMAGENTA_STAINED_GLASS>RealSkywars.Cage
+    - LIGHT_BLUE_STAINED_GLASS>20>&bLIGHT_BLUE_STAINED_GLASS>RealSkywars.Cage
+    - YELLOW_STAINED_GLASS>20>&bYELLOW_STAINED_GLASS>RealSkywars.Cage
+    - LIME_STAINED_GLASS>20>&bLIME_STAINED_GLASS>RealSkywars.Cage
+    - PINK_STAINED_GLASS>20>&bPINK_STAINED_GLASS>RealSkywars.Cage
+    - GRAY_STAINED_GLASS>20>&bGRAY_STAINED_GLASS>RealSkywars.Cage
+    - LIGHT_GRAY_STAINED_GLASS>20>&bLIGHT_GRAY_STAINED_GLASS>RealSkywars.Cage
+    - CYAN_STAINED_GLASS>20>&bCYAN_STAINED_GLASS>RealSkywars.Cage
+    - PURPLE_STAINED_GLASS>20>&bPURPLE_STAINED_GLASS>RealSkywars.Cage
+    - BLUE_STAINED_GLASS>20>&bBLUE_STAINED_GLASS>RealSkywars.Cage
+    - BROWN_STAINED_GLASS>20>&bBROWN_STAINED_GLASS>RealSkywars.Cage
+    - GREEN_STAINED_GLASS>20>&bGREEN_STAINED_GLASS>RealSkywars.Cage
+    - RED_STAINED_GLASS>20>&bRED_STAINED_GLASS>RealSkywars.Cage
+    - BLACK_STAINED_GLASS>20>&bBLACK_STAINED_GLASS>RealSkywars.Cage
+    - OAK_LOG>20>&bOAK_LOG>RealSkywars.Cage
+    - SPRUCE_LOG>20>&bSPRUCE_LOG>RealSkywars.Cage
+    - BIRCH_LOG>20>&bBIRCH_LOG>RealSkywars.Cage
+    - JUNGLE_LOG>20>&bJUNGLE_LOG>RealSkywars.Cage
+    - ACACIA_LOG>20>&bACACIA_LOG>RealSkywars.Cage
+    - DARK_OAK_LOG>20>&bDARK_OAK_LOG>RealSkywars.Cage
+    - STRIPPED_OAK_WOOD>20>&bSTRIPPED_OAK_WOOD>RealSkywars.Cage
+    - STRIPPED_OAK_LOG>20>&bSTRIPPED_OAK_LOG>RealSkywars.Cage
+    - ACACIA_WOOD>20>&bACACIA_WOOD>RealSkywars.Cage
+    - BIRCH_WOOD>20>&bBIRCH_WOOD>RealSkywars.Cage
+    - GLASS>20>&bGLASS>RealSkywars.Cage
+    - LAPIS_BLOCK>20>&bLAPIS_BLOCK>RealSkywars.Cage
+    - CHISELED_SANDSTONE>20>&bCHISELED_SANDSTONE>RealSkywars.Cage
+    - IRON_BLOCK>20>&bIRON_BLOCK>RealSkywars.Cage
+    - SMOOTH_STONE>20>&bSMOOTH_STONE>RealSkywars.Cage
+    - BOOKSHELF>20>&bBOOKSHELF>RealSkywars.Cage
+    - DIAMOND_BLOCK>20>&bDIAMOND_BLOCK>RealSkywars.Cage
+    - DIAMOND_ORE>20>&bDIAMOND_ORE>RealSkywars.Cage
+    - REDSTONE_ORE>20>&bREDSTONE_ORE>RealSkywars.Cage
+    - PURPUR_BLOCK>20>&bPURPUR_BLOCK>RealSkywars.Cage
+    - OBSIDIAN>20>&bOBSIDIAN>RealSkywars.Cage
+    - GLOWSTONE>20>&bGLOWSTONE>RealSkywars.Cage
+    - JACK_O_LANTERN>20>&bJACK_O_LANTERN>RealSkywars.Cage
+    - PUMPKIN>20>&bPUMPKIN>RealSkywars.Cage
+    - EMERALD_BLOCK>20>&bEMERALD_BLOCK>RealSkywars.Cage
+    - EMERALD_ORE>20>&bEMERALD_ORE>RealSkywars.Cage
+    - SEA_LANTERN>20>&bSEA_LANTERN>RealSkywars.Cage
+    - PRISMARINE_BRICKS>20>&bPRISMARINE_BRICKS>RealSkywars.Cage
+    - BLUE_ICE>20>&bBLUE_ICE>RealSkywars.Cage
+    - RED_MUSHROOM_BLOCK>20>&bRED_MUSHROOM_BLOCK>RealSkywars.Cage
+    - INFESTED_STONE_BRICKS>20>&bINFESTED_STONE_BRICKS>RealSkywars.Cage
+    - INFESTED_MOSSY_STONE_BRICKS>20>&bINFESTED_MOSSY_STONE_BRICKS>RealSkywars.Cage
+    - INFESTED_CRACKED_STONE_BRICKS>20>&bINFESTED_CRACKED_STONE_BRICKS>RealSkywars.Cage
+    - REDSTONE_BLOCK>20>&bREDSTONE_BLOCK>RealSkywars.Cage
+    - TNT>20>&bTNT Block>RealSkywars.Cage
+  Bow-Particles:
+    - EXPLOSION_NORMAL>10>§cExplosion (Normal)>RealSkywars.Particle>GUNPOWDER
+    - EXPLOSION_LARGE>10>§cExplosion §4(Large)>RealSkywars.Particle>TNT
+    - EXPLOSION_HUGE>10>§cExplosion §4(§cHuge§4)>RealSkywars.Particle>CREEPER_HEAD
+    - FIREWORKS_SPARK>10>§aFirework Spark>RealSkywars.Particle>FIREWORK_ROCKET
+    - WATER_BUBBLE>10>§9Water §bBubble>RealSkywars.Particle>WATER_BUCKET
+    - WATER_SPLASH>10>§9Water §bSplash>RealSkywars.Particle>WATER_BUCKET
+    - WATER_WAKE>10>§9Water §bWake>RealSkywars.Particle>WATER_BUCKET
+    - CRIT>10>§aCrit>RealSkywars.Particle>WOODEN_SWORD
+    - CRIT_MAGIC>10>§aCrit §5Magic>RealSkywars.Particle>DRAGON_BREATH
+    - SMOKE_NORMAL>10>§7Smoke §fNormal>RealSkywars.Particle>CAMPFIRE
+    - SMOKE_LARGE>10>§7Smoke §8Large>RealSkywars.Particle>CAMPFIRE
+    - SPELL>10>§aSpell>RealSkywars.Particle>POTION
+    - SPELL_INSTANT>10>§aSpell §2Instant>RealSkywars.Particle>SPLASH_POTION
+    - SPELL_MOB>10>§aSpell §3Mob>RealSkywars.Particle>ENCHANTED_BOOK
+    - SPELL_WITCH>10>§aSpell §5Witch>RealSkywars.Particle>END_CRYSTAL
+    - DRIP_WATER>10>§9Drip §bWater>RealSkywars.Particle>WATER_BUCKET
+    - DRIP_LAVA>10>§9Drip §cLava>RealSkywars.Particle>LAVA_BUCKET
+    - VILLAGER_ANGRY>10>§aVillager §4Angry>RealSkywars.Particle>VILLAGER_SPAWN_EGG
+    - VILLAGER_HAPPY>10>§aVillager §2Happy>RealSkywars.Particle>EMERALD
+    - NOTE>10>§3Note>RealSkywars.Particle>NOTE_BLOCK
+    - PORTAL>10>§5Portal>RealSkywars.Particle>OBSIDIAN
+    - ENCHANTMENT_TABLE>10>§aEnchantment Table>RealSkywars.Particle>ENCHANTING_TABLE
+    - FLAME>10>§cFlame>RealSkywars.Particle>FLINT_AND_STEEL
+    - LAVA>10>§4Lava>RealSkywars.Particle>LAVA_BUCKET
+    - CLOUD>10>§fCloud>RealSkywars.Particle>WHITE_DYE
+    - SNOWBALL>10>§9Snowball>RealSkywars.Particle>SNOWBALL
+    - SLIME>10>§aSlime>RealSkywars.Particle>SLIME_BALL
+    - HEART>10>§cHeart>RealSkywars.Particle>RED_DYE
+    - BARRIER>10>§4Barrier>RealSkywars.Particle>BARRIER
+    - DRAGON_BREATH>10>§5Dragon §dBreath>RealSkywars.Particle>DRAGON_HEAD
+    - END_ROD>10>§dEnd §bRod>RealSkywars.Particle>END_ROD
+    - DAMAGE_INDICATOR>10>§4Damage §cIndicator>RealSkywars.Particle>IRON_SWORD
+    - SWEEP_ATTACK>10>§7Sweep §cAttack>RealSkywars.Particle>DIAMOND_SWORD
+    - TOTEM>10>§eTotem>RealSkywars.Particle>TOTEM_OF_UNDYING
+    - SPIT>10>§fSpit>RealSkywars.Particle>BONE_MEAL
+    - SQUID_INK>10>§7Squid §8Ink>RealSkywars.Particle>INK_SAC
+    - NAUTILUS>10>§1Nautilus>RealSkywars.Particle>ENDER_PEARL
+    - SNEEZE>10>§aSneeze>RealSkywars.Particle>BAMBOO
+    - CAMPFIRE_COSY_SMOKE>10>§6Campfire §7Smoke>RealSkywars.Particle>CAMPFIRE
+    - COMPOSTER>10>§9Composter §a(Green Particle)>RealSkywars.Particle>COMPOSTER
+    - FLASH>30>§f§lFLASH>RealSkywars.Particle>NETHER_STAR
+    - FALLING_WATER>10>§9Falling §bWater>RealSkywars.Particle>WATER_BUCKET

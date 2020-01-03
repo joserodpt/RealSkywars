@@ -378,7 +378,7 @@ public class GameRoomSolo implements GameRoom {
 	public void removePlayer(GamePlayer p) {
 		String lv = variables(Text.addColor(LanguageManager.getString(p, TS.MATCH_LEAVE, true)));
 
-		GamePlayers.remove(p);
+		Players.remove(p);
 
 		if (p.state == PlayerState.EXTERNAL_SPECTATOR) {
 

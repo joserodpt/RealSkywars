@@ -8,15 +8,18 @@ import org.bukkit.scheduler.BukkitTask;
 import pt.josegamerpt.realskywars.RealSkywars;
 import pt.josegamerpt.realskywars.classes.Enum;
 import pt.josegamerpt.realskywars.classes.Trail;
+import pt.josegamerpt.realskywars.player.GamePlayer;
 
 public class BowTrail implements Trail {
-  public Particle p;
+  public Particle pa;
   public Arrow a;
+  public GamePlayer p;
   public BukkitTask task;
 
-  public BowTrail(Particle bowParticle, Projectile entity) {
-    p = bowParticle;
+  public BowTrail(Particle bowParticle, Projectile entity, GamePlayer gp) {
+    pa = bowParticle;
     a = (Arrow) entity;
+    p = gp;
     startTask();
   }
 
@@ -28,7 +31,7 @@ public class BowTrail implements Trail {
           cancelTask();
           return;
         }
-        a.getLocation().getWorld().spawnParticle(p, a.getLocation(), 1);
+        a.getLocation().getWorld().spawnParticle(pa, a.getLocation(), 1);
       }
     }, 1, 1);
   }
@@ -36,6 +39,7 @@ public class BowTrail implements Trail {
   @Override
   public void cancelTask() {
     task.cancel();
+    p.removeTrail(this);
   }
 
   @Override

@@ -15,7 +15,7 @@ public class Holograms {
 		as.setCanPickupItems(false);
 		as.setCustomNameVisible(true);
 		as.setVisible(false);
-		as.setCustomName(nome.replaceAll("&", "&"));
+		as.setCustomName(Text.addColor(nome));
 		holograms.add(as);
 	}
 

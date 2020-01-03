@@ -4,10 +4,8 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.IntStream;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -47,6 +45,7 @@ import pt.josegamerpt.realskywars.managers.LanguageManager;
 import pt.josegamerpt.realskywars.managers.MapManager;
 import pt.josegamerpt.realskywars.managers.PlayerManager;
 import pt.josegamerpt.realskywars.player.GamePlayer;
+import pt.josegamerpt.realskywars.utils.Holograms;
 import pt.josegamerpt.realskywars.utils.Text;
 
 public class RSWcmd implements CommandExecutor {
@@ -223,6 +222,44 @@ public class RSWcmd implements CommandExecutor {
 								p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
 							}
 							return false;
+						case "testp":
+							if (gp.hasPermission("RealSkywars.Admin")) {
+								gp.sendMessage("&aActivated.");
+								double x = gp.getLocation().getX();
+								HashMap<Location, Particle> lp = new HashMap<>();
+								for (Particle pa : Particle.values()) {
+									if (!pa.name().contains("LEGACY") && !pa.equals(Particle.BLOCK_DUST) && !pa.equals(Particle.FALLING_DUST) && !pa.equals(Particle.ITEM_CRACK) && !pa.equals(Particle.BLOCK_CRACK) && !pa.equals(Particle.REDSTONE) && !pa.equals(Particle.MOB_APPEARANCE) && !pa.equals(Particle.SUSPENDED) && !pa.equals(Particle.SUSPENDED_DEPTH)) {
+										lp.put(new Location(gp.getLocation().getWorld(), x, gp.getLocation().getY(), gp.getLocation().getZ()), pa);
+
+										Holograms.add("&F&l" + pa.name(), new Location(gp.getLocation().getWorld(), x, gp.getLocation().getY() + 3, gp.getLocation().getZ()));
+
+										Debugger.print("X: " + x + " | Particle: " + pa.name());
+										x = x + 10;
+									}
+								}
+
+								Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.pl, new Runnable() {
+									@Override
+									public void run() {
+										Iterator it = lp.entrySet().iterator();
+										while (it.hasNext()) {
+											Map.Entry pair = (Map.Entry) it.next();
+
+											gp.getLocation().getWorld().spawnParticle((Particle) pair.getValue(), (Location) pair.getKey(), 2);
+										}
+									}
+								}, 10, 1);
+							} else {
+								p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
+							}
+							return false;
+						case "edittrails":
+							if (gp.hasPermission("RealSkywars.Admin")) {
+								GUIManager.openTrailEditor(p);
+							} else {
+								p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
+							}
+							return false;
 						case "lobby":
 							if (p.room == null) {
 								PlayerManager.tpLobby(p);
@@ -230,6 +267,7 @@ public class RSWcmd implements CommandExecutor {
 								p.sendMessage(LanguageManager.getString(p, TS.CMD_MATCH_CANCEL, true));
 							}
 							return false;
+
 						case "forcestart":
 							if (gp.hasPermission("RealSkywars.Forcestart")) {
 								if (p.room != null) {

@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemFlag;
@@ -45,6 +46,17 @@ public class GUIBuilder {
 		this.inv = Bukkit.createInventory(null, size, Text.addColor(name));
 		if (placeholder != null) {
 			for (int i = 0; i < size; i++) {
+				inv.setItem(i, placeholder);
+			}
+		}
+		this.register();
+	}
+
+	public GUIBuilder(String name, UUID uuid, ItemStack placeholder, InventoryType t) {
+		this.uuid = uuid;
+		this.inv = Bukkit.createInventory(null, t, Text.addColor(name));
+		if (placeholder != null) {
+			for (int i = 0; i < t.getDefaultSize(); i++) {
 				inv.setItem(i, placeholder);
 			}
 		}
