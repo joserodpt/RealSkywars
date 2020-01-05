@@ -100,11 +100,11 @@ public class PlayerInteractions implements Listener {
 				if (gp.room != null) {
 					if (gp.room.getState().equals(GameState.PLAYING)) {
 
-						if (!gp.room.getOpenChests().contains(chestloc)) {
+						if (!gp.room.getOpenedChests().contains(chestloc)) {
 
 							dochest(bau, gp);
 
-							gp.room.getOpenChests().add(chestloc);
+							gp.room.getOpenedChests().add(chestloc);
 						}
 					}
 				}

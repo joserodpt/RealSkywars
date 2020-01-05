@@ -13,16 +13,17 @@ import java.util.HashMap;
 public class DisplayItem {
 
 	public int id;
+	public Material m;
 	public ItemStack i;
 	public Double price;
 	public Boolean bought = false;
 	public String name;
 	public String permission;
-    public Boolean interactable = true;
+	public Boolean interactable = true;
 	public Enum.Categories it;
 	public HashMap<String, Object> info = new HashMap<String, Object>();
 
-	public DisplayItem(int id, Material m, String n, Double per, Boolean b, String perm, Enum.Categories t) {
+	public DisplayItem(int id, Material ma, String n, Double per, Boolean b, String perm, Enum.Categories t) {
 		this.id = id;
 		this.price = per;
 		this.bought = b;
@@ -30,6 +31,15 @@ public class DisplayItem {
 		this.permission = perm;
 		this.interactable = true;
 		this.it = t;
+		this.m = ma;
+		makeItemStack(ma);
+	}
+
+	public void setName(String s) {
+		name = s;
+	}
+
+	public void makeItem() {
 		makeItemStack(m);
 	}
 
@@ -47,13 +57,6 @@ public class DisplayItem {
 					i = Itens.createItemLoreEnchanted(m, 1, name, KitManager.getKit(name).getDescription(false));
 				}
                 break;
-			case CAGEBLOCK:
-				if (bought) {
-					i = Itens.createItemLoreEnchanted(m, 1, name, Collections.singletonList("&aYou already bought this block."));
-				} else {
-					i = Itens.createItemLore(m, 1, name, Arrays.asList("&fPrice: &b" + price, "&fClick to Buy."));
-				}
-				break;
             default:
 				if (bought) {
 					i = Itens.createItemLoreEnchanted(m, 1, name, Collections.singletonList("&aYou already bought this."));
@@ -69,10 +72,14 @@ public class DisplayItem {
 		this.i = Itens.createItemLore(Material.BUCKET, 1, "&aEmpty", Collections.singletonList("&fNothing found in this category."));
 	}
 
-	public Object getInfo(String particle) {
-		if (info.containsKey(particle)) {
-			return info.get(particle);
+	public Object getInfo(String s) {
+		if (info.containsKey(s)) {
+			return info.get(s);
 		}
 		return null;
+	}
+
+	public boolean containsInfo(String randomBlock) {
+		return info.containsKey(randomBlock);
 	}
 }

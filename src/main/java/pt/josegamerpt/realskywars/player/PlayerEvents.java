@@ -70,7 +70,7 @@ public class PlayerEvents implements Listener {
 				@Override
 				public void run() {
 					killed.p.spigot().respawn();
-					killed.room.spectate(killed);
+					killed.room.spectate(killed, pkiller.getLocation());
 				}
 			}, 3);
 		}
@@ -94,7 +94,7 @@ public class PlayerEvents implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		PlayerManager.giveItems(event.getPlayer(), 0);
+		PlayerManager.giveItems(event.getPlayer(), PlayerManager.PlayerItems.LOBBY);
 		PlayerManager.loadPlayer(event.getPlayer());
 	}
 

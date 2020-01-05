@@ -192,7 +192,7 @@ public class ProfileContent {
 							switch (current.cat) {
 								case KITS:
 									Kit k = KitManager.getKit(a.id);
-									gp.selectedKit = k;
+									gp.kit = k;
 									gp.sendMessage(LanguageManager.getString(gp, TS.PROFILE_SELECTED, true).replace("%name%", a.name).replace("%type%", LanguageManager.getString(gp, TS.KITS, false)));
 									break;
 								case BOWPARTICLE:
@@ -202,6 +202,15 @@ public class ProfileContent {
 								case CAGEBLOCK:
 									gp.cageBlock = a.i.getType();
 									gp.sendMessage(LanguageManager.getString(gp, TS.PROFILE_SELECTED, true).replace("%name%", a.name).replace("%type%", LanguageManager.getString(gp, TS.CAGEBLOCK, false)));
+									break;
+								case WINBLOCKS:
+									if (a.containsInfo("RandomBlock")) {
+										gp.setWinBlock("RandomBlock");
+										gp.sendMessage(LanguageManager.getString(gp, TS.PROFILE_SELECTED, true).replace("%name%", a.name).replace("%type%", LanguageManager.getString(gp, TS.WINBLOCK, false)));
+									} else {
+										gp.setWinBlock(a.m.name());
+										gp.sendMessage(LanguageManager.getString(gp, TS.PROFILE_SELECTED, true).replace("%name%", a.name).replace("%type%", LanguageManager.getString(gp, TS.WINBLOCK, false)));
+									}
 									break;
 							}
 						}

@@ -17,12 +17,13 @@ public class ShopManager {
 
     public static ArrayList<DisplayItem> getCategoryContents(GamePlayer p, Enum.Categories t) {
         ArrayList<DisplayItem> items = new ArrayList<>();
+        int i = 0;
         switch (t) {
             case CAGEBLOCK:
-                int i = 0;
                 for (String sa : Shops.file().getStringList("Main-Shop.Cage-Blocks")) {
                     String[] parse = sa.split(">");
 
+                    Boolean error = false;
                     double price;
                     String material = parse[0];
                     String name = Text.addColor(parse[2]);
@@ -33,18 +34,76 @@ public class ShopManager {
                         price = Double.parseDouble(parse[1]);
                     } catch (Exception e) {
                         price = 999999D;
-                        bought = true;
+                        error = true;
                     }
 
-                    Material m = Material.getMaterial(parse[0]);
+                    Material m = Material.getMaterial(material);
                     if (m == null) {
                         m = Material.BARRIER;
                         Debugger.print("[FATAL] MATERIAL ISNT VALID: " + material);
+                        error = true;
                     }
 
                     DisplayItem s = new DisplayItem(i, m, name, price, bought, perm, Enum.Categories.CAGEBLOCK);
+
+                    if (error == true) {
+                        s.interactable = false;
+                        s.setName("&4Configuration Error. &cEnable debug for more info. Line &f" + i);
+                        s.makeItem();
+                    }
+
                     items.add(s);
                     i++;
+                }
+                break;
+            case WINBLOCKS:
+                for (String sa : Shops.file().getStringList("Main-Shop.Win-Blocks")) {
+                    String[] parse = sa.split(">");
+
+                    Boolean error = false;
+                    double price;
+                    String material = parse[1];
+                    String name = Text.addColor(parse[0]);
+                    String perm = parse[3];
+                    Boolean bought = PlayerManager.boughtItem(p, name, Enum.Categories.WINBLOCKS);
+
+                    try {
+                        price = Double.parseDouble(parse[2]);
+                    } catch (Exception e) {
+                        price = 999999D;
+                        error = true;
+                    }
+
+                    if (!material.equalsIgnoreCase("randomblock")) {
+                        Material m = Material.getMaterial(material);
+                        if (m == null) {
+                            m = Material.BARRIER;
+                            Debugger.print("[FATAL] MATERIAL ISNT VALID: " + material);
+                            error = true;
+                        }
+
+                        DisplayItem s = new DisplayItem(i, m, name, price, bought, perm, Enum.Categories.WINBLOCKS);
+
+                        if (error == true) {
+                            s.interactable = false;
+                            s.setName("&4Configuration Error. &cEnable debug for more info. Line &f" + i);
+                            s.makeItem();
+                        }
+
+                        items.add(s);
+                        i++;
+                    } else {
+                        DisplayItem s = new DisplayItem(i, Material.ENDER_CHEST, name, price, bought, perm, Enum.Categories.WINBLOCKS);
+                        s.addInfo("RandomBlock", "RandomBlock");
+                        if (error == true) {
+                            s.interactable = false;
+                            s.setName("&4Configuration Error. &cEnable debug for more info. Line &f" + i);
+                            s.makeItem();
+                        }
+
+                        items.add(s);
+                        i++;
+                    }
                 }
                 break;
             case KITS:
@@ -57,7 +116,6 @@ public class ShopManager {
                 }
                 break;
             case BOWPARTICLE:
-                int i2 = 0;
                 for (String sa : Shops.file().getStringList("Main-Shop.Bow-Particles")) {
                     String[] parse = sa.split(">");
 
@@ -68,23 +126,32 @@ public class ShopManager {
                     String perm = parse[3];
                     Boolean bought = PlayerManager.boughtItem(p, name, Enum.Categories.BOWPARTICLE);
 
+                    boolean error = false;
                     try {
                         price = Double.parseDouble(parse[1]);
                     } catch (Exception e) {
-                        price = 999999D;
-                        bought = true;
+                        price = 9999999999999D;
+                        error = true;
                     }
 
                     Material m = Material.getMaterial(material);
                     if (m == null) {
                         m = Material.BARRIER;
                         Debugger.print("[FATAL] MATERIAL ISNT VALID: " + material);
+                        error = true;
                     }
 
-                    DisplayItem s = new DisplayItem(i2, m, name, price, bought, perm, Enum.Categories.BOWPARTICLE);
+                    DisplayItem s = new DisplayItem(i, m, name, price, bought, perm, Enum.Categories.BOWPARTICLE);
                     s.addInfo("Particle", Particle.valueOf(particle));
+
+                    if (error == true) {
+                        s.interactable = false;
+                        s.setName("&4Configuration Error. &cEnable debug for more info. Line &f" + i);
+                        s.makeItem();
+                    }
+
                     items.add(s);
-                    i2++;
+                    i++;
                 }
                 break;
         }

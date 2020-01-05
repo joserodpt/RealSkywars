@@ -128,8 +128,8 @@ public class PlayerScoreboard {
 
     protected static String variables(String s, GamePlayer gp) {
         if (gp.room != null) {
-            return s.replace("%space%", Text.makeSpace()).replace("%players%", gp.room.getCurrentPlayers() + "")
-                    .replace("%spectators%", gp.room.getCurrentSpectators() + "").replace("%kills%", gp.GameKills + "")
+            return s.replace("%space%", Text.makeSpace()).replace("%players%", gp.room.getPlayersCount() + "")
+                    .replace("%spectators%", gp.room.getSpectatorsCount() + "").replace("%kills%", gp.GameKills + "")
                     .replace("%map%", gp.room.getName()).replace("%runtime%", gp.room.getTimePassed() + "").replace("%state%", GameManager.getStateString(gp, gp.room.getState())).replace("%mode%", gp.room.getMode().name());
         } else {
             return s.replace("%space%", Text.makeSpace()).replace("%coins%", gp.Coins + "")

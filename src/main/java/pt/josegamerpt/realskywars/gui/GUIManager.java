@@ -51,20 +51,11 @@ public class GUIManager {
 		inventory.addItem(new ClickRunnable() {
 			public void run(InventoryClickEvent e) {
 				p.p.closeInventory();
-				ShopViewer v = new ShopViewer(p.p.getUniqueId(), Categories.WINPARTICLE);
-				v.openInventory(p);
-			}
-		}, Itens.createItemLore(Material.GLOWSTONE_DUST, 1, "&9Win Particles",
-				Collections.singletonList("&fClick here to open this category.")), 3);
-
-		inventory.addItem(new ClickRunnable() {
-			public void run(InventoryClickEvent e) {
-				p.p.closeInventory();
 				ShopViewer v = new ShopViewer(p.p.getUniqueId(), Categories.BOWPARTICLE);
 				v.openInventory(p);
 			}
 		}, Itens.createItemLore(Material.BOW, 1, "&9Bow Particles",
-				Collections.singletonList("&fClick here to open this category.")), 4);
+				Collections.singletonList("&fClick here to open this category.")), 3);
 
 		inventory.openInventory(p.p);
 	}
@@ -74,7 +65,7 @@ public class GUIManager {
 				Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
 		int i = 0;
-		for (GamePlayer s : p.room.getGamePlayers()) {
+		for (GamePlayer s : p.room.getPlayers()) {
 			if (s.p != null) {
 				inventory.addItem(new ClickRunnable() {
 					public void run(InventoryClickEvent e) {
@@ -100,25 +91,16 @@ public class GUIManager {
 				v.openInventory(p.p);
 			}
 		}, Itens.createItemLore(Material.BOW, 1, "&9Bow &bParticles",
-				Arrays.asList("&fClick here to edit this trail.")), 0);
+				Arrays.asList("&fClick here to edit this trail.")), 1);
 
 		inventory.addItem(new ClickRunnable() {
 			public void run(InventoryClickEvent e) {
 				p.p.closeInventory();
-				TrailEditor v = new TrailEditor(p.p, Categories.WINPARTICLE, "&9Editing &bWin Particles");
-				v.openInventory(p.p);
-			}
-		}, Itens.createItemLore(Material.GLOWSTONE_DUST, 1, "&9Win Particles",
-				Collections.singletonList("&fClick here to edit this trail.")), 2);
-
-		inventory.addItem(new ClickRunnable() {
-			public void run(InventoryClickEvent e) {
-				p.p.closeInventory();
-				TrailEditor v = new TrailEditor(p.p, Categories.BOWPARTICLE, "&9Editing &bWin Blocks");
+				TrailEditor v = new TrailEditor(p.p, Categories.WINBLOCKS, "&9Editing &bWin Blocks");
 				v.openInventory(p.p);
 			}
 		}, Itens.createItemLore(Material.FIREWORK_ROCKET, 1, "&9Win &bBlocks",
-				Collections.singletonList("&fClick here to edit this trail.")), 4);
+				Collections.singletonList("&fClick here to edit this trail.")), 3);
 
 		inventory.openInventory(p.p);
 	}
@@ -171,14 +153,6 @@ public class GUIManager {
 			}
 		}, Itens.createItemLore(Material.FIREWORK_ROCKET, 1, "&bYour &9Win Blocks",
 				Arrays.asList("&fClick here to view this item.")), 2);
-		inventory.addItem(new ClickRunnable() {
-			public void run(InventoryClickEvent e) {
-				p.p.closeInventory();
-				ProfileContent v = new ProfileContent(p.p, Categories.WINPARTICLE);
-				v.openInventory(p);
-			}
-		}, Itens.createItemLore(Material.GLOWSTONE_DUST, 1, "&bYour &9Win Particles",
-				Arrays.asList("&fClick here to view this item.")), 3);
 
 		inventory.addItem(new ClickRunnable() {
 			public void run(InventoryClickEvent e) {
@@ -187,7 +161,7 @@ public class GUIManager {
 				v.openInventory(p);
 			}
 		}, Itens.createItemLore(Material.BOW, 1, "&bYour &9Bow Particles",
-				Collections.singletonList("&fClick here to open this category.")), 4);
+				Collections.singletonList("&fClick here to open this category.")), 3);
 
 		//settings
 

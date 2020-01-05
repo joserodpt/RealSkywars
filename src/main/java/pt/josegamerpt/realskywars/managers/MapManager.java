@@ -13,9 +13,9 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 
 import pt.josegamerpt.realskywars.Debugger;
+import pt.josegamerpt.realskywars.cages.SoloCage;
+import pt.josegamerpt.realskywars.classes.Cage;
 import pt.josegamerpt.realskywars.classes.GameRoom;
-import pt.josegamerpt.realskywars.classes.GameRoomSolo;
-import pt.josegamerpt.realskywars.classes.GameRoomTeams;
 import pt.josegamerpt.realskywars.classes.SetupRoom;
 import pt.josegamerpt.realskywars.classes.Team;
 import pt.josegamerpt.realskywars.classes.Enum.GameState;
@@ -26,6 +26,7 @@ import pt.josegamerpt.realskywars.classes.Enum.TS;
 import pt.josegamerpt.realskywars.configuration.Items;
 import pt.josegamerpt.realskywars.configuration.Maps;
 import pt.josegamerpt.realskywars.gui.MapSettings;
+import pt.josegamerpt.realskywars.modes.Solo;
 import pt.josegamerpt.realskywars.player.GamePlayer;
 import pt.josegamerpt.realskywars.utils.Holograms;
 import pt.josegamerpt.realskywars.utils.MathUtils;
@@ -34,316 +35,259 @@ import pt.josegamerpt.realskywars.worlds.Worlds;
 
 public class MapManager {
 
-	static String clas = "[MAPMANAGER] - ";
+    static String clas = "[MAPMANAGER] - ";
 
-	public static ArrayList<String> getRegisteredMaps() {
-		Maps.reload();
-		ArrayList<String> worlds = new ArrayList<String>();
+    public static ArrayList<String> getRegisteredMaps() {
+        Maps.reload();
+        ArrayList<String> worlds = new ArrayList<String>();
 
-		ConfigurationSection cs = Maps.file().getConfigurationSection("");
-		Set<String> keys = cs.getKeys(false);
-		for (Iterator<String> iterator1 = keys.iterator(); iterator1.hasNext();) {
-			worlds.add((String) iterator1.next());
-		}
-		return worlds;
-	}
+        ConfigurationSection cs = Maps.file().getConfigurationSection("");
+        Set<String> keys = cs.getKeys(false);
+        for (Iterator<String> iterator1 = keys.iterator(); iterator1.hasNext(); ) {
+            worlds.add((String) iterator1.next());
+        }
+        return worlds;
+    }
 
-	public static void unregisterMap(GameRoom map) {
-		Maps.file().set(map.getName(), null);
-		Maps.save();
-		GameManager.rooms.remove(map);
+    public static void unregisterMap(GameRoom map) {
+        Maps.file().set(map.getName(), null);
+        Maps.save();
+        GameManager.rooms.remove(map);
+    }
 
-		Bukkit.getServer().unloadWorld(map.getWorld().getName(), true);
-		File destDir = new File("." + File.separator + map.getWorld().getName());
-		//try {
-	//		System.del.deleteDirectory(destDir);
-		//} catch (IOException e) {
-	//		e.printStackTrace();
-		//}
-	}
+    public static void loadMaps() {
 
-	public static void loadMaps() {
+        GameManager.rooms.clear();
 
-		GameManager.rooms.clear();
+        int id = 0;
+        for (String s : getRegisteredMaps()) {
 
-		for (String s : getRegisteredMaps()) {
-			GameType t = getGameType(s);
-			if (t.equals(GameType.SOLO)) {
-				GameRoomSolo g = new GameRoomSolo(s, GameState.AVAILABLE, getCages(s), new ArrayList<GamePlayer>(),
-						Maps.file().getInt(s + ".number-of-players"), Bukkit.getServer().getWorld(s), getSpecLoc(s),
-						isSpecEnabled(s), isDragEnabled(s), getBorderSize(s));
-				g.saveRoom();
-			}
-			if (t.equals(GameType.TEAMS)) {
-				GameRoomTeams g = new GameRoomTeams(s, GameState.AVAILABLE,
-						Maps.file().getInt(s + ".number-of-players"), Bukkit.getServer().getWorld(s), getSpecLoc(s),
-						isSpecEnabled(s), isDragEnabled(s), getBorderSize(s), getTeams(s));
-				g.saveRoom();
-			}
-		}
-	}
-	
-	public static ArrayList<Team> getTeams(String s)
-	{
-		int team = 1;
-		ArrayList<pt.josegamerpt.realskywars.classes.Team> temalist = new ArrayList<pt.josegamerpt.realskywars.classes.Team>();
-		ArrayList<Location> cageTeams = getCages(s);
-		for (Location l : cageTeams) {
-			pt.josegamerpt.realskywars.classes.Team newt = new pt.josegamerpt.realskywars.classes.Team(team,
-					(Maps.file().getInt(s + ".number-of-players") / cageTeams.size()), l);
-			temalist.add(newt);
-			team++;
-		}
-		return temalist;
-	}
+            if (getGameType(s).equals(null)) {
+                throw new IllegalStateException("Mode doesnt exist: " + s);
+            }
 
-	private static GameType getGameType(String s) {
-		String as = Maps.file().getString(s + ".Settings.GameType");
-		GameType g = GameType.SOLO;
-		if (as.equalsIgnoreCase("SOLO")) {
-			g = GameType.SOLO;
-		}
-		if (as.equalsIgnoreCase("TEAMS")) {
-			g = GameType.TEAMS;
-		}
-		return g;
-	}
+            GameType t = getGameType(s);
 
-	private static Boolean isDragEnabled(String s) {
-		return Maps.file().getBoolean(s + ".Settings.Dragon-Ride");
-	}
+            switch (t) {
+                case SOLO:
+                    World w = Bukkit.getWorld(Maps.file().getString(s + ".world"));
+                    Solo gs = new Solo(id, s, w, GameState.AVAILABLE, getCagesSolo(s), Maps.file().getInt(s + ".number-of-players"), getSpecLoc(s), isSpecEnabled(s), isInstantEndingEnabled(s), getPOS1(w, s), getPOS2(w, s));
+                    gs.saveRoom();
+                    break;
+                default:
+                    throw new IllegalStateException("Mode doesnt exist: " + t.name());
+            }
+            id++;
+        }
+    }
 
-	private static Double getBorderSize(String s) {
-		double hx = Maps.file().getDouble(s + ".World.Border.POS1-X");
-		double hz = Maps.file().getDouble(s + ".World.Border.POS1-Z");
-		double lx = Maps.file().getDouble(s + ".World.Border.POS2-X");
-		double lz = Maps.file().getDouble(s + ".World.Border.POS2-Z");
+    private static GameType getGameType(String s) {
+        String as = Maps.file().getString(s + ".Settings.GameType");
+        if (as.equalsIgnoreCase("SOLO")) {
+            return GameType.SOLO;
+        }
+        if (as.equalsIgnoreCase("TEAMS")) {
+            return GameType.TEAMS;
+        }
+        return null;
+    }
 
-		return MathUtils.calculateDistanceBetweenPoints(lx, lz, hx, hz);
-	}
+    private static Boolean isInstantEndingEnabled(String s) {
+        return Maps.file().getBoolean(s + ".Settings.Dragon-Ride");
+    }
 
-	public static Boolean isSpecEnabled(String s) {
-		return Maps.file().getBoolean(s + ".Settings.Spectator");
-	}
+    private static Location getPOS1(World w, String s) {
+        double hx = Maps.file().getDouble(s + ".World.Border.POS1-X");
+        double hy = Maps.file().getDouble(s + ".World.Border.POS1-Y");
+        double hz = Maps.file().getDouble(s + ".World.Border.POS1-Z");
 
-	public static Location getSpecLoc(String nome) {
-		double x = Maps.file().getDouble(nome + ".Locations.Spectator.X");
-		double y = Maps.file().getDouble(nome + ".Locations.Spectator.Y");
-		double z = Maps.file().getDouble(nome + ".Locations.Spectator.Z");
-		float pitch = (float) Maps.file().getDouble(nome + ".Locations.Spectator.Pitch");
-		float yaw = (float) Maps.file().getDouble(nome + ".Locations.Spectator.Yaw");
-		Location l = new Location(Bukkit.getWorld(nome), x, y, z, pitch, yaw);
-		Debugger.print(clas + "SPECLOC FOR " + nome + " - " + l);
-		return l;
+        return new Location(w, hx, hy, hz);
+    }
 
-	}
+    private static Location getPOS2(World w, String s) {
+        double hx = Maps.file().getDouble(s + ".World.Border.POS2-X");
+        double hy = Maps.file().getDouble(s + ".World.Border.POS2-Y");
+        double hz = Maps.file().getDouble(s + ".World.Border.POS2-Z");
 
-	public static GameRoom getMap(String name) {
-		for (GameRoom g : GameManager.rooms) {
-			if (name.equalsIgnoreCase(g.getName())) {
-				return g;
-			}
-		}
-		return null;
-	}
+        return new Location(w, hx, hy, hz);
+    }
 
-	public static ArrayList<Location> getCages(String map) {
-		ConfigurationSection cs = Maps.file().getConfigurationSection(map + ".Locations.Cages");
-		Set<String> keys = cs.getKeys(false);
-		ArrayList<Location> locs = new ArrayList<Location>();
-		for (Iterator<String> iterator1 = keys.iterator(); iterator1.hasNext();) {
-			String i = iterator1.next();
-			double x = Maps.file().getDouble(map + ".Locations.Cages." + i + ".X");
-			double y = Maps.file().getDouble(map + ".Locations.Cages." + i + ".Y");
-			double z = Maps.file().getDouble(map + ".Locations.Cages." + i + ".Z");
-			World w = Bukkit.getWorld(Maps.file().getString(map + ".world"));
-			Location loc = new Location(w, x, y, z);
-			Debugger.print(clas + "[GETLOCS] " + loc.toString());
-			loc.add(0.5, 0, 0.5);
-			locs.add(loc);
-		}
-		return locs;
-	}
+    public static Boolean isSpecEnabled(String s) {
+        return Maps.file().getBoolean(s + ".Settings.Spectator");
+    }
 
-	public static void saveMapSolo(GameRoomSolo g, SetupRoom r) {
-		String s = g.Name;
+    public static Location getSpecLoc(String nome) {
+        double x = Maps.file().getDouble(nome + ".Locations.Spectator.X");
+        double y = Maps.file().getDouble(nome + ".Locations.Spectator.Y");
+        double z = Maps.file().getDouble(nome + ".Locations.Spectator.Z");
+        float pitch = (float) Maps.file().getDouble(nome + ".Locations.Spectator.Pitch");
+        float yaw = (float) Maps.file().getDouble(nome + ".Locations.Spectator.Yaw");
+        Location l = new Location(Bukkit.getWorld(nome), x, y, z, pitch, yaw);
+        Debugger.print(clas + "SPECLOC FOR " + nome + " - " + l);
+        return l;
 
-		// World
-		Maps.file().set(s + ".world", g.worldMap.getName());
+    }
 
-		// Map Name
-		Maps.file().set(s + ".name", s);
+    public static GameRoom getMap(String name) {
+        for (GameRoom g : GameManager.rooms) {
+            if (name.equalsIgnoreCase(g.getName())) {
+                return g;
+            }
+        }
+        return null;
+    }
 
-		// Number Players
-		Maps.file().set(s + ".number-of-players", g.maxPlayers);
+    public static ArrayList<Cage> getCagesSolo(String map) {
+        ConfigurationSection cs = Maps.file().getConfigurationSection(map + ".Locations.Cages");
+        Set<String> keys = cs.getKeys(false);
+        ArrayList<Cage> locs = new ArrayList<Cage>();
+        int id = 0;
+        for (Iterator<String> iterator1 = keys.iterator(); iterator1.hasNext(); ) {
+            String i = iterator1.next();
+            double x = Maps.file().getDouble(map + ".Locations.Cages." + i + ".X");
+            double y = Maps.file().getDouble(map + ".Locations.Cages." + i + ".Y");
+            double z = Maps.file().getDouble(map + ".Locations.Cages." + i + ".Z");
+            World w = Bukkit.getWorld(Maps.file().getString(map + ".world"));
+            Location loc = new Location(w, x, y, z);
+            loc.add(0.5, 0, 0.5);
+            Debugger.print(clas + "[GETLOCS for " + map + "] LOC" + id + " > " + loc.toString());
+            locs.add(new SoloCage(id, loc));
+            id++;
+        }
+        return locs;
+    }
 
-		// Locations Cages
-		int count = 1;
-		for (Location loc : r.Cages) {
-			Maps.file().set(s + ".Locations.Cages." + count + ".X", Integer.valueOf(loc.getBlockX()));
-			Maps.file().set(s + ".Locations.Cages." + count + ".Y", Integer.valueOf(loc.getBlockY()));
-			Maps.file().set(s + ".Locations.Cages." + count + ".Z", Integer.valueOf(loc.getBlockZ()));
-			Maps.file().set(s + ".Locations.Cages." + count + ".Yaw", Float.valueOf(loc.getYaw()));
-			Maps.file().set(s + ".Locations.Cages." + count + ".Pitch", Float.valueOf(loc.getPitch()));
-			count++;
-		}
+    public static void saveMap(GameRoom g) {
+        String s = g.getName();
 
-		// SpecLoc
-		Maps.file().set(s + ".Locations.Spectator.X", g.spectator.getX());
-		Maps.file().set(s + ".Locations.Spectator.Y", g.spectator.getY());
-		Maps.file().set(s + ".Locations.Spectator.Z", g.spectator.getZ());
-		Maps.file().set(s + ".Locations.Spectator.Yaw", g.spectator.getYaw());
-		Maps.file().set(s + ".Locations.Spectator.Pitch", g.spectator.getPitch());
+        // World
+        Maps.file().set(s + ".world", g.getWorld().getName());
 
-		// Settings
-		Maps.file().set(s + ".Settings.Spectator", g.specEnabled);
-		Maps.file().set(s + ".Settings.Dragon-Ride", g.dragonEnabled);
-		Maps.file().set(s + ".Settings.GameType", g.gameType.name());
+        // Map Name
+        Maps.file().set(s + ".name", s);
 
-		// Border
-		Maps.file().set(s + ".World.Border.POS1-X", r.POS1.getX());
-		Maps.file().set(s + ".World.Border.POS1-Z", r.POS1.getZ());
-		Maps.file().set(s + ".World.Border.POS2-X", r.POS2.getX());
-		Maps.file().set(s + ".World.Border.POS2-Z", r.POS2.getZ());
+        // Number Players
+        Maps.file().set(s + ".number-of-players", g.getMaxPlayers());
 
-		Maps.save();
-	}
+        // Locations Cages
+        for (Cage c : g.getCages()) {
+            Location loc = c.getLocation();
+            Maps.file().set(s + ".Locations.Cages." + c.getID() + ".X", Integer.valueOf(loc.getBlockX()));
+            Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Y", Integer.valueOf(loc.getBlockY()));
+            Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Z", Integer.valueOf(loc.getBlockZ()));
+            Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Yaw", Float.valueOf(loc.getYaw()));
+            Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Pitch", Float.valueOf(loc.getPitch()));
+        }
 
-	public static void cancelSetup(GamePlayer p) {
-		Maps.file().set(p.setup.Name, null);
-		Maps.save();
-		p.setup = null;
-		PlayerManager.tpLobby(p);
-	}
+        // SpecLoc
+        Maps.file().set(s + ".Locations.Spectator.X", g.getSpectatorLocation().getX());
+        Maps.file().set(s + ".Locations.Spectator.Y", g.getSpectatorLocation().getY());
+        Maps.file().set(s + ".Locations.Spectator.Z", g.getSpectatorLocation().getZ());
+        Maps.file().set(s + ".Locations.Spectator.Yaw", g.getSpectatorLocation().getYaw());
+        Maps.file().set(s + ".Locations.Spectator.Pitch", g.getSpectatorLocation().getPitch());
 
-	public static void setupTeams(GamePlayer p, String mapname, int teams, int pperteam) {
-		SetupRoom s = new SetupRoom(mapname, null, teams, pperteam);
-		p.setup = s;
-		p.istate = InteractionState.GUI_ROOMSETUP;
+        // Settings
+        Maps.file().set(s + ".Settings.Spectator", g.isSpectatorEnabled());
+        Maps.file().set(s + ".Settings.Instant-Ending", g.isInstantEndEnabled());
+        Maps.file().set(s + ".Settings.GameType", g.getMode().name());
 
-		MapSettings m = new MapSettings(s, p.p.getUniqueId());
-		m.openInventory(p);
-	}
+        // Border
+        Maps.file().set(s + ".World.Border.POS1-X", g.getPOS1().getX());
+        Maps.file().set(s + ".World.Border.POS1-Y", g.getPOS1().getY());
+        Maps.file().set(s + ".World.Border.POS1-Z", g.getPOS1().getZ());
+        Maps.file().set(s + ".World.Border.POS2-X", g.getPOS2().getX());
+        Maps.file().set(s + ".World.Border.POS2-Y", g.getPOS2().getY());
+        Maps.file().set(s + ".World.Border.POS2-Z", g.getPOS2().getZ());
 
-	public static void continueSetup(GamePlayer p) {
-		if (p.setup.tpConfirm == false) {
+        Maps.save();
+    }
 
-			p.istate = InteractionState.NONE;
+    public static void cancelSetup(GamePlayer p) {
+        Maps.file().set(p.setup.Name, null);
+        Maps.save();
+        p.setup = null;
+        PlayerManager.tpLobby(p);
+    }
 
-			p.setup.tpConfirm = true;
+    public static void setupTeams(GamePlayer p, String mapname, int teams, int pperteam) {
+        SetupRoom s = new SetupRoom(mapname, null, teams, pperteam);
+        p.setup = s;
+        p.istate = InteractionState.GUI_ROOMSETUP;
 
-			p.sendMessage(LanguageManager.getString(p, TS.GENERATING_WORLD, true));
-			World world = Worlds.createWorld(p.setup.Name);
-			p.setup.worldMap = world;
+        MapSettings m = new MapSettings(s, p.p.getUniqueId());
+        m.openInventory(p);
+    }
 
-			Location loc = new Location(world, 0, 65, 0);
-			p.p.teleport(loc);
+    public static void continueSetup(GamePlayer p) {
+        if (p.setup.tpConfirm == false) {
 
-			Text.sendList(p.p, LanguageManager.getList(p, TL.INITSETUP_ARENA), p.setup.maxPlayers);
+            p.istate = InteractionState.NONE;
 
-			p.p.getInventory().addItem(Items.CAGESET);
-			p.p.setGameMode(GameMode.CREATIVE);
-		}
-	}
+            p.setup.tpConfirm = true;
 
-	public static void setupSolo(GamePlayer p, String mapname, int maxP) {
-		SetupRoom s = new SetupRoom(mapname, null, maxP);
-		p.setup = s;
-		p.istate = InteractionState.GUI_ROOMSETUP;
+            p.sendMessage(LanguageManager.getString(p, TS.GENERATING_WORLD, true));
+            World world = Worlds.createWorld(p.setup.Name);
+            p.setup.worldMap = world;
 
-		MapSettings m = new MapSettings(s, p.p.getUniqueId());
-		m.openInventory(p);
-	}
+            Location loc = new Location(world, 0, 65, 0);
+            p.p.teleport(loc);
 
-	public static void finishSetup(GamePlayer p) {
-		if (p.setup.POS1 == null || p.setup.POS2 == null) {
-			p.sendMessage(LanguageManager.getString(p, TS.NO_ARENA_BOUNDARIES, true));
-			return;
-		}
+            Text.sendList(p.p, LanguageManager.getList(p, TL.INITSETUP_ARENA), p.setup.maxPlayers);
 
-		PlayerManager.tpLobby(p);
-		ArrayList<String> list = new ArrayList<String>();
-		list.add(LanguageManager.getString(p, TS.SAVING_ARENA, true));
-		Text.sendList(p.p, list);
+            p.p.getInventory().addItem(Items.CAGESET);
+            p.p.setGameMode(GameMode.CREATIVE);
+        }
+    }
 
-		p.p.getInventory().clear();
+    public static void setupSolo(GamePlayer p, String mapname, int maxP) {
+        SetupRoom s = new SetupRoom(mapname, null, maxP);
+        p.setup = s;
+        p.istate = InteractionState.GUI_ROOMSETUP;
 
-		// Beacon Remove
-		Holograms.removeAll();
-		for (Location l : p.setup.Cages) {
-			p.setup.worldMap.getBlockAt(l).setType(Material.AIR);
-		}
+        MapSettings m = new MapSettings(s, p.p.getUniqueId());
+        m.openInventory(p);
+    }
 
-		// Save Data
-		if (p.setup.gameType.equals(GameType.SOLO)) {
-			GameRoomSolo g = new GameRoomSolo(p.setup.Name, GameState.AVAILABLE, p.setup.Cages,
-					new ArrayList<GamePlayer>(), p.setup.maxPlayers, p.setup.worldMap, p.setup.spectator, p.setup.spec,
-					p.setup.dragon, MathUtils.calculateDistanceBetweenPoints(p.setup.POS1.getX(), p.setup.POS1.getZ(),
-							p.setup.POS2.getX(), p.setup.POS2.getZ()));
-			saveMapSolo(g, p.setup);
-			g.saveRoom();
-		}
-		if (p.setup.gameType.equals(GameType.TEAMS)) {
-			GameRoomTeams g = new GameRoomTeams(p.setup.Name, GameState.AVAILABLE, p.setup.maxPlayers, p.setup.worldMap,
-					p.setup.spectator, p.setup.spec, p.setup.dragon, MathUtils.calculateDistanceBetweenPoints(
-							p.setup.POS1.getX(), p.setup.POS1.getZ(), p.setup.POS2.getX(), p.setup.POS2.getZ()), p.setup.teamslist);
-			saveMapTeams(g, p.setup);
-			g.saveRoom();
-		}
+    public static void finishSetup(GamePlayer p) {
+        if (p.setup.POS1 == null || p.setup.POS2 == null) {
+            p.sendMessage(LanguageManager.getString(p, TS.NO_ARENA_BOUNDARIES, true));
+            return;
+        }
 
-		p.setup = null;
-		p.sendMessage(LanguageManager.getString(p, TS.ARENA_REGISTERED, true));
+        PlayerManager.tpLobby(p);
+        ArrayList<String> list = new ArrayList<String>();
+        list.add(LanguageManager.getString(p, TS.SAVING_ARENA, true));
+        Text.sendList(p.p, list);
 
-		PlayerManager.giveItems(p.p, 0);
-	}
+        p.p.getInventory().clear();
 
-	private static void saveMapTeams(GameRoomTeams g, SetupRoom r) {
-		String s = g.Name;
+        // Beacon Remove
+        Holograms.removeAll();
+        for (Cage l : p.setup.cages) {
+            p.setup.worldMap.getBlockAt(l.getLocation()).setType(Material.AIR);
+        }
 
-		// World
-		Maps.file().set(s + ".world", g.worldMap.getName());
+        // Save Data
 
-		// Map Name
-		Maps.file().set(s + ".name", s);
+        switch (p.setup.gameType) {
+            case SOLO:
+                Solo gs = new Solo(MapManager.getRegisteredMaps().size() + 1, p.setup.Name, p.setup.worldMap, GameState.AVAILABLE, p.setup.cages, p.setup.maxPlayers, p.setup.spectator, p.setup.spec, p.setup.instantEnding, p.setup.POS1, p.setup.POS2);
+                gs.saveRoom();
+                saveMap(gs);
+                break;
+            default:
+                throw new IllegalStateException("Forbiden Mode");
+        }
 
-		// Number Players
-		Maps.file().set(s + ".number-of-players", g.maxPlayers);
+        p.setup = null;
+        p.sendMessage(LanguageManager.getString(p, TS.ARENA_REGISTERED, true));
 
-		// Locations Cages
-		int count = 1;
-		for (Team lt : r.teamslist) {
-			Maps.file().set(s + ".Locations.Cages." + count + ".X", Integer.valueOf(lt.cage.getBlockX()));
-			Maps.file().set(s + ".Locations.Cages." + count + ".Y", Integer.valueOf(lt.cage.getBlockY()));
-			Maps.file().set(s + ".Locations.Cages." + count + ".Z", Integer.valueOf(lt.cage.getBlockZ()));
-			Maps.file().set(s + ".Locations.Cages." + count + ".Yaw", Float.valueOf(lt.cage.getYaw()));
-			Maps.file().set(s + ".Locations.Cages." + count + ".Pitch", Float.valueOf(lt.cage.getPitch()));
-			count++;
-		}
+        PlayerManager.giveItems(p.p, PlayerManager.PlayerItems.LOBBY);
+    }
 
-		// SpecLoc
-		Maps.file().set(s + ".Locations.Spectator.X", g.spectator.getX());
-		Maps.file().set(s + ".Locations.Spectator.Y", g.spectator.getY());
-		Maps.file().set(s + ".Locations.Spectator.Z", g.spectator.getZ());
-		Maps.file().set(s + ".Locations.Spectator.Yaw", g.spectator.getYaw());
-		Maps.file().set(s + ".Locations.Spectator.Pitch", g.spectator.getPitch());
-
-		// Settings
-		Maps.file().set(s + ".Settings.Spectator", g.specEnabled);
-		Maps.file().set(s + ".Settings.Dragon-Ride", g.dragonEnabled);
-		Maps.file().set(s + ".Settings.GameType", g.gameType.name());
-
-		// Border
-		Maps.file().set(s + ".World.Border.POS1-X", r.POS1.getX());
-		Maps.file().set(s + ".World.Border.POS1-Z", r.POS1.getZ());
-		Maps.file().set(s + ".World.Border.POS2-X", r.POS2.getX());
-		Maps.file().set(s + ".World.Border.POS2-Z", r.POS2.getZ());
-
-		Maps.save();
-	}
-
-	public static void saveSettings(GameRoom game) {
-		Maps.file().set(game.getName() + ".Settings.Spectator", game.isSpectatorEnabled());
-		Maps.file().set(game.getName() + ".Settings.Dragon-Ride", game.isSpectatorEnabled());
-		Maps.save();
-	}
+    public static void saveSettings(GameRoom game) {
+        Maps.file().set(game.getName() + ".Settings.Spectator", game.isSpectatorEnabled());
+        Maps.file().set(game.getName() + ".Settings.Instant-End", game.isInstantEndEnabled());
+        Maps.save();
+    }
 }

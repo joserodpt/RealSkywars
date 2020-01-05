@@ -104,6 +104,7 @@ public class RealSkywars extends JavaPlugin implements Listener {
         KitManager.loadKits();
 
         Debugger.print(getPrefix() + "> DEBUG MODE ENABLED <");
+        Debugger.execute();
 
         long elapsedTimeMillis = System.currentTimeMillis()-start;
 

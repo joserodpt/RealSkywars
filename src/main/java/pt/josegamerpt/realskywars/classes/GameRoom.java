@@ -1,6 +1,7 @@
 package pt.josegamerpt.realskywars.classes;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -13,19 +14,32 @@ import pt.josegamerpt.realskywars.classes.Enum.TierType;
 
 public interface GameRoom {
 
-	String getName();
+	void saveRoom();
 
-	int getCurrentPlayers();
+	String getName();
 
 	int getMaxPlayers();
 
+	int getPlayersCount();
+
+	ArrayList<GamePlayer> getPlayers();
+
+	int getSpectatorsCount();
+
+	List<GamePlayer> getSpectators();
+
+	int getPlayersInCount();
+
+	List<GamePlayer> getPlayersIn();
+
+
 	World getWorld();
 
-	void broadcastMessage(String s);
+	void broadcastMessage(String s, Boolean prefix);
 
 	void kickPlayers();
 
-	int getCurrentSpectators();
+	void kickPlayers(String s);
 
 	GameState getState();
 
@@ -34,6 +48,12 @@ public interface GameRoom {
 	void forceStart();
 
 	void removePlayer(GamePlayer p);
+
+	Location getSpectatorLocation();
+
+	Location getPOS1();
+
+	Location getPOS2();
 
 	void setTierType(TierType b);
 
@@ -45,7 +65,7 @@ public interface GameRoom {
 
 	boolean isSpectatorEnabled();
 
-	boolean isDragonEnabled();
+	boolean isInstantEndEnabled();
 
 	TierType getTierType();
 
@@ -61,15 +81,19 @@ public interface GameRoom {
 
 	void setSpectator(boolean b);
 
-	void setDragon(boolean b);
+	void setInstantEnd(boolean b);
 
-	void spectate(GamePlayer p);
+	void spectate(GamePlayer p, Location killLoc);
 
-	ArrayList<Location> getOpenChests();
-
-	ArrayList<GamePlayer> getGamePlayers();
+	ArrayList<Location> getOpenedChests();
 
 	void checkWin();
 
 	GameType getMode();
+
+	void cancelAllTasks();
+
+	void cancelTask(String s);
+
+	ArrayList<Cage> getCages();
 }

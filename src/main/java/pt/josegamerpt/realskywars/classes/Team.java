@@ -8,7 +8,6 @@ import org.bukkit.Material;
 
 import pt.josegamerpt.realskywars.classes.Enum.CageType;
 import pt.josegamerpt.realskywars.player.GamePlayer;
-import pt.josegamerpt.realskywars.utils.Cage;
 import pt.josegamerpt.realskywars.utils.Text;
 
 public class Team {
@@ -32,7 +31,7 @@ public class Team {
 		p.team = this;
 		if (members.size() == 1) {
 			if (p.p != null) {
-				Cage.setCage(p.p, p.cageBlock, CageType.TEAMS);
+				//Cage.setCage(p.p, p.cageBlock, CageType.TEAMS);
 			}
 		}
 		for (GamePlayer s : members) {

@@ -30,6 +30,7 @@ import pt.josegamerpt.realskywars.configuration.Languages;
 import pt.josegamerpt.realskywars.configuration.Maps;
 import pt.josegamerpt.realskywars.configuration.Players;
 import pt.josegamerpt.realskywars.configuration.Shops;
+import pt.josegamerpt.realskywars.effects.BlockWinTrail;
 import pt.josegamerpt.realskywars.gui.ChestTierMenu;
 import pt.josegamerpt.realskywars.gui.GUIManager;
 import pt.josegamerpt.realskywars.gui.KitSettings;
@@ -65,18 +66,18 @@ public class RSWcmd implements CommandExecutor {
 					Text.sendList(p.p, a);
 				} else if (args.length == 1) {
 					switch (args[0].toLowerCase()) {
-						case "reload":
-							if (p.p.hasPermission("RealSkywars.reload")) {
+                        case "reload":
+                            if (p.p.hasPermission("RealSkywars.Admin")) {
 
-								GameManager.endGames();
+                                GameManager.endGames();
 
-								Config.reload();
-								Maps.reload();
-								Players.reload();
-								Chests.reload();
-								Languages.reload();
-								LanguageManager.loadLanguages();
-								PlayerManager.loadPlayers();
+                                Config.reload();
+                                Maps.reload();
+                                Players.reload();
+                                Chests.reload();
+                                Languages.reload();
+                                LanguageManager.loadLanguages();
+                                PlayerManager.loadPlayers();
 								Shops.reload();
 								Kits.reload();
 								KitManager.loadKits();
@@ -154,46 +155,50 @@ public class RSWcmd implements CommandExecutor {
 									}
 								}
 							} else {
-								p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
-							}
-							return false;
-						case "sendcoins":
-							if (gp.hasPermission("RealSkywars.Coins")) {
-								p.sendMessage(Text.addColor("&c/rsw sendcoins <Players> <Coins>"));
-							} else {
-								p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
-							}
-							return false;
-						case "setpos1":
-							if (gp.hasPermission("RealSkywars.Admin")) {
-								if (p.setup != null) {
-									BigDecimal xCert = BigDecimal.valueOf(p.p.getLocation().getX());
-									BigDecimal zCert = BigDecimal.valueOf(p.p.getLocation().getZ());
+                                p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
+                            }
+                            return false;
+                        case "sendcoins":
+                            if (gp.hasPermission("RealSkywars.Coins")) {
+                                p.sendMessage(Text.addColor("&c/rsw sendcoins <Players> <Coins>"));
+                            } else {
+                                p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
+                            }
+                            return false;
+                        case "pos1":
+                            if (gp.hasPermission("RealSkywars.Admin")) {
+                                if (p.setup != null) {
+                                    BigDecimal xCert = BigDecimal.valueOf(p.p.getLocation().getX());
+                                    BigDecimal yCert = BigDecimal.valueOf(p.p.getLocation().getY());
+                                    BigDecimal zCert = BigDecimal.valueOf(p.p.getLocation().getZ());
 
-									int xfinal = xCert.intValue();
-									int zfinal = zCert.intValue();
+                                    int xfinal = xCert.intValue();
+                                    int yfinal = yCert.intValue();
+                                    int zfinal = zCert.intValue();
 
-									p.setup.POS1 = new Location(p.setup.worldMap, xfinal, 0, zfinal);
-									p.sendMessage(Text.addColor("&aPOS1 > X:" + xfinal + " - Z:" + zfinal));
-								} else {
-									p.sendMessage(LanguageManager.getString(p, TS.NO_SETUPMODE, true));
-								}
-							} else {
-								p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
-							}
-							return false;
-						case "setpos2":
-							if (gp.hasPermission("RealSkywars.Admin")) {
-								if (p.setup != null) {
-									BigDecimal xCert = BigDecimal.valueOf(p.p.getLocation().getX());
-									BigDecimal zCert = BigDecimal.valueOf(p.p.getLocation().getZ());
+                                    p.setup.POS1 = new Location(p.setup.worldMap, xfinal, yfinal, zfinal);
+                                    p.sendMessage(LanguageManager.getPrefix() + Text.addColor("&aPOS1 > X:" + xfinal + " | Y: " + yfinal + " | Z:" + zfinal));
+                                } else {
+                                    p.sendMessage(LanguageManager.getString(p, TS.NO_SETUPMODE, true));
+                                }
+                            } else {
+                                p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
+                            }
+                            return false;
+                        case "pos2":
+                            if (gp.hasPermission("RealSkywars.Admin")) {
+                                if (p.setup != null) {
+                                    BigDecimal xCert = BigDecimal.valueOf(p.p.getLocation().getX());
+                                    BigDecimal yCert = BigDecimal.valueOf(p.p.getLocation().getY());
+                                    BigDecimal zCert = BigDecimal.valueOf(p.p.getLocation().getZ());
 
-									int xfinal = xCert.intValue();
-									int zfinal = zCert.intValue();
+                                    int xfinal = xCert.intValue();
+                                    int yfinal = yCert.intValue();
+                                    int zfinal = zCert.intValue();
 
-									p.setup.POS2 = new Location(p.setup.worldMap, xfinal, 0, zfinal);
-									p.sendMessage(Text.addColor("&aPOS2 > X:" + xfinal + " - Z:" + zfinal));
-								} else {
+                                    p.setup.POS2 = new Location(p.setup.worldMap, xfinal, yfinal, zfinal);
+                                    p.sendMessage(LanguageManager.getPrefix() + Text.addColor("&aPOS2 > X:" + xfinal + " | Y: " + yfinal + " | Z:" + zfinal));
+                                } else {
 									p.sendMessage(LanguageManager.getString(p, TS.NO_SETUPMODE, true));
 								}
 							} else {
@@ -213,54 +218,34 @@ public class RSWcmd implements CommandExecutor {
 								if (p.setup != null) {
 									p.setup.spectator = p.p.getLocation();
 									p.setup.speclocConfirm = true;
-									p.sendMessage(LanguageManager.getString(p, TS.CMD_FINISHSETUP, true));
+                                    p.sendMessage(LanguageManager.getString(p, TS.CMD_FINISHSETUP, true));
 
-								} else {
-									p.sendMessage(LanguageManager.getString(p, TS.NO_SETUPMODE, true));
-								}
-							} else {
-								p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
-							}
-							return false;
-						case "testp":
-							if (gp.hasPermission("RealSkywars.Admin")) {
-								gp.sendMessage("&aActivated.");
-								double x = gp.getLocation().getX();
-								HashMap<Location, Particle> lp = new HashMap<>();
-								for (Particle pa : Particle.values()) {
-									if (!pa.name().contains("LEGACY") && !pa.equals(Particle.BLOCK_DUST) && !pa.equals(Particle.FALLING_DUST) && !pa.equals(Particle.ITEM_CRACK) && !pa.equals(Particle.BLOCK_CRACK) && !pa.equals(Particle.REDSTONE) && !pa.equals(Particle.MOB_APPEARANCE) && !pa.equals(Particle.SUSPENDED) && !pa.equals(Particle.SUSPENDED_DEPTH)) {
-										lp.put(new Location(gp.getLocation().getWorld(), x, gp.getLocation().getY(), gp.getLocation().getZ()), pa);
-
-										Holograms.add("&F&l" + pa.name(), new Location(gp.getLocation().getWorld(), x, gp.getLocation().getY() + 3, gp.getLocation().getZ()));
-
-										Debugger.print("X: " + x + " | Particle: " + pa.name());
-										x = x + 10;
-									}
-								}
-
-								Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.pl, new Runnable() {
-									@Override
-									public void run() {
-										Iterator it = lp.entrySet().iterator();
-										while (it.hasNext()) {
-											Map.Entry pair = (Map.Entry) it.next();
-
-											gp.getLocation().getWorld().spawnParticle((Particle) pair.getValue(), (Location) pair.getKey(), 2);
-										}
-									}
-								}, 10, 1);
-							} else {
-								p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
-							}
-							return false;
-						case "edittrails":
-							if (gp.hasPermission("RealSkywars.Admin")) {
-								GUIManager.openTrailEditor(p);
-							} else {
-								p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
-							}
-							return false;
-						case "lobby":
+                                } else {
+                                    p.sendMessage(LanguageManager.getString(p, TS.NO_SETUPMODE, true));
+                                }
+                            } else {
+                                p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
+                            }
+                            return false;
+                        case "testp":
+                            if (Debugger.debug == 1) {
+                                if (gp.hasPermission("RealSkywars.Admin")) {
+                                    p.executeWinBlock(4);
+                                } else {
+                                    p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
+                                }
+                            } else {
+                                p.sendMessage(LanguageManager.getString(p, TS.CMD_NOT_FOUND, true));
+                            }
+                            return false;
+                        case "edittrails":
+                            if (gp.hasPermission("RealSkywars.Admin")) {
+                                GUIManager.openTrailEditor(p);
+                            } else {
+                                p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
+                            }
+                            return false;
+                        case "lobby":
 							if (p.room == null) {
 								PlayerManager.tpLobby(p);
 							} else {
@@ -271,13 +256,13 @@ public class RSWcmd implements CommandExecutor {
 						case "forcestart":
 							if (gp.hasPermission("RealSkywars.Forcestart")) {
 								if (p.room != null) {
-									if (p.room.getGamePlayers().size() == 1) {
-										p.sendMessage(LanguageManager.getString(p, TS.CMD_CANT_FORCESTART, true));
-									} else {
-										p.room.forceStart();
-										p.sendMessage(LanguageManager.getString(p, TS.CMD_MATCH_FORCESTART, true));
-									}
-								} else {
+                                    if (p.room.getPlayersCount() == 1) {
+                                        p.sendMessage(LanguageManager.getString(p, TS.CMD_CANT_FORCESTART, true));
+                                    } else {
+                                        p.room.forceStart();
+                                        p.sendMessage(LanguageManager.getString(p, TS.CMD_MATCH_FORCESTART, true));
+                                    }
+                                } else {
 									p.sendMessage(LanguageManager.getString(p, TS.NO_MATCH, true));
 								}
 							} else {

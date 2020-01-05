@@ -11,23 +11,19 @@ public class SetupRoom {
 
 	public Boolean tpConfirm = false;
 	public String Name;
-	public ArrayList<Location> Cages = new ArrayList<Location>();
+	public ArrayList<Cage> cages = new ArrayList<Cage>();
 	public ArrayList<Team> teamslist = new ArrayList<Team>();
 	public int maxPlayers;
-	public ArrayList<Location> Chests = new ArrayList<Location>();
 	public World worldMap;
 	public Location spectator;
 	public Boolean spec = true;
-	public Location lowPoint;
-	public Location highPoint;
 	public GameType gameType;
-	public int placedCages = 1;
 	public boolean confirmCages = false;
 	public boolean speclocConfirm = false;
 	public Boolean guiConfirm = false;
 	public Location POS1;
 	public Location POS2;
-	public Boolean dragon = false;
+	public Boolean instantEnding = false;
 
 	public int teams;
 	public int playersPerTeam;

@@ -47,10 +47,10 @@ public class RoomSettings {
 			Arrays.asList("&7Spectator is turned &aON &7for dead players."));
 	static ItemStack specoff = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator",
 			Arrays.asList("&7Spectator is turned &cOFF &7for dead players."));
-	static ItemStack dragon = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Winner rides Dragon",
-			Arrays.asList("&7Riding is turned &aON &7for the winner(s)."));
-	static ItemStack dragoff = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Winner rides Dragon",
-			Arrays.asList("&7Riding is turned &cOFF &7for the winner(s)."));
+	static ItemStack ieon = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending",
+			Arrays.asList("&7Instant Ending is turned &aON&7."));
+	static ItemStack ieoff = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending",
+			Arrays.asList("&7Instant Ending is turned &cOFF&7."));
 
 	static ItemStack aAvailable = Itens.createItemLore(Material.GREEN_CONCRETE, 1, "&9Map Status",
 			Arrays.asList("&fCick to change the map status.", "", "&aAvailable", "&7Starting", "&7Waiting", "&7Playing",
@@ -123,19 +123,11 @@ public class RoomSettings {
 		} else {
 			inv.setItem(15, specoff);
 		}
-		if (game.isDragonEnabled() == true) {
-			inv.setItem(16, dragon);
+		if (game.isInstantEndEnabled() == true) {
+			inv.setItem(16, ieon);
 		} else {
-			inv.setItem(16, dragoff);
+			inv.setItem(16, ieoff);
 		}
-
-		ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, "&9Info",
-				Arrays.asList("&fPlayers: " + game.getCurrentPlayers() + "/" + game.getMaxPlayers(),
-						"&fSpectators: " + game.getCurrentSpectators(), "&fChest Tier: &b" + game.getTierType().name(),
-						"&fBlocks Placed: " + game.getBlocksPlaced().size(), "&fBlocks Removed: " + game.getBlocksDestroyed().size(), "",
-						"&fRunning Time: " + game.getTimePassed()));
-		// infoMap
-		inv.setItem(4, infoMap);
 
 		// resetbutton
 		inv.setItem(22, resetRoom);
@@ -143,36 +135,6 @@ public class RoomSettings {
 		refresher();
 
 		inventories.put(id, this);
-	}
-
-	private void refresher() {
-		refreshTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.pl, new Runnable() {
-			public void run() {
-
-				ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, "&9Info",
-						Arrays.asList("&fPlayers: " + game.getCurrentPlayers() + "/" + game.getMaxPlayers(),
-								"&fSpectators: " + game.getCurrentSpectators(), "&fChest Tier: &b" + game.getTierType().name(),
-								"&fBlocks Placed: " + game.getBlocksPlaced().size(), "&fBlocks Removed: " + game.getBlocksDestroyed().size(), "",
-								"&fRunning Time: " + game.getTimePassed()));
-				// infoMap
-				inv.setItem(4, infoMap);
-			}
-		}, 0L, 10L);
-	}
-
-	public void openInventory(GamePlayer player) {
-		Inventory inv = getInventory();
-		InventoryView openInv = player.p.getOpenInventory();
-		if (openInv != null) {
-			Inventory openTop = player.p.getOpenInventory().getTopInventory();
-			if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
-				openTop.setContents(inv.getContents());
-			} else {
-				player.p.openInventory(inv);
-			}
-			register();
-			player.istate = InteractionState.GUI_ROOMSET;
-		}
 	}
 
 	public static Listener getListener() {
@@ -215,9 +177,7 @@ public class RoomSettings {
 
 									// reset
 									if (e.getRawSlot() == 22) {
-										game.broadcastMessage(
-												LanguageManager.getString(gp, TS.ARENA_RESET, false));
-										game.kickPlayers();
+										game.kickPlayers(LanguageManager.getString(gp, TS.ARENA_RESET, true));
 										game.resetArena();
 										p.sendMessage(LanguageManager.getString(gp, TS.MAP_RESET_DONE, true));
 
@@ -278,12 +238,12 @@ public class RoomSettings {
 										MapManager.saveSettings(game);
 									}
 									if (e.getRawSlot() == 16) {
-										if (game.isDragonEnabled() == true) {
-											game.setDragon(false);
-											current.getInventory().setItem(16, dragoff);
+										if (game.isInstantEndEnabled() == true) {
+											game.setInstantEnd(false);
+											current.getInventory().setItem(16, ieoff);
 										} else {
-											game.setDragon(true);
-											current.getInventory().setItem(16, dragon);
+											game.setInstantEnd(true);
+											current.getInventory().setItem(16, ieon);
 										}
 										MapManager.saveSettings(game);
 									}
@@ -312,6 +272,35 @@ public class RoomSettings {
 				}
 			}
 		};
+	}
+
+	public void openInventory(GamePlayer player) {
+		Inventory inv = getInventory();
+		InventoryView openInv = player.p.getOpenInventory();
+		if (openInv != null) {
+			Inventory openTop = player.p.getOpenInventory().getTopInventory();
+			if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
+				openTop.setContents(inv.getContents());
+			} else {
+				player.p.openInventory(inv);
+			}
+			register();
+			player.istate = InteractionState.GUI_ROOMSET;
+		}
+	}
+
+	private void refresher() {
+		refreshTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.pl, new Runnable() {
+			public void run() {
+				ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, "&9Info",
+						Arrays.asList("&fPlayers: " + game.getPlayersCount() + "/" + game.getMaxPlayers(),
+								"&fSpectators: " + game.getSpectatorsCount(), "&fChest Tier: &b" + game.getTierType().name(),
+								"&fBlocks Placed: " + game.getBlocksPlaced().size(), "&fBlocks Removed: " + game.getBlocksDestroyed().size(), "",
+								"&fRunning Time: " + game.getTimePassed()));
+				// infoMap
+				inv.setItem(4, infoMap);
+			}
+		}, 0L, 10L);
 	}
 
 	private Inventory getInventory() {

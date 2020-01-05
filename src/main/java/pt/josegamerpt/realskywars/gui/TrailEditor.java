@@ -116,7 +116,15 @@ public class TrailEditor {
 									current.deleteTrail(gp.p, a);
 									break;
 								case LEFT:
-									current.changeIcon(gp.p, a);
+									switch (current.cat) {
+										case BOWPARTICLE:
+											current.changeIcon(gp.p, a);
+											break;
+										default:
+											gp.sendMessage(LanguageManager.getPrefix() + "&fThis trail isnt compatible with changing the icon.");
+											break;
+
+									}
 									break;
 								case RIGHT:
 									current.changeName(gp.p, a);
@@ -232,67 +240,143 @@ public class TrailEditor {
 	}
 
 	private void changePrice(Player p, DisplayItem id) {
-		PlayerInput pi = new PlayerInput(p, new PlayerInput.InputRunnable() {
-			@Override
-			public void run(String input) {
+		switch (cat) {
+			case BOWPARTICLE:
+				String acbw = "Main-Shop.Bow-Particles";
+				PlayerInput pi = new PlayerInput(p, new PlayerInput.InputRunnable() {
+					@Override
+					public void run(String input) {
 
-				int pric = 999999999;
-				try {
-					pric = Integer.parseInt(input);
-				} catch (NumberFormatException ex) {
-					p.sendMessage(LanguageManager.getPrefix() + Text.addColor("&cThats not a number. &fType in a number."));
-					changePrice(p, id);
-					return;
-				}
+						int pric = 999999999;
+						try {
+							pric = Integer.parseInt(input);
+						} catch (NumberFormatException ex) {
+							p.sendMessage(LanguageManager.getPrefix() + Text.addColor("&cThats not a number. &fType in a number."));
+							changePrice(p, id);
+							return;
+						}
 
-				List<String> list = Shops.file().getStringList("Main-Shop.Bow-Particles");
-				String trail = list.get(id.id);
-				String[] str = trail.split(">");
+						List<String> list = Shops.file().getStringList(acbw);
+						String trail = list.get(id.id);
+						String[] str = trail.split(">");
 
 
-				String newTrail = str[0] + ">" + pric + ">" + str[2] + ">" + str[3] + ">" + str[4];
-				list.remove(id.id);
-				list.add(id.id, newTrail);
-				Shops.file().set("Main-Shop.Bow-Particles", list);
-				Shops.save();
-				p.sendMessage(LanguageManager.getPrefix() + "Price changed to §a" + pric);
+						String newTrail = str[0] + ">" + pric + ">" + str[2] + ">" + str[3] + ">" + str[4];
+						list.remove(id.id);
+						list.add(id.id, newTrail);
+						Shops.file().set(acbw, list);
+						Shops.save();
+						p.sendMessage(LanguageManager.getPrefix() + "Price changed to §a" + pric);
 
-				TrailEditor v = new TrailEditor(p, cat, in);
-				v.openInventory(p);
-			}
-		}, new PlayerInput.InputRunnable() {
-			@Override
-			public void run(String input) {
-				TrailEditor v = new TrailEditor(p, cat, in);
-				v.openInventory(p);
-			}
-		});
+						TrailEditor v = new TrailEditor(p, cat, in);
+						v.openInventory(p);
+					}
+				}, new PlayerInput.InputRunnable() {
+					@Override
+					public void run(String input) {
+						TrailEditor v = new TrailEditor(p, cat, in);
+						v.openInventory(p);
+					}
+				});
+				break;
+			case WINBLOCKS:
+				String acwb = "Main-Shop.Bow-Particles";
+				new PlayerInput(p, new PlayerInput.InputRunnable() {
+					@Override
+					public void run(String input) {
+
+						int pric = 999999999;
+						try {
+							pric = Integer.parseInt(input);
+						} catch (NumberFormatException ex) {
+							p.sendMessage(LanguageManager.getPrefix() + Text.addColor("&cThats not a number. &fType in a number."));
+							changePrice(p, id);
+							return;
+						}
+
+						List<String> list = Shops.file().getStringList(acwb);
+						String trail = list.get(id.id);
+						String[] str = trail.split(">");
+
+
+						String newTrail = str[0] + ">" + pric + ">" + str[2] + ">" + str[3] + ">" + str[4];
+						list.remove(id.id);
+						list.add(id.id, newTrail);
+						Shops.file().set(acwb, list);
+						Shops.save();
+						p.sendMessage(LanguageManager.getPrefix() + "Price changed to §a" + pric);
+
+						TrailEditor v = new TrailEditor(p, cat, in);
+						v.openInventory(p);
+					}
+				}, new PlayerInput.InputRunnable() {
+					@Override
+					public void run(String input) {
+						TrailEditor v = new TrailEditor(p, cat, in);
+						v.openInventory(p);
+					}
+				});
+				break;
+		}
 	}
 
 	private void changePermission(Player p, DisplayItem id) {
-		PlayerInput pi = new PlayerInput(p, new PlayerInput.InputRunnable() {
-			@Override
-			public void run(String input) {
-				List<String> list = Shops.file().getStringList("Main-Shop.Bow-Particles");
-				String trail = list.get(id.id);
-				String[] str = trail.split(">");
-				String newTrail = str[0] + ">" + str[1] + ">" + str[2] + ">" + input + ">" + str[4];
-				list.remove(id.id);
-				list.add(id.id, newTrail);
-				Shops.file().set("Main-Shop.Bow-Particles", list);
-				Shops.save();
-				p.sendMessage(LanguageManager.getPrefix() + "Permission changed to §a" + input);
+		switch (cat) {
+			case BOWPARTICLE:
+				String acessb = "Main-Shop.Bow-Particles";
 
-				TrailEditor v = new TrailEditor(p, cat, in);
-				v.openInventory(p);
-			}
-		}, new PlayerInput.InputRunnable() {
-			@Override
-			public void run(String input) {
-				TrailEditor v = new TrailEditor(p, cat, in);
-				v.openInventory(p);
-			}
-		});
+				new PlayerInput(p, new PlayerInput.InputRunnable() {
+					@Override
+					public void run(String input) {
+						List<String> list = Shops.file().getStringList(acessb);
+						String trail = list.get(id.id);
+						String[] str = trail.split(">");
+						String newTrail = str[0] + ">" + str[1] + ">" + str[2] + ">" + input + ">" + str[4];
+						list.remove(id.id);
+						list.add(id.id, newTrail);
+						Shops.file().set(acessb, list);
+						Shops.save();
+						p.sendMessage(LanguageManager.getPrefix() + "Permission changed to §a" + input);
+
+						TrailEditor v = new TrailEditor(p, cat, in);
+						v.openInventory(p);
+					}
+				}, new PlayerInput.InputRunnable() {
+					@Override
+					public void run(String input) {
+						TrailEditor v = new TrailEditor(p, cat, in);
+						v.openInventory(p);
+					}
+				});
+				break;
+			case WINBLOCKS:
+				String acessw = "Main-Shop.Win-Blocks";
+
+				new PlayerInput(p, new PlayerInput.InputRunnable() {
+					@Override
+					public void run(String input) {
+						List<String> list = Shops.file().getStringList(acessw);
+						String trail = list.get(id.id);
+						String[] str = trail.split(">");
+						String newTrail = str[0] + ">" + str[1] + ">" + str[2] + ">" + input;
+						list.remove(id.id);
+						list.add(id.id, newTrail);
+						Shops.file().set(acessw, list);
+						Shops.save();
+						p.sendMessage(LanguageManager.getPrefix() + "Permission changed to §a" + input);
+
+						TrailEditor v = new TrailEditor(p, cat, in);
+						v.openInventory(p);
+					}
+				}, new PlayerInput.InputRunnable() {
+					@Override
+					public void run(String input) {
+						TrailEditor v = new TrailEditor(p, cat, in);
+						v.openInventory(p);
+					}
+				});
+				break;
+		}
 	}
 
 	private void changeIcon(Player p, DisplayItem a) {
@@ -306,29 +390,58 @@ public class TrailEditor {
 	}
 
 	private void deleteTrail(Player p, DisplayItem id) {
-		PlayerInput pi = new PlayerInput(p, new PlayerInput.InputRunnable() {
-			@Override
-			public void run(String input) {
-				if (input.equalsIgnoreCase("confirm")) {
-					List<String> list = Shops.file().getStringList("Main-Shop.Bow-Particles");
-					list.remove(id.id);
-					Shops.file().set("Main-Shop.Bow-Particles", list);
-					Shops.save();
-					p.sendMessage(LanguageManager.getPrefix() + Text.addColor("&fTrail " + id.name + " &adeleted."));
-					TrailEditor v = new TrailEditor(p, cat, in);
-					v.openInventory(p);
-				} else {
-					deleteTrail(p, id);
-					p.sendMessage(LanguageManager.getPrefix() + Text.addColor("&fType &aConfirm &for &cCancel"));
-				}
-			}
-		}, new PlayerInput.InputRunnable() {
-			@Override
-			public void run(String input) {
-				TrailEditor v = new TrailEditor(p, cat, in);
-				v.openInventory(p);
-			}
-		}, "&l&9Type &aConfirm &9to delete.", "&fType &4Cancel &fto cancel");
+		switch (cat) {
+			case BOWPARTICLE:
+				new PlayerInput(p, new PlayerInput.InputRunnable() {
+					@Override
+					public void run(String input) {
+						if (input.equalsIgnoreCase("confirm")) {
+							List<String> list = Shops.file().getStringList("Main-Shop.Bow-Particles");
+							list.remove(id.id);
+							Shops.file().set("Main-Shop.Bow-Particles", list);
+							Shops.save();
+							p.sendMessage(LanguageManager.getPrefix() + Text.addColor("&fTrail " + id.name + " &adeleted."));
+							TrailEditor v = new TrailEditor(p, cat, in);
+							v.openInventory(p);
+						} else {
+							deleteTrail(p, id);
+							p.sendMessage(LanguageManager.getPrefix() + Text.addColor("&fType &aConfirm &for &cCancel"));
+						}
+					}
+				}, new PlayerInput.InputRunnable() {
+					@Override
+					public void run(String input) {
+						TrailEditor v = new TrailEditor(p, cat, in);
+						v.openInventory(p);
+					}
+				}, "&l&9Type &aConfirm &9to delete.", "&fType &4Cancel &fto cancel");
+				break;
+			case WINBLOCKS:
+				new PlayerInput(p, new PlayerInput.InputRunnable() {
+					@Override
+					public void run(String input) {
+						if (input.equalsIgnoreCase("confirm")) {
+							List<String> list = Shops.file().getStringList("Main-Shop.Win-Blocks");
+							list.remove(id.id);
+							Shops.file().set("Main-Shop.Win-Blocks", list);
+							Shops.save();
+							p.sendMessage(LanguageManager.getPrefix() + Text.addColor("&fTrail " + id.name + " &adeleted."));
+							TrailEditor v = new TrailEditor(p, cat, in);
+							v.openInventory(p);
+						} else {
+							deleteTrail(p, id);
+							p.sendMessage(LanguageManager.getPrefix() + Text.addColor("&fType &aConfirm &for &cCancel"));
+						}
+					}
+				}, new PlayerInput.InputRunnable() {
+					@Override
+					public void run(String input) {
+						TrailEditor v = new TrailEditor(p, cat, in);
+						v.openInventory(p);
+					}
+				}, "&l&9Type &aConfirm &9to delete.", "&fType &4Cancel &fto cancel");
+				break;
+		}
 	}
 
 	private void changeName(Player p, DisplayItem id) {

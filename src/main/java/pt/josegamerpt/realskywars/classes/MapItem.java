@@ -26,8 +26,8 @@ public class MapItem {
 		if (g.isPlaceHolder() == true) {
 			icon = Itens.createItem(Material.BUCKET, count, LanguageManager.getString(p, Enum.TS.ITEMS_MAP_NOTFOUND_TITLE, false));
 		} else {
-			if (g.getCurrentPlayers() > 0) {
-				count = g.getCurrentPlayers();
+			if (g.getPlayersCount() > 0) {
+				count = g.getPlayersCount();
 			}
 
 			icon = Itens.createItemLore(getState(), count, LanguageManager.getString(p, Enum.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getName()).replace("%mode%", g.getMode().name()),
@@ -38,7 +38,7 @@ public class MapItem {
 	private List<String> variableList(ArrayList<String> list) {
 		List<String> a = new ArrayList<String>();
 		for (String s : list) {
-			a.add(s.replace("%players%", g.getCurrentPlayers() + "").replace("%maxplayers%", g.getMaxPlayers() + ""));
+			a.add(s.replace("%players%", g.getPlayersCount() + "").replace("%maxplayers%", g.getMaxPlayers() + ""));
 		}
 		return a;
 	}

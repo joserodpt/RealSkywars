@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 
 import pt.josegamerpt.realskywars.classes.Enum;
 import pt.josegamerpt.realskywars.classes.Enum.GameState;
 import pt.josegamerpt.realskywars.classes.Enum.Selections;
 import pt.josegamerpt.realskywars.classes.GameRoom;
-import pt.josegamerpt.realskywars.classes.GameRoomSolo;
+import pt.josegamerpt.realskywars.modes.Placeholder;
 import pt.josegamerpt.realskywars.player.GamePlayer;
 import pt.josegamerpt.realskywars.utils.Text;
 
@@ -30,14 +29,6 @@ public class GameManager {
 		return null;
 	}
 
-	public static int getCurrentPlayers(GameRoom g) {
-		return g.getCurrentPlayers();
-	}
-
-	public static int getMaxPlayers(GameRoom g) {
-		return g.getMaxPlayers();
-	}
-
 	public static ArrayList<World> getRoomWorlds() {
 		ArrayList<World> words = new ArrayList<World>();
 		for (GameRoom g : rooms) {
@@ -48,8 +39,7 @@ public class GameManager {
 
 	public static void endGames() {
 		for (GameRoom g : rooms) {
-			g.broadcastMessage(Text.addColor("&cAn ADMIN ordered all games to shut down."));
-			g.kickPlayers();
+			g.kickPlayers(Text.addColor("&cAn ADMIN ordered all games to shut down."));
 		}
 	}
 
@@ -91,7 +81,7 @@ public class GameManager {
 				break;
 		}
 		if (f.size() == 0) {
-			GameRoom g = new GameRoomSolo("No Maps Found");
+			Placeholder g = new Placeholder("No Maps Found");
 			f.add(g);
 		}
 		return f;

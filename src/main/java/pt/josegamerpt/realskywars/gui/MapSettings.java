@@ -43,10 +43,10 @@ public class MapSettings {
 			Arrays.asList("&7Spectator is turned &aON &7for dead players."));
 	static ItemStack specoff = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator",
 			Arrays.asList("&7Spectator is turned &cOFF &7for dead players."));
-	static ItemStack dragon = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Winner rides Dragon",
-			Arrays.asList("&7Riding is turned &aON &7for the winner(s)."));
-	static ItemStack dragoff = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Winner rides Dragon",
-			Arrays.asList("&7Riding is turned &cOFF &7for the winner(s)."));
+	static ItemStack ieon = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending",
+			Arrays.asList("&7Instant Ending is turned &aON&7."));
+	static ItemStack ieoff = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending",
+			Arrays.asList("&7Instant Ending is turned &cOFF&7."));
 
 	public MapSettings(SetupRoom g, UUID id) {
 		this.uuid = id;
@@ -76,10 +76,10 @@ public class MapSettings {
 		} else {
 			inv.setItem(10, specoff);
 		}
-		if (g.dragon == true) {
-			inv.setItem(16, dragon);
+		if (g.instantEnding == true) {
+			inv.setItem(16, ieon);
 		} else {
-			inv.setItem(16, dragoff);
+			inv.setItem(16, ieoff);
 		}
 
 		inv.setItem(22, confirm);
@@ -154,12 +154,12 @@ public class MapSettings {
 										}
 									}
 									if (e.getRawSlot() == 16) {
-										if (gp.setup.dragon == true) {
-											gp.setup.dragon = false;
-											inv.setItem(16, dragoff);
+										if (gp.setup.instantEnding) {
+											gp.setup.instantEnding = false;
+											inv.setItem(16, ieoff);
 										} else {
-											gp.setup.dragon = true;
-											inv.setItem(16, dragon);
+											gp.setup.instantEnding = true;
+											inv.setItem(16, ieon);
 										}
 									}
 								}
