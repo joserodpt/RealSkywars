@@ -105,11 +105,11 @@ public class PlayerManager {
 
     public static void savePlayer(GamePlayer p) {
         if (p.p != null) {
-            Players.file().set(p.p.getUniqueId() + ".Coins", p.Coins);
-            Players.file().set(p.p.getUniqueId() + ".Kills", p.TotalKills);
-            Players.file().set(p.p.getUniqueId() + ".Deaths", p.Deaths);
+            Players.file().set(p.p.getUniqueId() + ".Coins", p.coins);
+            Players.file().set(p.p.getUniqueId() + ".Kills", p.totalkills);
+            Players.file().set(p.p.getUniqueId() + ".Deaths", p.deaths);
             Players.file().set(p.p.getUniqueId() + ".Name", p.p.getName());
-            Players.file().set(p.p.getUniqueId() + ".Language", p.Language);
+            Players.file().set(p.p.getUniqueId() + ".Language", p.language);
             for (Entry<Selection, Selections> entry : p.selections.entrySet()) {
                 Selection key = entry.getKey();
                 Selections value = entry.getValue();
@@ -150,7 +150,7 @@ public class PlayerManager {
     }
 
     public static void setLanguage(GamePlayer player, String s) {
-        player.Language = s;
+        player.language = s;
         player.p.sendMessage(LanguageManager.getString(player, TS.LANGUAGE_SET, true).replace("%language%", "" + s));
     }
 

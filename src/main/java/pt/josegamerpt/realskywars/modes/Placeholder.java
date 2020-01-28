@@ -5,6 +5,7 @@ import org.bukkit.World;
 import pt.josegamerpt.realskywars.classes.Cage;
 import pt.josegamerpt.realskywars.classes.Enum;
 import pt.josegamerpt.realskywars.classes.GameRoom;
+import pt.josegamerpt.realskywars.classes.Team;
 import pt.josegamerpt.realskywars.player.GamePlayer;
 import pt.josegamerpt.realskywars.utils.Calhau;
 
@@ -68,10 +69,6 @@ public class Placeholder implements GameRoom {
     }
 
     public void kickPlayers(String s) {
-
-    }
-
-    public void kickPlayers(Boolean message, String s) {
 
     }
 
@@ -163,10 +160,6 @@ public class Placeholder implements GameRoom {
 
     }
 
-    public void spectate(GamePlayer p) {
-
-    }
-
     public ArrayList<Location> getOpenedChests() {
         return null;
     }
@@ -189,5 +182,14 @@ public class Placeholder implements GameRoom {
 
     public ArrayList<Cage> getCages() {
         return null;
+    }
+
+    @Override
+    public ArrayList<Team> getTeams() {
+        return null;
+    }
+
+    public int maxMembersTeam() {
+        return 0;
     }
 }

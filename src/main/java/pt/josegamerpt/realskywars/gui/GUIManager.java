@@ -171,7 +171,7 @@ public class GUIManager {
 				GUIManager.openLanguage(p);
 			}
 		}, Itens.createItemLore(Material.JUNGLE_SIGN, 1, "&9Language",
-				Arrays.asList("&fCurrently set: " + p.Language)), 7);
+				Arrays.asList("&fCurrently set: " + p.language)), 7);
 		
 		inventory.addItem(new ClickRunnable() {
 			public void run(InventoryClickEvent e) {

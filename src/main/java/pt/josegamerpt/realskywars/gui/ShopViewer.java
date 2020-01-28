@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Cat;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -191,7 +190,7 @@ public class ShopViewer {
 												.replace("%name%", a.name).replace("%coins%", a.price + ""));
 									} else {
 										gp.sendMessage(LanguageManager.getString(gp, TS.INSUFICIENT_COINS, true)
-												.replace("%coins%", gp.Coins + ""));
+												.replace("%coins%", gp.coins + ""));
 									}
 								}
 							} else {

@@ -26,16 +26,18 @@ import pt.josegamerpt.realskywars.utils.ArenaCuboid;
 import pt.josegamerpt.realskywars.utils.Calhau;
 import pt.josegamerpt.realskywars.utils.MathUtils;
 import pt.josegamerpt.realskywars.utils.Text;
+import sun.security.ssl.Debug;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Solo implements GameRoom {
+public class Teams implements GameRoom {
 
     public int id;
     public String name;
     public int maxPlayers;
+    public int maxMembersTeam;
     public Enum.GameState state;
     public World world;
     public WorldBorder border;
@@ -45,9 +47,8 @@ public class Solo implements GameRoom {
     public Location POS2;
     public int borderSize;
 
-    public ArrayList<Cage> cages = new ArrayList<Cage>();
+    public ArrayList<Team> teams;
     public ArrayList<GamePlayer> onThisRoom = new ArrayList<GamePlayer>();
-    public ArrayList<GamePlayer> players = new ArrayList<GamePlayer>();
     public ArrayList<GamePlayer> spectators = new ArrayList<GamePlayer>();
     public ArrayList<Location> chests = new ArrayList<Location>();
     public ArrayList<Location> openedChests = new ArrayList<Location>();
@@ -66,14 +67,15 @@ public class Solo implements GameRoom {
     private HashMap<String, Integer> tasks = new HashMap<String, Integer>();
     // b-1, n-2, o-3, c-4
 
-    public Solo(int i, String nome, World w, Enum.GameState estado, ArrayList<Cage> cages, int maxPlayers,
-                Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2) {
+    public Teams(int i, String nome, World w, Enum.GameState estado, ArrayList<Team> teams, int maxPlayers,
+                 Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2) {
         this.id = i;
         this.name = nome;
         this.world = w;
         this.state = estado;
-        this.cages = cages;
+        this.teams = teams;
         this.maxPlayers = maxPlayers;
+        this.maxMembersTeam = teams.get(0).maxMembers;
         this.spectatorLocation = spectatorLocation;
         this.specEnabled = specEnabled;
         this.instantEnding = instantEnding;
@@ -105,11 +107,19 @@ public class Solo implements GameRoom {
     }
 
     public int getPlayersCount() {
-        return this.players.size();
+        int i = 0;
+        for (Team t : teams) {
+            i = i + t.members.size();
+        }
+        return i;
     }
 
     public ArrayList<GamePlayer> getPlayers() {
-        return this.players;
+        ArrayList<GamePlayer> a = new ArrayList<GamePlayer>();
+        for (Team t : teams) {
+            a.addAll(t.members);
+        }
+        return a;
     }
 
     public int getSpectatorsCount() {
@@ -161,6 +171,7 @@ public class Solo implements GameRoom {
                 PlayerManager.giveItems(p.p, PlayerManager.PlayerItems.LOBBY);
 
                 p.state = Enum.PlayerState.LOBBY_OR_NOGAME;
+                p.p.setAllowFlight(false);
                 p.setFlying(false);
 
                 p.saveData();
@@ -222,19 +233,21 @@ public class Solo implements GameRoom {
         }
     }
 
-    @Override
     public ArrayList<Cage> getCages() {
-        return this.cages;
+        ArrayList<Cage> c = new ArrayList<Cage>();
+        for (Team t : this.teams) {
+            c.add(t.tc);
+        }
+        return c;
     }
 
-    @Override
     public ArrayList<Team> getTeams() {
-        return null;
+        return this.teams;
     }
 
     @Override
     public int maxMembersTeam() {
-        return 999999;
+        return this.maxMembersTeam;
     }
 
     private void startGameFunction() {
@@ -260,25 +273,25 @@ public class Solo implements GameRoom {
                 break;
         }
 
-        for (GamePlayer p : this.players) {
-            if (p.p != null) {
-                p.p.getInventory().clear();
+        for (Team t : this.teams) {
+            for (GamePlayer p : t.members) {
+                if (p.p != null) {
+                    p.p.getInventory().clear();
 
-                gameTimer.addPlayer(p.p);
+                    gameTimer.addPlayer(p.p);
 
-                for (String s : LanguageManager.getList(p, Enum.TL.ARENA_START)) {
-                    if (p.kit != null) {
-                        p.sendMessage(variables(s).replace("%kit%", p.kit.name));
-                        p.p.getInventory().setContents(p.kit.contents);
-                    } else {
-                        p.sendMessage(variables(s).replace("%kit%", "None"));
+                    for (String s : LanguageManager.getList(p, Enum.TL.ARENA_START)) {
+                        if (p.kit != null) {
+                            p.sendMessage(variables(s).replace("%kit%", p.kit.name));
+                            p.p.getInventory().setContents(p.kit.contents);
+                        } else {
+                            p.sendMessage(variables(s).replace("%kit%", "None"));
+                        }
                     }
+                    p.state = Enum.PlayerState.PLAYING;
                 }
-
-                p.p.getWorld().getBlockAt(p.p.getLocation().add(0, -1, 0)).setType(Material.AIR);
-
-                p.state = Enum.PlayerState.PLAYING;
             }
+            t.openCage();
         }
 
         this.timer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), timeleft, () -> {
@@ -288,7 +301,7 @@ public class Solo implements GameRoom {
             gameTimer.setProgress(0);
             gameTimer.setColor(BarColor.RED);
 
-            for (GamePlayer p : this.players) {
+            for (GamePlayer p : onThisRoom) {
                 if (p.p != null) {
                     p.p.sendTitle("", Text.addColor(LanguageManager.getString(p, Enum.TS.TITLE_DEATHMATCH, false)), 10, 20,
                             5);
@@ -297,7 +310,6 @@ public class Solo implements GameRoom {
 
             border.setSize(this.borderSize / 2, 30L);
             border.setCenter(this.arenaCuboid.getCenter());
-
         }, (t) -> {
             gameTimer.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_RUNTIME).replace("%time%",
                     t.getSecondsLeft() + "")));
@@ -331,19 +343,18 @@ public class Solo implements GameRoom {
         switch (p.state) {
             case CAGE:
                 p.leaveCage();
-                this.players.remove(p);
+                p.team.removePlayer(p);
                 break;
             case PLAYING:
-                this.players.remove(p);
+                p.team.removePlayer(p);
                 checkWin();
                 break;
-            default:
-                for (GamePlayer ws : this.players) {
+            case SPECTATOR:
+                for (GamePlayer ws : this.getPlayers()) {
                     if (ws.p != null) {
                         ws.p.showPlayer(RealSkywars.pl, p.p);
                     }
                 }
-
                 p.p.setFlying(false);
                 this.spectators.remove(p);
                 break;
@@ -363,13 +374,13 @@ public class Solo implements GameRoom {
         }
 
         this.onThisRoom.remove(p);
-
         PlayerManager.tpLobby(p);
         PlayerManager.giveItems(p.p, PlayerManager.PlayerItems.LOBBY);
         p.sendMessage(lv);
 
         p.state = Enum.PlayerState.LOBBY_OR_NOGAME;
         p.room = null;
+        p.team = null;
     }
 
     @Override
@@ -419,7 +430,6 @@ public class Solo implements GameRoom {
         gp.state = Enum.PlayerState.CAGE;
 
         this.onThisRoom.add(gp);
-        this.players.add(gp);
 
         if (gp.p != null) {
             gameTimer.addPlayer(gp.p);
@@ -430,8 +440,8 @@ public class Solo implements GameRoom {
 
         //cage
 
-        for (Cage c : this.cages) {
-            if (c.isEmpty()) {
+        for (Team c : this.teams) {
+            if (c.isTeamFull() == false) {
                 c.addPlayer(gp);
                 break;
             }
@@ -462,14 +472,14 @@ public class Solo implements GameRoom {
         }, (t) -> {
             if (getPlayersCount() < Config.file().getInt("Config.Min-Players-ToStart")) {
                 Bukkit.getScheduler().cancelTask(t.getTaskId());
-                for (GamePlayer p : this.players) {
+                for (GamePlayer p : onThisRoom) {
                     p.sendMessage(variables(LanguageManager.getString(p, Enum.TS.ARENA_CANCEL, true)));
                 }
                 gameTimer.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_WAIT)));
                 gameTimer.setProgress(0D);
                 this.state = Enum.GameState.WAITING;
             } else {
-                for (GamePlayer p : this.players) {
+                for (GamePlayer p : this.getPlayers()) {
                     p.sendMessage(variables(LanguageManager.getString(p, Enum.TS.ARENA_START_COUNTDOWN, true)
                             .replace("%time%", t.getSecondsLeft() + "")));
                 }
@@ -490,7 +500,7 @@ public class Solo implements GameRoom {
         this.spectators.add(p);
         p.room = this;
 
-        for (GamePlayer ws : this.players) {
+        for (GamePlayer ws : this.getPlayers()) {
             if (ws.p != null) {
                 ws.p.hidePlayer(RealSkywars.pl, p.p);
             }
@@ -506,6 +516,7 @@ public class Solo implements GameRoom {
         p.p.teleport(this.spectatorLocation);
         PlayerManager.giveItems(p.p, PlayerManager.PlayerItems.SPECTATOR);
 
+        p.p.setAllowFlight(true);
         p.p.setFlying(true);
 
         p.sendMessage(LanguageManager.getString(p, Enum.TS.MATCH_SPECTATE, true));
@@ -542,7 +553,7 @@ public class Solo implements GameRoom {
     public void resetArena() {
         this.state = Enum.GameState.RESETTING;
 
-        this.players.clear();
+        this.teams.forEach(team -> team.reset());
         this.spectators.clear();
         this.onThisRoom.clear();
         this.openedChests.clear();
@@ -601,8 +612,8 @@ public class Solo implements GameRoom {
 
     public void spectate(GamePlayer p, Location killLoc) {
         p.leaveCage();
-        this.players.remove(p);
         this.spectators.add(p);
+        p.team.removePlayer(p);
 
         p.state = Enum.PlayerState.SPECTATOR;
 
@@ -631,14 +642,14 @@ public class Solo implements GameRoom {
     }
 
     public void checkWin() {
-        if (getPlayersCount() == 1) {
+        if (getAliveTeams() == 1) {
             this.state = Enum.GameState.FINISHING;
 
             gameTimer.setTitle(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_END));
             gameTimer.setProgress(0);
 
             if (getPlayers().get(0).p != null) {
-                Bukkit.broadcastMessage(getPlayers().get(0).p.getName() + " won on the map " + this.name);
+                PlayerManager.players.forEach(gamePlayer -> gamePlayer.sendMessage(LanguageManager.getString(gamePlayer, Enum.TS.WINNER_BROADCAST, true)));
             }
 
             Countdown timer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), Config.file().getInt("Config.Time-EndGame"),
@@ -646,25 +657,25 @@ public class Solo implements GameRoom {
                         this.timer.killTask();
                         this.cancelTask("countTime");
 
-                        GamePlayer p = getPlayers().get(0);
-                        if (p.p != null) {
-                            p.addWin(1);
-                            p.executeWinBlock(Config.file().getInt("Config.Time-EndGame") - 1);
-                        }
+                        Team t = getPlayers().get(0).team;
 
-                        sendLog(p);
+                        for (GamePlayer p : t.members) {
+                            if (p.p != null) {
+                                p.addWin(1);
+                                p.executeWinBlock(Config.file().getInt("Config.Time-EndGame") - 1);
+                            }
+                            sendLog(p);
+                        }
 
                         for (GamePlayer g : this.onThisRoom) {
                             if (g.p != null) {
                                 g.leaveCage();
-                                g.sendMessage(variables(LanguageManager.getString(p, Enum.TS.MATCH_END, true)).replace("%time%", "" + Config.file().getInt("Config.Time-EndGame")));
+                                g.sendMessage(variables(LanguageManager.getString(g, Enum.TS.MATCH_END, true)).replace("%time%", "" + Config.file().getInt("Config.Time-EndGame")));
                                 g.p.setMetadata("invencivel", new FixedMetadataValue(RealSkywars.pl, 0));
-                                if (p.p != null) {
-                                    g.p.sendTitle("",
-                                            Text.addColor(LanguageManager.getString(g, Enum.TS.TITLE_WIN, true)
-                                                    .replace("%player%", p.p.getDisplayName())),
-                                            10, 40, 10);
-                                }
+                                g.p.sendTitle("",
+                                        Text.addColor(LanguageManager.getString(g, Enum.TS.TITLE_WIN, true)
+                                                .replace("%player%", t.getNames())),
+                                        10, 40, 10);
                             }
                         }
                     }, () -> {
@@ -680,7 +691,17 @@ public class Solo implements GameRoom {
         }
     }
 
+    private int getAliveTeams() {
+        int al = 0;
+        for (Team t : this.teams) {
+            if (t.eliminated == false && t.members.size() > 0) {
+                al++;
+            }
+        }
+        return al;
+    }
+
     public Enum.GameType getMode() {
-        return Enum.GameType.SOLO;
+        return Enum.GameType.TEAMS;
     }
 }

@@ -96,4 +96,8 @@ public interface GameRoom {
 	void cancelTask(String s);
 
 	ArrayList<Cage> getCages();
+
+	ArrayList<Team> getTeams();
+
+	int maxMembersTeam();
 }

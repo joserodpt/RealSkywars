@@ -42,7 +42,7 @@ public class PlayerGUI {
 
 		ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, "&9About",
 				Arrays.asList("&fPlayer State: " + p.state, "&fInteraction State: " + p.istate, "&fRoom: " + p.room,
-						"&fKills: " + p.TotalKills, "&fDeaths: " + p.Deaths, "&fCage Block:" + p.cageBlock));
+						"&fKills: " + p.totalkills, "&fDeaths: " + p.deaths, "&fCage Block:" + p.cageBlock));
 		// infoMap
 		inv.setItem(2, infoMap);
 
@@ -63,7 +63,7 @@ public class PlayerGUI {
 				}
 				ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, "&9About",
 						Arrays.asList("&fPlayer State: " + gp.state, "&fInteraction State: " + gp.istate,
-								"&fRoom: " + roomName, "&fKills: " + gp.TotalKills, "&fDeaths: " + gp.Deaths, "&fCage Block:" + gp.cageBlock));
+								"&fRoom: " + roomName, "&fKills: " + gp.totalkills, "&fDeaths: " + gp.deaths, "&fCage Block:" + gp.cageBlock));
 
 				// infoMap
 				inv.setItem(2, infoMap);

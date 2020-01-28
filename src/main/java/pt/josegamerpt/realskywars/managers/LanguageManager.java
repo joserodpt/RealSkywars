@@ -29,17 +29,17 @@ public class LanguageManager {
 	}
 
 	public static ArrayList<String> getList(GamePlayer p, TL tl) {
-		String lang = p.Language;
+		String lang = p.language;
 		ArrayList<String> trad = new ArrayList<String>();
 
 		switch (tl) {
-		case ARENA_START:
-			trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Messages.Arena.Start"));
-			break;
-		case END_LOG:
-			trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Messages.Arena.End-Log"));
-			break;
-		case INITSETUP_ARENA:
+			case ARENA_START:
+				trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Messages.Arena.Start"));
+				break;
+			case END_LOG:
+				trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Messages.Arena.End-Log"));
+				break;
+			case INITSETUP_ARENA:
 			trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Messages.System.Arena.Init-Setup"));
 			break;
 			case SCOREBOARD_LOBBY_LINES:
@@ -61,7 +61,7 @@ public class LanguageManager {
 				trad = Text.addColor(Languages.file().getList("Languages." + lang + ".Messages.System.Titles.Join-Room"));
 				break;
 			default:
-				trad.add("List not found.");
+				trad.add("List not found (" + tl.name() + ")");
 		}
 
 		return trad;
@@ -103,7 +103,7 @@ public class LanguageManager {
 	}
 
 	private static String getString(GamePlayer p, TS ts) {
-		String lang = p.Language;
+		String lang = p.language;
 		String tr = "Not Found";
 
 		try {
@@ -368,10 +368,10 @@ public class LanguageManager {
 					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Categories.Bow-Particles"));
 					break;
 				default:
-					tr = "String not found.";
+					tr = "String not found (" + ts.name() + ")";
 			}
 		} catch (Exception e) {
-			tr = "Error finding translation.";
+			tr = "Error finding translation (" + ts.name() + ")";
 			return tr;
 		}
 
@@ -398,7 +398,7 @@ public class LanguageManager {
 		} else if (ts.equals(TSsingle.BOSSBAR_ARENA_STARTING)) {
 			return Text.addColor(Languages.file().getString("Strings.Boss-Bar.Starting"));
 		} else {
-			return "String not found.";
+			return "String not found (" + ts.name() + ")";
 		}
 	}
 

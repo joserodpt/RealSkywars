@@ -2,6 +2,7 @@ package pt.josegamerpt.realskywars.player;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -21,6 +22,7 @@ import pt.josegamerpt.realskywars.configuration.Items;
 import pt.josegamerpt.realskywars.effects.BowTrail;
 import pt.josegamerpt.realskywars.managers.EffectsManager;
 import pt.josegamerpt.realskywars.managers.GameManager;
+import pt.josegamerpt.realskywars.managers.LanguageManager;
 import pt.josegamerpt.realskywars.managers.PlayerManager;
 
 public class PlayerEvents implements Listener {
@@ -50,11 +52,14 @@ public class PlayerEvents implements Listener {
 		Player pkilled = e.getEntity();
 		Player pkiller = e.getEntity().getKiller();
 
+		Location deathLoc = null;
+
 		if (pkiller instanceof Player) {
 			GamePlayer killer = PlayerManager.getPlayer(pkiller);
 			if (killer.room != null) {
 				killer.addKill(1);
 			}
+			deathLoc = pkiller.getLocation();
 		}
 
 		GamePlayer killed = PlayerManager.getPlayer(pkilled);
@@ -66,13 +71,19 @@ public class PlayerEvents implements Listener {
 
 			killed.addDeath(1);
 
+			Location finalDeathLoc = deathLoc;
 			Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.pl, new Runnable() {
 				@Override
 				public void run() {
 					killed.p.spigot().respawn();
-					killed.room.spectate(killed, pkiller.getLocation());
+					;
+					if (finalDeathLoc == null) {
+						killed.room.spectate(killed, killed.room.getSpectatorLocation());
+					} else {
+						killed.room.spectate(killed, pkiller.getLocation());
+					}
 				}
-			}, 3);
+			}, 1);
 		}
 	}
 
@@ -85,7 +96,7 @@ public class PlayerEvents implements Listener {
 			GamePlayer hurt = PlayerManager.getPlayer(whoWasHit);
 			if (hitter.team != null) {
 				if (hitter.team.members.contains(hurt)) {
-					whoHit.sendMessage("You cant hurt your teammate!");
+					whoHit.sendMessage(LanguageManager.getString(hitter, Enum.TS.TEAMMATE_DAMAGE_CANCEL, true));
 					e.setCancelled(true);
 				}
 			}

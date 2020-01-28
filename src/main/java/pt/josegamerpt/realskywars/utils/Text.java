@@ -23,6 +23,12 @@ public class Text {
 		return ChatColor.translateAlternateColorCodes('&', string);
 	}
 
+	public static ArrayList<String> entryToList(List<Entry> e) {
+		ArrayList<String> r = new ArrayList<>();
+		e.forEach(entry -> r.add(entry.getName()));
+		return r;
+	}
+
 	public static String rainbow(String original) {
 		final char[] chars = {'c', '6', 'e', 'a', 'b', '3', 'd'};
 		int index = 0;

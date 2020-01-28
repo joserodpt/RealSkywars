@@ -5,7 +5,6 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 import org.bukkit.*;
-import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,7 +29,6 @@ import pt.josegamerpt.realskywars.configuration.Languages;
 import pt.josegamerpt.realskywars.configuration.Maps;
 import pt.josegamerpt.realskywars.configuration.Players;
 import pt.josegamerpt.realskywars.configuration.Shops;
-import pt.josegamerpt.realskywars.effects.BlockWinTrail;
 import pt.josegamerpt.realskywars.gui.ChestTierMenu;
 import pt.josegamerpt.realskywars.gui.GUIManager;
 import pt.josegamerpt.realskywars.gui.KitSettings;
@@ -46,8 +44,8 @@ import pt.josegamerpt.realskywars.managers.LanguageManager;
 import pt.josegamerpt.realskywars.managers.MapManager;
 import pt.josegamerpt.realskywars.managers.PlayerManager;
 import pt.josegamerpt.realskywars.player.GamePlayer;
-import pt.josegamerpt.realskywars.utils.Holograms;
 import pt.josegamerpt.realskywars.utils.Text;
+import sun.security.ssl.Debug;
 
 public class RSWcmd implements CommandExecutor {
 
@@ -120,7 +118,7 @@ public class RSWcmd implements CommandExecutor {
 						case "coins":
 							if (gp.hasPermission("RealSkywars.coins")) {
 								p.sendMessage(
-										LanguageManager.getString(p, TS.CMD_COINS, true).replace("%coins%", p.Coins + ""));
+										LanguageManager.getString(p, TS.CMD_COINS, true).replace("%coins%", p.coins + ""));
 							} else {
 								p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
 							}
@@ -256,13 +254,27 @@ public class RSWcmd implements CommandExecutor {
 						case "forcestart":
 							if (gp.hasPermission("RealSkywars.Forcestart")) {
 								if (p.room != null) {
-                                    if (p.room.getPlayersCount() == 1) {
-                                        p.sendMessage(LanguageManager.getString(p, TS.CMD_CANT_FORCESTART, true));
-                                    } else {
-                                        p.room.forceStart();
-                                        p.sendMessage(LanguageManager.getString(p, TS.CMD_MATCH_FORCESTART, true));
-                                    }
-                                } else {
+									switch (p.room.getMode()) {
+										case SOLO:
+											if (p.room.getPlayersCount() < Config.file().getInt("Config.Min-Players-ToStart")) {
+												p.sendMessage(LanguageManager.getString(p, TS.CMD_CANT_FORCESTART, true));
+											} else {
+												p.room.forceStart();
+												p.sendMessage(LanguageManager.getString(p, TS.CMD_MATCH_FORCESTART, true));
+											}
+											break;
+										case TEAMS:
+											Debugger.print(p.room.getPlayersCount() + "");
+											Debugger.print((p.room.maxMembersTeam() + 1) + "");
+											if (p.room.getPlayersCount() < (p.room.maxMembersTeam() + 1)) {
+												p.sendMessage(LanguageManager.getString(p, TS.CMD_CANT_FORCESTART, true));
+											} else {
+												p.room.forceStart();
+												p.sendMessage(LanguageManager.getString(p, TS.CMD_MATCH_FORCESTART, true));
+											}
+											break;
+									}
+								} else {
 									p.sendMessage(LanguageManager.getString(p, TS.NO_MATCH, true));
 								}
 							} else {
@@ -585,7 +597,7 @@ public class RSWcmd implements CommandExecutor {
 									c.transferCoins();
 								} else {
 									p.sendMessage(LanguageManager.getString(p, TS.INSUFICIENT_COINS, true)
-											.replace("%coins%", p.Coins + ""));
+											.replace("%coins%", p.coins + ""));
 								}
 							} else {
 								p.sendMessage(LanguageManager.getString(p, TS.NO_PLAYER_FOUND, true));
@@ -609,25 +621,22 @@ public class RSWcmd implements CommandExecutor {
 					}
 				} else if (args.length == 4) {
 					if (args[0].equals("create")) {
-						p.sendMessage(LanguageManager.getPrefix() + " &fThe ability to create team rooms is coming in a future update.");
-						//teams coming soon
-						//String mapname = args[1];
-						//int teams = Integer.valueOf(args[2]);
-						//int pperteam = Integer.valueOf(args[3]);
-						//if (Config.file().isConfigurationSection("Config.Lobby") == true) {
-						//	if (!MapManager.getRegisteredMaps().contains(mapname)) {
-						//		if (p.setup != null) {
-					//				p.sendMessage(LanguageManager.getString(p, TS.SETUP_NOT_FINISHED, true));
-						//		} else {
-					//				MapManager.setupTeams(p, mapname, teams, pperteam);
-					//			}
-					//		} else {
-					//			p.sendMessage(LanguageManager.getString(p, TS.MAP_EXISTS, true));
-					//		}
-//
-					//	} else {
-					//		p.sendMessage(LanguageManager.getString(p, TS.LOBBYLOC_NOT_SET, true));
-					//	}
+						String mapname = args[1];
+						int teams = Integer.valueOf(args[2]);
+						int pperteam = Integer.valueOf(args[3]);
+						if (Config.file().isConfigurationSection("Config.Lobby") == true) {
+							if (!MapManager.getRegisteredMaps().contains(mapname)) {
+								if (p.setup != null) {
+									p.sendMessage(LanguageManager.getString(p, TS.SETUP_NOT_FINISHED, true));
+								} else {
+									MapManager.setupTeams(p, mapname, teams, pperteam);
+								}
+							} else {
+								p.sendMessage(LanguageManager.getString(p, TS.MAP_EXISTS, true));
+							}
+						} else {
+							p.sendMessage(LanguageManager.getString(p, TS.LOBBYLOC_NOT_SET, true));
+						}
 					}
 				} else {
 					p.sendMessage(LanguageManager.getString(p, TS.CMD_NOT_FOUND, true));

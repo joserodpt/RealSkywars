@@ -6,7 +6,9 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
+import pt.josegamerpt.realskywars.cages.TeamCage;
 import pt.josegamerpt.realskywars.classes.Enum.CageType;
+import pt.josegamerpt.realskywars.managers.LanguageManager;
 import pt.josegamerpt.realskywars.player.GamePlayer;
 import pt.josegamerpt.realskywars.utils.Text;
 
@@ -15,50 +17,34 @@ public class Team {
 	public int id;
 	public ArrayList<GamePlayer> members = new ArrayList<GamePlayer>();
 	public int maxMembers;
-	public Location cage;
 	public Boolean eliminated = false;
 	public Boolean playing = false;
+	public TeamCage tc;
 
 	public Team(int i, int maxMemb, Location c) {
 		this.id = i;
-		this.cage = c;
+		this.tc = new TeamCage(i, c);
 		this.maxMembers = maxMemb;
 	}
 
 	public void addPlayer(GamePlayer p) {
 		members.add(p);
-		teleportToCage(p);
 		p.team = this;
 		if (members.size() == 1) {
 			if (p.p != null) {
-				//Cage.setCage(p.p, p.cageBlock, CageType.TEAMS);
+				this.tc.addPlayer(p);
 			}
 		}
 		for (GamePlayer s : members) {
-			s.sendMessage(p.getName() + " joined the team.");
+			s.sendMessage(LanguageManager.getString(p, Enum.TS.TEAM_JOIN, true).replace("%player%", p.getName()));
 		}
-	}
-
-	public void openCage() {
-		Location l = cage;
-		int x = l.getBlockX();
-		int y = l.getBlockY();
-		int z = l.getBlockZ();
-		Material m = Material.AIR;
-		l.getWorld().getBlockAt(x + 1, y - 1, z).setType(m);
-		l.getWorld().getBlockAt(x + 1, y - 1, z + 1).setType(m);
-		l.getWorld().getBlockAt(x + 1, y - 1, z - 1).setType(m);
-		l.getWorld().getBlockAt(x, y - 1, z + 1).setType(m);
-		l.getWorld().getBlockAt(x, y - 1, z - 1).setType(m);
-		l.getWorld().getBlockAt(x, y - 1, z).setType(m);
-		l.getWorld().getBlockAt(x - 1, y - 1, z).setType(m);
-		l.getWorld().getBlockAt(x - 1, y - 1, z - 1).setType(m);
-		l.getWorld().getBlockAt(x - 1, y - 1, z + 1).setType(m);
-		
-		this.playing = true;
+		p.teleport(this.tc.getLocation());
 	}
 
 	public void removePlayer(GamePlayer p) {
+		for (GamePlayer s : members) {
+			s.sendMessage(LanguageManager.getString(p, Enum.TS.TEAM_LEAVE, true).replace("%player%", p.getName()));
+		}
 		members.remove(p);
 		if (playing == true) {
 			if (members.size() == 0) {
@@ -66,10 +52,6 @@ public class Team {
 			}
 		}
 		p.team = null;
-		for (GamePlayer s : members) {
-			s.sendMessage(p.getName() + " left the team.");
-		}
-		p.room.checkWin();
 	}
 
 	public Boolean isTeamFull() {
@@ -96,7 +78,14 @@ public class Team {
 		return String.join(", ", list);
 	}
 
-	public void teleportToCage(GamePlayer p) {
-		p.teleport(cage);
+	public void openCage() {
+		this.tc.open();
+	}
+
+	public void reset() {
+		this.playing = false;
+		this.eliminated = false;
+		this.tc.cageSet = false;
+		this.members.clear();
 	}
 }

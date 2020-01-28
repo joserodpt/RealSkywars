@@ -11,10 +11,8 @@ import org.bukkit.scoreboard.DisplaySlot;
 import pt.josegamerpt.realskywars.RealSkywars;
 import pt.josegamerpt.realskywars.classes.Enum.TL;
 import pt.josegamerpt.realskywars.classes.Enum.TS;
-import pt.josegamerpt.realskywars.classes.GameRoom;
 import pt.josegamerpt.realskywars.managers.GameManager;
 import pt.josegamerpt.realskywars.managers.LanguageManager;
-import pt.josegamerpt.realskywars.managers.MapManager;
 import pt.josegamerpt.realskywars.managers.PlayerManager;
 import pt.josegamerpt.realskywars.utils.Text;
 
@@ -78,7 +76,18 @@ public class PlayerScoreboard {
         }.runTaskTimer(RealSkywars.pl, 0L, (long) 20);
     }
 
-    private void displayScoreboard(String title, GamePlayer p, final Map<String, Integer> elements) {
+    protected static String variables(String s, GamePlayer gp) {
+        if (gp.room != null) {
+            return s.replace("%space%", Text.makeSpace()).replace("%players%", gp.room.getPlayersCount() + "")
+                    .replace("%spectators%", gp.room.getSpectatorsCount() + "").replace("%kills%", gp.gamekills + "")
+                    .replace("%map%", gp.room.getName()).replace("%runtime%", gp.room.getTimePassed() + "").replace("%state%", GameManager.getStateString(gp, gp.room.getState())).replace("%mode%", gp.room.getMode().name());
+        } else {
+            return s.replace("%space%", Text.makeSpace()).replace("%coins%", gp.coins + "")
+                    .replace("%kills%", gp.totalkills + "").replace("%deaths%", gp.deaths + "").replace("%playing%", "" + PlayerManager.countPlayingPlayers());
+        }
+    }
+
+    private void displayScoreboard(String title, GamePlayer p, Map<String, Integer> elements) {
         if (p.p != null) {
             if (title.length() > 32) {
                 title = title.substring(0, 32);
@@ -86,7 +95,7 @@ public class PlayerScoreboard {
             while (elements.size() > 15) {
                 String minimumKey = (String) elements.keySet().toArray()[0];
                 int minimum = elements.get(minimumKey);
-                for (final String string : elements.keySet()) {
+                for (String string : elements.keySet()) {
                     if (elements.get(string) < minimum
                             || (elements.get(string) == minimum && string.compareTo(minimumKey) < 0)) {
                         minimumKey = string;
@@ -95,9 +104,9 @@ public class PlayerScoreboard {
                 }
                 elements.remove(minimumKey);
             }
-            for (final String string2 : new ArrayList<String>(elements.keySet())) {
+            for (String string2 : new ArrayList<String>(elements.keySet())) {
                 if (string2 != null && string2.length() > 40) {
-                    final int value = elements.get(string2);
+                    int value = elements.get(string2);
                     elements.remove(string2);
                     elements.put(string2.substring(0, 40), value);
                 }
@@ -118,22 +127,11 @@ public class PlayerScoreboard {
                             .setScore((int) elements.get(string2));
                 }
             }
-            for (final String string2 : new ArrayList<String>(p.p.getScoreboard().getEntries())) {
+            for (String string2 : new ArrayList<String>(p.p.getScoreboard().getEntries())) {
                 if (!elements.keySet().contains(string2)) {
                     p.p.getScoreboard().resetScores(string2);
                 }
             }
-        }
-    }
-
-    protected static String variables(String s, GamePlayer gp) {
-        if (gp.room != null) {
-            return s.replace("%space%", Text.makeSpace()).replace("%players%", gp.room.getPlayersCount() + "")
-                    .replace("%spectators%", gp.room.getSpectatorsCount() + "").replace("%kills%", gp.GameKills + "")
-                    .replace("%map%", gp.room.getName()).replace("%runtime%", gp.room.getTimePassed() + "").replace("%state%", GameManager.getStateString(gp, gp.room.getState())).replace("%mode%", gp.room.getMode().name());
-        } else {
-            return s.replace("%space%", Text.makeSpace()).replace("%coins%", gp.Coins + "")
-                    .replace("%kills%", gp.TotalKills + "").replace("%deaths%", gp.Deaths + "").replace("%playing%", "" + PlayerManager.countPlayingPlayers());
         }
     }
 }

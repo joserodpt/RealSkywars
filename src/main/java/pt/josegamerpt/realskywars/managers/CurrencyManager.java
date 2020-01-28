@@ -24,7 +24,7 @@ public class CurrencyManager {
 	}
 
 	public Boolean canMakeOperation() {
-		if (fromEntity.Coins >= opQ) {
+		if (fromEntity.coins >= opQ) {
 			return true;
 		} else {
 			return false;
@@ -32,8 +32,8 @@ public class CurrencyManager {
 	}
 
 	public void transferCoins() {
-		toPlayer.Coins = (toPlayer.Coins + opQ);
-		fromEntity.Coins = (fromEntity.Coins - opQ);
+		toPlayer.coins = (toPlayer.coins + opQ);
+		fromEntity.coins = (fromEntity.coins - opQ);
 		toPlayer.saveData();
 		fromEntity.saveData();
 		fromEntity.p.sendMessage(LanguageManager.getString(toPlayer, TS.SENDER_COINS, true).replace("%coins%", "" + opQ)
@@ -44,21 +44,21 @@ public class CurrencyManager {
 
 	public void addCoins() {
 		if (console = true) {
-			fromEntity.Coins = (fromEntity.Coins + opQ);
+			fromEntity.coins = (fromEntity.coins + opQ);
 			fromEntity.saveData();
 		}
-		toPlayer.Coins = (toPlayer.Coins + opQ);
+		toPlayer.coins = (toPlayer.coins + opQ);
 		toPlayer.saveData();
 		toPlayer.p.sendMessage(LanguageManager.getString(toPlayer, TS.ADDED_COINS, true).replace("%coins%", "" + opQ));
 	}
 
 	public void removeCoins() {
 		if (console == true) {
-			fromEntity.Coins = (fromEntity.Coins - opQ);
+			fromEntity.coins = (fromEntity.coins - opQ);
 			fromEntity.saveData();
 			return;
 		}
-		fromEntity.Coins = (fromEntity.Coins - opQ);
+		fromEntity.coins = (fromEntity.coins - opQ);
 		fromEntity.saveData();
 		toPlayer.p
 				.sendMessage(LanguageManager.getString(toPlayer, TS.REMOVED_COINS, true).replace("%coins%", "" + opQ));
@@ -66,7 +66,7 @@ public class CurrencyManager {
 
 	public void setCoins() {
 		if (console == true) {
-			toPlayer.Coins = opQ;
+			toPlayer.coins = opQ;
 			toPlayer.p
 					.sendMessage(LanguageManager.getString(toPlayer, TS.SET_COINS, true).replace("%coins%", "" + opQ));
 			fromEntity.saveData();

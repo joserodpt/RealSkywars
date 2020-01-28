@@ -27,6 +27,7 @@ import pt.josegamerpt.realskywars.configuration.Items;
 import pt.josegamerpt.realskywars.configuration.Maps;
 import pt.josegamerpt.realskywars.gui.MapSettings;
 import pt.josegamerpt.realskywars.modes.Solo;
+import pt.josegamerpt.realskywars.modes.Teams;
 import pt.josegamerpt.realskywars.player.GamePlayer;
 import pt.josegamerpt.realskywars.utils.Holograms;
 import pt.josegamerpt.realskywars.utils.MathUtils;
@@ -67,12 +68,24 @@ public class MapManager {
             }
 
             GameType t = getGameType(s);
+            World w = Bukkit.getWorld(Maps.file().getString(s + ".world"));
 
             switch (t) {
                 case SOLO:
-                    World w = Bukkit.getWorld(Maps.file().getString(s + ".world"));
-                    Solo gs = new Solo(id, s, w, GameState.AVAILABLE, getCagesSolo(s), Maps.file().getInt(s + ".number-of-players"), getSpecLoc(s), isSpecEnabled(s), isInstantEndingEnabled(s), getPOS1(w, s), getPOS2(w, s));
+                    Solo gs = new Solo(id, s, w, GameState.AVAILABLE, getCages(s), Maps.file().getInt(s + ".number-of-players"), getSpecLoc(s), isSpecEnabled(s), isInstantEndingEnabled(s), getPOS1(w, s), getPOS2(w, s));
                     gs.saveRoom();
+                    break;
+                case TEAMS:
+                    ArrayList<Cage> cgs = getCages(s);
+                    ArrayList<Team> ts = new ArrayList<Team>();
+                    int tc = 1;
+                    for (Cage c : cgs) {
+                        Debugger.print(c.getLocation().toString());
+                        ts.add(new Team(tc, (Maps.file().getInt(s + ".number-of-players") / cgs.size()), c.getLocation()));
+                        tc++;
+                    }
+                    Teams teas = new Teams(MapManager.getRegisteredMaps().size() + 1, s, w, GameState.AVAILABLE, ts, Maps.file().getInt(s + ".number-of-players"), getSpecLoc(s), isSpecEnabled(s), isInstantEndingEnabled(s), getPOS1(w, s), getPOS2(w, s));
+                    teas.saveRoom();
                     break;
                 default:
                     throw new IllegalStateException("Mode doesnt exist: " + t.name());
@@ -137,7 +150,7 @@ public class MapManager {
         return null;
     }
 
-    public static ArrayList<Cage> getCagesSolo(String map) {
+    public static ArrayList<Cage> getCages(String map) {
         ConfigurationSection cs = Maps.file().getConfigurationSection(map + ".Locations.Cages");
         Set<String> keys = cs.getKeys(false);
         ArrayList<Cage> locs = new ArrayList<Cage>();
@@ -170,13 +183,27 @@ public class MapManager {
         Maps.file().set(s + ".number-of-players", g.getMaxPlayers());
 
         // Locations Cages
-        for (Cage c : g.getCages()) {
-            Location loc = c.getLocation();
-            Maps.file().set(s + ".Locations.Cages." + c.getID() + ".X", Integer.valueOf(loc.getBlockX()));
-            Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Y", Integer.valueOf(loc.getBlockY()));
-            Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Z", Integer.valueOf(loc.getBlockZ()));
-            Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Yaw", Float.valueOf(loc.getYaw()));
-            Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Pitch", Float.valueOf(loc.getPitch()));
+        switch (g.getMode()) {
+            case SOLO:
+                for (Cage c : g.getCages()) {
+                    Location loc = c.getLocation();
+                    Maps.file().set(s + ".Locations.Cages." + c.getID() + ".X", Integer.valueOf(loc.getBlockX()));
+                    Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Y", Integer.valueOf(loc.getBlockY()));
+                    Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Z", Integer.valueOf(loc.getBlockZ()));
+                    Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Yaw", Float.valueOf(loc.getYaw()));
+                    Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Pitch", Float.valueOf(loc.getPitch()));
+                }
+                break;
+            case TEAMS:
+                for (Team c : g.getTeams()) {
+                    Location loc = c.tc.getLocation();
+                    Maps.file().set(s + ".Locations.Cages." + c.tc.getID() + ".X", Integer.valueOf(loc.getBlockX()));
+                    Maps.file().set(s + ".Locations.Cages." + c.tc.getID() + ".Y", Integer.valueOf(loc.getBlockY()));
+                    Maps.file().set(s + ".Locations.Cages." + c.tc.getID() + ".Z", Integer.valueOf(loc.getBlockZ()));
+                    Maps.file().set(s + ".Locations.Cages." + c.tc.getID() + ".Yaw", Float.valueOf(loc.getYaw()));
+                    Maps.file().set(s + ".Locations.Cages." + c.tc.getID() + ".Pitch", Float.valueOf(loc.getPitch()));
+                }
+                break;
         }
 
         // SpecLoc
@@ -259,8 +286,6 @@ public class MapManager {
         list.add(LanguageManager.getString(p, TS.SAVING_ARENA, true));
         Text.sendList(p.p, list);
 
-        p.p.getInventory().clear();
-
         // Beacon Remove
         Holograms.removeAll();
         for (Cage l : p.setup.cages) {
@@ -274,6 +299,18 @@ public class MapManager {
                 Solo gs = new Solo(MapManager.getRegisteredMaps().size() + 1, p.setup.Name, p.setup.worldMap, GameState.AVAILABLE, p.setup.cages, p.setup.maxPlayers, p.setup.spectator, p.setup.spec, p.setup.instantEnding, p.setup.POS1, p.setup.POS2);
                 gs.saveRoom();
                 saveMap(gs);
+                break;
+            case TEAMS:
+                ArrayList<Team> ts = new ArrayList<Team>();
+                int tc = 1;
+                for (Cage c : p.setup.cages) {
+                    Debugger.print(c.getLocation().toString());
+                    ts.add(new Team(tc, p.setup.playersPerTeam, c.getLocation()));
+                    tc++;
+                }
+                Teams t = new Teams(MapManager.getRegisteredMaps().size() + 1, p.setup.Name, p.setup.worldMap, GameState.AVAILABLE, ts, p.setup.maxPlayers, p.setup.spectator, p.setup.spec, p.setup.instantEnding, p.setup.POS1, p.setup.POS2);
+                t.saveRoom();
+                saveMap(t);
                 break;
             default:
                 throw new IllegalStateException("Forbiden Mode");
