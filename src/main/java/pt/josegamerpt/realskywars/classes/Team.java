@@ -28,6 +28,9 @@ public class Team {
 	}
 
 	public void addPlayer(GamePlayer p) {
+		for (GamePlayer s : members) {
+			s.sendMessage(LanguageManager.getString(p, Enum.TS.TEAM_BROADCAST_JOIN, true).replace("%player%", p.getName()));
+		}
 		members.add(p);
 		p.team = this;
 		if (members.size() == 1) {
@@ -35,15 +38,13 @@ public class Team {
 				this.tc.addPlayer(p);
 			}
 		}
-		for (GamePlayer s : members) {
-			s.sendMessage(LanguageManager.getString(p, Enum.TS.TEAM_JOIN, true).replace("%player%", p.getName()));
-		}
 		p.teleport(this.tc.getLocation());
+		p.sendMessage(LanguageManager.getString(p, Enum.TS.TEAM_JOIN, true).replace("%team%", getName()));
 	}
 
 	public void removePlayer(GamePlayer p) {
 		for (GamePlayer s : members) {
-			s.sendMessage(LanguageManager.getString(p, Enum.TS.TEAM_LEAVE, true).replace("%player%", p.getName()));
+			s.sendMessage(LanguageManager.getString(p, Enum.TS.TEAM_BROADCAST_LEAVE, true).replace("%player%", p.getName()));
 		}
 		members.remove(p);
 		if (playing == true) {
@@ -52,6 +53,7 @@ public class Team {
 			}
 		}
 		p.team = null;
+		p.sendMessage(LanguageManager.getString(p, Enum.TS.TEAM_LEAVE, true).replace("%team%", getName()));
 	}
 
 	public Boolean isTeamFull() {

@@ -26,7 +26,6 @@ import pt.josegamerpt.realskywars.utils.ArenaCuboid;
 import pt.josegamerpt.realskywars.utils.Calhau;
 import pt.josegamerpt.realskywars.utils.MathUtils;
 import pt.josegamerpt.realskywars.utils.Text;
-import sun.security.ssl.Debug;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +40,7 @@ public class Teams implements GameRoom {
     public Enum.GameState state;
     public World world;
     public WorldBorder border;
-    public BossBar gameTimer;
+    public BossBar bossBar;
     public ArenaCuboid arenaCuboid;
     public Location POS1;
     public Location POS2;
@@ -90,7 +89,7 @@ public class Teams implements GameRoom {
 
         votes.add(2);
 
-        gameTimer = Bukkit.createBossBar(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_WAIT)),
+        bossBar = Bukkit.createBossBar(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_WAIT)),
                 BarColor.WHITE, BarStyle.SOLID);
     }
 
@@ -155,6 +154,7 @@ public class Teams implements GameRoom {
     }
 
     public void kickPlayers() {
+        this.bossBar.removeAll();
         for (GamePlayer p : onThisRoom) {
             for (GamePlayer s : spectators) {
                 if (p.p != null) {
@@ -202,8 +202,8 @@ public class Teams implements GameRoom {
                 p.saveData();
             }
         }
-        if (gameTimer != null) {
-            gameTimer.removeAll();
+        if (bossBar != null) {
+            bossBar.removeAll();
         }
     }
 
@@ -278,7 +278,7 @@ public class Teams implements GameRoom {
                 if (p.p != null) {
                     p.p.getInventory().clear();
 
-                    gameTimer.addPlayer(p.p);
+                    bossBar.addPlayer(p.p);
 
                     for (String s : LanguageManager.getList(p, Enum.TL.ARENA_START)) {
                         if (p.kit != null) {
@@ -297,9 +297,9 @@ public class Teams implements GameRoom {
         this.timer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), timeleft, () -> {
             //
         }, () -> {
-            gameTimer.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_DEATHMATCH)));
-            gameTimer.setProgress(0);
-            gameTimer.setColor(BarColor.RED);
+            bossBar.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_DEATHMATCH)));
+            bossBar.setProgress(0);
+            bossBar.setColor(BarColor.RED);
 
             for (GamePlayer p : onThisRoom) {
                 if (p.p != null) {
@@ -311,10 +311,10 @@ public class Teams implements GameRoom {
             border.setSize(this.borderSize / 2, 30L);
             border.setCenter(this.arenaCuboid.getCenter());
         }, (t) -> {
-            gameTimer.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_RUNTIME).replace("%time%",
+            bossBar.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_RUNTIME).replace("%time%",
                     t.getSecondsLeft() + "")));
             Double div = (double) t.getSecondsLeft() / (double) timeleft;
-            gameTimer.setProgress(div);
+            bossBar.setProgress(div);
 
             //future events
         });
@@ -368,8 +368,8 @@ public class Teams implements GameRoom {
         }
 
         if (this.state != Enum.GameState.AVAILABLE || this.state != Enum.GameState.STARTING) {
-            if (gameTimer != null) {
-                gameTimer.removePlayer(p.p);
+            if (bossBar != null) {
+                bossBar.removePlayer(p.p);
             }
         }
 
@@ -432,7 +432,7 @@ public class Teams implements GameRoom {
         this.onThisRoom.add(gp);
 
         if (gp.p != null) {
-            gameTimer.addPlayer(gp.p);
+            bossBar.addPlayer(gp.p);
             gp.p.setHealth(20);
             ArrayList<String> up = LanguageManager.getList(gp, Enum.TL.TITLE_ROOMJOIN);
             gp.p.sendTitle(up.get(0), up.get(1), 10, 120, 10);
@@ -475,19 +475,19 @@ public class Teams implements GameRoom {
                 for (GamePlayer p : onThisRoom) {
                     p.sendMessage(variables(LanguageManager.getString(p, Enum.TS.ARENA_CANCEL, true)));
                 }
-                gameTimer.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_WAIT)));
-                gameTimer.setProgress(0D);
+                bossBar.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_WAIT)));
+                bossBar.setProgress(0D);
                 this.state = Enum.GameState.WAITING;
             } else {
                 for (GamePlayer p : this.getPlayers()) {
                     p.sendMessage(variables(LanguageManager.getString(p, Enum.TS.ARENA_START_COUNTDOWN, true)
                             .replace("%time%", t.getSecondsLeft() + "")));
                 }
-                gameTimer.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_STARTING)
+                bossBar.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_STARTING)
                         .replace("%time%", t.getSecondsLeft() + "")));
                 Double div = (double) t.getSecondsLeft()
                         / (double) Config.file().getInt("Config.Time-To-Start");
-                gameTimer.setProgress(div);
+                bossBar.setProgress(div);
             }
         });
 
@@ -561,7 +561,7 @@ public class Teams implements GameRoom {
         this.votes.clear();
         votes.add(2);
 
-        this.cancelTask("countTime");
+        this.cancelTask("timeCounter");
 
         this.tasks.clear();
         timePassed = 0;
@@ -644,25 +644,22 @@ public class Teams implements GameRoom {
     public void checkWin() {
         if (getAliveTeams() == 1) {
             this.state = Enum.GameState.FINISHING;
+            Team winTeam = getPlayers().get(0).team;
 
-            gameTimer.setTitle(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_END));
-            gameTimer.setProgress(0);
+            bossBar.setTitle(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_END));
+            bossBar.setProgress(0);
 
-            if (getPlayers().get(0).p != null) {
-                PlayerManager.players.forEach(gamePlayer -> gamePlayer.sendMessage(LanguageManager.getString(gamePlayer, Enum.TS.WINNER_BROADCAST, true)));
-            }
+            PlayerManager.players.forEach(gamePlayer -> gamePlayer.sendMessage(LanguageManager.getString(gamePlayer, Enum.TS.WINNER_BROADCAST, true).replace("%winner%", winTeam.getNames()).replace("%map%", this.name)));
 
             Countdown timer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), Config.file().getInt("Config.Time-EndGame"),
                     () -> {
                         this.timer.killTask();
                         this.cancelTask("countTime");
 
-                        Team t = getPlayers().get(0).team;
-
-                        for (GamePlayer p : t.members) {
+                        for (GamePlayer p : winTeam.members) {
                             if (p.p != null) {
                                 p.addWin(1);
-                                p.executeWinBlock(Config.file().getInt("Config.Time-EndGame") - 1);
+                                p.executeWinBlock(Config.file().getInt("Config.Time-EndGame") - 2);
                             }
                             sendLog(p);
                         }
@@ -674,7 +671,7 @@ public class Teams implements GameRoom {
                                 g.p.setMetadata("invencivel", new FixedMetadataValue(RealSkywars.pl, 0));
                                 g.p.sendTitle("",
                                         Text.addColor(LanguageManager.getString(g, Enum.TS.TITLE_WIN, true)
-                                                .replace("%player%", t.getNames())),
+                                                .replace("%player%", winTeam.getNames())),
                                         10, 40, 10);
                             }
                         }
@@ -694,7 +691,7 @@ public class Teams implements GameRoom {
     private int getAliveTeams() {
         int al = 0;
         for (Team t : this.teams) {
-            if (t.eliminated == false && t.members.size() > 0) {
+            if (!t.eliminated && t.members.size() > 0) {
                 al++;
             }
         }

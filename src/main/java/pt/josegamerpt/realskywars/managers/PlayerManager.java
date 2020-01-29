@@ -54,10 +54,11 @@ public class PlayerManager {
         if (Players.file().isConfigurationSection(p.getUniqueId().toString()) == true) {
             int tkills = Players.file().getInt(p.getUniqueId() + ".Kills");
             int dead = Players.file().getInt(p.getUniqueId() + ".Deaths");
+            int win = Players.file().getInt(p.getUniqueId() + ".Wins");
             Double coin = Players.file().getDouble(p.getUniqueId() + ".Coins");
             List<String> bg = Players.file().getStringList(p.getUniqueId() + ".Bought-Items");
             String lang = Players.file().getString(p.getUniqueId() + ".Language");
-            GamePlayer gp = new GamePlayer(p, PlayerState.LOBBY_OR_NOGAME, null, tkills, dead, coin, lang, bg);
+            GamePlayer gp = new GamePlayer(p, PlayerState.LOBBY_OR_NOGAME, null, tkills, dead, win, coin, lang, bg);
             HashMap<Selection, Selections> ss = new HashMap<Selection, Selections>();
             String MAPVIEWER = Players.file().getString(p.getUniqueId() + ".Preferences.MAPVIEWER");
             if (MAPVIEWER != null) {
@@ -67,7 +68,7 @@ public class PlayerManager {
             gp.selections = ss;
             gp.save();
         } else {
-            GamePlayer gp = new GamePlayer(p, PlayerState.LOBBY_OR_NOGAME, null, 0, 0, 0D,
+            GamePlayer gp = new GamePlayer(p, PlayerState.LOBBY_OR_NOGAME, null, 0, 0, 0, 0D,
                     LanguageManager.getDefaultLanguage(), Arrays.asList(""));
             gp.selections.put(Selection.MAPVIEWER, Selections.MAPV_ALL);
             gp.save();
@@ -106,6 +107,7 @@ public class PlayerManager {
     public static void savePlayer(GamePlayer p) {
         if (p.p != null) {
             Players.file().set(p.p.getUniqueId() + ".Coins", p.coins);
+            Players.file().set(p.p.getUniqueId() + ".Wins", p.wins);
             Players.file().set(p.p.getUniqueId() + ".Kills", p.totalkills);
             Players.file().set(p.p.getUniqueId() + ".Deaths", p.deaths);
             Players.file().set(p.p.getUniqueId() + ".Name", p.p.getName());

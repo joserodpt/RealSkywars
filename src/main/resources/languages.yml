@@ -22,11 +22,12 @@ Languages:
         Lines:
           - "%space%"
           - " &fCoins: &b%coins%"
+          - " &fWins: &b%wins%"
           - " &fKills: &b%kills%"
           - " &fDeaths: &b%deaths%"
           - " &fPlaying: &b%playing% &fplayers"
           - "%space%"
-          - "&eserver.com"
+          - "     &eserver.com"
         Title: " &9Real&bSkywars &aLobby "
       Cage:
         Lines:
@@ -75,6 +76,7 @@ Languages:
           Spectating: "&5Spectating"
         Categories:
           Cage-Blocks: "&7Cage Blocks"
+          Win-Blocks: "&9Win Blocks"
           Kits: "&9Kits"
           Bow-Particles: "&aBow Particles"
         Kits:
@@ -94,6 +96,12 @@ Languages:
         Generating-World: "&aGenerating a new world.."
         Tier-Set: "&fThe tier has been set to &b%chest%"
         Cages-Done: "&fThe cages have been placed. Set the spectator location with /rsw setspectator."
+        Team:
+          Join: "&fYou &ajoined &9%team%"
+          Leave: "&fYou &cleft &9%team%"
+          Broadcast-Join: "&b%player% &fjoined the team."
+          Broadcast-Leave: "&b%player% &cleft the team."
+          TeamMate-Damage-Cancel: "&fYou can't hurt your &9team-mate&f."
         Titles:
           Join-Room:
             - "&fSelect your kit"
@@ -104,6 +112,7 @@ Languages:
           No-Permission: "&fYou &cdon't have permission &fto buy this item."
           Not-Buyable: "&fThis item &cisn't &abuyable&f."
         Arena:
+          Winner-Broadcast: "&b%winner% &fwon on the map &a%map%"
           Leave: "&eYou left the match."
           Init-Setup:
             - "&aYou are now in setup mode. You can paste your shematic or make a new map."
@@ -159,13 +168,13 @@ Languages:
         Player-Spectate: "&fYou are now &aSPECTATING."
         Start:
           - "&7&m&l-------------------------------"
-          - "&bSkywars &fhas started!"
+          - "      &bSkywars &fhas started!"
           - "&fSelected chests: &b%chests%"
           - "&fSelected kit: &b%kit%"
           - "&7&m&l-------------------------------"
         End-Log:
           - "&7&m&l-------------------------------"
-          - "&bSummary"
+          - "              &bSummary"
           - "   &fCoins recieved: &b%recvcoins%"
           - "   &fTotal coins: &b%totalcoins%"
           - "   &fKills: &b%kills%"

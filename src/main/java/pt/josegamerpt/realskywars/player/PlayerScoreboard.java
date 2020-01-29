@@ -80,10 +80,10 @@ public class PlayerScoreboard {
         if (gp.room != null) {
             return s.replace("%space%", Text.makeSpace()).replace("%players%", gp.room.getPlayersCount() + "")
                     .replace("%spectators%", gp.room.getSpectatorsCount() + "").replace("%kills%", gp.gamekills + "")
-                    .replace("%map%", gp.room.getName()).replace("%runtime%", gp.room.getTimePassed() + "").replace("%state%", GameManager.getStateString(gp, gp.room.getState())).replace("%mode%", gp.room.getMode().name());
+                    .replace("%map%", gp.room.getName()).replace("%runtime%", gp.room.getTimePassed() + "").replace("%state%", GameManager.getStateString(gp, gp.room.getState())).replace("%mode%", gp.room.getMode().name()).replace("%wins%", gp.wins + "");
         } else {
             return s.replace("%space%", Text.makeSpace()).replace("%coins%", gp.coins + "")
-                    .replace("%kills%", gp.totalkills + "").replace("%deaths%", gp.deaths + "").replace("%playing%", "" + PlayerManager.countPlayingPlayers());
+                    .replace("%kills%", gp.totalkills + "").replace("%deaths%", gp.deaths + "").replace("%playing%", "" + PlayerManager.countPlayingPlayers()).replace("%wins%", gp.wins + "");
         }
     }
 
