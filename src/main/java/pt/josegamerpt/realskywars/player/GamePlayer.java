@@ -58,12 +58,13 @@ public class GamePlayer {
     public Material winblockMaterial;
     public List<Trail> trails = new ArrayList<Trail>();
 
-    public GamePlayer(Player jog, PlayerState estado, GameRoom rom, int tk, int d, Double coi, String lang,
+    public GamePlayer(Player jog, PlayerState estado, GameRoom rom, int tk, int d, int win, Double coi, String lang,
                       List<String> bgh) {
         this.p = jog;
         this.state = estado;
         this.room = rom;
         this.totalkills = tk;
+        this.wins = win;
         this.deaths = d;
         this.coins = coi;
         this.language = lang;

@@ -84,11 +84,11 @@ public class LanguageManager {
 		HashMap<TS, String> flagItem = new HashMap<TS, String>();
 		for (String s : getLanguages()) {
 			for (TS val : TS.values()) {
-				String analyse = getString(s, val);
-				if (analyse.equals("String not found.") || analyse.equals("Error finding translation.")) {
-					flagItem.put(val, analyse);
-				}
-			}
+                String analyse = getString(s, val);
+                if (analyse.equals("String not found (" + val.name() + ")") || analyse.equals("Error finding translation (" + val.name() + ")")) {
+                    flagItem.put(val, analyse);
+                }
+            }
 			if (!(flagItem.size() == 0))
 			{
 				flag.put(s, flagItem);
@@ -98,9 +98,9 @@ public class LanguageManager {
 	}
 
 	private static String getString(String l, TS ts) {
-		GamePlayer Decoy = new GamePlayer(null, null, null, 0, 0, null, l, null);
-		return getString(Decoy, ts);
-	}
+        GamePlayer Decoy = new GamePlayer(null, null, null, 0, 0, 0, null, l, null);
+        return getString(Decoy, ts);
+    }
 
 	private static String getString(GamePlayer p, TS ts) {
 		String lang = p.language;
@@ -356,20 +356,41 @@ public class LanguageManager {
 					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.States.Playing"));
 					break;
 				case MAP_FINISHING:
-					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.States.Finishing"));
-					break;
-				case MAP_RESETTING:
-					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.States.Resetting"));
-					break;
-				case COMPASS_TELEPORT:
-					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Compass-Teleport"));
-					break;
-				case BOWPARTICLE:
-					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Categories.Bow-Particles"));
-					break;
-				default:
-					tr = "String not found (" + ts.name() + ")";
-			}
+                    tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.States.Finishing"));
+                    break;
+                case MAP_RESETTING:
+                    tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.States.Resetting"));
+                    break;
+                case COMPASS_TELEPORT:
+                    tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Compass-Teleport"));
+                    break;
+                case BOWPARTICLE:
+                    tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Categories.Bow-Particles"));
+                    break;
+                case TEAM_LEAVE:
+                    tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Team.Leave"));
+                    break;
+                case TEAM_JOIN:
+                    tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Team.Join"));
+                    break;
+                case WINBLOCK:
+                    tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Categories.Win-Blocks"));
+                    break;
+                case WINNER_BROADCAST:
+                    tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Arena.Winner-Broadcast"));
+                    break;
+                case TEAMMATE_DAMAGE_CANCEL:
+                    tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Team.TeamMate-Damage-Cancel"));
+                    break;
+                case TEAM_BROADCAST_JOIN:
+                    tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Team.Broadcast-Join"));
+                    break;
+                case TEAM_BROADCAST_LEAVE:
+                    tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.System.Team.Broadcast-Leave"));
+                    break;
+                default:
+                    tr = "String not found (" + ts.name() + ")";
+            }
 		} catch (Exception e) {
 			tr = "Error finding translation (" + ts.name() + ")";
 			return tr;

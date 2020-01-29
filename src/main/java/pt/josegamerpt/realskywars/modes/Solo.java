@@ -39,7 +39,7 @@ public class Solo implements GameRoom {
     public Enum.GameState state;
     public World world;
     public WorldBorder border;
-    public BossBar gameTimer;
+    public BossBar bossBar;
     public ArenaCuboid arenaCuboid;
     public Location POS1;
     public Location POS2;
@@ -88,7 +88,7 @@ public class Solo implements GameRoom {
 
         votes.add(2);
 
-        gameTimer = Bukkit.createBossBar(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_WAIT)),
+        bossBar = Bukkit.createBossBar(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_WAIT)),
                 BarColor.WHITE, BarStyle.SOLID);
     }
 
@@ -145,6 +145,7 @@ public class Solo implements GameRoom {
     }
 
     public void kickPlayers() {
+        this.bossBar.removeAll();
         for (GamePlayer p : onThisRoom) {
             for (GamePlayer s : spectators) {
                 if (p.p != null) {
@@ -191,8 +192,8 @@ public class Solo implements GameRoom {
                 p.saveData();
             }
         }
-        if (gameTimer != null) {
-            gameTimer.removeAll();
+        if (bossBar != null) {
+            bossBar.removeAll();
         }
     }
 
@@ -264,7 +265,7 @@ public class Solo implements GameRoom {
             if (p.p != null) {
                 p.p.getInventory().clear();
 
-                gameTimer.addPlayer(p.p);
+                bossBar.addPlayer(p.p);
 
                 for (String s : LanguageManager.getList(p, Enum.TL.ARENA_START)) {
                     if (p.kit != null) {
@@ -284,9 +285,9 @@ public class Solo implements GameRoom {
         this.timer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), timeleft, () -> {
             //
         }, () -> {
-            gameTimer.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_DEATHMATCH)));
-            gameTimer.setProgress(0);
-            gameTimer.setColor(BarColor.RED);
+            bossBar.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_DEATHMATCH)));
+            bossBar.setProgress(0);
+            bossBar.setColor(BarColor.RED);
 
             for (GamePlayer p : this.players) {
                 if (p.p != null) {
@@ -299,10 +300,10 @@ public class Solo implements GameRoom {
             border.setCenter(this.arenaCuboid.getCenter());
 
         }, (t) -> {
-            gameTimer.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_RUNTIME).replace("%time%",
+            bossBar.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_RUNTIME).replace("%time%",
                     t.getSecondsLeft() + "")));
             Double div = (double) t.getSecondsLeft() / (double) timeleft;
-            gameTimer.setProgress(div);
+            bossBar.setProgress(div);
 
             //future events
         });
@@ -357,8 +358,8 @@ public class Solo implements GameRoom {
         }
 
         if (this.state != Enum.GameState.AVAILABLE || this.state != Enum.GameState.STARTING) {
-            if (gameTimer != null) {
-                gameTimer.removePlayer(p.p);
+            if (bossBar != null) {
+                bossBar.removePlayer(p.p);
             }
         }
 
@@ -422,7 +423,7 @@ public class Solo implements GameRoom {
         this.players.add(gp);
 
         if (gp.p != null) {
-            gameTimer.addPlayer(gp.p);
+            bossBar.addPlayer(gp.p);
             gp.p.setHealth(20);
             ArrayList<String> up = LanguageManager.getList(gp, Enum.TL.TITLE_ROOMJOIN);
             gp.p.sendTitle(up.get(0), up.get(1), 10, 120, 10);
@@ -465,19 +466,19 @@ public class Solo implements GameRoom {
                 for (GamePlayer p : this.players) {
                     p.sendMessage(variables(LanguageManager.getString(p, Enum.TS.ARENA_CANCEL, true)));
                 }
-                gameTimer.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_WAIT)));
-                gameTimer.setProgress(0D);
+                bossBar.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_WAIT)));
+                bossBar.setProgress(0D);
                 this.state = Enum.GameState.WAITING;
             } else {
                 for (GamePlayer p : this.players) {
                     p.sendMessage(variables(LanguageManager.getString(p, Enum.TS.ARENA_START_COUNTDOWN, true)
                             .replace("%time%", t.getSecondsLeft() + "")));
                 }
-                gameTimer.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_STARTING)
+                bossBar.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_STARTING)
                         .replace("%time%", t.getSecondsLeft() + "")));
                 Double div = (double) t.getSecondsLeft()
                         / (double) Config.file().getInt("Config.Time-To-Start");
-                gameTimer.setProgress(div);
+                bossBar.setProgress(div);
             }
         });
 
@@ -550,7 +551,7 @@ public class Solo implements GameRoom {
         this.votes.clear();
         votes.add(2);
 
-        this.cancelTask("countTime");
+        cancelTask("timeCounter");
 
         this.tasks.clear();
         timePassed = 0;
@@ -633,12 +634,13 @@ public class Solo implements GameRoom {
     public void checkWin() {
         if (getPlayersCount() == 1) {
             this.state = Enum.GameState.FINISHING;
+            GamePlayer p = getPlayers().get(0);
 
-            gameTimer.setTitle(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_END));
-            gameTimer.setProgress(0);
+            bossBar.setTitle(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_END));
+            bossBar.setProgress(0);
 
             if (getPlayers().get(0).p != null) {
-                Bukkit.broadcastMessage(getPlayers().get(0).p.getName() + " won on the map " + this.name);
+                PlayerManager.players.forEach(gamePlayer -> gamePlayer.sendMessage(LanguageManager.getString(gamePlayer, Enum.TS.WINNER_BROADCAST, true).replace("%winner%", p.getName()).replace("%map%", this.name)));
             }
 
             Countdown timer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), Config.file().getInt("Config.Time-EndGame"),
@@ -646,10 +648,9 @@ public class Solo implements GameRoom {
                         this.timer.killTask();
                         this.cancelTask("countTime");
 
-                        GamePlayer p = getPlayers().get(0);
                         if (p.p != null) {
                             p.addWin(1);
-                            p.executeWinBlock(Config.file().getInt("Config.Time-EndGame") - 1);
+                            p.executeWinBlock(Config.file().getInt("Config.Time-EndGame") - 2);
                         }
 
                         sendLog(p);
