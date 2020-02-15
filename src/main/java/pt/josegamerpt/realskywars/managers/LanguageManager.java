@@ -68,53 +68,52 @@ public class LanguageManager {
 	}
 
 	public static String getString(GamePlayer p, TS ts, boolean b) {
-		if (b == false) {
-			return Text.addColor(getString(p, ts));
-		} else {
-			return getPrefix() + Text.addColor(getString(p, ts));
-		}
-	}
+        if (!b) {
+            return Text.addColor(getString(p, ts));
+        } else {
+            return getPrefix() + Text.addColor(getString(p, ts));
+        }
+    }
 
 	public static String getPrefix() {
 		return Text.addColor(Languages.file().getString("Strings.Prefix"));
 	}
 
 	public static HashMap<String, HashMap<TS, String>> verifyLanguages() {
-		HashMap<String, HashMap<TS, String>> flag = new HashMap<String, HashMap<TS, String>>();
-		HashMap<TS, String> flagItem = new HashMap<TS, String>();
-		for (String s : getLanguages()) {
-			for (TS val : TS.values()) {
+        HashMap<String, HashMap<TS, String>> flag = new HashMap<>();
+        HashMap<TS, String> flagItem = new HashMap<>();
+        for (String s : getLanguages()) {
+            for (TS val : TS.values()) {
                 String analyse = getString(s, val);
                 if (analyse.equals("String not found (" + val.name() + ")") || analyse.equals("Error finding translation (" + val.name() + ")")) {
                     flagItem.put(val, analyse);
                 }
             }
-			if (!(flagItem.size() == 0))
-			{
-				flag.put(s, flagItem);
+            if (!(flagItem.size() == 0)) {
+                flag.put(s, flagItem);
 			}
 		}
 		return flag;
 	}
 
 	private static String getString(String l, TS ts) {
-        GamePlayer Decoy = new GamePlayer(null, null, null, 0, 0, 0, null, l, null);
+        GamePlayer Decoy = new GamePlayer(l);
         return getString(Decoy, ts);
     }
 
 	private static String getString(GamePlayer p, TS ts) {
-		String lang = p.language;
-		String tr = "Not Found";
+        String lang = p.language;
+        String tr;
 
-		try {
-			switch (ts) {
-				case CMD_CANT_FORCESTART:
-					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.Commands.Match-Force-Start-Denial"));
-					break;
-				case ARENA_CANCEL:
-					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.Arena.Match-Cancelled"));
-					break;
-				case ARENA_START_COUNTDOWN:
+        try {
+            switch (ts) {
+                case CMD_CANT_FORCESTART:
+                    tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.Commands.Match-Force-Start-Denial"));
+                    break;
+                case ARENA_CANCEL:
+                    tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.Arena.Match-Cancelled"));
+                    break;
+                case ARENA_START_COUNTDOWN:
 					tr = Text.addColor(Languages.file().getString("Languages." + lang + ".Messages.Arena.Start-Countdown"));
 					break;
 				case ITEMS_MAP_TITLE:
@@ -400,12 +399,8 @@ public class LanguageManager {
 	}
 
 	public static boolean checkSelect() {
-		if (langList.size() == 0) {
-			return false;
-		} else {
-			return true;
-		}
-	}
+        return langList.size() != 0;
+    }
 
 	public static String getString(TSsingle ts) {
 		if (ts.equals(TSsingle.BOSSBAR_ARENA_DEATHMATCH)) {

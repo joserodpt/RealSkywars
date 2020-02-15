@@ -2,14 +2,10 @@ package pt.josegamerpt.realskywars.cages;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import pt.josegamerpt.realskywars.Debugger;
-import pt.josegamerpt.realskywars.classes.Cage;
 import pt.josegamerpt.realskywars.classes.Enum;
 import pt.josegamerpt.realskywars.player.GamePlayer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -100,5 +96,9 @@ public class SoloCage implements Cage {
 
     public Enum.CageType getType() {
         return Enum.CageType.SOLO;
+    }
+
+    public void resetCage() {
+        this.p = null;
     }
 }

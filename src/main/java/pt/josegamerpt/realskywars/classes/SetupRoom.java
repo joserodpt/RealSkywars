@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import pt.josegamerpt.realskywars.cages.Cage;
 import pt.josegamerpt.realskywars.classes.Enum.GameType;
 
 public class SetupRoom {

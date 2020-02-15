@@ -12,7 +12,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import pt.josegamerpt.realskywars.Debugger;
 import pt.josegamerpt.realskywars.RealSkywars;
-import pt.josegamerpt.realskywars.classes.Cage;
+import pt.josegamerpt.realskywars.cages.Cage;
 import pt.josegamerpt.realskywars.classes.Enum;
 import pt.josegamerpt.realskywars.classes.GameRoom;
 import pt.josegamerpt.realskywars.classes.Team;
@@ -378,6 +378,9 @@ public class Teams implements GameRoom {
         PlayerManager.giveItems(p.p, PlayerManager.PlayerItems.LOBBY);
         p.sendMessage(lv);
 
+        for (PotionEffect effect : p.p.getActivePotionEffects())
+            p.p.removePotionEffect(effect.getType());
+
         p.state = Enum.PlayerState.LOBBY_OR_NOGAME;
         p.room = null;
         p.team = null;
@@ -658,7 +661,7 @@ public class Teams implements GameRoom {
 
                         for (GamePlayer p : winTeam.members) {
                             if (p.p != null) {
-                                p.addWin(1);
+                                p.addStatistic(Enum.Statistic.TEAM_WIN, 1);
                                 p.executeWinBlock(Config.file().getInt("Config.Time-EndGame") - 2);
                             }
                             sendLog(p);

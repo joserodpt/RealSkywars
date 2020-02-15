@@ -2,7 +2,6 @@ package pt.josegamerpt.realskywars;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -38,11 +37,12 @@ public class RealSkywars extends JavaPlugin implements Listener {
 	}
 
 	public void onEnable() {
-        pl = this;
-
-        System.out.print("------------------------------------------");
         long start = System.currentTimeMillis();
 
+        String star = "<------------------ RealSkywars PT ------------------>".replace("PT", "| " +
+                this.getDescription().getVersion());
+        System.out.print(star);
+        pl = this;
         Languages.setup(this);
 
         print("Loading languages.");
@@ -56,6 +56,8 @@ public class RealSkywars extends JavaPlugin implements Listener {
         print("Setting up configuration.");
         saveDefaultConfig();
         Config.setup(this);
+        Debugger.debug = Config.file().getBoolean("Debug-Mode");
+        GameManager.loginTP = Config.file().getBoolean("Config.Auto-Teleport-To-Lobby");
         Maps.setup(this);
         Players.setup(this);
         Chests.setup(this);
@@ -94,23 +96,27 @@ public class RealSkywars extends JavaPlugin implements Listener {
             float pitch = (float) Config.file().getDouble("Config.Lobby.Pitch");
             World world = Bukkit.getServer().getWorld(Config.file().getString("Config.Lobby.World"));
             Location loc = new Location(world, x, y, z, yaw, pitch);
-            GameManager.lobby = loc;
+            GameManager.lobbyLOC = loc;
         }
 
-        GameManager.lobbyscoreboard = Config.file().getBoolean("Config.Lobby-Scoreboard");
+        GameManager.lobbyScoreboard = Config.file().getBoolean("Config.Lobby-Scoreboard");
 
+        print("Loading arenas.");
         MapManager.loadMaps();
+        print("Loaded " + GameManager.getLoadedInt() + " arenas.");
+        print("Loading players.");
         PlayerManager.loadPlayers();
+        print("Loading kits.");
         KitManager.loadKits();
 
         Debugger.print(getPrefix() + "!!> DEBUG MODE ENABLED <!!");
         Debugger.execute();
 
-        long elapsedTimeMillis = System.currentTimeMillis()-start;
+        long elapsedTimeMillis = System.currentTimeMillis() - start;
 
-        float elapsedTimeSec = elapsedTimeMillis/1000F;
+        float elapsedTimeSec = elapsedTimeMillis / 1000F;
         print("Finished loading in " + elapsedTimeSec + " seconds.");
-        System.out.print("------------------------------------------");
+        System.out.print(star);
     }
 
     public void onDisable() {

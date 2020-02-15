@@ -39,7 +39,7 @@ public class PlayerScoreboard {
                 if (linked.state != null) {
                     switch (linked.state) {
                         case LOBBY_OR_NOGAME:
-                            if (!GameManager.lobbyscoreboard) {
+                            if (!GameManager.lobbyScoreboard) {
                                 return;
                             }
                             lista = LanguageManager.getList(linked, TL.SCOREBOARD_LOBBY_LINES);
@@ -80,10 +80,10 @@ public class PlayerScoreboard {
         if (gp.room != null) {
             return s.replace("%space%", Text.makeSpace()).replace("%players%", gp.room.getPlayersCount() + "")
                     .replace("%spectators%", gp.room.getSpectatorsCount() + "").replace("%kills%", gp.gamekills + "")
-                    .replace("%map%", gp.room.getName()).replace("%runtime%", gp.room.getTimePassed() + "").replace("%state%", GameManager.getStateString(gp, gp.room.getState())).replace("%mode%", gp.room.getMode().name()).replace("%wins%", gp.wins + "");
+                    .replace("%map%", gp.room.getName()).replace("%runtime%", gp.room.getTimePassed() + "").replace("%state%", GameManager.getStateString(gp, gp.room.getState())).replace("%mode%", gp.room.getMode().name()).replace("%solowins%", gp.soloWins + "").replace("%teamwins%", gp.teamWins + "").replace("%loses%", gp.loses + "").replace("%gamesplayed%", gp.gamesPlayed + "");
         } else {
             return s.replace("%space%", Text.makeSpace()).replace("%coins%", gp.coins + "")
-                    .replace("%kills%", gp.totalkills + "").replace("%deaths%", gp.deaths + "").replace("%playing%", "" + PlayerManager.countPlayingPlayers()).replace("%wins%", gp.wins + "");
+                    .replace("%kills%", gp.totalkills + "").replace("%deaths%", gp.deaths + "").replace("%playing%", "" + PlayerManager.countPlayingPlayers()).replace("%solowins%", gp.soloWins + "").replace("%teamwins%", gp.teamWins + "").replace("%loses%", gp.loses + "").replace("%gamesplayed%", gp.gamesPlayed + "");
         }
     }
 

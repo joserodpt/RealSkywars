@@ -174,11 +174,11 @@ public class GUIManager {
 				Arrays.asList("&fCurrently set: " + p.language)), 7);
 		
 		inventory.addItem(new ClickRunnable() {
-			public void run(InventoryClickEvent e) {
-				p.resetPurchases();
-			}
-		}, Itens.createItemLore(Material.BARRIER, 1, "&4Delete Your Purchases",
-				Arrays.asList("&cProceed with caution. This action cannot be rolled back.")), 8);
+            public void run(InventoryClickEvent e) {
+                p.resetData();
+            }
+        }, Itens.createItemLore(Material.BARRIER, 1, "&4Reset Your Data",
+                Arrays.asList("&cProceed with caution. This action cannot be rolled back.")), 8);
 
 		inventory.openInventory(p.p);
 	}

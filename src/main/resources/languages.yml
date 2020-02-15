@@ -1,3 +1,4 @@
+Version: 1
 Strings:
   Prefix: " &fReal&bSkywars &9| &r"
   Boss-Bar:
@@ -21,14 +22,17 @@ Languages:
       Lobby:
         Lines:
           - "%space%"
-          - " &fCoins: &b%coins%"
-          - " &fWins: &b%wins%"
-          - " &fKills: &b%kills%"
-          - " &fDeaths: &b%deaths%"
+          - " &fCoins: &e%coins%"
+          - " &fSolo Wins: &a%solowins%"
+          - " &fTeam Wins: &a%teamwins%"
+          - " &fLoses: &a%loses%"
+          - " &fKills: &a%kills%"
+          - " &fDeaths: &a%deaths%"
+          - " &fGames Played: &b%gamesplayed%"
           - " &fPlaying: &b%playing% &fplayers"
           - "%space%"
           - "     &eserver.com"
-        Title: " &9Real&bSkywars &aLobby "
+        Title: " &aRealSkywars &fLobby "
       Cage:
         Lines:
           - "%space%"
@@ -168,9 +172,9 @@ Languages:
         Player-Spectate: "&fYou are now &aSPECTATING."
         Start:
           - "&7&m&l-------------------------------"
-          - "      &bSkywars &fhas started!"
-          - "&fSelected chests: &b%chests%"
-          - "&fSelected kit: &b%kit%"
+          - "        &bSkywars &fhas started!"
+          - "   &fSelected chests: &b%chests%"
+          - "   &fSelected kit: &b%kit%"
           - "&7&m&l-------------------------------"
         End-Log:
           - "&7&m&l-------------------------------"

@@ -1,11 +1,14 @@
 Config:
- Time-To-Start: 5
- Min-Players-ToStart: 2
- Time-EndGame: 5
- Lobby-Scoreboard: true
- Maximum-Game-Time: 300
- Default-Language: ENGLISH
- Coins:
-  Per-Win: 10
-  Per-Kill: 5
-  Per-Death: -5
+  Auto-Teleport-To-Lobby: true
+  Time-To-Start: 10
+  Min-Players-ToStart: 2
+  Time-EndGame: 10
+  Lobby-Scoreboard: true
+  Maximum-Game-Time: 300
+  Default-Language: ENGLISH
+  Coins:
+    Per-Win: 10
+    Per-Kill: 5
+    Per-Death: -5
+Version: 1
+Debug-Mode: false

@@ -16,45 +16,50 @@ import pt.josegamerpt.realskywars.utils.Text;
 
 public class GameManager {
 
-	public static ArrayList<GameRoom> rooms = new ArrayList<GameRoom>();
-	public static Location lobby;
-	public static Boolean lobbyscoreboard;
+    public static ArrayList<GameRoom> rooms = new ArrayList<>();
+    public static Location lobbyLOC;
+    public static Boolean lobbyScoreboard;
+    public static Boolean loginTP;
 
-	public static GameRoom getGame(String name) {
-		for (GameRoom g : rooms) {
-			if (g.getName().equalsIgnoreCase(name)) {
-				return g;
-			}
-		}
-		return null;
-	}
+    public static GameRoom getGame(String name) {
+        for (GameRoom g : rooms) {
+            if (g.getName().equalsIgnoreCase(name)) {
+                return g;
+            }
+        }
+        return null;
+    }
 
-	public static ArrayList<World> getRoomWorlds() {
-		ArrayList<World> words = new ArrayList<World>();
-		for (GameRoom g : rooms) {
-			words.add(g.getWorld());
-		}
-		return words;
-	}
+    public static int getLoadedInt() {
+        return rooms.size();
+    }
 
-	public static void endGames() {
+    public static ArrayList<World> getRoomWorlds() {
+        ArrayList<World> words = new ArrayList<World>();
+        for (GameRoom g : rooms) {
+            words.add(g.getWorld());
+        }
+        return words;
+    }
+
+    public static void endGames() {
 		for (GameRoom g : rooms) {
 			g.kickPlayers(Text.addColor("&cAn ADMIN ordered all games to shut down."));
 		}
 	}
 
 	public static List<GameRoom> getRooms(Selections t) {
-		List<GameRoom> f = new ArrayList<GameRoom>();
-		switch (t) {
-		case MAPV_ALL:
-			f.addAll(rooms);
-			break;
-		case MAPV_WAITING:
-			for (GameRoom g : rooms) {
-				if (g.getState() == GameState.WAITING) {
-					f.add(g);
-				}
-			}
+        List<GameRoom> f = new ArrayList<>();
+        switch (t) {
+            case MAPV_ALL:
+                f.addAll(rooms);
+                break;
+            case MAPV_WAITING:
+                for (GameRoom g : rooms) {
+                    if (g.getState() == GameState.WAITING) {
+                        f.add(g);
+                    }
+                }
 			break;
 		case MAPV_STARTING:
 			for (GameRoom g : rooms) {

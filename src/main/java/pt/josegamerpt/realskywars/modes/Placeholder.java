@@ -2,7 +2,7 @@ package pt.josegamerpt.realskywars.modes;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import pt.josegamerpt.realskywars.classes.Cage;
+import pt.josegamerpt.realskywars.cages.Cage;
 import pt.josegamerpt.realskywars.classes.Enum;
 import pt.josegamerpt.realskywars.classes.GameRoom;
 import pt.josegamerpt.realskywars.classes.Team;

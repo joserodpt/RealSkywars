@@ -158,18 +158,19 @@ public class ChestTierMenu {
 			@EventHandler
 			public void onClose(InventoryCloseEvent e) {
 				if (e.getPlayer() instanceof Player) {
-					if (e.getInventory() == null) {
-						return;
-					}
-					Player p = (Player) e.getPlayer();
-					UUID uuid = p.getUniqueId();
-					if (inventories.containsKey(uuid)) {
-						inventories.get(uuid).unregister();
+                    if (e.getInventory() == null) {
+                        return;
+                    }
+                    Player p = (Player) e.getPlayer();
+                    UUID uuid = p.getUniqueId();
+                    if (inventories.containsKey(uuid)) {
+                        inventories.get(uuid).unregister();
 
-					}
-					GamePlayer gp = PlayerManager.getPlayer(p);
-					gp.istate = InteractionState.NONE;
-				}
+                    }
+                    GamePlayer gp = PlayerManager.getPlayer(p);
+                    if (gp != null)
+                        gp.istate = InteractionState.NONE;
+                }
 			}
 		};
 	}

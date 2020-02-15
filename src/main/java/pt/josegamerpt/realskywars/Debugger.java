@@ -7,17 +7,17 @@ import pt.josegamerpt.realskywars.managers.PlayerManager;
 import pt.josegamerpt.realskywars.utils.Text;
 
 public class Debugger {
-	public static int debug = 1;
-	public static int debugTask = 0;
+	public static boolean debug = false;
+	public static boolean debugTask = false;
 
 	public static void print(String b) {
-		if (debug == 1) {
+		if (debug) {
 			System.out.print(RealSkywars.getPrefix() + "[DEBUG] " + b);
 		}
 	}
 
 	public static void execute() {
-		if (debugTask == 1) {
+		if (debugTask) {
 			Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.pl, new Runnable() {
 				@Override
 				public void run() {

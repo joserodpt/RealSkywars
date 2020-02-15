@@ -1,10 +1,7 @@
 package pt.josegamerpt.realskywars.cages;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import pt.josegamerpt.realskywars.classes.Cage;
 import pt.josegamerpt.realskywars.classes.Enum;
 import pt.josegamerpt.realskywars.player.GamePlayer;
 
@@ -14,7 +11,7 @@ public class TeamCage implements Cage {
 
     public int id;
     public int maxPlayers;
-    public ArrayList<GamePlayer> p = new ArrayList<GamePlayer>();
+    public ArrayList<GamePlayer> p = new ArrayList<>();
     public Location location;
     public Boolean cageSet = false;
 
@@ -36,7 +33,7 @@ public class TeamCage implements Cage {
     }
 
     public void setCage() {
-        if (this.cageSet == false) {
+        if (!this.cageSet) {
             Location p = this.location;
             int x = p.getBlockX();
             int y = p.getBlockY();
@@ -71,25 +68,25 @@ public class TeamCage implements Cage {
             // paredes 1 e 3
             y = p.getBlockY();
             x = x + 2;
-            p.getWorld().getBlockAt(x, y + 0, z).setType(m);
+            p.getWorld().getBlockAt(x, y, z).setType(m);
             p.getWorld().getBlockAt(x, y + 1, z).setType(m);
             p.getWorld().getBlockAt(x, y + 2, z).setType(m);
-            p.getWorld().getBlockAt(x, y + 0, z - 1).setType(m);
+            p.getWorld().getBlockAt(x, y, z - 1).setType(m);
             p.getWorld().getBlockAt(x, y + 1, z - 1).setType(m);
             p.getWorld().getBlockAt(x, y + 2, z - 1).setType(m);
-            p.getWorld().getBlockAt(x, y + 0, z + 1).setType(m);
+            p.getWorld().getBlockAt(x, y, z + 1).setType(m);
             p.getWorld().getBlockAt(x, y + 1, z + 1).setType(m);
             p.getWorld().getBlockAt(x, y + 2, z + 1).setType(m);
 
             x = p.getBlockX();
             x = x - 2;
-            p.getWorld().getBlockAt(x, y + 0, z).setType(m);
+            p.getWorld().getBlockAt(x, y, z).setType(m);
             p.getWorld().getBlockAt(x, y + 1, z).setType(m);
             p.getWorld().getBlockAt(x, y + 2, z).setType(m);
-            p.getWorld().getBlockAt(x, y + 0, z - 1).setType(m);
+            p.getWorld().getBlockAt(x, y, z - 1).setType(m);
             p.getWorld().getBlockAt(x, y + 1, z - 1).setType(m);
             p.getWorld().getBlockAt(x, y + 2, z - 1).setType(m);
-            p.getWorld().getBlockAt(x, y + 0, z + 1).setType(m);
+            p.getWorld().getBlockAt(x, y, z + 1).setType(m);
             p.getWorld().getBlockAt(x, y + 1, z + 1).setType(m);
             p.getWorld().getBlockAt(x, y + 2, z + 1).setType(m);
 
@@ -149,6 +146,11 @@ public class TeamCage implements Cage {
 
     public Enum.CageType getType() {
         return Enum.CageType.TEAMS;
+    }
+
+    public void resetCage() {
+        this.p.clear();
+        cageSet = false;
     }
 
     public void open() {

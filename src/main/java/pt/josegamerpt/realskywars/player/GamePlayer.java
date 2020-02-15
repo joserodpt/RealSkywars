@@ -11,12 +11,15 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import pt.josegamerpt.realskywars.Debugger;
+import pt.josegamerpt.realskywars.cages.Cage;
 import pt.josegamerpt.realskywars.classes.*;
+import pt.josegamerpt.realskywars.classes.Enum;
 import pt.josegamerpt.realskywars.classes.Enum.InteractionState;
 import pt.josegamerpt.realskywars.classes.Enum.PlayerState;
 import pt.josegamerpt.realskywars.classes.Enum.Selection;
 import pt.josegamerpt.realskywars.classes.Enum.Selections;
 import pt.josegamerpt.realskywars.configuration.Config;
+import pt.josegamerpt.realskywars.configuration.Players;
 import pt.josegamerpt.realskywars.effects.BlockWinTrail;
 import pt.josegamerpt.realskywars.managers.LanguageManager;
 import pt.josegamerpt.realskywars.managers.PlayerManager;
@@ -41,7 +44,10 @@ public class GamePlayer {
     public int gamekills = 0;
     public int totalkills;
     public int deaths;
-    public int wins;
+    public int soloWins;
+    public int teamWins;
+    public int loses;
+    public int gamesPlayed;
     public Double coins = 0D;
     public Double balanceGame = 0D;
     public PlayerScoreboard ps;
@@ -54,22 +60,29 @@ public class GamePlayer {
 
     public Kit kit;
     public Particle bowParticle;
-    public boolean winblockRandom;
+    public boolean winblockRandom = false;
     public Material winblockMaterial;
     public List<Trail> trails = new ArrayList<Trail>();
 
-    public GamePlayer(Player jog, PlayerState estado, GameRoom rom, int tk, int d, int win, Double coi, String lang,
-                      List<String> bgh) {
+    public GamePlayer(Player jog, PlayerState estado, GameRoom rom, int tk, int d, int solowin, int teamwin, Double coi, String lang,
+                      List<String> bgh, int l, int gp) {
         this.p = jog;
         this.state = estado;
         this.room = rom;
         this.totalkills = tk;
-        this.wins = win;
+        this.soloWins = solowin;
+        this.teamWins = teamwin;
         this.deaths = d;
         this.coins = coi;
         this.language = lang;
         this.bought = bgh;
+        this.loses = l;
+        this.gamesPlayed = gp;
         ps = new PlayerScoreboard(this);
+    }
+
+    public GamePlayer(String lang) {
+        this.language = lang;
     }
 
     public GamePlayer() {
@@ -94,7 +107,8 @@ public class GamePlayer {
         }
 
         b.next("Cage Block: " + this.cageBlock)
-                .next("Wins: " + this.wins)
+                .next("Solo Wins: " + this.soloWins)
+                .next("Team Wins: " + this.teamWins)
                 .next("Game Kills: " + this.gamekills)
                 .next("Kills: " + this.totalkills)
                 .next("Deaths: " + this.deaths)
@@ -140,19 +154,58 @@ public class GamePlayer {
         }
     }
 
-    public void addKill(int i) {
-        gamekills += i;
-        balanceGame = (balanceGame + Config.file().getDouble("Config.Coins.Per-Kill"));
+    public void addStatistic(Enum.Statistic t, int i) {
+        switch (t) {
+            case SOLO_WIN:
+                this.soloWins += i;
+                this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Win"));
+                this.addStatistic(Enum.Statistic.GAMES_PLAYED, 1);
+                break;
+            case TEAM_WIN:
+                this.teamWins += i;
+                this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Win"));
+                this.addStatistic(Enum.Statistic.GAMES_PLAYED, 1);
+                break;
+            case KILL:
+                this.gamekills += i;
+                this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Kill"));
+                break;
+            case LOSE:
+                this.loses += i;
+                break;
+            case DEATH:
+                this.deaths += i;
+                this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Death"));
+                this.addStatistic(Enum.Statistic.LOSE, 1);
+                this.addStatistic(Enum.Statistic.GAMES_PLAYED, 1);
+                break;
+            case GAMES_PLAYED:
+                this.gamesPlayed += i;
+                break;
+        }
     }
 
-    public void addWin(int i) {
-        wins += i;
-        balanceGame = (balanceGame + Config.file().getDouble("Config.Coins.Per-Win"));
-    }
-
-    public void addDeath(int i) {
-        deaths += i;
-        balanceGame = (balanceGame + Config.file().getDouble("Config.Coins.Per-Death"));
+    public void setStatistic(Enum.Statistic t, int i) {
+        switch (t) {
+            case SOLO_WIN:
+                this.soloWins = i;
+                break;
+            case TEAM_WIN:
+                this.teamWins = i;
+                break;
+            case KILL:
+                this.gamekills = i;
+                break;
+            case LOSE:
+                this.loses = i;
+                break;
+            case DEATH:
+                this.deaths = i;
+                break;
+            case GAMES_PLAYED:
+                this.gamesPlayed = i;
+                break;
+        }
     }
 
     public void saveData() {
@@ -173,10 +226,11 @@ public class GamePlayer {
         }
     }
 
-    public void resetPurchases() {
-        bought.clear();
-        saveData();
-        sendMessage(LanguageManager.getPrefix() + "&4Your purchases were deleted with success.");
+    public void resetData() {
+        Players.file().set(p.getUniqueId().toString(), null);
+        Players.save();
+        PlayerManager.players.remove(this);
+        p.kickPlayer(LanguageManager.getPrefix() + "§4Your data was resetted with success. \n §cPlease join the server again to complete the reset.");
     }
 
     public String getName() {
@@ -234,7 +288,7 @@ public class GamePlayer {
         if (t < 0) {
             return;
         }
-        if (winblockRandom == true) {
+        if (winblockRandom) {
             addTrail(new BlockWinTrail(this, t));
         } else {
             if (winblockMaterial != null) {

@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import pt.josegamerpt.realskywars.cages.Cage;
 import pt.josegamerpt.realskywars.utils.Calhau;
 import pt.josegamerpt.realskywars.classes.Enum.GameState;
 import pt.josegamerpt.realskywars.player.GamePlayer;

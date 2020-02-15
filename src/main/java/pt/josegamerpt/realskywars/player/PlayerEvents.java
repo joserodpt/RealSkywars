@@ -57,7 +57,7 @@ public class PlayerEvents implements Listener {
 		if (pkiller instanceof Player) {
 			GamePlayer killer = PlayerManager.getPlayer(pkiller);
 			if (killer.room != null) {
-				killer.addKill(1);
+				killer.addStatistic(Enum.Statistic.KILL, 1);
 			}
 			deathLoc = pkiller.getLocation();
 		}
@@ -69,7 +69,7 @@ public class PlayerEvents implements Listener {
 				players.hidePlayer(RealSkywars.pl, killed.p);
 			}
 
-			killed.addDeath(1);
+			killed.addStatistic(Enum.Statistic.DEATH, 1);
 
 			Location finalDeathLoc = deathLoc;
 			Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.pl, new Runnable() {
@@ -112,17 +112,19 @@ public class PlayerEvents implements Listener {
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		GamePlayer p = PlayerManager.getPlayer(e.getPlayer());
-		if (p.room != null) {
-			p.room.checkWin();
-			p.room.removePlayer(p);
+		if (p != null) {
+			if (p.room != null) {
+				p.room.checkWin();
+				p.room.removePlayer(p);
+			}
+
+			p.saveData();
+			p.stopTrails();
+
+			p.ps.stop();
+			PlayerManager.tpLobby(p);
+			PlayerManager.players.remove(p);
 		}
-
-		p.saveData();
-		p.stopTrails();
-
-		p.ps.stop();
-		PlayerManager.tpLobby(p);
-		PlayerManager.players.remove(p);
 	}
 
 	@EventHandler

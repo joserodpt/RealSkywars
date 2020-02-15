@@ -67,15 +67,20 @@ public class RSWcmd implements CommandExecutor {
                         case "reload":
                             if (p.p.hasPermission("RealSkywars.Admin")) {
 
-                                GameManager.endGames();
+								GameManager.endGames();
 
-                                Config.reload();
-                                Maps.reload();
-                                Players.reload();
-                                Chests.reload();
-                                Languages.reload();
-                                LanguageManager.loadLanguages();
-                                PlayerManager.loadPlayers();
+								Config.reload();
+								Maps.reload();
+								Players.reload();
+								Chests.reload();
+								Languages.reload();
+
+								Debugger.debug = Config.file().getBoolean("Debug-Mode");
+								GameManager.loginTP = Config.file().getBoolean("Config.Auto-Teleport-To-Lobby");
+
+								LanguageManager.loadLanguages();
+								PlayerManager.players.forEach(gamePlayer -> gamePlayer.ps.stop());
+								PlayerManager.loadPlayers();
 								Shops.reload();
 								Kits.reload();
 								KitManager.loadKits();
@@ -88,7 +93,7 @@ public class RSWcmd implements CommandExecutor {
 								float yaw = (float) Config.file().getDouble("Config.Lobby.Yaw");
 								float pitch = (float) Config.file().getDouble("Config.Lobby.Pitch");
 								World world = Bukkit.getServer().getWorld(Objects.requireNonNull(Config.file().getString("Config.Lobby.World")));
-								GameManager.lobby = new Location(world, x, y, z, yaw, pitch);
+								GameManager.lobbyLOC = new Location(world, x, y, z, yaw, pitch);
 								p.sendMessage(LanguageManager.getString(p, TS.CONFIG_RELOAD, true));
 								return false;
 							} else {
@@ -226,15 +231,15 @@ public class RSWcmd implements CommandExecutor {
                             }
                             return false;
                         case "testp":
-                            if (Debugger.debug == 1) {
-                                if (gp.hasPermission("RealSkywars.Admin")) {
-                                    p.executeWinBlock(4);
-                                } else {
-                                    p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
-                                }
-                            } else {
-                                p.sendMessage(LanguageManager.getString(p, TS.CMD_NOT_FOUND, true));
-                            }
+							if (Debugger.debug) {
+								if (gp.hasPermission("RealSkywars.Admin")) {
+									p.executeWinBlock(4);
+								} else {
+									p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));
+								}
+							} else {
+								p.sendMessage(LanguageManager.getString(p, TS.CMD_NOT_FOUND, true));
+							}
                             return false;
                         case "edittrails":
                             if (gp.hasPermission("RealSkywars.Admin")) {
@@ -314,7 +319,7 @@ public class RSWcmd implements CommandExecutor {
 								Config.file().set("Config.Lobby.Yaw", p.p.getLocation().getYaw());
 								Config.file().set("Config.Lobby.Pitch", p.p.getLocation().getPitch());
 								Config.save();
-								GameManager.lobby = p.p.getLocation();
+								GameManager.lobbyLOC = p.p.getLocation();
 								p.sendMessage(LanguageManager.getString(p, TS.LOBBY_SET, true));
 							} else {
 								p.sendMessage(LanguageManager.getString(p, TS.CMD_NOPERM, true));

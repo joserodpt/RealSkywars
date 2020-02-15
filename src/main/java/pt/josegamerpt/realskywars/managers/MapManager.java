@@ -1,6 +1,5 @@
 package pt.josegamerpt.realskywars.managers;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
@@ -14,7 +13,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import pt.josegamerpt.realskywars.Debugger;
 import pt.josegamerpt.realskywars.cages.SoloCage;
-import pt.josegamerpt.realskywars.classes.Cage;
+import pt.josegamerpt.realskywars.cages.Cage;
 import pt.josegamerpt.realskywars.classes.GameRoom;
 import pt.josegamerpt.realskywars.classes.SetupRoom;
 import pt.josegamerpt.realskywars.classes.Team;
@@ -30,7 +29,6 @@ import pt.josegamerpt.realskywars.modes.Solo;
 import pt.josegamerpt.realskywars.modes.Teams;
 import pt.josegamerpt.realskywars.player.GamePlayer;
 import pt.josegamerpt.realskywars.utils.Holograms;
-import pt.josegamerpt.realskywars.utils.MathUtils;
 import pt.josegamerpt.realskywars.utils.Text;
 import pt.josegamerpt.realskywars.worlds.Worlds;
 

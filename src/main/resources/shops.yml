@@ -100,3 +100,11 @@ Main-Shop:
     - COMPOSTER>10>§9Composter §a(Green Particle)>RealSkywars.Particle>COMPOSTER
     - FLASH>30>§f§lFLASH>RealSkywars.Particle>NETHER_STAR
     - FALLING_WATER>10>§9Falling §bWater>RealSkywars.Particle>WATER_BUCKET
+  Win-Blocks:
+    - §5Random §aBlocks>RANDOMBLOCK>10>RealSkywars.Win-Block
+    - §9Diamond §7Blocks>DIAMOND_BLOCK>10>RealSkywars.Win-Block
+    - §aEmerald §7Blocks>EMERALD_BLOCK>10>RealSkywars.Win-Block
+    - §2Oak §7Leaves>OAK_LEAVES>10>RealSkywars.Win-Block
+    - §bBeacon §7Blocks>BEACON>10>RealSkywars.Win-Block
+    - §8Bedrock §7Blocks>BEDROCK>10>RealSkywars.Win-Block
+    - §7Iron Bar §7Blocks>IRON_BARS>10>RealSkywars.Win-Block
