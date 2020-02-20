@@ -48,6 +48,29 @@ public class PlayerEvents implements Listener {
 	}
 
 	@EventHandler
+	public void onEntityDamage(EntityDamageEvent e) {
+		if (e.getEntity() instanceof Player) {
+			if (e.getCause() == EntityDamageEvent.DamageCause.VOID) {
+				Player p = (Player) e.getEntity();
+				GamePlayer killed = PlayerManager.getPlayer(p);
+				if (killed.isInMatch()) {
+
+					for (Player players : Bukkit.getServer().getOnlinePlayers()) {
+						players.hidePlayer(RealSkywars.pl, killed.p);
+					}
+
+					killed.addStatistic(Enum.Statistic.DEATH, 1);
+
+					Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.pl, () -> {
+						killed.p.spigot().respawn();
+						killed.room.spectate(killed, killed.room.getSpectatorLocation());
+					}, 1);
+				}
+			}
+		}
+	}
+
+	@EventHandler
 	public void onKill(PlayerDeathEvent e) {
 		Player pkilled = e.getEntity();
 		Player pkiller = e.getEntity().getKiller();
@@ -56,14 +79,14 @@ public class PlayerEvents implements Listener {
 
 		if (pkiller instanceof Player) {
 			GamePlayer killer = PlayerManager.getPlayer(pkiller);
-			if (killer.room != null) {
+			if (killer.isInMatch()) {
 				killer.addStatistic(Enum.Statistic.KILL, 1);
 			}
 			deathLoc = pkiller.getLocation();
 		}
 
 		GamePlayer killed = PlayerManager.getPlayer(pkilled);
-		if (killed.room != null) {
+		if (killed.isInMatch()) {
 
 			for (Player players : Bukkit.getServer().getOnlinePlayers()) {
 				players.hidePlayer(RealSkywars.pl, killed.p);
@@ -94,6 +117,7 @@ public class PlayerEvents implements Listener {
 			Player whoHit = (Player) e.getDamager();
 			GamePlayer hitter = PlayerManager.getPlayer(whoHit);
 			GamePlayer hurt = PlayerManager.getPlayer(whoWasHit);
+			assert hitter != null;
 			if (hitter.team != null) {
 				if (hitter.team.members.contains(hurt)) {
 					whoHit.sendMessage(LanguageManager.getString(hitter, Enum.TS.TEAMMATE_DAMAGE_CANCEL, true));
@@ -134,8 +158,9 @@ public class PlayerEvents implements Listener {
 				e.getEntity() instanceof Arrow) {
 			Player p = (Player) e.getEntity().getShooter();
 			GamePlayer gp = PlayerManager.getPlayer(p);
+			assert gp != null;
 			if (gp.bowParticle != null) {
-				if (gp.isInGame()) {
+				if (gp.isInMatch()) {
 					gp.addTrail(new BowTrail(gp.bowParticle, e.getEntity(), gp));
 				}
 			}

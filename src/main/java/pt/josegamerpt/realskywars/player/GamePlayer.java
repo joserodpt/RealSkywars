@@ -40,7 +40,6 @@ public class GamePlayer {
     public Team team;
     public Cage cage;
 
-    public int GameDeaths = 0;
     public int gamekills = 0;
     public int totalkills;
     public int deaths;
@@ -54,15 +53,15 @@ public class GamePlayer {
 
     public Material cageBlock = Material.GLASS;
 
-    public List<String> bought = new ArrayList<String>();
-    public HashMap<Selection, Selections> selections = new HashMap<Selection, Selections>();
+    public List<String> bought = new ArrayList<>();
+    public HashMap<Selection, Selections> selections = new HashMap<>();
     public Boolean bot = false;
 
     public Kit kit;
     public Particle bowParticle;
     public boolean winblockRandom = false;
     public Material winblockMaterial;
-    public List<Trail> trails = new ArrayList<Trail>();
+    public List<Trail> trails = new ArrayList<>();
 
     public GamePlayer(Player jog, PlayerState estado, GameRoom rom, int tk, int d, int solowin, int teamwin, Double coi, String lang,
                       List<String> bgh, int l, int gp) {
@@ -149,9 +148,13 @@ public class GamePlayer {
                 }
             }
         }
-        if (bot == false) {
+        if (!bot) {
             PlayerManager.players.add(this);
         }
+    }
+
+    public boolean isInMatch() {
+        return room != null;
     }
 
     public void addStatistic(Enum.Statistic t, int i) {
@@ -251,10 +254,6 @@ public class GamePlayer {
         for (Trail t : trails) {
             t.cancelTask();
         }
-    }
-
-    public boolean isInGame() {
-        return this.room != null;
     }
 
     public void addTrail(Trail t) {
