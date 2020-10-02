@@ -13,6 +13,7 @@ public class Worlds {
 		world.generator(new VoidWorld());
 
 		World w = world.createWorld();
+		assert w != null;
 		Block b = w.getBlockAt(0, 64, 0);
 		b.setType(Material.BEDROCK);
 

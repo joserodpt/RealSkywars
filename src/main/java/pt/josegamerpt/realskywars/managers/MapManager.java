@@ -42,8 +42,8 @@ public class MapManager {
 
         ConfigurationSection cs = Maps.file().getConfigurationSection("");
         Set<String> keys = cs.getKeys(false);
-        for (Iterator<String> iterator1 = keys.iterator(); iterator1.hasNext(); ) {
-            worlds.add((String) iterator1.next());
+        for (String key : keys) {
+            worlds.add(key);
         }
         return worlds;
     }
@@ -61,7 +61,7 @@ public class MapManager {
         int id = 0;
         for (String s : getRegisteredMaps()) {
 
-            if (getGameType(s).equals(null)) {
+            if (getGameType(s) == null) {
                 throw new IllegalStateException("Mode doesnt exist: " + s);
             }
 
@@ -153,8 +153,7 @@ public class MapManager {
         Set<String> keys = cs.getKeys(false);
         ArrayList<Cage> locs = new ArrayList<Cage>();
         int id = 0;
-        for (Iterator<String> iterator1 = keys.iterator(); iterator1.hasNext(); ) {
-            String i = iterator1.next();
+        for (String i : keys) {
             double x = Maps.file().getDouble(map + ".Locations.Cages." + i + ".X");
             double y = Maps.file().getDouble(map + ".Locations.Cages." + i + ".Y");
             double z = Maps.file().getDouble(map + ".Locations.Cages." + i + ".Z");
@@ -185,21 +184,21 @@ public class MapManager {
             case SOLO:
                 for (Cage c : g.getCages()) {
                     Location loc = c.getLocation();
-                    Maps.file().set(s + ".Locations.Cages." + c.getID() + ".X", Integer.valueOf(loc.getBlockX()));
-                    Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Y", Integer.valueOf(loc.getBlockY()));
-                    Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Z", Integer.valueOf(loc.getBlockZ()));
-                    Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Yaw", Float.valueOf(loc.getYaw()));
-                    Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Pitch", Float.valueOf(loc.getPitch()));
+                    Maps.file().set(s + ".Locations.Cages." + c.getID() + ".X", loc.getBlockX());
+                    Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Y", loc.getBlockY());
+                    Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Z", loc.getBlockZ());
+                    Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Yaw", loc.getYaw());
+                    Maps.file().set(s + ".Locations.Cages." + c.getID() + ".Pitch", loc.getPitch());
                 }
                 break;
             case TEAMS:
                 for (Team c : g.getTeams()) {
                     Location loc = c.tc.getLocation();
-                    Maps.file().set(s + ".Locations.Cages." + c.tc.getID() + ".X", Integer.valueOf(loc.getBlockX()));
-                    Maps.file().set(s + ".Locations.Cages." + c.tc.getID() + ".Y", Integer.valueOf(loc.getBlockY()));
-                    Maps.file().set(s + ".Locations.Cages." + c.tc.getID() + ".Z", Integer.valueOf(loc.getBlockZ()));
-                    Maps.file().set(s + ".Locations.Cages." + c.tc.getID() + ".Yaw", Float.valueOf(loc.getYaw()));
-                    Maps.file().set(s + ".Locations.Cages." + c.tc.getID() + ".Pitch", Float.valueOf(loc.getPitch()));
+                    Maps.file().set(s + ".Locations.Cages." + c.tc.getID() + ".X", loc.getBlockX());
+                    Maps.file().set(s + ".Locations.Cages." + c.tc.getID() + ".Y", loc.getBlockY());
+                    Maps.file().set(s + ".Locations.Cages." + c.tc.getID() + ".Z", loc.getBlockZ());
+                    Maps.file().set(s + ".Locations.Cages." + c.tc.getID() + ".Yaw", loc.getYaw());
+                    Maps.file().set(s + ".Locations.Cages." + c.tc.getID() + ".Pitch", loc.getPitch());
                 }
                 break;
         }
@@ -244,7 +243,7 @@ public class MapManager {
     }
 
     public static void continueSetup(GamePlayer p) {
-        if (p.setup.tpConfirm == false) {
+        if (!p.setup.tpConfirm) {
 
             p.istate = InteractionState.NONE;
 
@@ -280,7 +279,7 @@ public class MapManager {
         }
 
         PlayerManager.tpLobby(p);
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         list.add(LanguageManager.getString(p, TS.SAVING_ARENA, true));
         Text.sendList(p.p, list);
 
@@ -299,7 +298,7 @@ public class MapManager {
                 saveMap(gs);
                 break;
             case TEAMS:
-                ArrayList<Team> ts = new ArrayList<Team>();
+                ArrayList<Team> ts = new ArrayList<>();
                 int tc = 1;
                 for (Cage c : p.setup.cages) {
                     Debugger.print(c.getLocation().toString());

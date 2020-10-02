@@ -120,28 +120,8 @@ public class Solo implements GameRoom {
         return this.spectators;
     }
 
-    public int getPlayersInCount() {
-        return this.onThisRoom.size();
-    }
-
-    public List<GamePlayer> getPlayersIn() {
-        return this.onThisRoom;
-    }
-
     public World getWorld() {
         return this.world;
-    }
-
-    public void broadcastMessage(String s, Boolean prefix) {
-        for (GamePlayer p : this.onThisRoom) {
-            if (p.p != null) {
-                if (prefix) {
-                    p.sendMessage(LanguageManager.getPrefix() + s);
-                } else {
-                    p.sendMessage(s);
-                }
-            }
-        }
     }
 
     public void kickPlayers() {
@@ -195,10 +175,6 @@ public class Solo implements GameRoom {
         if (bossBar != null) {
             bossBar.removeAll();
         }
-    }
-
-    public void cancelAllTasks() {
-
     }
 
     public Enum.GameState getState() {
@@ -302,7 +278,7 @@ public class Solo implements GameRoom {
         }, (t) -> {
             bossBar.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_RUNTIME).replace("%time%",
                     t.getSecondsLeft() + "")));
-            Double div = (double) t.getSecondsLeft() / (double) timeleft;
+            double div = (double) t.getSecondsLeft() / (double) timeleft;
             bossBar.setProgress(div);
 
             //future events
@@ -313,12 +289,7 @@ public class Solo implements GameRoom {
     }
 
     private void startCountingTime() {
-        this.tasks.put("timeCounter", Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.pl, new Runnable() {
-            @Override
-            public void run() {
-                timePassed += 1;
-            }
-        }, 0L, 20L));
+        this.tasks.put("timeCounter", Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.pl, () -> timePassed += 1, 0L, 20L));
     }
 
     private String variables(String string) {
@@ -357,10 +328,8 @@ public class Solo implements GameRoom {
             }
         }
 
-        if (this.state != Enum.GameState.AVAILABLE || this.state != Enum.GameState.STARTING) {
-            if (bossBar != null) {
-                bossBar.removePlayer(p.p);
-            }
+        if (bossBar != null) {
+            bossBar.removePlayer(p.p);
         }
 
         this.onThisRoom.remove(p);
@@ -479,7 +448,7 @@ public class Solo implements GameRoom {
                 }
                 bossBar.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_STARTING)
                         .replace("%time%", t.getSecondsLeft() + "")));
-                Double div = (double) t.getSecondsLeft()
+                double div = (double) t.getSecondsLeft()
                         / (double) Config.file().getInt("Config.Time-To-Start");
                 bossBar.setProgress(div);
             }

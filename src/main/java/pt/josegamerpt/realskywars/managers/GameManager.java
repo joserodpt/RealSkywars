@@ -35,7 +35,7 @@ public class GameManager {
     }
 
     public static ArrayList<World> getRoomWorlds() {
-        ArrayList<World> words = new ArrayList<World>();
+        ArrayList<World> words = new ArrayList<>();
         for (GameRoom g : rooms) {
             words.add(g.getWorld());
         }

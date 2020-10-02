@@ -46,7 +46,7 @@ public class ShopManager {
 
                     DisplayItem s = new DisplayItem(i, m, name, price, bought, perm, Enum.Categories.CAGEBLOCK);
 
-                    if (error == true) {
+                    if (error) {
                         s.interactable = false;
                         s.setName("&4Configuration Error. &cEnable debug for more info. Line &f" + i);
                         s.makeItem();
@@ -60,7 +60,7 @@ public class ShopManager {
                 for (String sa : Shops.file().getStringList("Main-Shop.Win-Blocks")) {
                     String[] parse = sa.split(">");
 
-                    Boolean error = false;
+                    boolean error = false;
                     double price;
                     String material = parse[1];
                     String name = Text.addColor(parse[0]);
@@ -84,7 +84,7 @@ public class ShopManager {
 
                         DisplayItem s = new DisplayItem(i, m, name, price, bought, perm, Enum.Categories.WINBLOCKS);
 
-                        if (error == true) {
+                        if (error) {
                             s.interactable = false;
                             s.setName("&4Configuration Error. &cEnable debug for more info. Line &f" + i);
                             s.makeItem();
@@ -95,7 +95,7 @@ public class ShopManager {
                     } else {
                         DisplayItem s = new DisplayItem(i, Material.ENDER_CHEST, name, price, bought, perm, Enum.Categories.WINBLOCKS);
                         s.addInfo("RandomBlock", "RandomBlock");
-                        if (error == true) {
+                        if (error) {
                             s.interactable = false;
                             s.setName("&4Configuration Error. &cEnable debug for more info. Line &f" + i);
                             s.makeItem();
@@ -144,7 +144,7 @@ public class ShopManager {
                     DisplayItem s = new DisplayItem(i, m, name, price, bought, perm, Enum.Categories.BOWPARTICLE);
                     s.addInfo("Particle", Particle.valueOf(particle));
 
-                    if (error == true) {
+                    if (error) {
                         s.interactable = false;
                         s.setName("&4Configuration Error. &cEnable debug for more info. Line &f" + i);
                         s.makeItem();

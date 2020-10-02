@@ -3,10 +3,10 @@ package pt.josegamerpt.realskywars.worlds;
 import java.util.Random;
 
 
-import com.sun.istack.internal.NotNull;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.generator.ChunkGenerator;
+import org.jetbrains.annotations.NotNull;
 
 public class VoidWorld extends ChunkGenerator {
 	@Override

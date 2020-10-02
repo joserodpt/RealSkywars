@@ -25,14 +25,12 @@ public class BowTrail implements Trail {
 
   @Override
   public void startTask() {
-    task = Bukkit.getServer().getScheduler().runTaskTimer(RealSkywars.pl, new Runnable() {
-      public void run() {
-        if (a.isOnGround() || a.isDead() || a == null) {
-          cancelTask();
-          return;
-        }
-        a.getLocation().getWorld().spawnParticle(pa, a.getLocation(), 1);
+    task = Bukkit.getServer().getScheduler().runTaskTimer(RealSkywars.pl, () -> {
+      if (a.isOnGround() || a.isDead() || a == null) {
+        cancelTask();
+        return;
       }
+      a.getLocation().getWorld().spawnParticle(pa, a.getLocation(), 1);
     }, 1, 1);
   }
 

@@ -25,7 +25,7 @@ import pt.josegamerpt.realskywars.utils.Itens;
 
 public class ChestTierMenu {
 
-	private static Map<UUID, ChestTierMenu> inventories = new HashMap<>();
+	private static final Map<UUID, ChestTierMenu> inventories = new HashMap<>();
 	static Inventory inv;
 
 	static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
@@ -42,6 +42,8 @@ public class ChestTierMenu {
 
 	public ChestTierMenu(UUID id) {
 		inv = Bukkit.getServer().createInventory(null, 27, "Chest Tiers");
+		this.uuid = id;
+
 
 		for (int i = 0; i < 9; i++) {
 			inv.setItem(i, placeholder);

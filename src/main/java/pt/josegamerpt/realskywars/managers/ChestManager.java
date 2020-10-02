@@ -26,7 +26,7 @@ public class ChestManager {
 				ItemStack item = Chests.file().getItemStack("Loot.Basic." + string + ".ItemStack");
 				int f = Chests.file().getInt("Loot.Basic." + string + ".Chance");
 				// loot.add(item);
-				ChestItem e = new ChestItem(Integer.valueOf(string), f, Itens.addLore(item, Arrays.asList(Text.addColor("&fChance Percentage: &b" + f + "%"),
+				ChestItem e = new ChestItem(Integer.parseInt(string), f, Itens.addLore(item, Arrays.asList(Text.addColor("&fChance Percentage: &b" + f + "%"),
 						Text.addColor("&fID: &b" + string),Text.addColor("&fClick to &9edit &fthe chance."))));
 				loot.add(e);
 			}
@@ -65,7 +65,7 @@ public class ChestManager {
 	}
 
 	public static ArrayList<ItemStack> putInChest(TierType t) {
-		ArrayList<ItemStack> loot = new ArrayList<ItemStack>();
+		ArrayList<ItemStack> loot = new ArrayList<>();
 
 		if (t == TierType.BASIC) {
 			for (String string : Chests.file().getConfigurationSection("Loot.Basic").getKeys(false)) {
@@ -98,7 +98,7 @@ public class ChestManager {
 
 				ItemStack item = Chests.file().getItemStack("Loot.CAOS." + string + ".ItemStack");
 				int f = Chests.file().getInt("Loot.CAOS." + string + ".Chance");
-				Float flot = (float) f / 100.0f;
+				float flot = (float) f / 100.0f;
 				addToLoot(loot, item, flot);
 			}
 		}
@@ -110,15 +110,6 @@ public class ChestManager {
 
 		if (chance <= c)
 			l.add(item);
-	}
-
-	public static boolean isInventoryEmpty(Inventory inv) {
-		for (ItemStack item : inv.getContents()) {
-			if (item != null) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	public static void setContents(ArrayList<ItemStack> f, String string) {

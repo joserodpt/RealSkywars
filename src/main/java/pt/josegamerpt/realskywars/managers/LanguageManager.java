@@ -13,7 +13,7 @@ import pt.josegamerpt.realskywars.utils.Text;
 
 public class LanguageManager {
 
-	private static ArrayList<String> langList = new ArrayList<>();
+	private static final ArrayList<String> langList = new ArrayList<>();
 
 	public static void loadLanguages() {
 		langList.clear();

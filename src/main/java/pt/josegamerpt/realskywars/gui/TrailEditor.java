@@ -28,7 +28,6 @@ import pt.josegamerpt.realskywars.managers.PlayerManager;
 import pt.josegamerpt.realskywars.managers.ShopManager;
 import pt.josegamerpt.realskywars.player.GamePlayer;
 import pt.josegamerpt.realskywars.utils.*;
-import sun.security.ssl.Debug;
 
 import java.util.*;
 

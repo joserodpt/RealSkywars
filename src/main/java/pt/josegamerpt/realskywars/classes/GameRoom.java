@@ -29,14 +29,7 @@ public interface GameRoom {
 
 	List<GamePlayer> getSpectators();
 
-	int getPlayersInCount();
-
-	List<GamePlayer> getPlayersIn();
-
-
 	World getWorld();
-
-	void broadcastMessage(String s, Boolean prefix);
 
 	void kickPlayers();
 
@@ -91,8 +84,6 @@ public interface GameRoom {
 	void checkWin();
 
 	GameType getMode();
-
-	void cancelAllTasks();
 
 	void cancelTask(String s);
 

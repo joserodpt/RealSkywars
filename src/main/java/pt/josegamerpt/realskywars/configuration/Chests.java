@@ -13,7 +13,7 @@ public class Chests implements Listener {
 
 	private static File file;
 	private static FileConfiguration customFile;
-	private static String name = "chests.yml";
+	private static final String name = "chests.yml";
 
 	public static void setup(Plugin p) {
 		file = new File(p.getDataFolder(), name);

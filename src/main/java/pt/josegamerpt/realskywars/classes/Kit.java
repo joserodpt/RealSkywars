@@ -37,9 +37,7 @@ public class Kit {
     }
 
     public void save() {
-        if (KitManager.getKits().contains(this)) {
-            KitManager.getKits().remove(this);
-        }
+        KitManager.getKits().remove(this);
         KitManager.getKits().add(this);
     }
 
@@ -49,8 +47,8 @@ public class Kit {
     }
 
     public List<String> getDescription(boolean shop) {
-		ArrayList<String> desc = new ArrayList<String>();
-		if (shop == true)
+		ArrayList<String> desc = new ArrayList<>();
+		if (shop)
         {
             desc.add("&fPrice: &b" + this.price);
         }
@@ -63,7 +61,7 @@ public class Kit {
         }
 
         desc.add("");
-		if (shop == false) {
+		if (!shop) {
 			desc.add("&fClick to select this kit.");
 		} else {
 			desc.add("&fClick to buy this kit.");

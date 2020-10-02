@@ -12,7 +12,7 @@ public class Players implements Listener {
 
 	private static File file;
 	private static FileConfiguration customFile;
-	private static String name = "players.yml";
+	private static final String name = "players.yml";
 
 	public static void setup(Plugin p) {
 		file = new File(p.getDataFolder(), name);

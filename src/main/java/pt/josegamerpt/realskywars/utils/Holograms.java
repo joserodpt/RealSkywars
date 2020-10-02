@@ -7,7 +7,7 @@ import org.bukkit.entity.EntityType;
 
 public class Holograms {
 
-	public static ArrayList<ArmorStand> holograms = new ArrayList<ArmorStand>();
+	public static ArrayList<ArmorStand> holograms = new ArrayList<>();
 
 	public static void add(String nome, Location loc) {
 		ArmorStand as = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);

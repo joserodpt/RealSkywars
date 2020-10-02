@@ -28,9 +28,9 @@ public class PlayerManager {
             p.getInventory().clear();
             switch (i) {
                 case LOBBY:
-                    p.getInventory().setItem(2, Itens.getHead(p, 1, "&9Your Profile"));
-                    p.getInventory().setItem(4, Items.MAPS);
-                    p.getInventory().setItem(6, Items.SHOP);
+                    p.getInventory().setItem(6, Itens.getHead(p, 1, "&9Your Profile"));
+                    p.getInventory().setItem(7, Items.MAPS);
+                    p.getInventory().setItem(8, Items.SHOP);
                     break;
                 case CAGE:
                     p.getInventory().setItem(0, Items.KITS);

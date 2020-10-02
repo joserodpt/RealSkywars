@@ -36,7 +36,7 @@ public class Text {
 		char[] charArray;
 		for (int length = (charArray = original.toCharArray()).length, i = 0; i < length; ++i) {
 			final char c = charArray[i];
-			returnValue = String.valueOf(returnValue) + "&" + chars[index] + c;
+			returnValue = returnValue + "&" + chars[index] + c;
 			if (++index == chars.length) {
 				index = 0;
 			}
@@ -100,7 +100,7 @@ public class Text {
 
 
 	public static ArrayList<String> addColor(List<?> list) {
-		ArrayList<String> color = new ArrayList<String>();
+		ArrayList<String> color = new ArrayList<>();
 		for (Object s : list) {
 			color.add(Text.addColor((String) s));
 		}

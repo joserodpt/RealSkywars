@@ -1,11 +1,6 @@
 package pt.josegamerpt.realskywars.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -61,7 +56,7 @@ public class MaterialPicker {
 
         items = getIcons();
 
-        p = new Pagination<Material>(28, items);
+        p = new Pagination<>(28, items);
         fillChest(p.getPage(pageNumber));
 
         this.register();
@@ -79,7 +74,7 @@ public class MaterialPicker {
 
         items = searchMaterial(search);
 
-        p = new Pagination<Material>(28, items);
+        p = new Pagination<>(28, items);
         fillChest(p.getPage(pageNumber));
 
         this.register();
@@ -105,23 +100,17 @@ public class MaterialPicker {
 
                         Player p = (Player) clicker;
                         if (e.getRawSlot() == 4) {
-                            new PlayerInput(p, new PlayerInput.InputRunnable() {
-                                public void run(String input) {
-                                    if (current.searchMaterial(input).size() == 0) {
-                                        p.sendMessage("Nothing found for your results.");
-
-                                        current.exit(p);
-                                        return;
-                                    } else {
-                                        MaterialPicker df = new MaterialPicker(current.trailID, p, current.pt, current.pc, current.cat, current.invNam, input);
-                                        df.openInventory(p);
-                                    }
-                                }
-                            }, new PlayerInput.InputRunnable() {
-                                public void run(String input) {
-                                    MaterialPicker df = new MaterialPicker(current.trailID, p, current.pt, current.pc, current.cat, current.invNam);
+                            new PlayerInput(p, input -> {
+                                if (current.searchMaterial(input).size() == 0) {
+                                    p.sendMessage("Nothing found for your results.");
+                                    current.exit(p);
+                                } else {
+                                    MaterialPicker df = new MaterialPicker(current.trailID, p, current.pt, current.pc, current.cat, current.invNam, input);
                                     df.openInventory(p);
                                 }
+                            }, input -> {
+                                MaterialPicker df = new MaterialPicker(current.trailID, p, current.pt, current.pc, current.cat, current.invNam);
+                                df.openInventory(p);
                             });
                         }
 
@@ -141,27 +130,24 @@ public class MaterialPicker {
                         if (current.display.containsKey(e.getRawSlot())) {
                             Material a = current.display.get(e.getRawSlot());
 
-                            switch (current.pc) {
-                                case TRAIL_ICON:
-                                    List<String> list = Shops.file().getStringList("Main-Shop.Bow-Particles");
-                                    String trail = list.get(current.trailID);
-                                    String[] str = trail.split(">");
-                                    String newTrail = str[0] + ">" + str[1] + ">" + str[2] + ">" + str[3] + ">" + a.name();
-                                    list.remove(current.trailID);
-                                    list.add(current.trailID, newTrail);
-                                    Shops.file().set("Main-Shop.Bow-Particles", list);
-                                    Shops.save();
-                                    p.sendMessage("Changed to §a" + a.name());
-                                    p.closeInventory();
+                            if (current.pc == PickCategory.TRAIL_ICON) {
+                                List<String> list = Shops.file().getStringList("Main-Shop.Bow-Particles");
+                                String trail = list.get(current.trailID);
+                                String[] str = trail.split(">");
+                                String newTrail = str[0] + ">" + str[1] + ">" + str[2] + ">" + str[3] + ">" + a.name();
+                                list.remove(current.trailID);
+                                list.add(current.trailID, newTrail);
+                                Shops.file().set("Main-Shop.Bow-Particles", list);
+                                Shops.save();
+                                p.sendMessage("Changed to §a" + a.name());
+                                p.closeInventory();
 
-                                    Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.pl, new Runnable() {
-                                        public void run() {
-                                            TrailEditor v = new TrailEditor(p, current.cat, current.invNam);
-                                            v.openInventory(p);
-                                        }
-                                    }, 10);
-
-                                    break;
+                                Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.pl, new Runnable() {
+                                    public void run() {
+                                        TrailEditor v = new TrailEditor(p, current.cat, current.invNam);
+                                        v.openInventory(p);
+                                    }
+                                }, 10);
                             }
                         }
                     }
@@ -211,12 +197,6 @@ public class MaterialPicker {
                 }
                 break;
             case ITEM:
-                for (Material m : Material.values()) {
-                    if (!m.equals(Material.AIR) && m.isSolid() && m.isBlock() && m.isItem()) {
-                        ms.add(m);
-                    }
-                }
-                break;
             case BLOCK:
                 for (Material m : Material.values()) {
                     if (!m.equals(Material.AIR) && m.isSolid() && m.isBlock() && m.isItem()) {
@@ -276,7 +256,7 @@ public class MaterialPicker {
                 if (items.size() != 0) {
                     Material s = items.get(0);
                     inv.setItem(slot,
-                            Itens.createItemLore(s, 1, "§9" + s.name(), Arrays.asList("&fClick to pick this.")));
+                            Itens.createItemLore(s, 1, "§9" + s.name(), Collections.singletonList("&fClick to pick this.")));
                     display.put(slot, s);
                     items.remove(0);
                 }

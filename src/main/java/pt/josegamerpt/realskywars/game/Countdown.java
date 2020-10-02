@@ -16,19 +16,19 @@ import java.util.function.Consumer;
 public class Countdown implements Runnable {
 
 	// Main class for bukkit scheduling
-	private JavaPlugin plugin;
+	private final JavaPlugin plugin;
 
 	// Our scheduled task's assigned id, needed for canceling
 	private Integer assignedTaskId;
 
 	// Seconds and shiz
-	private int seconds;
+	private final int seconds;
 	private int secondsLeft;
 
 	// Actions to perform while counting down, before and after
-	private Consumer<Countdown> everySecond;
-	private Runnable beforeTimer;
-	private Runnable afterTimer;
+	private final Consumer<Countdown> everySecond;
+	private final Runnable beforeTimer;
+	private final Runnable afterTimer;
 
 	// Construct a timer, you could create multiple so for example if
 	// you do not want these "actions"

@@ -12,7 +12,7 @@ public class Config implements Listener {
 
 	private static File file;
 	private static FileConfiguration customFile;
-	private static String name = "config.yml";
+	private static final String name = "config.yml";
 
 	public static void setup(Plugin p) {
 		file = new File(p.getDataFolder(), name);

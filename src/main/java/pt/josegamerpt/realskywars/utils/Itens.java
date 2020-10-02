@@ -52,15 +52,15 @@ public class Itens {
 		if (i != null) {
 			ItemStack is = i.clone();
 			ItemMeta meta;
-			if (is.hasItemMeta() == false) {
+			if (!is.hasItemMeta()) {
 				meta = Bukkit.getItemFactory().getItemMeta(is.getType());
 			} else {
 				meta = is.getItemMeta();
 			}
 
 			List<String> lore;
-			if (meta.hasLore() == false) {
-				lore = new ArrayList<String>();
+			if (!meta.hasLore()) {
+				lore = new ArrayList<>();
 			} else {
 				lore = meta.getLore();
 			}
@@ -78,17 +78,18 @@ public class Itens {
 		if (i != null) {
 			ItemStack is = i.clone();
 			ItemMeta meta;
-			if (is.hasItemMeta() == false) {
+			if (!is.hasItemMeta()) {
 				meta = Bukkit.getItemFactory().getItemMeta(is.getType());
 			} else {
 				meta = is.getItemMeta();
 			}
 
 			List<String> lore;
-			lore = new ArrayList<String>();
+			lore = new ArrayList<>();
 
 			lore.add("§9");
 			lore.addAll(Text.addColor(lor));
+			assert meta != null;
 			meta.setLore(lore);
 			is.setItemMeta(meta);
 			return is;

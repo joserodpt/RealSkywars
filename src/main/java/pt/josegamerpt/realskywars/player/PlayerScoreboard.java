@@ -34,12 +34,16 @@ public class PlayerScoreboard {
     public void run() {
         task = new BukkitRunnable() {
             public void run() {
-                ArrayList<String> lista = new ArrayList<>();
-                String tit = "";
+                ArrayList<String> lista;
+                String tit;
                 if (linked.state != null) {
                     switch (linked.state) {
                         case LOBBY_OR_NOGAME:
                             if (!GameManager.lobbyScoreboard) {
+                                return;
+                            }
+                            if (GameManager.lobbyLOC.getWorld() != linked.getWorld())
+                            {
                                 return;
                             }
                             lista = LanguageManager.getList(linked, TL.SCOREBOARD_LOBBY_LINES);
@@ -50,9 +54,6 @@ public class PlayerScoreboard {
                             tit = LanguageManager.getString(linked, TS.SCOREBOARD_CAGE_TITLE, false).replace("%map%", linked.room.getName());
                             break;
                         case SPECTATOR:
-                            lista = LanguageManager.getList(linked, TL.SCOREBOARD_SPECTATOR_LINES);
-                            tit = LanguageManager.getString(linked, TS.SCOREBOARD_SPECTATOR_TITLE, false).replace("%map%", linked.room.getName());
-                            break;
                         case EXTERNAL_SPECTATOR:
                             lista = LanguageManager.getList(linked, TL.SCOREBOARD_SPECTATOR_LINES);
                             tit = LanguageManager.getString(linked, TS.SCOREBOARD_SPECTATOR_TITLE, false).replace("%map%", linked.room.getName());
@@ -64,7 +65,7 @@ public class PlayerScoreboard {
                         default:
                             throw new IllegalStateException("Unexpected value: " + linked.state);
                     }
-                    Map<String, Integer> linhas = new HashMap<String, Integer>();
+                    Map<String, Integer> linhas = new HashMap<>();
 
                     int linha = lista.size();
                     for (String s : lista) {
@@ -73,7 +74,7 @@ public class PlayerScoreboard {
                     displayScoreboard(tit, linked, linhas);
                 }
             }
-        }.runTaskTimer(RealSkywars.pl, 0L, (long) 20);
+        }.runTaskTimer(RealSkywars.pl, 0L, 20);
     }
 
     protected static String variables(String s, GamePlayer gp) {

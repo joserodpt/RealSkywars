@@ -29,7 +29,6 @@ public class MathUtils {
 
 		// If last element is most frequent
 		if (curr_count > max_count) {
-			max_count = curr_count;
 			res = arr[arr.length - 1];
 		}
 

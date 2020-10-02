@@ -11,13 +11,13 @@ import pt.josegamerpt.realskywars.configuration.Kits;
 
 public class KitManager {
 
-	private static ArrayList<Kit> kits = new ArrayList<Kit>();
+	private static final ArrayList<Kit> kits = new ArrayList<>();
 
 	public static void loadKits() {
 		kits.clear();
 		if (Kits.file().getConfigurationSection("Kits") != null) {
 			for (String s : Kits.file().getConfigurationSection("Kits").getKeys(false)) {
-				int id = Integer.valueOf(s);
+				int id = Integer.parseInt(s);
 				String name = Kits.file().getString("Kits." + id + ".Name");
 				Double price = Kits.file().getDouble("Kits." + id + ".Price");
 				Material mat = Material.getMaterial(Kits.file().getString("Kits." + id + ".Icon"));
@@ -41,8 +41,8 @@ public class KitManager {
 	}
 
 	private static ItemStack[] getKitContents(int asd) {
-		List<?> list = (List<?>) Kits.file().getList("Kits." + asd + ".Contents");
-		ItemStack[] v = (ItemStack[]) list.toArray(new ItemStack[0]);
+		List<?> list = Kits.file().getList("Kits." + asd + ".Contents");
+		ItemStack[] v = list.toArray(new ItemStack[0]);
 		return v;
 	}
 

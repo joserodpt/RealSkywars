@@ -44,6 +44,7 @@ public class ChestTierVote {
 
 	public ChestTierVote(UUID id) {
 		inv = Bukkit.getServer().createInventory(null, 27, "Chest Tiers");
+		this.uuid = id;
 
 		for (int i = 0; i < 9; i++) {
 			inv.setItem(i, placeholder);

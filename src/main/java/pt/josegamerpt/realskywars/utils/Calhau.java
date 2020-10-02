@@ -33,9 +33,5 @@ public class Calhau {
     public Collection<ItemStack> getDrops(){
         return drops;
     }
-    
-    public byte getData(){
-        return data;
-    }
-   
+
 }

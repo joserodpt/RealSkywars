@@ -39,7 +39,7 @@ public class PlayerInput implements Listener {
             public void run() {
                 p.sendTitle(texts.get(0), texts.get(1), 0, 21, 0);
             }
-        }.runTaskTimer(RealSkywars.pl, 0L, (long) 20);
+        }.runTaskTimer(RealSkywars.pl, 0L, 20);
 
         this.register();
     }
@@ -54,7 +54,7 @@ public class PlayerInput implements Listener {
             public void run() {
                 p.sendTitle(Text.addColor(titl1), Text.addColor(titl2), 0, 21, 0);
             }
-        }.runTaskTimer(RealSkywars.pl, 0L, (long) 20);
+        }.runTaskTimer(RealSkywars.pl, 0L, 20);
 
         this.register();
     }
@@ -74,23 +74,13 @@ public class PlayerInput implements Listener {
                                 event.getPlayer().sendMessage("Input canceled.");
                                 current.taskId.cancel();
                                 event.getPlayer().sendTitle("", "", 0, 1, 0);
-                                Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.pl, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        current.runCancel.run(input);
-                                    }
-                                }, 3);
+                                Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.pl, () -> current.runCancel.run(input), 3);
                                 current.unregister();
                                 return;
                             }
 
                             current.taskId.cancel();
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.pl, new Runnable() {
-                                @Override
-                                public void run() {
-                                    current.runGo.run(input);
-                                }
-                            }, 3);
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.pl, () -> current.runGo.run(input), 3);
                             event.getPlayer().sendTitle("", "", 0, 1, 0);
                             current.unregister();
                         } catch (Exception e) {
@@ -114,6 +104,6 @@ public class PlayerInput implements Listener {
 
     @FunctionalInterface
     public interface InputRunnable {
-        public void run(String input);
+        void run(String input);
     }
 }

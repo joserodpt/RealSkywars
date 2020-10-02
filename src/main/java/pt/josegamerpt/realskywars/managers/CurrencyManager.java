@@ -24,11 +24,7 @@ public class CurrencyManager {
 	}
 
 	public Boolean canMakeOperation() {
-		if (fromEntity.coins >= opQ) {
-			return true;
-		} else {
-			return false;
-		}
+		return fromEntity.coins >= opQ;
 	}
 
 	public void transferCoins() {
@@ -53,7 +49,7 @@ public class CurrencyManager {
 	}
 
 	public void removeCoins() {
-		if (console == true) {
+		if (console) {
 			fromEntity.coins = (fromEntity.coins - opQ);
 			fromEntity.saveData();
 			return;

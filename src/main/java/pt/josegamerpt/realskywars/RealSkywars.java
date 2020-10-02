@@ -27,6 +27,8 @@ import pt.josegamerpt.realskywars.utils.Holograms;
 import pt.josegamerpt.realskywars.utils.MaterialPicker;
 import pt.josegamerpt.realskywars.utils.PlayerInput;
 
+import java.util.logging.Level;
+
 public class RealSkywars extends JavaPlugin implements Listener {
 
     public static Plugin pl;
@@ -39,7 +41,7 @@ public class RealSkywars extends JavaPlugin implements Listener {
 	public void onEnable() {
         long start = System.currentTimeMillis();
 
-        String star = "<------------------ RealSkywars PT ------------------>".replace("PT", "| " +
+        String star = "<------------- RealSkywars PT ------------->".replace("PT", "| " +
                 this.getDescription().getVersion());
         System.out.print(star);
         pl = this;
@@ -126,6 +128,6 @@ public class RealSkywars extends JavaPlugin implements Listener {
 
     public static void print(String s)
 	{
-		System.out.print(getPrefix() + s);
+	    Bukkit.getLogger().log(Level.INFO, getPrefix() + s);
 	}
 }

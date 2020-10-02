@@ -1,7 +1,6 @@
 package pt.josegamerpt.realskywars.player;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
@@ -17,11 +16,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import pt.josegamerpt.realskywars.RealSkywars;
 import pt.josegamerpt.realskywars.classes.Enum;
-import pt.josegamerpt.realskywars.classes.Trail;
 import pt.josegamerpt.realskywars.configuration.Items;
 import pt.josegamerpt.realskywars.effects.BowTrail;
-import pt.josegamerpt.realskywars.managers.EffectsManager;
-import pt.josegamerpt.realskywars.managers.GameManager;
 import pt.josegamerpt.realskywars.managers.LanguageManager;
 import pt.josegamerpt.realskywars.managers.PlayerManager;
 
@@ -54,7 +50,6 @@ public class PlayerEvents implements Listener {
 				Player p = (Player) e.getEntity();
 				GamePlayer killed = PlayerManager.getPlayer(p);
 				if (killed.isInMatch()) {
-
 					for (Player players : Bukkit.getServer().getOnlinePlayers()) {
 						players.hidePlayer(RealSkywars.pl, killed.p);
 					}

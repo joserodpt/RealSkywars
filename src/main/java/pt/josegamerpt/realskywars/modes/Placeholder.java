@@ -20,9 +20,7 @@ public class Placeholder implements GameRoom {
         this.n = name;
     }
 
-    public void saveRoom() {
-
-    }
+    public void saveRoom() { }
 
     public String getName() {
         return this.n;
@@ -48,49 +46,27 @@ public class Placeholder implements GameRoom {
         return null;
     }
 
-    public int getPlayersInCount() {
-        return 0;
-    }
-
-    public List<GamePlayer> getPlayersIn() {
-        return null;
-    }
-
     public World getWorld() {
         return null;
     }
 
-    public void broadcastMessage(String s, Boolean prefix) {
+    public void kickPlayers() { }
 
-    }
-
-    public void kickPlayers() {
-
-    }
-
-    public void kickPlayers(String s) {
-
-    }
+    public void kickPlayers(String s) { }
 
     public Enum.GameState getState() {
         return null;
     }
 
-    public void setState(Enum.GameState w) {
-
-    }
+    public void setState(Enum.GameState w) {   }
 
     public boolean isPlaceHolder() {
         return true;
     }
 
-    public void forceStart() {
+    public void forceStart() {  }
 
-    }
-
-    public void removePlayer(GamePlayer p) {
-
-    }
+    public void removePlayer(GamePlayer p) { }
 
     public Location getSpectatorLocation() {
         return null;
@@ -112,9 +88,7 @@ public class Placeholder implements GameRoom {
         return null;
     }
 
-    public void addPlayer(GamePlayer gp) {
-
-    }
+    public void addPlayer(GamePlayer gp) { }
 
     public boolean isSpectatorEnabled() {
         return false;
@@ -128,9 +102,7 @@ public class Placeholder implements GameRoom {
         return null;
     }
 
-    public void setTierType(Enum.TierType b) {
-
-    }
+    public void setTierType(Enum.TierType b) { }
 
     public ArrayList<Calhau> getBlocksPlaced() {
         return null;
@@ -144,41 +116,24 @@ public class Placeholder implements GameRoom {
         return 0;
     }
 
-    public void resetArena() {
+    public void resetArena() {  }
 
-    }
+    public void setSpectator(boolean b) {  }
 
-    public void setSpectator(boolean b) {
+    public void setInstantEnd(boolean b) {  }
 
-    }
-
-    public void setInstantEnd(boolean b) {
-
-    }
-
-    public void spectate(GamePlayer p, Location killLoc) {
-
-    }
+    public void spectate(GamePlayer p, Location killLoc) { }
 
     public ArrayList<Location> getOpenedChests() {
         return null;
     }
 
-    public void checkWin() {
-
-    }
+    public void checkWin() { }
 
     public Enum.GameType getMode() {
         return null;
     }
-
-    public void cancelAllTasks() {
-
-    }
-
-    public void cancelTask(String s) {
-
-    }
+    public void cancelTask(String s) { }
 
     public ArrayList<Cage> getCages() {
         return null;

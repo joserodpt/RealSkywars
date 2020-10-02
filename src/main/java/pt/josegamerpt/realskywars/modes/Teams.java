@@ -63,7 +63,7 @@ public class Teams implements GameRoom {
     public Location spectatorLocation;
     public Boolean specEnabled;
     public Boolean instantEnding;
-    private HashMap<String, Integer> tasks = new HashMap<String, Integer>();
+    private final HashMap<String, Integer> tasks = new HashMap<String, Integer>();
     // b-1, n-2, o-3, c-4
 
     public Teams(int i, String nome, World w, Enum.GameState estado, ArrayList<Team> teams, int maxPlayers,
@@ -114,7 +114,7 @@ public class Teams implements GameRoom {
     }
 
     public ArrayList<GamePlayer> getPlayers() {
-        ArrayList<GamePlayer> a = new ArrayList<GamePlayer>();
+        ArrayList<GamePlayer> a = new ArrayList<>();
         for (Team t : teams) {
             a.addAll(t.members);
         }
@@ -129,28 +129,8 @@ public class Teams implements GameRoom {
         return this.spectators;
     }
 
-    public int getPlayersInCount() {
-        return this.onThisRoom.size();
-    }
-
-    public List<GamePlayer> getPlayersIn() {
-        return this.onThisRoom;
-    }
-
     public World getWorld() {
         return this.world;
-    }
-
-    public void broadcastMessage(String s, Boolean prefix) {
-        for (GamePlayer p : this.onThisRoom) {
-            if (p.p != null) {
-                if (prefix) {
-                    p.sendMessage(LanguageManager.getPrefix() + s);
-                } else {
-                    p.sendMessage(s);
-                }
-            }
-        }
     }
 
     public void kickPlayers() {
@@ -207,10 +187,6 @@ public class Teams implements GameRoom {
         }
     }
 
-    public void cancelAllTasks() {
-
-    }
-
     public Enum.GameState getState() {
         return this.state;
     }
@@ -234,7 +210,7 @@ public class Teams implements GameRoom {
     }
 
     public ArrayList<Cage> getCages() {
-        ArrayList<Cage> c = new ArrayList<Cage>();
+        ArrayList<Cage> c = new ArrayList<>();
         for (Team t : this.teams) {
             c.add(t.tc);
         }
@@ -313,7 +289,7 @@ public class Teams implements GameRoom {
         }, (t) -> {
             bossBar.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_RUNTIME).replace("%time%",
                     t.getSecondsLeft() + "")));
-            Double div = (double) t.getSecondsLeft() / (double) timeleft;
+            double div = (double) t.getSecondsLeft() / (double) timeleft;
             bossBar.setProgress(div);
 
             //future events
@@ -324,12 +300,7 @@ public class Teams implements GameRoom {
     }
 
     private void startCountingTime() {
-        this.tasks.put("timeCounter", Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.pl, new Runnable() {
-            @Override
-            public void run() {
-                timePassed += 1;
-            }
-        }, 0L, 20L));
+        this.tasks.put("timeCounter", Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.pl, () -> timePassed += 1, 0L, 20L));
     }
 
     private String variables(String string) {
@@ -367,10 +338,8 @@ public class Teams implements GameRoom {
             }
         }
 
-        if (this.state != Enum.GameState.AVAILABLE || this.state != Enum.GameState.STARTING) {
-            if (bossBar != null) {
-                bossBar.removePlayer(p.p);
-            }
+        if (bossBar != null) {
+            bossBar.removePlayer(p.p);
         }
 
         this.onThisRoom.remove(p);
@@ -444,7 +413,7 @@ public class Teams implements GameRoom {
         //cage
 
         for (Team c : this.teams) {
-            if (c.isTeamFull() == false) {
+            if (!c.isTeamFull()) {
                 c.addPlayer(gp);
                 break;
             }
@@ -488,7 +457,7 @@ public class Teams implements GameRoom {
                 }
                 bossBar.setTitle(Text.addColor(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_STARTING)
                         .replace("%time%", t.getSecondsLeft() + "")));
-                Double div = (double) t.getSecondsLeft()
+                double div = (double) t.getSecondsLeft()
                         / (double) Config.file().getInt("Config.Time-To-Start");
                 bossBar.setProgress(div);
             }
@@ -556,7 +525,7 @@ public class Teams implements GameRoom {
     public void resetArena() {
         this.state = Enum.GameState.RESETTING;
 
-        this.teams.forEach(team -> team.reset());
+        this.teams.forEach(Team::reset);
         this.spectators.clear();
         this.onThisRoom.clear();
         this.openedChests.clear();

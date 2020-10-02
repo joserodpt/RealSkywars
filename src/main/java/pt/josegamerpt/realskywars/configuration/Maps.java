@@ -13,7 +13,7 @@ public class Maps implements Listener {
 
 	private static File file;
 	private static FileConfiguration customFile;
-	private static String name = "maps.yml";
+	private static final String name = "maps.yml";
 
 	public static void setup(Plugin p) {
 		file = new File(p.getDataFolder(), name);
