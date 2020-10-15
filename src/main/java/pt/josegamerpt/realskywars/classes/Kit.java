@@ -2,11 +2,9 @@ package pt.josegamerpt.realskywars.classes;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
 import pt.josegamerpt.realskywars.managers.KitManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Kit {
@@ -47,25 +45,24 @@ public class Kit {
     }
 
     public List<String> getDescription(boolean shop) {
-		ArrayList<String> desc = new ArrayList<>();
-		if (shop)
-        {
+        ArrayList<String> desc = new ArrayList<>();
+        if (shop) {
             desc.add("&fPrice: &b" + this.price);
         }
-		desc.add("&eThis kit contains:");
+        desc.add("&eThis kit contains:");
 
-		for (ItemStack s : contents) {
-        	if (s != null) {
-				desc.add("&fx" + s.getAmount() + " &9" + s.getType().name());
-			}
+        for (ItemStack s : contents) {
+            if (s != null) {
+                desc.add("&fx" + s.getAmount() + " &9" + s.getType().name());
+            }
         }
 
         desc.add("");
-		if (!shop) {
-			desc.add("&fClick to select this kit.");
-		} else {
-			desc.add("&fClick to buy this kit.");
-		}
+        if (!shop) {
+            desc.add("&fClick to select this kit.");
+        } else {
+            desc.add("&fClick to buy this kit.");
+        }
 
         return desc;
     }

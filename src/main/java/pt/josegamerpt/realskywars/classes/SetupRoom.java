@@ -12,7 +12,6 @@ public class SetupRoom {
     public Boolean tpConfirm = false;
     public String Name;
     public ArrayList<Cage> cages = new ArrayList<>();
-    public ArrayList<Team> teamslist = new ArrayList<>();
     public int maxPlayers;
     public World worldMap;
     public Location spectator;

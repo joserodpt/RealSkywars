@@ -31,7 +31,7 @@ Languages:
           - " &fGames Played: &b%gamesplayed%"
           - " &fPlaying: &b%playing% &fplayers"
           - "%space%"
-          - "     &eserver.com"
+          - "&eLonelyBoys 2.0"
         Title: " &aRealSkywars &fLobby "
       Cage:
         Lines:
@@ -42,7 +42,7 @@ Languages:
           - "%space%"
           - " &fWaiting for players..."
           - "%space%"
-          - "&eserver.com"
+          - "&eLonelyBoys 2.0"
         Title: " &fMap: &b%map%"
       Game:
         Lines:
@@ -54,7 +54,7 @@ Languages:
           - "%space%"
           - " &fTime passed: &b%runtime%"
           - "%space%"
-          - "&eserver.com"
+          - "&eLonelyBoys 2.0"
         Title: " &fMap: &b%map%"
       Spectate:
         Lines:
@@ -65,7 +65,7 @@ Languages:
           - "%space%"
           - " &fTime passed: &b%runtime%"
           - "%space%"
-          - "&eserver.com"
+          - "&eLonelyBoys 2.0"
         Title: " &fMap: &b%map% "
     Messages:
       System:
@@ -154,7 +154,7 @@ Languages:
         Already-Voted: "&fYou &calready voted&f."
       Arena:
         Saving: "&aSaving arena.."
-        Reset: "&cThe arena is being resetted by an admin."
+        Reset: "&cThe arena is being reset by an admin."
         Reset-Done: "&aThe arena has been resetted."
         Registered: "&fThe arena has been &aregistered&f."
         Suggest-Match-Cancel: "&cYou can't do that now. &fYou can do /rsw leave to leave this match."

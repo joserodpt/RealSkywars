@@ -1,38 +1,31 @@
 package pt.josegamerpt.realskywars.player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-
-import pt.josegamerpt.realskywars.Debugger;
 import pt.josegamerpt.realskywars.cages.Cage;
-import pt.josegamerpt.realskywars.classes.*;
 import pt.josegamerpt.realskywars.classes.Enum;
-import pt.josegamerpt.realskywars.classes.Enum.InteractionState;
 import pt.josegamerpt.realskywars.classes.Enum.PlayerState;
 import pt.josegamerpt.realskywars.classes.Enum.Selection;
 import pt.josegamerpt.realskywars.classes.Enum.Selections;
+import pt.josegamerpt.realskywars.classes.*;
 import pt.josegamerpt.realskywars.configuration.Config;
 import pt.josegamerpt.realskywars.configuration.Players;
 import pt.josegamerpt.realskywars.effects.BlockWinTrail;
 import pt.josegamerpt.realskywars.managers.LanguageManager;
 import pt.josegamerpt.realskywars.managers.PlayerManager;
-import pt.josegamerpt.realskywars.utils.Entry;
-import pt.josegamerpt.realskywars.utils.EntryBuilder;
 import pt.josegamerpt.realskywars.utils.Text;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class GamePlayer {
 
     public Player p;
     public PlayerState state = PlayerState.LOBBY_OR_NOGAME;
-    public InteractionState istate = InteractionState.NONE;
-
     public String language = LanguageManager.getDefaultLanguage();
 
     public GameRoom room;
@@ -88,58 +81,6 @@ public class GamePlayer {
         bot = true;
     }
 
-    public List<Entry> getInfoList() {
-        EntryBuilder b = new EntryBuilder().blank().blank().next("Player: " + this.p.getName())
-                .next("Player State: " + this.state)
-                .next("Interaction State: " + this.istate)
-                .next("Language: " + this.language);
-
-        if (this.room != null) {
-            b.next("Room: " + this.room.getName());
-        } else {
-            b.next("Room: None");
-        }
-        if (this.team != null) {
-            b.next("Team: " + this.team.getName() + " | Members: " + this.team.members.size() + " | Full: " + this.team.isTeamFull());
-        } else {
-            b.next("Team: None");
-        }
-
-        b.next("Cage Block: " + this.cageBlock)
-                .next("Solo Wins: " + this.soloWins)
-                .next("Team Wins: " + this.teamWins)
-                .next("Game Kills: " + this.gamekills)
-                .next("Kills: " + this.totalkills)
-                .next("Deaths: " + this.deaths)
-                .next("Coins: " + this.coins)
-                .next("Game Balance: " + this.balanceGame);
-
-        if (this.kit == null) {
-            b.next("Kit: None");
-        } else {
-            b.next("Kit: " + this.kit.name);
-        }
-
-        if (this.bowParticle == null) {
-            b.next("Bow Particle: None");
-        } else {
-            b.next("Bow Particle: " + this.bowParticle.name());
-        }
-
-        if (this.winblockMaterial == null) {
-            b.next("Win Block: None");
-        } else {
-            b.next("Win Block: " + this.winblockMaterial.name());
-        }
-        b.next("Win Block Random: " + this.winblockRandom);
-        b.next("Trails:");
-
-        trails.forEach(trail -> b.next("> Trail Type: " + trail.getType().name()));
-
-        b.blank().blank();
-        return b.build();
-    }
-
     public void save() {
         for (GamePlayer gp : PlayerManager.players) {
             if (p != null) {
@@ -188,29 +129,6 @@ public class GamePlayer {
         }
     }
 
-    public void setStatistic(Enum.Statistic t, int i) {
-        switch (t) {
-            case SOLO_WIN:
-                this.soloWins = i;
-                break;
-            case TEAM_WIN:
-                this.teamWins = i;
-                break;
-            case KILL:
-                this.gamekills = i;
-                break;
-            case LOSE:
-                this.loses = i;
-                break;
-            case DEATH:
-                this.deaths = i;
-                break;
-            case GAMES_PLAYED:
-                this.gamesPlayed = i;
-                break;
-        }
-    }
-
     public void saveData() {
         totalkills += gamekills;
         coins = (coins + balanceGame);
@@ -219,7 +137,7 @@ public class GamePlayer {
         PlayerManager.savePlayer(this);
     }
 
-    public double getSumBalTotal() {
+    public double getGameBalance() {
         return (coins + balanceGame);
     }
 
@@ -258,12 +176,10 @@ public class GamePlayer {
 
     public void addTrail(Trail t) {
         this.trails.add(t);
-        Debugger.print(trails + "");
     }
 
     public void removeTrail(Trail t) {
         this.trails.remove(t);
-        Debugger.print(trails + "");
     }
 
     public Location getLocation() {

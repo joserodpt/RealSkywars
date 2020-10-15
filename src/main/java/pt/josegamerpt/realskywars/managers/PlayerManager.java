@@ -1,12 +1,8 @@
 package pt.josegamerpt.realskywars.managers;
 
-import java.util.*;
-import java.util.Map.Entry;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
 import pt.josegamerpt.realskywars.RealSkywars;
 import pt.josegamerpt.realskywars.classes.DisplayItem;
 import pt.josegamerpt.realskywars.classes.Enum;
@@ -18,6 +14,9 @@ import pt.josegamerpt.realskywars.configuration.Items;
 import pt.josegamerpt.realskywars.configuration.Players;
 import pt.josegamerpt.realskywars.player.GamePlayer;
 import pt.josegamerpt.realskywars.utils.Itens;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class PlayerManager {
 

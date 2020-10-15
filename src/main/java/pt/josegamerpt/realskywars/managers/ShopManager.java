@@ -23,7 +23,7 @@ public class ShopManager {
                 for (String sa : Shops.file().getStringList("Main-Shop.Cage-Blocks")) {
                     String[] parse = sa.split(">");
 
-                    Boolean error = false;
+                    boolean error = false;
                     double price;
                     String material = parse[0];
                     String name = Text.addColor(parse[2]);
@@ -81,7 +81,6 @@ public class ShopManager {
                             Debugger.print("[FATAL] MATERIAL ISNT VALID: " + material);
                             error = true;
                         }
-
                         DisplayItem s = new DisplayItem(i, m, name, price, bought, perm, Enum.Categories.WINBLOCKS);
 
                         if (error) {
@@ -91,7 +90,6 @@ public class ShopManager {
                         }
 
                         items.add(s);
-                        i++;
                     } else {
                         DisplayItem s = new DisplayItem(i, Material.ENDER_CHEST, name, price, bought, perm, Enum.Categories.WINBLOCKS);
                         s.addInfo("RandomBlock", "RandomBlock");
@@ -100,10 +98,9 @@ public class ShopManager {
                             s.setName("&4Configuration Error. &cEnable debug for more info. Line &f" + i);
                             s.makeItem();
                         }
-
                         items.add(s);
-                        i++;
                     }
+                    i++;
                 }
                 break;
             case KITS:

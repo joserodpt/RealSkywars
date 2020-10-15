@@ -25,25 +25,19 @@ public class SignGUI {
 					String numb = ChatColor.stripColor(strings[0].replace("%", ""));
 					if (numb.equalsIgnoreCase("c"))
 					{
-						Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.pl, new Runnable() {
-							@Override
-							public void run() {
-								ChestTierViewer r = new ChestTierViewer(player.getUniqueId(), t);
-								r.openInventory(PlayerManager.getPlayer(player));
-							}
+						Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.pl, () -> {
+							ChestTierViewer r = new ChestTierViewer(player.getUniqueId(), t);
+							r.openInventory(PlayerManager.getPlayer(player));
 						}, 3);
 						return true;
 					}
 
-					if (isNumeric(numb) == true) {
+					if (isNumeric(numb)) {
 						int parsed = Integer.parseInt(numb);
 						ChestManager.savePercentage(t, slot, parsed);
-						Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.pl, new Runnable() {
-							@Override
-							public void run() {
-								ChestTierViewer r = new ChestTierViewer(player.getUniqueId(), t);
-								r.openInventory(PlayerManager.getPlayer(player));
-							}
+						Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.pl, () -> {
+							ChestTierViewer r = new ChestTierViewer(player.getUniqueId(), t);
+							r.openInventory(PlayerManager.getPlayer(player));
 						}, 3);
 						return true;
 					}

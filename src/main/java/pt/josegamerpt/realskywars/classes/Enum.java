@@ -18,10 +18,6 @@ public class Enum {
 		SOLO, TEAMS
 	}
 
-	public enum InteractionState {
-		NONE, GUI_ROOMSETUP, GUI_ROOMSET, GUI_PLAYER, GUI_CHESTCONTENTS, GUI_CHESTMENU, GUI_CHESTTIER
-	}
-
 	public enum TierType {
 		BASIC, NORMAL, OP, CAOS
 	}

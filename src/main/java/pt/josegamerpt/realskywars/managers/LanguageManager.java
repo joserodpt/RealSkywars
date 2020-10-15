@@ -30,7 +30,7 @@ public class LanguageManager {
 
 	public static ArrayList<String> getList(GamePlayer p, TL tl) {
 		String lang = p.language;
-		ArrayList<String> trad = new ArrayList<String>();
+		ArrayList<String> trad = new ArrayList<>();
 
 		switch (tl) {
 			case ARENA_START:

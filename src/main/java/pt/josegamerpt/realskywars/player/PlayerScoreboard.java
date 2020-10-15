@@ -1,9 +1,5 @@
 package pt.josegamerpt.realskywars.player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -16,6 +12,10 @@ import pt.josegamerpt.realskywars.managers.LanguageManager;
 import pt.josegamerpt.realskywars.managers.PlayerManager;
 import pt.josegamerpt.realskywars.utils.Text;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 public class PlayerScoreboard {
 
     public GamePlayer linked;
@@ -26,8 +26,18 @@ public class PlayerScoreboard {
         run();
     }
 
-    public void stop()
-    {
+    protected static String variables(String s, GamePlayer gp) {
+        if (gp.room != null) {
+            return s.replace("%space%", Text.makeSpace()).replace("%players%", gp.room.getPlayersCount() + "")
+                    .replace("%spectators%", gp.room.getSpectatorsCount() + "").replace("%kills%", gp.gamekills + "")
+                    .replace("%map%", gp.room.getName()).replace("%runtime%", gp.room.getTimePassed() + "").replace("%state%", GameManager.getStateString(gp, gp.room.getState())).replace("%mode%", gp.room.getMode().name()).replace("%solowins%", gp.soloWins + "").replace("%teamwins%", gp.teamWins + "").replace("%loses%", gp.loses + "").replace("%gamesplayed%", gp.gamesPlayed + "");
+        } else {
+            return s.replace("%space%", Text.makeSpace()).replace("%coins%", gp.coins + "")
+                    .replace("%kills%", gp.totalkills + "").replace("%deaths%", gp.deaths + "").replace("%playing%", "" + PlayerManager.countPlayingPlayers()).replace("%solowins%", gp.soloWins + "").replace("%teamwins%", gp.teamWins + "").replace("%loses%", gp.loses + "").replace("%gamesplayed%", gp.gamesPlayed + "");
+        }
+    }
+
+    public void stop() {
         task.cancel();
     }
 
@@ -42,8 +52,7 @@ public class PlayerScoreboard {
                             if (!GameManager.lobbyScoreboard) {
                                 return;
                             }
-                            if (GameManager.lobbyLOC.getWorld() != linked.getWorld())
-                            {
+                            if (GameManager.lobbyLOC.getWorld() != linked.getWorld()) {
                                 return;
                             }
                             lista = LanguageManager.getList(linked, TL.SCOREBOARD_LOBBY_LINES);
@@ -75,17 +84,6 @@ public class PlayerScoreboard {
                 }
             }
         }.runTaskTimer(RealSkywars.pl, 0L, 20);
-    }
-
-    protected static String variables(String s, GamePlayer gp) {
-        if (gp.room != null) {
-            return s.replace("%space%", Text.makeSpace()).replace("%players%", gp.room.getPlayersCount() + "")
-                    .replace("%spectators%", gp.room.getSpectatorsCount() + "").replace("%kills%", gp.gamekills + "")
-                    .replace("%map%", gp.room.getName()).replace("%runtime%", gp.room.getTimePassed() + "").replace("%state%", GameManager.getStateString(gp, gp.room.getState())).replace("%mode%", gp.room.getMode().name()).replace("%solowins%", gp.soloWins + "").replace("%teamwins%", gp.teamWins + "").replace("%loses%", gp.loses + "").replace("%gamesplayed%", gp.gamesPlayed + "");
-        } else {
-            return s.replace("%space%", Text.makeSpace()).replace("%coins%", gp.coins + "")
-                    .replace("%kills%", gp.totalkills + "").replace("%deaths%", gp.deaths + "").replace("%playing%", "" + PlayerManager.countPlayingPlayers()).replace("%solowins%", gp.soloWins + "").replace("%teamwins%", gp.teamWins + "").replace("%loses%", gp.loses + "").replace("%gamesplayed%", gp.gamesPlayed + "");
-        }
     }
 
     private void displayScoreboard(String title, GamePlayer p, Map<String, Integer> elements) {
@@ -125,10 +123,10 @@ public class PlayerScoreboard {
                 if (p.p.getScoreboard().getObjective(DisplaySlot.SIDEBAR).getScore(string2).getScore() != elements
                         .get(string2)) {
                     p.p.getScoreboard().getObjective(DisplaySlot.SIDEBAR).getScore(string2)
-                            .setScore((int) elements.get(string2));
+                            .setScore(elements.get(string2));
                 }
             }
-            for (String string2 : new ArrayList<String>(p.p.getScoreboard().getEntries())) {
+            for (String string2 : new ArrayList<>(p.p.getScoreboard().getEntries())) {
                 if (!elements.keySet().contains(string2)) {
                     p.p.getScoreboard().resetScores(string2);
                 }

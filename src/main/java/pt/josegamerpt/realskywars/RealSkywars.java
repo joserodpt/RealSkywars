@@ -7,21 +7,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import pt.josegamerpt.realskywars.configuration.Chests;
-import pt.josegamerpt.realskywars.configuration.Config;
-import pt.josegamerpt.realskywars.configuration.Kits;
-import pt.josegamerpt.realskywars.configuration.Languages;
-import pt.josegamerpt.realskywars.configuration.Maps;
-import pt.josegamerpt.realskywars.configuration.Players;
-import pt.josegamerpt.realskywars.configuration.Shops;
+import pt.josegamerpt.realskywars.configuration.*;
 import pt.josegamerpt.realskywars.gui.*;
 import pt.josegamerpt.realskywars.managers.*;
-import pt.josegamerpt.realskywars.player.BlockBreak;
-import pt.josegamerpt.realskywars.player.BlockPlace;
-import pt.josegamerpt.realskywars.player.EntityEvents;
-import pt.josegamerpt.realskywars.player.PlayerEvents;
-import pt.josegamerpt.realskywars.player.PlayerInteractions;
+import pt.josegamerpt.realskywars.player.*;
 import pt.josegamerpt.realskywars.utils.GUIBuilder;
 import pt.josegamerpt.realskywars.utils.Holograms;
 import pt.josegamerpt.realskywars.utils.MaterialPicker;
@@ -34,16 +23,20 @@ public class RealSkywars extends JavaPlugin implements Listener {
     public static Plugin pl;
     PluginManager pm = Bukkit.getPluginManager();
 
-	public static String getPrefix() {
-	    return "[" + RealSkywars.pl.getDescription().getName() + "] ";
-	}
+    public static String getPrefix() {
+        return "[" + RealSkywars.pl.getDescription().getName() + "] ";
+    }
 
-	public void onEnable() {
+    public static void print(String s) {
+        Bukkit.getLogger().log(Level.INFO, getPrefix() + s);
+    }
+
+    public void onEnable() {
         long start = System.currentTimeMillis();
 
         String star = "<------------- RealSkywars PT ------------->".replace("PT", "| " +
                 this.getDescription().getVersion());
-        System.out.print(star);
+        print(star);
         pl = this;
         Languages.setup(this);
 
@@ -97,8 +90,7 @@ public class RealSkywars extends JavaPlugin implements Listener {
             float yaw = (float) Config.file().getDouble("Config.Lobby.Yaw");
             float pitch = (float) Config.file().getDouble("Config.Lobby.Pitch");
             World world = Bukkit.getServer().getWorld(Config.file().getString("Config.Lobby.World"));
-            Location loc = new Location(world, x, y, z, yaw, pitch);
-            GameManager.lobbyLOC = loc;
+            GameManager.lobbyLOC = new Location(world, x, y, z, yaw, pitch);
         }
 
         GameManager.lobbyScoreboard = Config.file().getBoolean("Config.Lobby-Scoreboard");
@@ -118,16 +110,11 @@ public class RealSkywars extends JavaPlugin implements Listener {
 
         float elapsedTimeSec = elapsedTimeMillis / 1000F;
         print("Finished loading in " + elapsedTimeSec + " seconds.");
-        System.out.print(star);
+        print(star);
     }
 
     public void onDisable() {
         GameManager.endGames();
         Holograms.removeAll();
     }
-
-    public static void print(String s)
-	{
-	    Bukkit.getLogger().log(Level.INFO, getPrefix() + s);
-	}
 }

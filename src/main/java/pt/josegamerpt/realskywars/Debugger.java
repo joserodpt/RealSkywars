@@ -18,15 +18,12 @@ public class Debugger {
 
 	public static void execute() {
 		if (debugTask) {
-			Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.pl, new Runnable() {
-				@Override
-				public void run() {
-					/*for (GameRoom g : GameManager.rooms) {
-						print("ROOM: " + g.getName() + " | PLAYERS: " + g.getPlayersCount() + " |MAXPlayers " + g.getMaxPlayers() + " | ONTHISROOM: " + g.getPlayersInCount() + " | SPECS: " + g.getSpectatorsCount() + " | BDIZE" + g.getWorld().getWorldBorder().getSize());
-					}
-					 */
-					PlayerManager.players.forEach(gamePlayer -> print(String.join(", ", Text.entryToList(gamePlayer.getInfoList()))));
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.pl, () -> {
+				/*for (GameRoom g : GameManager.rooms) {
+					print("ROOM: " + g.getName() + " | PLAYERS: " + g.getPlayersCount() + " |MAXPlayers " + g.getMaxPlayers() + " | ONTHISROOM: " + g.getPlayersInCount() + " | SPECS: " + g.getSpectatorsCount() + " | BDIZE" + g.getWorld().getWorldBorder().getSize());
 				}
+				 */
+				//PlayerManager.players.forEach(gamePlayer -> print(String.join(", ", Text.entryToList(gamePlayer.getInfoList()))));
 			}, 20, 20);
 		}
 	}

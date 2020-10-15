@@ -1,10 +1,5 @@
 package pt.josegamerpt.realskywars.gui;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -17,138 +12,126 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-
 import pt.josegamerpt.realskywars.RealSkywars;
-import pt.josegamerpt.realskywars.classes.Enum.InteractionState;
-import pt.josegamerpt.realskywars.managers.PlayerManager;
 import pt.josegamerpt.realskywars.player.GamePlayer;
 import pt.josegamerpt.realskywars.utils.Itens;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class PlayerGUI {
 
-	private UUID uuid;
-	private static Map<UUID, PlayerGUI> inventories = new HashMap<>();
-	private static Map<UUID, Integer> refresh = new HashMap<>();
-	static Inventory inv;
-	static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
+    private static final Map<UUID, PlayerGUI> inventories = new HashMap<>();
+    private static final Map<UUID, Integer> refresh = new HashMap<>();
+    static Inventory inv;
+    static GamePlayer gp;
+    private final UUID uuid;
 
-	static GamePlayer gp;
+    public PlayerGUI(GamePlayer p, UUID id) {
+        this.uuid = id;
+        gp = p;
 
-	public PlayerGUI(GamePlayer p, UUID id) {
-		this.uuid = id;
-		gp = p;
+        inv = Bukkit.getServer().createInventory(null, InventoryType.HOPPER, p.p.getName() + " Info");
 
-		inv = Bukkit.getServer().createInventory(null, InventoryType.HOPPER, p.p.getName() + " Info");
+        ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, "&9About",
+                Arrays.asList("&fPlayer State: " + p.state, "&fRoom: " + p.room,
+                        "&fKills: " + p.totalkills, "&fDeaths: " + p.deaths, "&fCage Block:" + p.cageBlock));
+        // infoMap
+        inv.setItem(2, infoMap);
 
-		ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, "&9About",
-				Arrays.asList("&fPlayer State: " + p.state, "&fInteraction State: " + p.istate, "&fRoom: " + p.room,
-						"&fKills: " + p.totalkills, "&fDeaths: " + p.deaths, "&fCage Block:" + p.cageBlock));
-		// infoMap
-		inv.setItem(2, infoMap);
+        refresher(id);
 
-		refresher(id);
+        inventories.put(id, this);
+    }
 
-		inventories.put(id, this);
-	}
+    public static void refresher(UUID d) {
+        int refreshTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.pl, () -> {
 
-	public static void refresher(UUID d) {
-		int refreshTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.pl, new Runnable() {
-			public void run() {
+            String roomName;
+            if (gp.room == null) {
+                roomName = "None";
+            } else {
+                roomName = gp.room.getName();
+            }
+            ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, "&9About",
+                    Arrays.asList("&fPlayer State: " + gp.state,
+                            "&fRoom: " + roomName, "&fKills: " + gp.totalkills, "&fDeaths: " + gp.deaths, "&fCage Block:" + gp.cageBlock));
 
-				String roomName = null;
-				if (gp.room == null) {
-					roomName = "None";
-				} else {
-					roomName = gp.room.getName();
-				}
-				ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, "&9About",
-						Arrays.asList("&fPlayer State: " + gp.state, "&fInteraction State: " + gp.istate,
-								"&fRoom: " + roomName, "&fKills: " + gp.totalkills, "&fDeaths: " + gp.deaths, "&fCage Block:" + gp.cageBlock));
+            // infoMap
+            inv.setItem(2, infoMap);
+        }, 0L, 10L);
+        refresh.put(d, refreshTask);
+    }
 
-				// infoMap
-				inv.setItem(2, infoMap);
-			}
-		}, 0L, 10L);
-		refresh.put(d, refreshTask);
-	}
+    public static Listener getListener() {
+        return new Listener() {
+            @EventHandler
+            public void onClick(InventoryClickEvent e) {
+                HumanEntity clicker = e.getWhoClicked();
+                if (clicker instanceof Player) {
+                    if (e.getCurrentItem() == null) {
+                        return;
+                    }
+                    Player p = (Player) clicker;
+                    if (p != null) {
+                        UUID uuid = p.getUniqueId();
+                        if (inventories.containsKey(uuid)) {
+                            PlayerGUI current = inventories.get(uuid);
+                            if (!e.getInventory().getType().name()
+                                    .equalsIgnoreCase(current.getInventory().getType().name())) {
+                                return;
+                            }
+                            e.setCancelled(true);
+                        }
+                    }
+                }
+            }
 
-	public void openInventory(GamePlayer player) {
-		Inventory inv = getInventory();
-		InventoryView openInv = player.p.getOpenInventory();
-		if (openInv != null) {
-			Inventory openTop = player.p.getOpenInventory().getTopInventory();
-			if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
-				openTop.setContents(inv.getContents());
-			} else {
-				player.p.openInventory(inv);
-			}
-			register();
-			player.istate = InteractionState.GUI_PLAYER;
-		}
-	}
+            @EventHandler
+            public void onClose(InventoryCloseEvent e) {
+                if (e.getPlayer() instanceof Player) {
+                    if (e.getInventory() == null) {
+                        return;
+                    }
+                    Player p = (Player) e.getPlayer();
+                    UUID uuid = p.getUniqueId();
+                    if (inventories.containsKey(uuid)) {
+                        inventories.get(uuid).unregister();
 
-	public static Listener getListener() {
-		return new Listener() {
-			@EventHandler
-			public void onClick(InventoryClickEvent e) {
-				HumanEntity clicker = e.getWhoClicked();
-				if (clicker instanceof Player) {
-					if (e.getCurrentItem() == null) {
-						return;
-					}
-					Player p = (Player) clicker;
-					if (p != null) {
-						UUID uuid = p.getUniqueId();
-						if (inventories.containsKey(uuid)) {
-							PlayerGUI current = inventories.get(uuid);
-							if (!e.getInventory().getType().name()
-									.equalsIgnoreCase(current.getInventory().getType().name())) {
-								return;
-							}
-							e.setCancelled(true);
+                        if (refresh.containsKey(uuid)) {
+                            Bukkit.getScheduler().cancelTask(refresh.get(uuid));
+                        }
+                    }
+                }
+            }
+        };
+    }
 
-							GamePlayer gp = PlayerManager.getPlayer(p);
+    public void openInventory(GamePlayer player) {
+        Inventory inv = getInventory();
+        InventoryView openInv = player.p.getOpenInventory();
+        if (openInv != null) {
+            Inventory openTop = player.p.getOpenInventory().getTopInventory();
+            if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
+                openTop.setContents(inv.getContents());
+            } else {
+                player.p.openInventory(inv);
+            }
+            register();
+        }
+    }
 
-							if (gp.istate != InteractionState.GUI_PLAYER) {
-								return;
-							}
+    private Inventory getInventory() {
+        return inv;
+    }
 
-						}
-					}
-				}
-			}
+    private void register() {
+        inventories.put(this.uuid, this);
+    }
 
-			@EventHandler
-			public void onClose(InventoryCloseEvent e) {
-				if (e.getPlayer() instanceof Player) {
-					if (e.getInventory() == null) {
-						return;
-					}
-					Player p = (Player) e.getPlayer();
-					UUID uuid = p.getUniqueId();
-					if (inventories.containsKey(uuid)) {
-						inventories.get(uuid).unregister();
-
-						if (refresh.containsKey(uuid)) {
-							Bukkit.getScheduler().cancelTask(refresh.get(uuid));
-						}
-
-						PlayerManager.getPlayer(p).istate = InteractionState.NONE;
-					}
-				}
-			}
-		};
-	}
-
-	private Inventory getInventory() {
-		return inv;
-	}
-
-	private void register() {
-		inventories.put(this.uuid, this);
-	}
-
-	private void unregister() {
-		inventories.remove(this.uuid);
-	}
+    private void unregister() {
+        inventories.remove(this.uuid);
+    }
 }

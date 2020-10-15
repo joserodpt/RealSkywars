@@ -151,7 +151,6 @@ public class Teams implements GameRoom {
                 PlayerManager.giveItems(p.p, PlayerManager.PlayerItems.LOBBY);
 
                 p.state = Enum.PlayerState.LOBBY_OR_NOGAME;
-                p.p.setAllowFlight(false);
                 p.setFlying(false);
 
                 p.saveData();
@@ -326,7 +325,7 @@ public class Teams implements GameRoom {
                         ws.p.showPlayer(RealSkywars.pl, p.p);
                     }
                 }
-                p.p.setFlying(false);
+                p.setFlying(false);
                 this.spectators.remove(p);
                 break;
         }
@@ -488,8 +487,7 @@ public class Teams implements GameRoom {
         p.p.teleport(this.spectatorLocation);
         PlayerManager.giveItems(p.p, PlayerManager.PlayerItems.SPECTATOR);
 
-        p.p.setAllowFlight(true);
-        p.p.setFlying(true);
+        p.setFlying(true);
 
         p.sendMessage(LanguageManager.getString(p, Enum.TS.MATCH_SPECTATE, true));
     }
@@ -603,7 +601,7 @@ public class Teams implements GameRoom {
 
     private void sendLog(GamePlayer p) {
         for (String s : Text.addColor(LanguageManager.getList(p, Enum.TL.END_LOG))) {
-            p.sendMessage(s.replace("%recvcoins%", p.balanceGame + "").replace("%totalcoins%", p.getSumBalTotal() + "")
+            p.sendMessage(s.replace("%recvcoins%", p.balanceGame + "").replace("%totalcoins%", p.getGameBalance() + "")
                     .replace("%kills%", p.gamekills + ""));
         }
         p.saveData();

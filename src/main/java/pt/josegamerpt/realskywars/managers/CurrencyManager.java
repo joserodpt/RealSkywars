@@ -6,8 +6,8 @@ import pt.josegamerpt.realskywars.player.GamePlayer;
 public class CurrencyManager {
 
 	private GamePlayer toPlayer;
-	private GamePlayer fromEntity;
-	private Double opQ;
+	private final GamePlayer fromEntity;
+	private final Double opQ;
 	private Boolean console;
 
 	public CurrencyManager(GamePlayer to, GamePlayer from, Double operation, Boolean console) {
@@ -61,7 +61,7 @@ public class CurrencyManager {
 	}
 
 	public void setCoins() {
-		if (console == true) {
+		if (console) {
 			toPlayer.coins = opQ;
 			toPlayer.p
 					.sendMessage(LanguageManager.getString(toPlayer, TS.SET_COINS, true).replace("%coins%", "" + opQ));

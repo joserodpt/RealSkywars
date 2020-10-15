@@ -1,7 +1,5 @@
 package pt.josegamerpt.realskywars.utils;
 
-import java.util.*;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -16,33 +14,34 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import pt.josegamerpt.realskywars.RealSkywars;
 import pt.josegamerpt.realskywars.classes.Enum;
-import pt.josegamerpt.realskywars.classes.Trail;
 import pt.josegamerpt.realskywars.configuration.Shops;
 import pt.josegamerpt.realskywars.gui.TrailEditor;
 
+import java.util.*;
+
 public class MaterialPicker {
 
+    private static final Map<UUID, MaterialPicker> inventories = new HashMap<>();
     static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     static ItemStack next = Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, "&aNext",
-            Arrays.asList("&fClick here to go to the next page."));
+            Collections.singletonList("&fClick here to go to the next page."));
     static ItemStack back = Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, "&6Back",
-            Arrays.asList("&fClick here to go back to the next page."));
+            Collections.singletonList("&fClick here to go back to the next page."));
     static ItemStack close = Itens.createItemLore(Material.ACACIA_DOOR, 1, "&cGo Back",
-            Arrays.asList("&fClick here to go back."));
+            Collections.singletonList("&fClick here to go back."));
     static ItemStack search = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Search",
-            Arrays.asList("&fClick here to search for a material."));
-    private static Map<UUID, MaterialPicker> inventories = new HashMap<>();
+            Collections.singletonList("&fClick here to search for a material."));
+    private final PickCategory pc;
+    private final Inventory inv;
+    private final UUID uuid;
+    private final ArrayList<Material> items;
+    private final HashMap<Integer, Material> display = new HashMap<>();
+    private final PickType pt;
+    private final Enum.Categories cat;
+    private final String invNam;
     public int trailID;
     int pageNumber = 0;
     Pagination<Material> p;
-    private PickCategory pc;
-    private Inventory inv;
-    private UUID uuid;
-    private ArrayList<Material> items;
-    private HashMap<Integer, Material> display = new HashMap<Integer, Material>();
-    private PickType pt;
-    private Enum.Categories cat;
-    private String invNam;
 
     public MaterialPicker(int id, Player pl, PickType block, PickCategory c, Enum.Categories ca, String i) {
         this.uuid = pl.getUniqueId();
@@ -142,11 +141,9 @@ public class MaterialPicker {
                                 p.sendMessage("Changed to §a" + a.name());
                                 p.closeInventory();
 
-                                Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.pl, new Runnable() {
-                                    public void run() {
-                                        TrailEditor v = new TrailEditor(p, current.cat, current.invNam);
-                                        v.openInventory(p);
-                                    }
+                                Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.pl, () -> {
+                                    TrailEditor v = new TrailEditor(p, current.cat, current.invNam);
+                                    v.openInventory(p);
                                 }, 10);
                             }
                         }
@@ -187,7 +184,7 @@ public class MaterialPicker {
     }
 
     private ArrayList<Material> getIcons() {
-        ArrayList<Material> ms = new ArrayList<Material>();
+        ArrayList<Material> ms = new ArrayList<>();
         switch (pt) {
             case ALL:
                 for (Material m : Material.values()) {
@@ -211,7 +208,7 @@ public class MaterialPicker {
     }
 
     private ArrayList<Material> searchMaterial(String s) {
-        ArrayList<Material> ms = new ArrayList<Material>();
+        ArrayList<Material> ms = new ArrayList<>();
         for (Material m : getIcons()) {
             if (m.name().toLowerCase().contains(s.toLowerCase())) {
                 ms.add(m);
@@ -281,13 +278,10 @@ public class MaterialPicker {
     }
 
     private void exit(Player p) {
-        switch (this.pc) {
-            case TRAIL_ICON:
-                p.closeInventory();
-                TrailEditor t = new TrailEditor(p, this.cat, this.invNam);
-                t.openInventory(p);
-                break;
-
+        if (this.pc == PickCategory.TRAIL_ICON) {
+            p.closeInventory();
+            TrailEditor t = new TrailEditor(p, this.cat, this.invNam);
+            t.openInventory(p);
         }
     }
 
@@ -304,7 +298,7 @@ public class MaterialPicker {
     }
 
     public enum PickType {
-        BLOCK, ITEM, ALL;
+        BLOCK, ITEM, ALL
     }
 
     public enum PickCategory {

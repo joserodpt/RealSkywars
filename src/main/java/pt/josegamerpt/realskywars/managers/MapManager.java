@@ -1,27 +1,17 @@
 package pt.josegamerpt.realskywars.managers;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
-
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
-
 import pt.josegamerpt.realskywars.Debugger;
-import pt.josegamerpt.realskywars.cages.SoloCage;
 import pt.josegamerpt.realskywars.cages.Cage;
+import pt.josegamerpt.realskywars.cages.SoloCage;
+import pt.josegamerpt.realskywars.classes.Enum.GameState;
+import pt.josegamerpt.realskywars.classes.Enum.GameType;
+import pt.josegamerpt.realskywars.classes.Enum.TL;
+import pt.josegamerpt.realskywars.classes.Enum.TS;
 import pt.josegamerpt.realskywars.classes.GameRoom;
 import pt.josegamerpt.realskywars.classes.SetupRoom;
 import pt.josegamerpt.realskywars.classes.Team;
-import pt.josegamerpt.realskywars.classes.Enum.GameState;
-import pt.josegamerpt.realskywars.classes.Enum.GameType;
-import pt.josegamerpt.realskywars.classes.Enum.InteractionState;
-import pt.josegamerpt.realskywars.classes.Enum.TL;
-import pt.josegamerpt.realskywars.classes.Enum.TS;
 import pt.josegamerpt.realskywars.configuration.Items;
 import pt.josegamerpt.realskywars.configuration.Maps;
 import pt.josegamerpt.realskywars.gui.MapSettings;
@@ -32,13 +22,16 @@ import pt.josegamerpt.realskywars.utils.Holograms;
 import pt.josegamerpt.realskywars.utils.Text;
 import pt.josegamerpt.realskywars.worlds.Worlds;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 public class MapManager {
 
     static String clas = "[MAPMANAGER] - ";
 
     public static ArrayList<String> getRegisteredMaps() {
         Maps.reload();
-        ArrayList<String> worlds = new ArrayList<String>();
+        ArrayList<String> worlds = new ArrayList<>();
 
         ConfigurationSection cs = Maps.file().getConfigurationSection("");
         Set<String> keys = cs.getKeys(false);
@@ -75,10 +68,9 @@ public class MapManager {
                     break;
                 case TEAMS:
                     ArrayList<Cage> cgs = getCages(s);
-                    ArrayList<Team> ts = new ArrayList<Team>();
+                    ArrayList<Team> ts = new ArrayList<>();
                     int tc = 1;
                     for (Cage c : cgs) {
-                        Debugger.print(c.getLocation().toString());
                         ts.add(new Team(tc, (Maps.file().getInt(s + ".number-of-players") / cgs.size()), c.getLocation()));
                         tc++;
                     }
@@ -151,7 +143,7 @@ public class MapManager {
     public static ArrayList<Cage> getCages(String map) {
         ConfigurationSection cs = Maps.file().getConfigurationSection(map + ".Locations.Cages");
         Set<String> keys = cs.getKeys(false);
-        ArrayList<Cage> locs = new ArrayList<Cage>();
+        ArrayList<Cage> locs = new ArrayList<>();
         int id = 0;
         for (String i : keys) {
             double x = Maps.file().getDouble(map + ".Locations.Cages." + i + ".X");
@@ -236,7 +228,6 @@ public class MapManager {
     public static void setupTeams(GamePlayer p, String mapname, int teams, int pperteam) {
         SetupRoom s = new SetupRoom(mapname, null, teams, pperteam);
         p.setup = s;
-        p.istate = InteractionState.GUI_ROOMSETUP;
 
         MapSettings m = new MapSettings(s, p.p.getUniqueId());
         m.openInventory(p);
@@ -244,9 +235,6 @@ public class MapManager {
 
     public static void continueSetup(GamePlayer p) {
         if (!p.setup.tpConfirm) {
-
-            p.istate = InteractionState.NONE;
-
             p.setup.tpConfirm = true;
 
             p.sendMessage(LanguageManager.getString(p, TS.GENERATING_WORLD, true));
@@ -266,7 +254,6 @@ public class MapManager {
     public static void setupSolo(GamePlayer p, String mapname, int maxP) {
         SetupRoom s = new SetupRoom(mapname, null, maxP);
         p.setup = s;
-        p.istate = InteractionState.GUI_ROOMSETUP;
 
         MapSettings m = new MapSettings(s, p.p.getUniqueId());
         m.openInventory(p);
@@ -301,7 +288,6 @@ public class MapManager {
                 ArrayList<Team> ts = new ArrayList<>();
                 int tc = 1;
                 for (Cage c : p.setup.cages) {
-                    Debugger.print(c.getLocation().toString());
                     ts.add(new Team(tc, p.setup.playersPerTeam, c.getLocation()));
                     tc++;
                 }

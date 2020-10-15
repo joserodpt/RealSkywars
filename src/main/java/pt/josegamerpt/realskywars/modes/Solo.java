@@ -45,7 +45,7 @@ public class Solo implements GameRoom {
     public Location POS2;
     public int borderSize;
 
-    public ArrayList<Cage> cages = new ArrayList<Cage>();
+    public ArrayList<Cage> cages;
     public ArrayList<GamePlayer> onThisRoom = new ArrayList<GamePlayer>();
     public ArrayList<GamePlayer> players = new ArrayList<GamePlayer>();
     public ArrayList<GamePlayer> spectators = new ArrayList<GamePlayer>();
@@ -593,7 +593,7 @@ public class Solo implements GameRoom {
 
     private void sendLog(GamePlayer p) {
         for (String s : Text.addColor(LanguageManager.getList(p, Enum.TL.END_LOG))) {
-            p.sendMessage(s.replace("%recvcoins%", p.balanceGame + "").replace("%totalcoins%", p.getSumBalTotal() + "")
+            p.sendMessage(s.replace("%recvcoins%", p.balanceGame + "").replace("%totalcoins%", p.getGameBalance() + "")
                     .replace("%kills%", p.gamekills + ""));
         }
         p.saveData();

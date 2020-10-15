@@ -1,13 +1,6 @@
 package pt.josegamerpt.realskywars.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,18 +9,20 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import pt.josegamerpt.realskywars.RealSkywars;
 
+import java.util.*;
+
 public class PlayerInput implements Listener {
 
-    private static Map<UUID, PlayerInput> inputs = new HashMap<>();
-    private UUID uuid;
+    private static final Map<UUID, PlayerInput> inputs = new HashMap<>();
+    private final UUID uuid;
 
-    private ArrayList<String> texts = Text
+    private final ArrayList<String> texts = Text
             .addColor(Arrays.asList("&l&9Type in chat your input", "&fType &4cancel &fto cancel"));
 
-    private InputRunnable runGo;
-    private InputRunnable runCancel;
-    private BukkitTask taskId;
-    private Boolean inputMode;
+    private final InputRunnable runGo;
+    private final InputRunnable runCancel;
+    private final BukkitTask taskId;
+    private final Boolean inputMode;
 
     public PlayerInput(Player p, InputRunnable correct, InputRunnable cancel) {
         this.uuid = p.getUniqueId();
@@ -67,7 +62,7 @@ public class PlayerInput implements Listener {
                 UUID uuid = event.getPlayer().getUniqueId();
                 if (inputs.containsKey(uuid)) {
                     PlayerInput current = inputs.get(uuid);
-                    if (current.inputMode == true) {
+                    if (current.inputMode) {
                         event.setCancelled(true);
                         try {
                             if (input.equalsIgnoreCase("cancel")) {

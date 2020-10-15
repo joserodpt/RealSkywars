@@ -5,8 +5,6 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
-
-import pt.josegamerpt.realskywars.Debugger;
 import pt.josegamerpt.realskywars.cages.SoloCage;
 import pt.josegamerpt.realskywars.cages.TeamCage;
 import pt.josegamerpt.realskywars.classes.Enum.GameState;
@@ -20,63 +18,61 @@ import pt.josegamerpt.realskywars.utils.Holograms;
 
 public class BlockPlace implements Listener {
 
-	@EventHandler
-	public void place(BlockPlaceEvent event) {
-		GamePlayer pg = PlayerManager.getPlayer(event.getPlayer());
-		if (pg.setup != null) {
-			if (event.getBlock().getType() == Items.CAGESET.getType()) {
-				switch (pg.setup.gameType) {
-					case SOLO:
-						if ((pg.setup.cages.size() + 1) < pg.setup.maxPlayers) {
-							log(event, pg);
-							Debugger.print(pg.setup.cages.size() + "");
-						} else {
-							log(event, pg);
-							pg.setup.confirmCages = true;
-							pg.p.sendMessage(LanguageManager.getString(pg, TS.CAGES_SET, false));
-						}
-						break;
-					case TEAMS:
-						if ((pg.setup.cages.size() + 1) < pg.setup.teams) {
-							log(event, pg);
-							Debugger.print(pg.setup.cages.size() + "");
-						} else {
-							log(event, pg);
-							pg.setup.confirmCages = true;
-							pg.p.sendMessage(LanguageManager.getString(pg, TS.CAGES_SET, false));
-						}
-						break;
-				}
-			}
-		}
-		if (pg.state == PlayerState.EXTERNAL_SPECTATOR) {
-			event.setCancelled(true);
-			return;
-		}
-		if (pg.room != null) {
-			if (pg.room.getState().equals(GameState.PLAYING)) {
-				pg.room.getBlocksPlaced().add(new Calhau(event.getBlock()));
-			} else {
-				event.setCancelled(true);
-			}
-		}
-	}
+    @EventHandler
+    public void place(BlockPlaceEvent event) {
+        GamePlayer pg = PlayerManager.getPlayer(event.getPlayer());
+        if (pg.setup != null) {
+            if (event.getBlock().getType() == Items.CAGESET.getType()) {
+                switch (pg.setup.gameType) {
+                    case SOLO:
+                        if ((pg.setup.cages.size() + 1) < pg.setup.maxPlayers) {
+                            log(event, pg);
+                        } else {
+                            log(event, pg);
+                            pg.setup.confirmCages = true;
+                            pg.p.sendMessage(LanguageManager.getString(pg, TS.CAGES_SET, false));
+                        }
+                        break;
+                    case TEAMS:
+                        if ((pg.setup.cages.size() + 1) < pg.setup.teams) {
+                            log(event, pg);
+                        } else {
+                            log(event, pg);
+                            pg.setup.confirmCages = true;
+                            pg.p.sendMessage(LanguageManager.getString(pg, TS.CAGES_SET, false));
+                        }
+                        break;
+                }
+            }
+        }
+        if (pg.state == PlayerState.EXTERNAL_SPECTATOR) {
+            event.setCancelled(true);
+            return;
+        }
+        if (pg.room != null) {
+            if (pg.room.getState().equals(GameState.PLAYING)) {
+                pg.room.getBlocksPlaced().add(new Calhau(event.getBlock()));
+            } else {
+                event.setCancelled(true);
+            }
+        }
+    }
 
-	public void log(BlockPlaceEvent e, GamePlayer p) {
-		Location loc = e.getBlock().getLocation().add(0.5, 0, 0.5);
-		int i = p.setup.cages.size() + 1;
-		switch (p.setup.gameType) {
-			case SOLO:
-				SoloCage c = new SoloCage(i, loc);
-				Holograms.add("&aCage &9" + i, loc);
-				p.setup.cages.add(c);
-				break;
-			case TEAMS:
-				TeamCage tc = new TeamCage(i, loc);
-				Holograms.add("&aTeam Cage &9" + i, loc);
-				p.setup.cages.add(tc);
-				break;
-		}
-		e.getPlayer().sendMessage(ChatColor.GREEN + "You placed cage number " + i);
-	}
+    public void log(BlockPlaceEvent e, GamePlayer p) {
+        Location loc = e.getBlock().getLocation().add(0.5, 0, 0.5);
+        int i = p.setup.cages.size() + 1;
+        switch (p.setup.gameType) {
+            case SOLO:
+                SoloCage c = new SoloCage(i, loc);
+                Holograms.add("&aCage &9" + i, loc);
+                p.setup.cages.add(c);
+                break;
+            case TEAMS:
+                TeamCage tc = new TeamCage(i, loc);
+                Holograms.add("&aTeam Cage &9" + i, loc);
+                p.setup.cages.add(tc);
+                break;
+        }
+        e.getPlayer().sendMessage(ChatColor.GREEN + "You placed cage number " + i);
+    }
 }
