@@ -1,3 +1,5 @@
+#Data Structure for Shops:
+# MATERIAL>PRICE>NAME>PERMISSION
 Main-Shop:
   Cage-Blocks:
     - SPAWNER>50>&5Spawner>RealSkywars.Spawner
@@ -58,53 +60,53 @@ Main-Shop:
     - REDSTONE_BLOCK>20>&bREDSTONE_BLOCK>RealSkywars.Cage
     - TNT>20>&bTNT Block>RealSkywars.Cage
   Bow-Particles:
-    - EXPLOSION_NORMAL>10>§cExplosion (Normal)>RealSkywars.Particle>GUNPOWDER
-    - EXPLOSION_LARGE>10>§cExplosion §4(Large)>RealSkywars.Particle>TNT
-    - EXPLOSION_HUGE>10>§cExplosion §4(§cHuge§4)>RealSkywars.Particle>CREEPER_HEAD
-    - FIREWORKS_SPARK>10>§aFirework Spark>RealSkywars.Particle>FIREWORK_ROCKET
-    - WATER_BUBBLE>10>§9Water §bBubble>RealSkywars.Particle>WATER_BUCKET
-    - WATER_SPLASH>10>§9Water §bSplash>RealSkywars.Particle>WATER_BUCKET
-    - WATER_WAKE>10>§9Water §bWake>RealSkywars.Particle>WATER_BUCKET
-    - CRIT>10>§aCrit>RealSkywars.Particle>WOODEN_SWORD
-    - CRIT_MAGIC>10>§aCrit §5Magic>RealSkywars.Particle>DRAGON_BREATH
-    - SMOKE_NORMAL>10>§7Smoke §fNormal>RealSkywars.Particle>CAMPFIRE
-    - SMOKE_LARGE>10>§7Smoke §8Large>RealSkywars.Particle>CAMPFIRE
-    - SPELL>10>§aSpell>RealSkywars.Particle>POTION
-    - SPELL_INSTANT>10>§aSpell §2Instant>RealSkywars.Particle>SPLASH_POTION
-    - SPELL_MOB>10>§aSpell §3Mob>RealSkywars.Particle>ENCHANTED_BOOK
-    - SPELL_WITCH>10>§aSpell §5Witch>RealSkywars.Particle>END_CRYSTAL
-    - DRIP_WATER>10>§9Drip §bWater>RealSkywars.Particle>WATER_BUCKET
-    - DRIP_LAVA>10>§9Drip §cLava>RealSkywars.Particle>LAVA_BUCKET
-    - VILLAGER_ANGRY>10>§aVillager §4Angry>RealSkywars.Particle>VILLAGER_SPAWN_EGG
-    - VILLAGER_HAPPY>10>§aVillager §2Happy>RealSkywars.Particle>EMERALD
-    - NOTE>10>§3Note>RealSkywars.Particle>NOTE_BLOCK
-    - PORTAL>10>§5Portal>RealSkywars.Particle>OBSIDIAN
-    - ENCHANTMENT_TABLE>10>§aEnchantment Table>RealSkywars.Particle>ENCHANTING_TABLE
-    - FLAME>10>§cFlame>RealSkywars.Particle>FLINT_AND_STEEL
-    - LAVA>10>§4Lava>RealSkywars.Particle>LAVA_BUCKET
-    - CLOUD>10>§fCloud>RealSkywars.Particle>WHITE_DYE
-    - SNOWBALL>10>§9Snowball>RealSkywars.Particle>SNOWBALL
-    - SLIME>10>§aSlime>RealSkywars.Particle>SLIME_BALL
-    - HEART>10>§cHeart>RealSkywars.Particle>RED_DYE
-    - BARRIER>10>§4Barrier>RealSkywars.Particle>BARRIER
-    - DRAGON_BREATH>10>§5Dragon §dBreath>RealSkywars.Particle>DRAGON_HEAD
-    - END_ROD>10>§dEnd §bRod>RealSkywars.Particle>END_ROD
-    - DAMAGE_INDICATOR>10>§4Damage §cIndicator>RealSkywars.Particle>IRON_SWORD
-    - SWEEP_ATTACK>10>§7Sweep §cAttack>RealSkywars.Particle>DIAMOND_SWORD
-    - TOTEM>10>§eTotem>RealSkywars.Particle>TOTEM_OF_UNDYING
-    - SPIT>10>§fSpit>RealSkywars.Particle>BONE_MEAL
-    - SQUID_INK>10>§7Squid §8Ink>RealSkywars.Particle>INK_SAC
-    - NAUTILUS>10>§1Nautilus>RealSkywars.Particle>ENDER_PEARL
-    - SNEEZE>10>§aSneeze>RealSkywars.Particle>BAMBOO
-    - CAMPFIRE_COSY_SMOKE>10>§6Campfire §7Smoke>RealSkywars.Particle>CAMPFIRE
-    - COMPOSTER>10>§9Composter §a(Green Particle)>RealSkywars.Particle>COMPOSTER
-    - FLASH>30>§f§lFLASH>RealSkywars.Particle>NETHER_STAR
-    - FALLING_WATER>10>§9Falling §bWater>RealSkywars.Particle>WATER_BUCKET
+    - GUNPOWDER>10>&cExplosion (Normal)>RealSkywars.Particle>EXPLOSION_NORMAL
+    - TNT>10>&cExplosion &4(Large)>RealSkywars.Particle>EXPLOSION_LARGE
+    - CREEPER_HEAD>10>&cExplosion &4(&cHuge&4)>RealSkywars.Particle>EXPLOSION_HUGE
+    - FIREWORK_ROCKET>10>&aFirework Spark>RealSkywars.Particle>FIREWORKS_SPARK
+    - WATER_BUCKET>10>&9Water &bBubble>RealSkywars.Particle>WATER_BUBBLE
+    - WATER_BUCKET>10>&9Water &bSplash>RealSkywars.Particle>WATER_SPLASH
+    - WATER_BUCKET>10>&9Water &bWake>RealSkywars.Particle>WATER_WAKE
+    - WOODEN_SWORD>10>&aCrit>RealSkywars.Particle>CRIT
+    - DRAGON_BREATH>10>&aCrit &5Magic>RealSkywars.Particle>CRIT_MAGIC
+    - CAMPFIRE>10>&7Smoke &fNormal>RealSkywars.Particle>SMOKE_NORMAL
+    - CAMPFIRE>10>&7Smoke &8Large>RealSkywars.Particle>SMOKE_LARGE
+    - POTION>10>&aSpell>RealSkywars.Particle>SPELL
+    - SPLASH_POTION>10>&aSpell &2Instant>RealSkywars.Particle>SPELL_INSTANT
+    - ENCHANTED_BOOK>10>&aSpell &3Mob>RealSkywars.Particle>SPELL_MOB
+    - END_CRYSTAL>10>&aSpell &5Witch>RealSkywars.Particle>SPELL_WITCH
+    - WATER_BUCKET>10>&9Drip &bWater>RealSkywars.Particle>DRIP_WATER
+    - LAVA_BUCKET>10>&9Drip &cLava>RealSkywars.Particle>DRIP_LAVA
+    - VILLAGER_SPAWN_EGG>10>&aVillager &4Angry>RealSkywars.Particle>VILLAGER_ANGRY
+    - EMERALD>10>&aVillager &2Happy>RealSkywars.Particle>VILLAGER_HAPPY
+    - NOTE_BLOCK>10>&3Note>RealSkywars.Particle>NOTE
+    - OBSIDIAN>10>&5Portal>RealSkywars.Particle>PORTAL
+    - ENCHANTING_TABLE>10>&aEnchantment Table>RealSkywars.Particle>ENCHANTMENT_TABLE
+    - FLINT_AND_STEEL>10>&cFlame>RealSkywars.Particle>FLAME
+    - LAVA_BUCKET>10>&4Lava>RealSkywars.Particle>LAVA
+    - WHITE_DYE>10>&fCloud>RealSkywars.Particle>CLOUD
+    - SNOWBALL>10>&9Snowball>RealSkywars.Particle>SNOWBALL
+    - SLIME_BALL>10>&aSlime>RealSkywars.Particle>SLIME
+    - RED_DYE>10>&cHeart>RealSkywars.Particle>HEART
+    - BARRIER>10>&4Barrier>RealSkywars.Particle>BARRIER
+    - DRAGON_HEAD>10>&5Dragon &dBreath>RealSkywars.Particle>DRAGON_BREATH
+    - END_ROD>10>&dEnd &bRod>RealSkywars.Particle>END_ROD
+    - IRON_SWORD>10>&4Damage &cIndicator>RealSkywars.Particle>DAMAGE_INDICATOR
+    - DIAMOND_SWORD>10>&7Sweep &cAttack>RealSkywars.Particle>SWEEP_ATTACK
+    - TOTEM_OF_UNDYING>10>&eTotem>RealSkywars.Particle>TOTEM
+    - BONE_MEAL>10>&fSpit>RealSkywars.Particle>SPIT
+    - INK_SAC>10>&7Squid &8Ink>RealSkywars.Particle>SQUID_INK
+    - ENDER_PEARL>10>&1Nautilus>RealSkywars.Particle>NAUTILUS
+    - BAMBOO>10>&aSneeze>RealSkywars.Particle>SNEEZE
+    - CAMPFIRE>10>&6Campfire &7Smoke>RealSkywars.Particle>CAMPFIRE_COSY_SMOKE
+    - COMPOSTER>10>&9Composter &a(Green Particle)>RealSkywars.Particle>COMPOSTER
+    - NETHER_STAR>30>&f&lFLASH>RealSkywars.Particle>FLASH
+    - WATER_BUCKET>10>&9Falling &bWater>RealSkywars.Particle>FALLING_WATER
   Win-Blocks:
-    - §5Random §aBlocks>RANDOMBLOCK>10>RealSkywars.Win-Block
-    - §9Diamond §7Blocks>DIAMOND_BLOCK>10>RealSkywars.Win-Block
-    - §aEmerald §7Blocks>EMERALD_BLOCK>10>RealSkywars.Win-Block
-    - §2Oak §7Leaves>OAK_LEAVES>10>RealSkywars.Win-Block
-    - §bBeacon §7Blocks>BEACON>10>RealSkywars.Win-Block
-    - §8Bedrock §7Blocks>BEDROCK>10>RealSkywars.Win-Block
-    - §7Iron Bar §7Blocks>IRON_BARS>10>RealSkywars.Win-Block
+    - RANDOMBLOCK>10>&5Random &aBlocks>RealSkywars.Win-Block
+    - DIAMOND_BLOCK>10>&9Diamond &7Blocks>RealSkywars.Win-Block
+    - EMERALD_BLOCK>10>&aEmerald &7Blocks>RealSkywars.Win-Block
+    - OAK_LEAVES>10>&2Oak &7Leaves>RealSkywars.Win-Block
+    - BEACON>10>&bBeacon &7Blocks>RealSkywars.Win-Block
+    - BEDROCK>10>&8Bedrock &7Blocks>RealSkywars.Win-Block
+    - IRON_BARS>10>&7Iron Bar &7Blocks>RealSkywars.Win-Block

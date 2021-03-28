@@ -6,7 +6,7 @@
 
     <groupId>pt.josegamerpt</groupId>
     <artifactId>RealSkywars</artifactId>
-    <version>2-10-2020 Build 1</version>
+    <version>28-3-2021 Build 1</version>
     <packaging>jar</packaging>
 
     <name>RealSkywars</name>
@@ -32,16 +32,21 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.4</version>
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>me.mattstudios.mf</pattern>
+                            <shadedPattern>josegamerpt.realskywars.mf</shadedPattern> <!-- Replace package here here -->
+                        </relocation>
+                    </relocations>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -60,12 +65,8 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>dmulloy2-repo</id>
-            <url>https://repo.dmulloy2.net/nexus/repository/public/</url>
-        </repository>
-        <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
+            <id>enginehub-maven</id>
+            <url>http://maven.enginehub.org/repo/</url>
         </repository>
     </repositories>
 
@@ -77,20 +78,15 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>4.5.0</version>
+            <groupId>me.mattstudios.utils</groupId>
+            <artifactId>matt-framework</artifactId>
+            <version>1.4</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.9</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-bukkit</artifactId>
+            <version>7.2.2</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

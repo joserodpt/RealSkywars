@@ -1,5 +1,418 @@
 Max-Items-On-Chest: 6
 Loot:
+  Basic:
+    '1':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: LAVA_BUCKET
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 50
+    '2':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: WATER_BUCKET
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 50
+    '3':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: BAKED_POTATO
+        amount: 3
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 50
+    '4':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: APPLE
+        amount: 3
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 50
+    '5':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: BREAD
+        amount: 3
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 50
+    '6':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: OAK_PLANKS
+        amount: 32
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 50
+    '7':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: STONE
+        amount: 32
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 50
+    '8':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: STONE
+        amount: 64
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 50
+    '9':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: OAK_PLANKS
+        amount: 64
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 70
+    '10':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: GOLDEN_CHESTPLATE
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 30
+    '11':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: GOLDEN_HELMET
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 30
+    '12':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: GOLDEN_LEGGINGS
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 30
+    '13':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: GOLDEN_BOOTS
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 30
+    '14':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: STONE_SHOVEL
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 30
+    '15':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: STONE_AXE
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 30
+    '16':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: STONE_SWORD
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 30
+    '17':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: STONE_PICKAXE
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 30
+    '18':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: COOKED_CHICKEN
+        amount: 2
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 30
+    '19':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: COOKED_MUTTON
+        amount: 2
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 30
+    '20':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: COOKED_BEEF
+        amount: 2
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 30
+    '21':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: STONE
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 30
+    '22':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: OAK_PLANKS
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 30
+    '23':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: ARROW
+        amount: 4
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 30
+    '24':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: SNOWBALL
+        amount: 4
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 30
+    '25':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: EGG
+        amount: 4
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 30
+    '26':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: WOODEN_SWORD
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 35
+    '27':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: WOODEN_AXE
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 35
+    '28':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: WOODEN_PICKAXE
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 35
+    '29':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: WOODEN_SHOVEL
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 35
+    '30':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: LEATHER_LEGGINGS
+        meta:
+          ==: ItemMeta
+          meta-type: LEATHER_ARMOR
+      Chance: 35
+    '31':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: LEATHER_HELMET
+        meta:
+          ==: ItemMeta
+          meta-type: LEATHER_ARMOR
+      Chance: 35
+    '32':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: LEATHER_CHESTPLATE
+        meta:
+          ==: ItemMeta
+          meta-type: LEATHER_ARMOR
+      Chance: 35
+    '33':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: LEATHER_BOOTS
+        meta:
+          ==: ItemMeta
+          meta-type: LEATHER_ARMOR
+      Chance: 35
+    '34':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: BOW
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 40
+    '35':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: EGG
+        amount: 2
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 40
+    '36':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: IRON_BOOTS
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 10
+    '37':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: IRON_HELMET
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 10
+    '38':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: IRON_LEGGINGS
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 10
+    '39':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: IRON_CHESTPLATE
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 10
+    '40':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: IRON_AXE
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 10
+    '41':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: IRON_SWORD
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 10
+    '42':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: ENDER_PEARL
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 10
+    '43':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: EXPERIENCE_BOTTLE
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 15
+    '44':
+      ItemStack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1952
+        type: IRON_PICKAXE
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+      Chance: 15
   Normal:
     '1':
       ItemStack:
@@ -329,7 +742,7 @@ Loot:
         v: 1952
         type: DIAMOND_BOOTS
       Chance: 3
-  OP:
+  Op:
     '1':
       ItemStack:
         ==: org.bukkit.inventory.ItemStack
@@ -759,7 +1172,7 @@ Loot:
             ARROW_KNOCKBACK: 2
             ARROW_FIRE: 1
       Chance: 10
-  CAOS:
+  Caos:
     '1':
       ItemStack:
         ==: org.bukkit.inventory.ItemStack
@@ -1189,416 +1602,3 @@ Loot:
             ARROW_KNOCKBACK: 2
             ARROW_FIRE: 1
       Chance: 50
-  Basic:
-    '1':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: LAVA_BUCKET
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 50
-    '2':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: WATER_BUCKET
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 50
-    '3':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: BAKED_POTATO
-        amount: 3
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 50
-    '4':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: APPLE
-        amount: 3
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 50
-    '5':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: BREAD
-        amount: 3
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 50
-    '6':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: OAK_PLANKS
-        amount: 32
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 50
-    '7':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: STONE
-        amount: 32
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 50
-    '8':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: STONE
-        amount: 64
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 50
-    '9':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: OAK_PLANKS
-        amount: 64
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 70
-    '10':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: GOLDEN_CHESTPLATE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 30
-    '11':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: GOLDEN_HELMET
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 30
-    '12':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: GOLDEN_LEGGINGS
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 30
-    '13':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: GOLDEN_BOOTS
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 30
-    '14':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: STONE_SHOVEL
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 30
-    '15':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: STONE_AXE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 30
-    '16':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: STONE_SWORD
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 30
-    '17':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: STONE_PICKAXE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 30
-    '18':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: COOKED_CHICKEN
-        amount: 2
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 30
-    '19':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: COOKED_MUTTON
-        amount: 2
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 30
-    '20':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: COOKED_BEEF
-        amount: 2
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 30
-    '21':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: STONE
-        amount: 16
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 30
-    '22':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: OAK_PLANKS
-        amount: 16
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 30
-    '23':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: ARROW
-        amount: 4
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 30
-    '24':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: SNOWBALL
-        amount: 4
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 30
-    '25':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: EGG
-        amount: 4
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 30
-    '26':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: WOODEN_SWORD
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 35
-    '27':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: WOODEN_AXE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 35
-    '28':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: WOODEN_PICKAXE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 35
-    '29':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: WOODEN_SHOVEL
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 35
-    '30':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: LEATHER_LEGGINGS
-        meta:
-          ==: ItemMeta
-          meta-type: LEATHER_ARMOR
-      Chance: 35
-    '31':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: LEATHER_HELMET
-        meta:
-          ==: ItemMeta
-          meta-type: LEATHER_ARMOR
-      Chance: 35
-    '32':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: LEATHER_CHESTPLATE
-        meta:
-          ==: ItemMeta
-          meta-type: LEATHER_ARMOR
-      Chance: 35
-    '33':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: LEATHER_BOOTS
-        meta:
-          ==: ItemMeta
-          meta-type: LEATHER_ARMOR
-      Chance: 35
-    '34':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: BOW
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 40
-    '35':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: EGG
-        amount: 2
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 40
-    '36':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: IRON_BOOTS
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 10
-    '37':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: IRON_HELMET
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 10
-    '38':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: IRON_LEGGINGS
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 10
-    '39':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: IRON_CHESTPLATE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 10
-    '40':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: IRON_AXE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 10
-    '41':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: IRON_SWORD
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 10
-    '42':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: ENDER_PEARL
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 10
-    '43':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: EXPERIENCE_BOTTLE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 15
-    '44':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: IRON_PICKAXE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-      Chance: 15

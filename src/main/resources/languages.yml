@@ -1,6 +1,6 @@
 Version: 1
 Strings:
-  Prefix: " &fReal&bSkywars &9| &r"
+  Prefix: " &f&lReal&b&lSkywars &9| &r"
   Boss-Bar:
     Wait: "&fWaiting for players."
     End: "&fThe match ended."
@@ -118,10 +118,11 @@ Languages:
         Arena:
           Winner-Broadcast: "&b%winner% &fwon on the map &a%map%"
           Leave: "&eYou left the match."
+          Already-Started: "&fThis match &calready &fstarted."
           Init-Setup:
-            - "&aYou are now in setup mode. You can paste your shematic or make a new map."
-            - "&aUse the beacon to place %cages% cages. "
-            - "&bIMPORTANT &aSet the boundaries with /rsw setpos1 and /rsw setpos2."
+            - "&f&nYou are now in setup mode. You can paste your shematic or make a new map."
+            - "&9> &aUse the beacon to place %cages% cages. "
+            - "&9> &bIMPORTANT &cSet the boundaries with //pos1 and //pos2 or an WorldEdit axe.."
       Commands:
         No-Permission: "&cYou don't have permission to execute this command."
         Config-Reload: "&aConfiguration reloaded."
