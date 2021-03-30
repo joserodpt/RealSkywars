@@ -3,7 +3,6 @@ package josegamerpt.realskywars.managers;
 import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.classes.Enum.GameState;
 import josegamerpt.realskywars.classes.Enum.Selections;
-import josegamerpt.realskywars.classes.RoomTAB;
 import josegamerpt.realskywars.modes.SWGameMode;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.modes.Placeholder;
@@ -16,7 +15,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class GameManager {
@@ -25,6 +23,7 @@ public class GameManager {
     private static Boolean lobbyScoreboard = true;
     private static Location lobbyLOC;
     private static Boolean loginTP = true;
+    public static Boolean endingGames = false;
 
     public static SWGameMode getGame(String name) {
         for (SWGameMode g : rooms) {
@@ -40,8 +39,11 @@ public class GameManager {
     }
 
     public static void endGames() {
+        endingGames = true;
         for (SWGameMode g : rooms) {
+            g.setState(GameState.RESETTING);
             g.kickPlayers(Text.color("&cAn ADMIN ordered all games to shut down."));
+            g.resetArena();
         }
     }
 

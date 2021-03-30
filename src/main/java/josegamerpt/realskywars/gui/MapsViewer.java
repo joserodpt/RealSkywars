@@ -5,7 +5,7 @@ import josegamerpt.realskywars.modes.SWGameMode;
 import josegamerpt.realskywars.classes.MapItem;
 import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.managers.PlayerManager;
+import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Pagination;

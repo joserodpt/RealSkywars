@@ -34,8 +34,8 @@ public class MapItem {
         }
     }
 
-    private List<String> variableList(ArrayList<String> list) {
-        List<String> a = new ArrayList<>();
+    private ArrayList<String> variableList(ArrayList<String> list) {
+        ArrayList<String> a = new ArrayList<>();
         for (String s : list) {
             a.add(s.replace("%players%", g.getPlayersCount() + "").replace("%maxplayers%", g.getMaxPlayers() + ""));
         }

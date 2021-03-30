@@ -2,12 +2,12 @@ package josegamerpt.realskywars.modes;
 
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.classes.Enum;
+import josegamerpt.realskywars.classes.SWChest;
 import josegamerpt.realskywars.classes.Team;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.ArenaCuboid;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.WorldBorder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +85,11 @@ public class Placeholder implements SWGameMode {
         return null;
     }
 
+    @Override
+    public void setTierType(Enum.TierType b, Boolean updateChests) {
+
+    }
+
     public ArrayList<UUID> getVoters() {
         return null;
     }
@@ -108,8 +113,6 @@ public class Placeholder implements SWGameMode {
         return null;
     }
 
-    public void setTierType(Enum.TierType b) {
-    }
 
     public int getTimePassed() {
         return 0;
@@ -134,9 +137,6 @@ public class Placeholder implements SWGameMode {
 
     public Enum.GameType getMode() {
         return null;
-    }
-
-    public void cancelTask(String s) {
     }
 
     public ArrayList<Cage> getCages() {
@@ -179,6 +179,16 @@ public class Placeholder implements SWGameMode {
     @Override
     public void addVote(UUID u, int i) {
 
+    }
+
+    @Override
+    public ArrayList<SWChest> getChests() {
+        return null;
+    }
+
+    @Override
+    public SWChest getChest(Location location) {
+        return null;
     }
 
 }

@@ -4,6 +4,7 @@ import josegamerpt.realskywars.classes.Kit;
 import josegamerpt.realskywars.managers.KitManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
+import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -30,8 +31,6 @@ public class KitSettings {
     static ItemStack saved = Itens.createItemLore(Material.ENDER_CHEST, 1, "&9Save Settings",
 			Collections.singletonList("&7Settings saved. You can now exit from this menu."));
     // settings
-    static ItemStack specon = Itens.createItemLore(Material.FEATHER, 1, "&9Double Jump", Collections.singletonList("&aON"));
-    static ItemStack specoff = Itens.createItemLore(Material.FEATHER, 1, "&9Double Jump", Collections.singletonList("&cOFF"));
     static ItemStack dragon = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds",
 			Collections.singletonList("&aON"));
     static ItemStack dragoff = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds",
@@ -43,7 +42,7 @@ public class KitSettings {
         this.uuid = id;
         kt = g;
 
-        inv = Bukkit.getServer().createInventory(null, 27, g.getName() + " Settings");
+        inv = Bukkit.getServer().createInventory(null, 27, Text.color(g.getName() + " Settings"));
 
         for (int i = 0; i < 9; i++) {
             inv.setItem(i, placeholder);
@@ -61,12 +60,6 @@ public class KitSettings {
         inv.setItem(9, placeholder);
         inv.setItem(17, placeholder);
 
-        // ITEMS
-        if (g.getPerk(KitManager.KitPerks.DOUBLE_JUMP)) {
-            inv.setItem(10, specon);
-        } else {
-            inv.setItem(10, specoff);
-        }
         if (g.getPerk(KitManager.KitPerks.ENDER_PEARl)) {
             inv.setItem(16, dragon);
         } else {
@@ -115,15 +108,6 @@ public class KitSettings {
                                     }
 
                                     // settings
-                                    if (e.getRawSlot() == 10) {
-                                        if (kt.getPerk(KitManager.KitPerks.DOUBLE_JUMP)) {
-                                            kt.setPerk(KitManager.KitPerks.DOUBLE_JUMP, false);
-                                            inv.setItem(10, specoff);
-                                        } else {
-                                            kt.setPerk(KitManager.KitPerks.DOUBLE_JUMP, true);
-                                            inv.setItem(10, specon);
-                                        }
-                                    }
                                     if (e.getRawSlot() == 16) {
                                         if (kt.getPerk(KitManager.KitPerks.ENDER_PEARl)) {
                                             kt.setPerk(KitManager.KitPerks.ENDER_PEARl, false);

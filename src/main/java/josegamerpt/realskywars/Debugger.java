@@ -34,16 +34,7 @@ public class Debugger {
 
 	public static void execute() {
 		if (false) {
-			Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.getPlugin(), () -> {
 
-				for (SWGameMode room : GameManager.getRooms()) {
-					if (room.getMode().equals(Enum.GameType.TEAMS))
-					{
-						print(Debugger.class, ((Teams) room).getAliveTeams() + "");
-					}
-				}
-
-			}, 20, 20);
 		}
 	}
 }

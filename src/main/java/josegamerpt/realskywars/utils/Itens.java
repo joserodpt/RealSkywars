@@ -10,10 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.stream.IntStream;
 
 public class Itens {
 
@@ -24,6 +22,11 @@ public class Itens {
         for (int i = newSize; i < size; i++) {
             list.remove(list.size() - 1);
         }
+    }
+
+    public static List<ItemStack> getInventory(Player p)
+    {
+        return Arrays.asList(IntStream.range(9, 35).boxed().map(p.getInventory()::getItem).filter(Objects::nonNull).toArray(ItemStack[]::new));
     }
 
     public static ItemStack getHead(Player player, int quantidade, String name) {

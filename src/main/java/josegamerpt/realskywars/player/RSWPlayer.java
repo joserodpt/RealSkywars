@@ -10,10 +10,10 @@ import josegamerpt.realskywars.effects.BlockWinTrail;
 import josegamerpt.realskywars.effects.Trail;
 import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.managers.PlayerManager;
 import josegamerpt.realskywars.modes.SWGameMode;
 import josegamerpt.realskywars.utils.Text;
 import org.apache.http.util.TextUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
@@ -48,7 +48,7 @@ public class RSWPlayer {
     private Double balanceGame = 0D;
     private PlayerScoreboard playerscoreboard;
     private Material cageBlock = Material.GLASS;
-    private List<String> bought = new ArrayList<>();
+    private ArrayList<String> bought = new ArrayList<>();
     private HashMap<Enum.Selection, Enum.Selections> selections = new HashMap<>();
     private Boolean bot = false;
     private Kit kit;
@@ -58,7 +58,7 @@ public class RSWPlayer {
     private Boolean invincible = false;
 
     public RSWPlayer(Player jog, RSWPlayer.PlayerState estado, SWGameMode rom, int tk, int d, int solowin, int teamwin, Double coi, String lang,
-                     List<String> bgh, int l, int gp) {
+                     ArrayList<String> bgh, int l, int gp) {
         anonName = Text.anonName();
 
         this.p = jog;
@@ -382,7 +382,11 @@ public class RSWPlayer {
     }
 
     public List<String> getBoughtItems() {
-        return this.bought;
+        if (this.bought != null) {
+            return this.bought;
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     public PlayerScoreboard getScoreboard() {
@@ -502,14 +506,14 @@ public class RSWPlayer {
     }
 
     public void hidePlayer(Plugin plugin, Player pl) {
-        if (!this.bot)
+        if (!this.bot && pl != null && !GameManager.endingGames)
         {
             this.getPlayer().hidePlayer(plugin, pl);
         }
     }
 
     public void showPlayer(Plugin plugin, Player pl) {
-        if (!this.bot && pl != null)
+        if (!this.bot && pl != null && !GameManager.endingGames)
         {
             this.getPlayer().showPlayer(plugin, pl);
         }
@@ -517,6 +521,11 @@ public class RSWPlayer {
 
     public RoomTAB getTab() {
         return this.rt;
+    }
+
+    public void buyItem(String s) {
+        this.bought.add(ChatColor.stripColor(s));
+        this.saveData();
     }
 
     //ENUMs
@@ -528,6 +537,83 @@ public class RSWPlayer {
     public enum PlayerProperties {KIT, BOW_PARTICLES, CAGE_BLOCK, STATE, LANGUAGE, WIN_BLOCKS}
 
     public enum PlayerStatistics {WINS_SOLO, WINS_TEAMS, TOTAL_KILLS, DEATHS, LOSES, GAME_BALANCE, GAME_KILLS, GAMES_PLAYED}
+
+    //TAB per player
+
+    public class RoomTAB {
+
+        private final RSWPlayer player;
+        private ArrayList<Player> show = new ArrayList<>();
+
+        public RoomTAB(RSWPlayer player) {
+            this.player = player;
+            clear();
+        }
+
+        public void add(Player p) {
+            if (p.getUniqueId() != this.player.getUniqueId() && !show.contains(p)) {
+                show.add(p);
+            }
+        }
+
+        public void add(List<Player> p) {
+            show.addAll(p);
+        }
+
+
+        public void remove(Player p) {
+            show.remove(p);
+        }
+
+        public void reset() {
+            this.show.addAll(Bukkit.getOnlinePlayers());
+        }
+
+        public void clear() {
+            this.show.clear();
+        }
+
+        public void setHeader(String s) {
+            if (!this.player.isBot()) {
+                this.player.getPlayer().setPlayerListHeader(Text.color(s));
+            }
+        }
+
+        public void setFooter(String s) {
+            if (!this.player.isBot()) {
+                this.player.getPlayer().setPlayerListFooter(Text.color(s));
+            }
+        }
+
+        public void updateRoomTAB() {
+            if (!this.player.isBot()) {
+                Bukkit.getOnlinePlayers().forEach(pl -> this.player.hidePlayer(RealSkywars.getPlugin(), pl));
+                this.show.forEach(rswPlayer -> this.player.showPlayer(RealSkywars.getPlugin(), rswPlayer));
+
+                if (this.player.isInMatch())
+                {
+                    this.setHeader("\n" + LanguageManager.getPrefix() + "\n&fMapa: &b" + this.player.getRoom().getName() + "\n");
+                    this.setFooter("\n&fJogadores: &b" + this.player.getRoom().getPlayersCount() + "\n");
+                } else {
+                    this.setHeader("");
+                    this.setFooter("");
+                }
+            }
+        }
+
+        private String getNames() {
+            ArrayList<String> n = new ArrayList<>();
+            for (Player player1 : this.show) {
+                if (player1 != null)
+                {
+                    n.add(player1.getName());
+                }
+            }
+            return Strings.join(n, ',');
+        }
+
+    }
+
 
     //Player Scoreboard
 
@@ -546,7 +632,7 @@ public class RSWPlayer {
             if (gp.getRoom() != null) {
                 return s.replace("%space%", Text.makeSpace()).replace("%players%", gp.getRoom().getPlayersCount() + "")
                         .replace("%spectators%", gp.getRoom().getSpectatorsCount() + "").replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + "")
-                        .replace("%map%", gp.getRoom().getName()).replace("%runtime%", gp.getRoom().getTimePassed() + "").replace("%state%", GameManager.getStateString(gp, gp.getRoom().getState())).replace("%mode%", gp.getRoom().getMode().name()).replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");
+                        .replace("%map%", gp.getRoom().getName()).replace("%runtime%", Text.formatSeconds(gp.getRoom().getTimePassed()) + "").replace("%state%", GameManager.getStateString(gp, gp.getRoom().getState())).replace("%mode%", gp.getRoom().getMode().name()).replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");
             } else {
                 return s.replace("%space%", Text.makeSpace()).replace("%coins%", gp.getCoins() + "")
                         .replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS) + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS) + "").replace("%playing%", "" + PlayerManager.countPlayingPlayers()).replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");

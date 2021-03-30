@@ -5,9 +5,10 @@ import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.modes.SWGameMode;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.MapManager;
-import josegamerpt.realskywars.managers.PlayerManager;
+import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
+import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -64,7 +65,7 @@ public class RoomSettings {
         this.uuid = id;
         game = g;
 
-        inv = Bukkit.getServer().createInventory(null, 27, g.getName() + " Settings");
+        inv = Bukkit.getServer().createInventory(null, 27, Text.color(g.getName() + " Settings"));
 
         for (int i = 0; i < 9; i++) {
             inv.setItem(i, placeholder);

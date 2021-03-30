@@ -5,6 +5,8 @@ import josegamerpt.realskywars.player.RSWPlayer;
 
 public class CurrencyManager {
 
+    public enum Operations{ send, add, set}
+
     private RSWPlayer fromEntity;
     private Double opQ;
     private RSWPlayer toPlayer;
@@ -64,6 +66,7 @@ public class CurrencyManager {
             toPlayer.setCoins(opQ);
             toPlayer.sendMessage(LanguageManager.getString(toPlayer, TS.SET_COINS, true).replace("%coins%", "" + opQ));
             fromEntity.saveData();
+            toPlayer.saveData();
         }
     }
 }

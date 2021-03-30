@@ -3,6 +3,7 @@ package josegamerpt.realskywars.gui;
 import josegamerpt.realskywars.classes.SetupRoom;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
+import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -17,7 +18,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.managers.MapManager;
-import josegamerpt.realskywars.managers.PlayerManager;
+import josegamerpt.realskywars.player.PlayerManager;
 
 import java.util.*;
 
@@ -46,7 +47,7 @@ public class MapSettings {
         this.uuid = id;
         gr = g;
 
-        inv = Bukkit.getServer().createInventory(null, 27, g.getName() + " Settings");
+        inv = Bukkit.getServer().createInventory(null, 27, Text.color(g.getName() + " Settings"));
 
         for (int i = 0; i < 9; i++) {
             inv.setItem(i, placeholder);
@@ -165,20 +166,12 @@ public class MapSettings {
 
                         RSWPlayer gp = PlayerManager.getPlayer(p);
                         if (!gp.getSetup().isGUIConfirmed()) {
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), new Runnable() {
-                                @Override
-                                public void run() {
-                                    MapSettings m = new MapSettings(gp.getSetup(), p.getUniqueId());
-                                    m.openInventory(gp);
-                                }
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
+                                MapSettings m = new MapSettings(gp.getSetup(), p.getUniqueId());
+                                m.openInventory(gp);
                             }, 3);
                         } else {
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), new Runnable() {
-                                @Override
-                                public void run() {
-                                    MapManager.continueSetup(gp);
-                                }
-                            }, 10);
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> MapManager.continueSetup(gp), 10);
                         }
 
                     }

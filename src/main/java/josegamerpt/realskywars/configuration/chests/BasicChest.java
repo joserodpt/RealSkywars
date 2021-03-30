@@ -1,4 +1,4 @@
-package josegamerpt.realskywars.configuration;
+package josegamerpt.realskywars.configuration.chests;
 
 import josegamerpt.realskywars.RealSkywars;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -9,9 +9,9 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.IOException;
 
-public class Languages implements Listener {
+public class BasicChest implements Listener {
 
-    private static String name = "languages.yml";
+    private static String name = "basicchest.yml";
     private static File file;
     private static FileConfiguration customFile;
 

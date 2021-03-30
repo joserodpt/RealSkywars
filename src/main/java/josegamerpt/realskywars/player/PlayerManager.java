@@ -1,4 +1,4 @@
-package josegamerpt.realskywars.managers;
+package josegamerpt.realskywars.player;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.classes.DisplayItem;
@@ -6,10 +6,12 @@ import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.classes.Enum.Selection;
 import josegamerpt.realskywars.classes.Enum.Selections;
 import josegamerpt.realskywars.classes.Enum.TS;
+import josegamerpt.realskywars.managers.GameManager;
+import josegamerpt.realskywars.managers.LanguageManager;
+import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.modes.SWGameMode;
 import josegamerpt.realskywars.configuration.Items;
 import josegamerpt.realskywars.configuration.Players;
-import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -31,13 +33,18 @@ public class PlayerManager {
                     p.getInventory().setItem(7, Items.SHOP);
                     break;
                 case CAGE:
-                    p.getInventory().setItem(0, Items.PROFILE);
+                    p.getInventory().setItem(0, Items.KIT);
                     p.getInventory().setItem(4, Items.CHESTS);
                     p.getInventory().setItem(8, Items.LEAVE);
                     break;
                 case SPECTATOR:
                     p.getInventory().setItem(0, Items.SPECTATE);
                     p.getInventory().setItem(8, Items.LEAVE);
+                    break;
+                case SETUP:
+                    p.getInventory().setItem(4, Items.CAGESET);
+                    p.getInventory().setItem(0, Items.CHEST1);
+                    p.getInventory().setItem(8, Items.CHEST2);
                     break;
                 default:
                     break;
@@ -55,7 +62,7 @@ public class PlayerManager {
             int gap = Players.file().getInt(p.getUniqueId() + ".Games-Played");
             int los = Players.file().getInt(p.getUniqueId() + ".Loses");
             Double coin = Players.file().getDouble(p.getUniqueId() + ".Coins");
-            List<String> bg = Players.file().getStringList(p.getUniqueId() + ".Bought-Items");
+            ArrayList<String> bg = (ArrayList<String>) Players.file().getStringList(p.getUniqueId() + ".Bought-Items");
             String lang = Players.file().getString(p.getUniqueId() + ".Language");
 
             gp = new RSWPlayer(p, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, null, tkills, dead, solwin, tw, coin, lang, bg, los, gap);
@@ -69,7 +76,7 @@ public class PlayerManager {
             gp.save();
         } else {
             gp = new RSWPlayer(p, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, null, 0, 0, 0, 0, 0D,
-                    LanguageManager.getDefaultLanguage(), Collections.singletonList(""), 0, 0);
+                    LanguageManager.getDefaultLanguage(), new ArrayList<>(), 0, 0);
             gp.getSelections().put(Selection.MAPVIEWER, Selections.MAPV_ALL);
             gp.save();
             gp.saveData();
@@ -187,6 +194,6 @@ public class PlayerManager {
         players.remove(rswPlayer);
     }
 
-    public enum PlayerItems {LOBBY, CAGE, SPECTATOR}
+    public enum PlayerItems {LOBBY, CAGE, SETUP, SPECTATOR}
 
 }

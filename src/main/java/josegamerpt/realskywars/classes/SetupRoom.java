@@ -5,12 +5,14 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SetupRoom {
 
     private Boolean tpConfirm = false;
     private String name;
     private ArrayList<Cage> cages = new ArrayList<>();
+    private ArrayList<SWChest> chests = new ArrayList<>();
     private int maxPlayers;
     private World worldMap;
     private Location spectatorLocation;
@@ -131,5 +133,13 @@ public class SetupRoom {
 
     public void setSpectating(boolean b) {
         this.spec = b;
+    }
+
+    public void addChest(SWChest swChest) {
+        this.chests.add(swChest);
+    }
+
+    public ArrayList<SWChest> getChests() {
+        return this.chests;
     }
 }

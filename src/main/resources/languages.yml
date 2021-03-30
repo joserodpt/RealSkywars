@@ -1,6 +1,6 @@
 Version: 1
 Strings:
-  Prefix: " &f&lReal&b&lSkywars &9| &r"
+  Prefix: " &f&lReal&b&lSkywars &r"
   Boss-Bar:
     Wait: "&fWaiting for players."
     End: "&fThe match ended."
@@ -10,6 +10,21 @@ Strings:
 Languages:
   ENGLISH:
     Itens:
+      Statistics:
+        Name: "&f%player% &fstatistics"
+        Lore:
+          - "%space%"
+          - " &fCoins: &e%coins%"
+          - "%space%"
+          - " &fSolo Wins: &a%solowins%"
+          - " &fTeam Wins: &a%teamwins%"
+          - " &fKills: &a%kills%"
+          - " &fDeaths: &a%deaths%"
+          - "%space%"
+          - " &fGames Played: &b%gamesplayed%"
+          - " &fLoses: &b%loses%"
+          - "%space%"
+
       Map:
         Not-Found: "&9No Maps Found"
         Title: "&9%map% &7| &f%mode%"
@@ -23,15 +38,16 @@ Languages:
         Lines:
           - "%space%"
           - " &fCoins: &e%coins%"
+          - "%space%"
           - " &fSolo Wins: &a%solowins%"
           - " &fTeam Wins: &a%teamwins%"
-          - " &fLoses: &a%loses%"
           - " &fKills: &a%kills%"
           - " &fDeaths: &a%deaths%"
+          - "%space%"
           - " &fGames Played: &b%gamesplayed%"
+          - " &fLoses: &b%loses%"
           - " &fPlaying: &b%playing% &fplayers"
           - "%space%"
-          - "&eLonelyBoys 2.0"
         Title: " &aRealSkywars &fLobby "
       Cage:
         Lines:
@@ -42,7 +58,6 @@ Languages:
           - "%space%"
           - " &fWaiting for players..."
           - "%space%"
-          - "&eLonelyBoys 2.0"
         Title: " &fMap: &b%map%"
       Game:
         Lines:
@@ -54,7 +69,6 @@ Languages:
           - "%space%"
           - " &fTime passed: &b%runtime%"
           - "%space%"
-          - "&eLonelyBoys 2.0"
         Title: " &fMap: &b%map%"
       Spectate:
         Lines:
@@ -65,7 +79,6 @@ Languages:
           - "%space%"
           - " &fTime passed: &b%runtime%"
           - "%space%"
-          - "&eLonelyBoys 2.0"
         Title: " &fMap: &b%map% "
     Messages:
       System:
@@ -89,7 +102,7 @@ Languages:
         Coins:
           Add: "&b%coins% &fwere added to your balance."
           Remove: "&b%coins% &fwere removed from your balance."
-          Set: "&fYou have now &b%coins% &fcoins."
+          Set: "&fYou now have &b%coins% &fcoins."
           Sender: "&fYou sent &b%coins% coins &fto %player%."
           Reciever: "&fYou recieved &b%coins% coins &ffrom %player%."
         Lobby-Teleport: "&fTeleported to the lobby."
@@ -172,15 +185,15 @@ Languages:
           DeathMatch: "&cThe world is shrinking..."
         Player-Spectate: "&fYou are now &aSPECTATING."
         Start:
-          - "&7&m&l-------------------------------"
-          - "        &bSkywars &fhas started!"
-          - "   &fSelected chests: &b%chests%"
-          - "   &fSelected kit: &b%kit%"
-          - "&7&m&l-------------------------------"
+          - "&7&m&l                                 "
+          - "&bSkywars &fhas started!"
+          - "&fSelected chests: &b%chests%"
+          - "&fSelected kit: &b%kit%"
+          - "&7&m&l                                 "
         End-Log:
-          - "&7&m&l-------------------------------"
-          - "              &bSummary"
-          - "   &fCoins recieved: &b%recvcoins%"
-          - "   &fTotal coins: &b%totalcoins%"
-          - "   &fKills: &b%kills%"
-          - "&7&m&l-------------------------------"
+          - "&7&m&l                                 "
+          - "&bSummary"
+          - "&fCoins recieved: &b%recvcoins%"
+          - "&fTotal coins: &b%totalcoins%"
+          - "&fKills: &b%kills%"
+          - "&7&m&l                                 "

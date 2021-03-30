@@ -4,14 +4,16 @@ import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.SoloCage;
 import josegamerpt.realskywars.cages.TeamCage;
 import josegamerpt.realskywars.classes.Enum;
-import josegamerpt.realskywars.classes.RoomTAB;
+import josegamerpt.realskywars.classes.SWChest;
 import josegamerpt.realskywars.configuration.Items;
 import josegamerpt.realskywars.effects.BowTrail;
 import josegamerpt.realskywars.gui.GUIManager;
 import josegamerpt.realskywars.gui.MapsViewer;
+import josegamerpt.realskywars.gui.PlayerGUI;
+import josegamerpt.realskywars.gui.ProfileContent;
 import josegamerpt.realskywars.managers.GameManager;
+import josegamerpt.realskywars.managers.KitManager;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.managers.PlayerManager;
 import josegamerpt.realskywars.modes.SWGameMode;
 import org.bukkit.*;
 import org.bukkit.block.Chest;
@@ -23,11 +25,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.player.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerEvents implements Listener {
 
@@ -46,12 +47,20 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void items(PlayerInteractEvent e) {
+        RSWPlayer gp = PlayerManager.getPlayer(e.getPlayer());
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR && e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().hasItemMeta()) {
-            RSWPlayer gp = PlayerManager.getPlayer(e.getPlayer());
 
             if (e.getPlayer().getInventory().getItemInMainHand()
                     .equals(Items.PROFILE)) {
                 GUIManager.openPlayerMenu(gp, !gp.isInMatch());
+                e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 50, 50);
+                e.setCancelled(true);
+            }
+
+            if (e.getPlayer().getInventory().getItemInMainHand()
+                    .equals(Items.KIT)) {
+                ProfileContent v = new ProfileContent(gp, Enum.Categories.KITS);
+                v.openInventory(gp);
                 e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 50, 50);
                 e.setCancelled(true);
             }
@@ -86,12 +95,14 @@ public class PlayerEvents implements Listener {
                 e.setCancelled(true);
             }
         }
-
-        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getState() instanceof Chest && e.getClickedBlock() != null) {
-            Chest c = (Chest) e.getClickedBlock().getState();
-            c.getInventory().addItem(new ItemStack(Material.BIRCH_LOG, 64));
+        if (e.getClickedBlock() != null && e.getClickedBlock().getState() instanceof Chest) {
+            if (gp.isInMatch()) {
+                SWChest chest = gp.getRoom().getChest(e.getClickedBlock().getLocation());
+                if (chest != null) {
+                    chest.fill();
+                }
+            }
         }
-
     }
 
     //player block interactions
@@ -112,36 +123,54 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void place(BlockPlaceEvent event) {
-        RSWPlayer pg = PlayerManager.getPlayer(event.getPlayer());
-        if (pg.getSetup() != null && event.getBlock().getType() == Items.CAGESET.getType()) {
-            switch (pg.getSetup().getGameType()) {
-                case SOLO:
-                    if ((pg.getSetup().getCages().size() + 1) < pg.getSetup().getMaxPlayers()) {
-                        log(event, pg);
-                    } else {
-                        log(event, pg);
-                        pg.getSetup().confirmCages(true);
-                        pg.sendMessage(LanguageManager.getString(pg, Enum.TS.CAGES_SET, false));
+        if (event.getPlayer().isOp()) {
+            RSWPlayer pg = PlayerManager.getPlayer(event.getPlayer());
+            if (pg.getState() != null) {
+                if (event.getBlock().getType() == Items.CAGESET.getType()) {
+                    switch (pg.getSetup().getGameType()) {
+                        case SOLO:
+                            if ((pg.getSetup().getCages().size() + 1) < pg.getSetup().getMaxPlayers()) {
+                                log(event, pg);
+                            } else {
+                                log(event, pg);
+                                pg.getSetup().confirmCages(true);
+                                pg.sendMessage(LanguageManager.getString(pg, Enum.TS.CAGES_SET, false));
+                            }
+                            break;
+                        case TEAMS:
+                            if ((pg.getSetup().getCages().size() + 1) < pg.getSetup().getTeamCount()) {
+                                log(event, pg);
+                            } else {
+                                log(event, pg);
+                                pg.getSetup().confirmCages(true);
+                                pg.sendMessage(LanguageManager.getString(pg, Enum.TS.CAGES_SET, false));
+                            }
+                            break;
                     }
-                    break;
-                case TEAMS:
-                    if ((pg.getSetup().getCages().size() + 1) < pg.getSetup().getTeamCount()) {
-                        log(event, pg);
-                    } else {
-                        log(event, pg);
-                        pg.getSetup().confirmCages(true);
-                        pg.sendMessage(LanguageManager.getString(pg, Enum.TS.CAGES_SET, false));
+                }
+                if (event.getBlock().getType() == Items.CHEST1.getType()) {
+
+                    String name = event.getItemInHand().getItemMeta().getDisplayName();
+                    switch (ChatColor.stripColor(name).toLowerCase()) {
+                        case "common chest":
+                            pg.getSetup().addChest(new SWChest(SWChest.ChestTYPE.NORMAL, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ()));
+                            pg.sendMessage("Added Normal Chest.");
+                            break;
+                        case "mid chest":
+                            pg.getSetup().addChest(new SWChest(SWChest.ChestTYPE.MID, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ()));
+                            pg.sendMessage("Added Mid Chest.");
+                            break;
                     }
+
+                }
+            }
+            switch (pg.getState()) {
+                case SPECTATOR:
+                case EXTERNAL_SPECTATOR:
+                case CAGE:
+                    event.setCancelled(true);
                     break;
             }
-
-        }
-        switch (pg.getState()) {
-            case SPECTATOR:
-            case EXTERNAL_SPECTATOR:
-            case CAGE:
-                event.setCancelled(true);
-                break;
         }
     }
 
@@ -197,7 +226,6 @@ public class PlayerEvents implements Listener {
                                 break;
                             default:
                                 damaged.teleport(damaged.getRoom().getSpectatorLocation());
-                                damaged.setFlying(true);
                                 break;
                         }
                     }
@@ -220,7 +248,7 @@ public class PlayerEvents implements Listener {
         Location deathLoc = null;
         e.setDeathMessage(null);
 
-        if (pkiller instanceof Player) {
+        if (pkiller != null) {
             RSWPlayer killer = PlayerManager.getPlayer(pkiller);
             if (killer.isInMatch()) {
                 killer.addStatistic(Enum.Statistic.KILL, 1);
@@ -259,18 +287,33 @@ public class PlayerEvents implements Listener {
                 whoHit.sendMessage(LanguageManager.getString(hitter, Enum.TS.TEAMMATE_DAMAGE_CANCEL, true));
                 e.setCancelled(true);
             }
+            if (hitter.getState() == RSWPlayer.PlayerState.SPECTATOR || hitter.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
+                e.setCancelled(true);
+            }
         }
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        PlayerManager.giveItems(event.getPlayer(), PlayerManager.PlayerItems.LOBBY);
-        PlayerManager.loadPlayer(event.getPlayer());
+    public void onPlayerInteractAtEntity(PlayerInteractEntityEvent event) {
+        if (event.getRightClicked() instanceof Player) {
+            RSWPlayer click = PlayerManager.getPlayer(event.getPlayer());
+            RSWPlayer clicked = PlayerManager.getPlayer((Player) event.getRightClicked());
+            if (click != null && clicked != null) {
+                PlayerGUI playg = new PlayerGUI(click, click.getUniqueId(), clicked);
+                playg.openInventory(click);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        PlayerManager.giveItems(e.getPlayer(), PlayerManager.PlayerItems.LOBBY);
+        PlayerManager.loadPlayer(e.getPlayer());
 
         for (RSWPlayer player : PlayerManager.getPlayers()) {
             if (player.isInMatch()) {
-                RoomTAB rt = player.getTab();
-                rt.remove(event.getPlayer());
+                RSWPlayer.RoomTAB rt = player.getTab();
+                rt.remove(e.getPlayer());
                 rt.updateRoomTAB();
             }
         }
@@ -278,7 +321,11 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-        PlayerManager.getPlayer(e.getPlayer()).leave();
+        RSWPlayer p = PlayerManager.getPlayer(e.getPlayer());
+
+        if (p != null) {
+            p.leave();
+        }
     }
 
     @EventHandler

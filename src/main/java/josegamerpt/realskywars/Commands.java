@@ -2,11 +2,13 @@ package josegamerpt.realskywars;
 
 import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.classes.Kit;
-import josegamerpt.realskywars.configuration.*;
+import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.gui.*;
 import josegamerpt.realskywars.managers.*;
 import josegamerpt.realskywars.modes.SWGameMode;
+import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
+import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
 import me.mattstudios.mf.annotations.*;
 import me.mattstudios.mf.base.CommandBase;
@@ -36,7 +38,7 @@ public class Commands extends CommandBase {
 
     @Default
     public void defaultCommand(final CommandSender commandSender) {
-        Text.send(commandSender, "&f&lReal&B&LSkywars &r&aVersion &9" + rs.getDescription().getVersion());
+        Text.send(commandSender, "&f&lReal&B&LSkywars &r&aVersion &e" + rs.getDescription().getVersion());
     }
 
     @SubCommand("reload")
@@ -45,26 +47,7 @@ public class Commands extends CommandBase {
     public void reloadcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
-            GameManager.endGames();
-
-            Config.reload();
-            Maps.reload();
-            Players.reload();
-            //Chests.reload();
-            Languages.reload();
-
-            Debugger.debug = Config.file().getBoolean("Debug-Mode");
-
-            LanguageManager.loadLanguages();
-            PlayerManager.stopScoreboards();
-            PlayerManager.loadPlayers();
-            Shops.reload();
-            Kits.reload();
-            KitManager.loadKits();
-
-            MapManager.loadMaps();
-            GameManager.loadLobby();
-
+            this.rs.reload();
             commandSender.sendMessage(LanguageManager.getString(p, Enum.TS.CONFIG_RELOAD, true));
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -108,11 +91,64 @@ public class Commands extends CommandBase {
     }
 
     @SubCommand("coins")
-    public void coinscmd(final CommandSender commandSender) {
+    @Permission("RealSkywars.Coins")
+    @Completion({"#enum", "#players", "#range:100"})
+    @WrongUsage("&c/rsw coins <send;add;set> <name> <coins>")
+    public void coinscmd(final CommandSender commandSender, CurrencyManager.Operations o, Player target, Double coins) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
-            p.sendMessage(
-                    LanguageManager.getString(p, Enum.TS.CMD_COINS, true).replace("%coins%", p.getCoins() + ""));
+            if (o == null) {
+                p.sendMessage(
+                        LanguageManager.getString(p, Enum.TS.CMD_COINS, true).replace("%coins%", p.getCoins() + ""));
+            } else {
+                RSWPlayer search = PlayerManager.getPlayer(target);
+                if (search != null) {
+                    switch (o) {
+                        case send:
+                            if (coins == null) {
+                                p.sendMessage(LanguageManager.getString(p, Enum.TS.INSUFICIENT_COINS, true)
+                                        .replace("%coins%", p.getCoins() + ""));
+                                return;
+                            }
+                            CurrencyManager c = new CurrencyManager(search, p, coins, false);
+                            if (c.canMakeOperation()) {
+                                c.transferCoins();
+                            } else {
+                                p.sendMessage(LanguageManager.getString(p, Enum.TS.INSUFICIENT_COINS, true)
+                                        .replace("%coins%", p.getCoins() + ""));
+                            }
+                            break;
+                        case set:
+                            if (!p.getPlayer().hasPermission("RealSkywars.Admin"))
+                            {
+                                p.sendMessage(LanguageManager.getString(p, Enum.TS.CMD_NOPERM, true));
+                                return;
+                            }
+                            if (search != null) {
+                                CurrencyManager c2 = new CurrencyManager(search, p, coins, true);
+                                c2.setCoins();
+                            } else {
+                                p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_PLAYER_FOUND, true));
+                            }
+                            break;
+                        case add:
+                            if (!p.getPlayer().hasPermission("RealSkywars.Admin"))
+                            {
+                                p.sendMessage(LanguageManager.getString(p, Enum.TS.CMD_NOPERM, true));
+                                return;
+                            }
+                            if (search != null) {
+                                CurrencyManager c3 = new CurrencyManager(search, p, coins, true);
+                                c3.addCoins();
+                            } else {
+                                p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_PLAYER_FOUND, true));
+                            }
+                            break;
+                    }
+                } else {
+                    p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_PLAYER_FOUND, true));
+                }
+            }
         } else {
             commandSender.sendMessage(onlyPlayer);
         }
@@ -167,16 +203,6 @@ public class Commands extends CommandBase {
             } else {
                 p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_SETUPMODE, true));
             }
-        } else {
-            commandSender.sendMessage(onlyPlayer);
-        }
-    }
-
-    @SubCommand("edittrails")
-    @Permission("RealSkywars.Admin")
-    public void edittrailscmd(final CommandSender commandSender) {
-        if (commandSender instanceof Player) {
-            GUIManager.openTrailEditor(PlayerManager.getPlayer((Player) commandSender));
         } else {
             commandSender.sendMessage(onlyPlayer);
         }
@@ -326,12 +352,12 @@ public class Commands extends CommandBase {
                     PlayerManager.getPlayers().size() + ""));
             for (RSWPlayer pair : PlayerManager.getPlayers()) {
                 if (pair.getPlayer() != null) {
-                    TextComponent a = new TextComponent(Text.color("&7- &f" + pair.getPlayer().getName()));
+                    TextComponent a = new TextComponent(Text.color("&7- &f" + pair.getName()));
                     a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                            "/rsw player " + pair.getPlayer().getName()));
+                            "/rsw player " + pair.getName()));
                     a.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                             new ComponentBuilder(
-                                    Text.color("&fClick here to inspect &b" + pair.getPlayer().getName()))
+                                    Text.color("&fClick here to inspect &b" + pair.getName()))
                                     .create()));
                     p.getPlayer().spigot().sendMessage(a);
                 }
@@ -384,13 +410,13 @@ public class Commands extends CommandBase {
     }
 
     @SubCommand("settier")
-    @Completion("#chesttiers")
+    @Completion("#enum")
     @Permission("RealSkywars.Admin")
     public void settier(final CommandSender commandSender, Enum.TierType tt) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
             if (p.getRoom() != null) {
-                p.getRoom().setTierType(tt);
+                p.getRoom().setTierType(tt, true);
                 p.sendMessage(LanguageManager.getString(p, Enum.TS.TIER_SET, true).replace("%chest%",
                         tt.name()));
             } else {
@@ -401,16 +427,52 @@ public class Commands extends CommandBase {
         }
     }
 
+
+    @SubCommand("set2chest")
+    @Completion({"#enum", "#boolean"})
+    @Permission("RealSkywars.Admin")
+    public void setchest(final CommandSender commandSender, Enum.TierType tt, Boolean middle) {
+        if (commandSender instanceof Player) {
+            RealSkywars.getChestManager().set2Chest(tt, middle, Itens.getInventory(((Player) commandSender)));
+            Text.send(commandSender, "Itens set for " + tt.name() + " (middle: " + middle + ")");
+        } else {
+            commandSender.sendMessage(onlyPlayer);
+        }
+    }
+
+    @SubCommand("gettier")
+    @Completion({"#enum", "#boolean"})
+    @Permission("RealSkywars.Admin")
+    public void gettier(final CommandSender commandSender, Enum.TierType tt, Boolean middle) {
+        if (commandSender instanceof Player) {
+            Player p = (Player) commandSender;
+            RealSkywars.getChestManager().getChest(tt, middle).forEach(swChestItem -> p.getInventory().addItem(swChestItem.getItemStack()));
+        } else {
+            commandSender.sendMessage(onlyPlayer);
+        }
+    }
+
+    @SubCommand("add2chest")
+    @Completion({"#enum", "#boolean"})
+    @Permission("RealSkywars.Admin")
+    public void addchest(final CommandSender commandSender, Enum.TierType tt, Boolean middle) {
+        if (commandSender instanceof Player) {
+            RealSkywars.getChestManager().add2Chest(tt, middle, Itens.getInventory(((Player) commandSender)));
+            Text.send(commandSender, "Itens set for " + tt.name() + " (middle: " + middle + ")");
+        } else {
+            commandSender.sendMessage(onlyPlayer);
+        }
+    }
+
     @SubCommand("player")
     @Completion("#players")
     @Permission("RealSkywars.Admin")
-    public void player(final CommandSender commandSender, String name) {
+    public void player(final CommandSender commandSender, Player get) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
-            if (PlayerManager.getPlayer(PlayerManager.searchPlayer(name)) != null) {
-                PlayerGUI playg = new PlayerGUI(
-                        PlayerManager.getPlayer(PlayerManager.searchPlayer(name)),
-                        p.getUniqueId());
+            RSWPlayer search = PlayerManager.getPlayer(get);
+            if (search != null) {
+                PlayerGUI playg = new PlayerGUI(PlayerManager.getPlayer(get), p.getUniqueId(), search);
                 playg.openInventory(p);
             } else {
                 p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_PLAYER_FOUND, true));
@@ -422,12 +484,13 @@ public class Commands extends CommandBase {
 
     @SubCommand("createkit")
     @Permission("RealSkywars.Admin")
+    @Completion({"#range:30", "#range:20"})
     @WrongUsage("&c/rsw createkit <name> <price>")
     public void createkit(final CommandSender commandSender, String kitname, Double cost) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
             Kit k = new Kit(KitManager.getNewID(), kitname, cost, Material.LEATHER_CHESTPLATE,
-                    p.getPlayer().getInventory().getContents(), "RealSkywars.Kit");
+                    p.getInventory().getContents(), "RealSkywars.Kit");
             KitSettings m = new KitSettings(k, p.getUniqueId());
             m.openInventory(p);
         } else {
@@ -435,49 +498,12 @@ public class Commands extends CommandBase {
         }
     }
 
-    @SubCommand("sendcoins")
-    @Permission("RealSkywars.Coins")
-    @Completion("#players")
-    @WrongUsage("&c/rsw sendcoins <name> <coins>")
-    public void sendcoins(final CommandSender commandSender, Player pla, Double coins) {
-        if (commandSender instanceof Player) {
-            RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
-            RSWPlayer search = PlayerManager.getPlayer(pla);
-            if (search != null) {
-                CurrencyManager c = new CurrencyManager(search, p, coins, false);
-                if (c.canMakeOperation()) {
-                    c.transferCoins();
-                } else {
-                    p.sendMessage(LanguageManager.getString(p, Enum.TS.INSUFICIENT_COINS, true)
-                            .replace("%coins%", p.getCoins() + ""));
-                }
-            } else {
-                p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_PLAYER_FOUND, true));
-            }
-        } else {
-            commandSender.sendMessage(onlyPlayer);
-        }
-    }
-
-    @SubCommand("setcoins")
-    @Permission("RealSkywars.Admin")
-    @Completion("#players")
-    @WrongUsage("&c/rsw setcoins <name> <coins>")
-    public void setcoins(final CommandSender commandSender, Player pla, Double coins) {
-        RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
-        RSWPlayer search = PlayerManager.getPlayer(pla);
-        if (search != null) {
-            CurrencyManager c = new CurrencyManager(search, p, coins, true);
-            c.setCoins();
-        } else {
-            p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_PLAYER_FOUND, true));
-        }
-    }
-
     @SubCommand("create")
     @Permission("RealSkywars.Admin")
+    @Completion({"#range:50", "#range:20", "#range"})
     @WrongUsage("&c/rsw create <name> <players> or /rsw create <name> <number of teams> <players per team>")
-    public void create(final CommandSender commandSender, String mapname, Integer maxPlayersandTeams, @Optional Integer teamPlayers) {
+    public void create(final CommandSender commandSender, String mapname, Integer
+            maxPlayersandTeams, @Optional Integer teamPlayers) {
         if (commandSender instanceof Player) {
 
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
@@ -514,11 +540,11 @@ public class Commands extends CommandBase {
         }
     }
 
-    @SubCommand("delete")
+    @SubCommand("unregister")
     @Completion("#maps")
     @Alias("del")
     @Permission("RealSkywars.Admin")
-    @WrongUsage("&c/rsw delete <map>")
+    @WrongUsage("&c/rsw unregister <map>")
     public void delete(final CommandSender commandSender, String map) {
         if (MapManager.getRegisteredMaps().contains(map)) {
             MapManager.unregisterMap(MapManager.getMap(map));

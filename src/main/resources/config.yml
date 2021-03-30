@@ -6,6 +6,9 @@ Config:
   Lobby-Scoreboard: true
   Maximum-Game-Time: 300
   Default-Language: ENGLISH
+  Shuffle-Items-In-Chest: true
+  Kits:
+    Ender-Pearl-Perk-Give-Interval: 120
   Coins:
     Per-Win: 10
     Per-Kill: 5

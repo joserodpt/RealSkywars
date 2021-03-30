@@ -13,7 +13,6 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class BlockWinTrail implements Trail {
 
@@ -51,7 +50,6 @@ public class BlockWinTrail implements Trail {
 
     @Override
     public void startTask() {
-        Random rand = new Random();
         this.task = Bukkit.getServer().getScheduler().runTaskTimer(RealSkywars.getPlugin(), () -> {
             float x = (float) (Math.random() * 2) - 1;
             float y = (float) (Math.random());
@@ -68,7 +66,7 @@ public class BlockWinTrail implements Trail {
                     fbs.setMetadata("trailBlock", new FixedMetadataValue(RealSkywars.getPlugin(), 1));
                     break;
                 case RANDOM:
-                    Material mr = randBlocks.get(rand.nextInt(randBlocks.size()));
+                    Material mr = randBlocks.get(RealSkywars.getRandom().nextInt(randBlocks.size()));
                     FallingBlock fbr = p.getWorld().spawnFallingBlock(p.getLocation().add(0, 3, 0), mr.createBlockData());
                     fbr.setDropItem(false);
                     fbr.setVelocity(v);

@@ -56,6 +56,9 @@ public class LanguageManager {
             case TITLE_ROOMJOIN:
                 trad = Text.color(Languages.file().getList("Languages." + lang + ".Messages.System.Titles.Join-Room"));
                 break;
+            case STATS_ITEM_LORE:
+                trad = Text.color(Languages.file().getList("Languages." + lang + ".Itens.Statistics.Lore"));
+                break;
             default:
                 trad.add("List not found (" + tl.name() + ")");
         }
@@ -386,6 +389,9 @@ public class LanguageManager {
                     break;
                 case ALREADY_STARTED:
                     tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.System.Arena.Already-Started"));
+                    break;
+                case STATS_ITEM_NAME:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Itens.Statistics.Name"));
                     break;
                 default:
                     tr = "String not found (" + ts.name() + ")";

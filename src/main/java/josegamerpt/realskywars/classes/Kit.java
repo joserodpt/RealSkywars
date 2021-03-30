@@ -1,10 +1,17 @@
 package josegamerpt.realskywars.classes;
 
+import josegamerpt.realskywars.RealSkywars;
+import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.managers.KitManager;
+import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import xyz.mackan.ItemNames.ItemNames;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Kit {
@@ -15,10 +22,9 @@ public class Kit {
     private int id;
     private Material icon;
     private String permission;
-    private boolean buyable = false;
-    private boolean doubleJump = false;
+    private boolean buyable;
     private boolean enderPearlGive = false;
-    private boolean empty = false;
+    private BukkitTask enderTask;
 
     public Kit(int ID, String n, Double cost, Material ic, ItemStack[] contents, String perm) {
         this.id = ID;
@@ -32,7 +38,7 @@ public class Kit {
 
     public Kit() {
         this.name = "None";
-        this.empty = true;
+        this.buyable = false;
     }
 
     public void saveKit() {
@@ -51,23 +57,34 @@ public class Kit {
     }
 
     public List<String> getDescription(boolean shop) {
-        ArrayList<String> desc = new ArrayList<>();
-        if (shop) {
-            desc.add("&fPrice: &b" + this.price);
+        if (!buyable)
+        {
+            return Collections.emptyList();
         }
-        desc.add("&eThis kit contains:");
 
-        for (ItemStack s : contents) {
-            if (s != null) {
-                desc.add("&fx" + s.getAmount() + " &9" + s.getType().name());
-            }
+        ArrayList<String> desc = new ArrayList<>();
+
+        desc.add("&fCusto: &9" + this.price);
+
+        if (enderPearlGive) {
+            desc.add("&fThis kit has the &5Ender &dPerk");
         }
 
         desc.add("");
-        if (!shop) {
-            desc.add("&fClick to select this kit.");
-        } else {
+        if (shop) {
             desc.add("&fClick to buy this kit.");
+        } else {
+            desc.add("&fClick to select this kit.");
+        }
+
+        desc.add("");
+
+        //contents
+        desc.add("&eThis kit contains:");
+        for (ItemStack s : contents) {
+            if (s != null) {
+                desc.add("&fx" + s.getAmount() + " &9" + ItemNames.getItemName(s));
+            }
         }
 
         return desc;
@@ -100,29 +117,45 @@ public class Kit {
     public Boolean getPerk(KitManager.KitPerks i) {
         try {
             switch (i) {
-                case DOUBLE_JUMP:
-                    return doubleJump;
                 case ENDER_PEARl:
-                    return enderPearlGive;
+                    return this.enderPearlGive;
                 default:
-                    throw new Exception(i.name() + " doesnt exist in the code!!!!");
+                    throw new Exception(i.name() + " perk doesnt exist in the code!!!!");
             }
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
 
     public void setPerk(KitManager.KitPerks perk, boolean b) {
-        switch (perk)
-        {
-            case DOUBLE_JUMP:
-                doubleJump = b;
-                break;
+        switch (perk) {
             case ENDER_PEARl:
-                enderPearlGive = b;
+                this.enderPearlGive = b;
                 break;
+        }
+    }
+
+    public void give(RSWPlayer p) {
+        if (!p.isBot()) {
+            p.getPlayer().getInventory().setContents(this.contents);
+            this.startTasks(p);
+        }
+    }
+
+    private void startTasks(RSWPlayer p) {
+        if (this.enderPearlGive) {
+            this.enderTask = new BukkitRunnable() {
+                public void run() {
+                    p.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+                }
+            }.runTaskTimerAsynchronously(RealSkywars.getPlugin(), Config.file().getInt("Config.Kits.Ender-Pearl-Perk-Give-Interval:"), 20); // Spelled Async wrong and I know it, deal with it haha
+        }
+    }
+
+    public void cancelTasks() {
+        if (this.enderTask != null) {
+            this.enderTask.cancel();
         }
     }
 }

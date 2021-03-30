@@ -1,10 +1,9 @@
 package josegamerpt.realskywars.modes;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import josegamerpt.realskywars.classes.Enum;
+import josegamerpt.realskywars.classes.SWChest;
 import josegamerpt.realskywars.classes.Team;
 import josegamerpt.realskywars.utils.ArenaCuboid;
 import org.bukkit.Location;
@@ -46,7 +45,7 @@ public interface SWGameMode {
 
 	Location getPOS2();
 
-	void setTierType(Enum.TierType b);
+	void setTierType(Enum.TierType b, Boolean updateChests);
 
 	ArrayList<UUID> getVoters();
 
@@ -76,8 +75,6 @@ public interface SWGameMode {
 
 	Enum.GameType getMode();
 
-	void cancelTask(String s);
-
 	ArrayList<Cage> getCages();
 
 	ArrayList<Team> getTeams();
@@ -96,6 +93,10 @@ public interface SWGameMode {
 
 	void addVote(UUID u, int i);
 
-	enum SpectateType { GAME, EXTERNAL }
+    ArrayList<SWChest> getChests();
+
+    SWChest getChest(Location location);
+
+    enum SpectateType { GAME, EXTERNAL }
 
 }

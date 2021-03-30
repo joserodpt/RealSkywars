@@ -4,7 +4,7 @@ import josegamerpt.realskywars.classes.DisplayItem;
 import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.managers.KitManager;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.managers.PlayerManager;
+import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Pagination;
@@ -43,12 +43,12 @@ public class ProfileContent {
     Pagination<DisplayItem> p;
     private Boolean disableMenu = false;
 
-    public ProfileContent(Player as, Enum.Categories t) {
+    public ProfileContent(RSWPlayer as, Enum.Categories t) {
         this.uuid = as.getUniqueId();
         this.cat = t;
         inv = Bukkit.getServer().createInventory(null, 54, Text.color("Seeing " + t.name()));
 
-        items = PlayerManager.getBoughtItems(PlayerManager.getPlayer(as), t);
+        items = PlayerManager.getBoughtItems(as, t);
 
         p = new Pagination<>(28, items);
         fillChest(p.getPage(pageNumber), false);
@@ -209,10 +209,10 @@ public class ProfileContent {
         inv.setItem(26, next);
         inv.setItem(35, next);
 
-        if (!b) {
-            inv.setItem(49, menu);
-        } else {
+        if (b) {
             inv.setItem(49, placeholder);
+        } else {
+            inv.setItem(49, menu);
         }
 
         int slot = 0;

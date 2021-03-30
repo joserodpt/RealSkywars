@@ -1,12 +1,17 @@
 package josegamerpt.realskywars;
 
 import josegamerpt.realskywars.classes.Enum;
-import josegamerpt.realskywars.modes.SWGameMode;
 import josegamerpt.realskywars.configuration.*;
+import josegamerpt.realskywars.configuration.chests.*;
 import josegamerpt.realskywars.gui.*;
 import josegamerpt.realskywars.managers.*;
-import josegamerpt.realskywars.player.*;
-import josegamerpt.realskywars.utils.*;
+import josegamerpt.realskywars.modes.SWGameMode;
+import josegamerpt.realskywars.player.EntityEvents;
+import josegamerpt.realskywars.player.PlayerEvents;
+import josegamerpt.realskywars.player.PlayerManager;
+import josegamerpt.realskywars.utils.GUIBuilder;
+import josegamerpt.realskywars.utils.PlayerInput;
+import josegamerpt.realskywars.utils.Text;
 import josegamerpt.realskywars.worlds.WorldManager;
 import me.mattstudios.mf.base.CommandManager;
 import me.mattstudios.mf.base.components.TypeResult;
@@ -19,23 +24,27 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 
 public class RealSkywars extends JavaPlugin implements Listener {
 
     private static Plugin pl;
+    private static WorldManager wm = new WorldManager();
+    private static Random rand = new Random();
     PluginManager pm = Bukkit.getPluginManager();
     CommandManager commandManager;
 
-    public static Plugin getPlugin()
-    {
+    private static ChestManager chestManager;
+
+    public static Plugin getPlugin() {
         return pl;
     }
-    private static WorldManager wm = new WorldManager();
 
     public static void log(String s) {
         Bukkit.getLogger().log(Level.INFO, "[RealSkywars] " + s);
     }
+
     public static void log(Level l, String s) {
         Bukkit.getLogger().log(l, "[RealSkywars] " + s);
     }
@@ -43,6 +52,8 @@ public class RealSkywars extends JavaPlugin implements Listener {
     public static WorldManager getWorldManager() {
         return wm;
     }
+
+    public static Random getRandom() { return rand; }
 
     public void onEnable() {
         long start = System.currentTimeMillis();
@@ -52,7 +63,7 @@ public class RealSkywars extends JavaPlugin implements Listener {
                 this.getDescription().getVersion());
         log(star);
 
-        Debugger.print( RealSkywars.class,"DEBUG MODE ENABLED");
+        Debugger.print(RealSkywars.class, "DEBUG MODE ENABLED");
         Debugger.execute();
 
         Languages.setup(this);
@@ -72,11 +83,23 @@ public class RealSkywars extends JavaPlugin implements Listener {
         Debugger.execute();
         GameManager.loadLobby();
 
+        //config
         Maps.setup(this);
         Players.setup(this);
-        //Chests.setup(this);
         Shops.setup(this);
         Kits.setup(this);
+
+        //chests
+        BasicChest.setup(this);
+        BasicChestMiddle.setup(this);
+        NormalChest.setup(this);
+        NormalChestMiddle.setup(this);
+        OPChest.setup(this);
+        OPChestMiddle.setup(this);
+        CAOSchest.setup(this);
+        CAOSchestMiddle.setup(this);
+
+        chestManager = new ChestManager();
 
         log("Setting up events.");
         pm.registerEvents(new PlayerEvents(), this);
@@ -86,12 +109,10 @@ public class RealSkywars extends JavaPlugin implements Listener {
         pm.registerEvents(RoomSettings.getListener(), this);
         pm.registerEvents(PlayerGUI.getListener(), this);
         pm.registerEvents(ShopViewer.getListener(), this);
-        pm.registerEvents(TrailEditor.getListener(), this);
         pm.registerEvents(ProfileContent.getListener(), this);
         pm.registerEvents(KitSettings.getListener(), this);
         pm.registerEvents(MapsViewer.getListener(), this);
         pm.registerEvents(PlayerInput.getListener(), this);
-        pm.registerEvents(MaterialPicker.getListener(), this);
 
         log("Loading maps.");
         MapManager.loadMaps();
@@ -104,7 +125,7 @@ public class RealSkywars extends JavaPlugin implements Listener {
         commandManager.hideTabComplete(true);
         //command suggestions
         commandManager.getCompletionHandler().register("#createsuggestions", input -> {
-            List<String> sugests = new ArrayList<>();
+            ArrayList<String> sugests = new ArrayList<>();
             for (int i = 0; i < 200; i++) {
                 sugests.add("Room" + i);
             }
@@ -113,14 +134,17 @@ public class RealSkywars extends JavaPlugin implements Listener {
         });
 
         commandManager.getCompletionHandler().register("#maps", input -> GameManager.getRoomNames());
+        commandManager.getCompletionHandler().register("#boolean", input -> Arrays.asList("false", "true"));
         commandManager.getCompletionHandler().register("#kits", input -> KitManager.getKitNames());
-        commandManager.getCompletionHandler().register("#chesttiers", input -> Arrays.asList("Basic", "Normal", "OP", "Caos"));
+
         commandManager.getParameterHandler().register(Enum.TierType.class, argument -> {
-            // Gets the entity from the UUID
             Enum.TierType tt = Enum.TierType.valueOf(argument.toString().toUpperCase());
-            // Checks if the entity is null or not and returns only the argument used
             if (tt == null) return new TypeResult(argument);
-            // Returns the entity found and the argument
+            return new TypeResult(tt, argument);
+        });
+        commandManager.getParameterHandler().register(CurrencyManager.Operations.class, argument -> {
+            CurrencyManager.Operations tt = CurrencyManager.Operations.valueOf(argument.toString().toLowerCase());
+            if (tt == null) return new TypeResult(argument);
             return new TypeResult(tt, argument);
         });
 
@@ -139,8 +163,43 @@ public class RealSkywars extends JavaPlugin implements Listener {
         log(star);
     }
 
+    public static ChestManager getChestManager() {
+        return chestManager;
+    }
+
     public void onDisable() {
         GameManager.endGames();
         GameManager.getRooms().forEach(SWGameMode::clear);
+    }
+
+    public void reload() {
+        GameManager.endGames();
+
+        Config.reload();
+        Maps.reload();
+        Players.reload();
+        Languages.reload();
+
+        //chests
+        BasicChest.reload();
+        BasicChestMiddle.reload();
+        NormalChest.reload();
+        NormalChestMiddle.reload();
+        OPChest.reload();
+        OPChestMiddle.reload();
+        CAOSchest.reload();
+        CAOSchestMiddle.reload();
+
+        Debugger.debug = Config.file().getBoolean("Debug-Mode");
+
+        LanguageManager.loadLanguages();
+        PlayerManager.stopScoreboards();
+        PlayerManager.loadPlayers();
+        Shops.reload();
+        Kits.reload();
+        KitManager.loadKits();
+
+        MapManager.loadMaps();
+        GameManager.loadLobby();
     }
 }

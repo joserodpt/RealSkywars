@@ -1,16 +1,19 @@
 package josegamerpt.realskywars.managers;
 
 import josegamerpt.realskywars.Debugger;
+import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.classes.DisplayItem;
 import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.classes.Kit;
 import josegamerpt.realskywars.configuration.Shops;
+import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 public class ShopManager {
 
@@ -84,7 +87,13 @@ public class ShopManager {
                 }
 
                 if (parse.length == 5) {
-                    s.addInfo("Particle", Particle.valueOf(parse[4]));
+                    try {
+                        s.addInfo("Particle", Particle.valueOf(parse[4]));
+                    } catch (Exception e)
+                    {
+                        RealSkywars.log(Level.WARNING, parse[4] + " isnt a valid particle! Changed to drip lava.");
+                        s.addInfo("Particle", Particle.DRIP_LAVA);
+                    }
                 }
 
                 if (error) {

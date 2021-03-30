@@ -1,7 +1,10 @@
 package josegamerpt.realskywars.gui;
 
+import josegamerpt.realskywars.classes.Enum;
+import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
+import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -14,12 +17,8 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import josegamerpt.realskywars.RealSkywars;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerGUI {
 
@@ -29,34 +28,27 @@ public class PlayerGUI {
     static RSWPlayer gp;
     private UUID uuid;
 
-    public PlayerGUI(RSWPlayer p, UUID id) {
+    public PlayerGUI(RSWPlayer p, UUID id, RSWPlayer target) {
         this.uuid = id;
         gp = p;
 
-        inv = Bukkit.getServer().createInventory(null, InventoryType.HOPPER, p.getPlayer().getName() + " Info");
+        inv = Bukkit.getServer().createInventory(null, InventoryType.HOPPER, target.getName());
 
         // infoMap
-        ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, "&9About",
-                Arrays.asList("&fPlayer State: " + p.getState(), "&fRoom: " + p.getRoom(),
-                        "&fKills: " + p.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS), "&fDeaths: " + p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS), "&fCage Block: " + ((Material) p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK)).name()));
+        ArrayList<String> lore = new ArrayList<>();
+        for (String s : LanguageManager.getList(p, Enum.TL.STATS_ITEM_LORE)) {
+            lore.add(variables(s, target));
+        }
+        ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, LanguageManager.getString(p, Enum.TS.STATS_ITEM_NAME, false).replace("%player%", target.getDisplayName()),
+                lore);
         inv.setItem(2, infoMap);
-
-        refresher(id, p);
 
         inventories.put(id, this);
     }
 
-    public static void refresher(UUID d, RSWPlayer p) {
-        int refreshTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.getPlugin(), () -> {
-
-            // infoMap
-            ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, "&9About",
-                    Arrays.asList("&fPlayer State: " + p.getState(), "&fRoom: " + p.getRoom(),
-                            "&fKills: " + p.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS), "&fDeaths: " + p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS), "&fCage Block: " + ((Material) p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK)).name()));
-
-            inv.setItem(2, infoMap);
-        }, 0L, 10L);
-        refresh.put(d, refreshTask);
+    protected String variables(String s, RSWPlayer gp) {
+            return s.replace("%space%", Text.makeSpace()).replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS) + "")
+                    .replace("%coins%", gp.getCoins() + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS) + "").replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");
     }
 
     public static Listener getListener() {

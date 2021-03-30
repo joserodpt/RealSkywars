@@ -25,6 +25,12 @@ public class KitManager {
                 ItemStack[] k = getKitContents(id);
                 String perm = Kits.file().getString("Kits." + id + ".Permission");
                 Kit kit = new Kit(id, name, price, mat, k, perm);
+
+                if (Kits.file().getBoolean("Kits." + id + ".Perks.EnderPearl"))
+                {
+                    kit.setPerk(KitPerks.ENDER_PEARl, true);
+                }
+
                 kit.save();
             }
         }
@@ -36,7 +42,6 @@ public class KitManager {
         Kits.file().set("Kits." + k.getID() + ".Icon", k.getIcon().name());
         Kits.file().set("Kits." + k.getID() + ".Contents", k.getContents());
         Kits.file().set("Kits." + k.getID() + ".Permission", k.getPermission());
-        Kits.file().set("Kits." + k.getID() + ".Perks.DoubleJump", k.getPerk(KitPerks.DOUBLE_JUMP));
         Kits.file().set("Kits." + k.getID() + ".Perks.EnderPearl", k.getPerk(KitPerks.ENDER_PEARl));
         Kits.save();
     }
@@ -78,7 +83,7 @@ public class KitManager {
                 return k;
             }
         }
-        return null;
+        return new Kit();
     }
 
     public static int getKitCount() {
@@ -92,5 +97,5 @@ public class KitManager {
 
     }
 
-    public enum KitPerks {DOUBLE_JUMP, ENDER_PEARl}
+    public enum KitPerks {ENDER_PEARl}
 }

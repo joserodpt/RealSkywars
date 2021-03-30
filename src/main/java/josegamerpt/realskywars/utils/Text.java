@@ -1,9 +1,11 @@
 package josegamerpt.realskywars.utils;
 
+import josegamerpt.realskywars.RealSkywars;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,14 +50,9 @@ public class Text {
         return returnMessage.toString();
     }
 
-    static Random r = new Random();
     static List<String> nicks = Arrays.asList("Morango", "Pêssego", "Azul", "Vermelho", "Branco");
 
-    public static String anonName() {
-        int num = r.nextInt(99);
-
-        return nicks.get(r.nextInt(nicks.size())) + " #" + num;
-    }
+    public static String anonName() { return nicks.get(RealSkywars.getRandom().nextInt(nicks.size())) + " #" + RealSkywars.getRandom().nextInt(99); }
 
     public enum DefaultFontInfo {
 
@@ -196,21 +193,24 @@ public class Text {
         return color;
     }
 
-    public static void sendList(Player p, ArrayList<String> list) { list.forEach(s -> p.sendMessage(color(s))); }
+    public static String formatSeconds(int n) {
+        return LocalTime.MIN.plusSeconds(n).toString();
+    }
+
+    public static void sendList(Player p, List<String> list) { list.forEach(s -> p.sendMessage(color(s))); }
 
     public static void sendList(Player p, ArrayList<String> list, Object var) { list.forEach(s ->  p.sendMessage(color(s).replace("%CAGES%", var + ""))); }
 
-    public static void sendList(CommandSender p, List<String> list) { list.forEach(s -> p.sendMessage(color(s))); }
+    public static void sendList(CommandSender p, ArrayList<String> list) { list.forEach(s -> p.sendMessage(color(s))); }
     public static void send(CommandSender p, String s) { p.sendMessage(color(s)); }
 
     public static CharSequence makeSpace() {
-        return Text.color(randSp() + randSp() + randSp());
+        return Text.color(randSp() + "&b" +  randSp() + "&c" + randSp());
     }
 
     private static String randSp() {
-        Random rand = new Random();
         List<String> sp = Arrays.asList("&6", "&7", "&8", "&9", "&5", "&f", "&e", "&a", "&b");
-        return sp.get(rand.nextInt(sp.size()));
+        return sp.get(RealSkywars.getRandom().nextInt(sp.size()));
     }
 
     public static ArrayList<String> replaceVarInList(ArrayList<String> list, String rep, String var) {

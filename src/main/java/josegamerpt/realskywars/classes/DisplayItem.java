@@ -49,11 +49,11 @@ public class DisplayItem {
 
     private void makeItemStack(Material m) {
         if (it == Enum.Categories.KITS) {
+            Kit k = KitManager.getKit(name);
             if (!bought) {
-                assert KitManager.getKit(name) != null;
-                i = Itens.createItemLore(m, 1, name, KitManager.getKit(name).getDescription(true));
+                i = Itens.createItemLore(m, 1, k.getName(), k.getDescription(true));
             } else {
-                i = Itens.createItemLoreEnchanted(m, 1, name, KitManager.getKit(name).getDescription(false));
+                i = Itens.createItemLoreEnchanted(m, 1, k.getName(), k.getDescription(false));
             }
         } else {
             if (bought) {
@@ -117,9 +117,5 @@ public class DisplayItem {
 
     public Material getMaterial() {
         return this.m;
-    }
-
-    public boolean hasInfo(String s) {
-        return this.info.containsKey(s);
     }
 }

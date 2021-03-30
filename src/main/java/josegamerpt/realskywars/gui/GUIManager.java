@@ -2,7 +2,7 @@ package josegamerpt.realskywars.gui;
 
 import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.managers.PlayerManager;
+import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.GUIBuilder;
 import josegamerpt.realskywars.utils.Itens;
@@ -109,27 +109,6 @@ public class GUIManager {
         inventory.openInventory(p.getPlayer());
     }
 
-    public static void openTrailEditor(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder("&9Trail Editor", p.getUniqueId(),
-                Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""), InventoryType.HOPPER);
-
-        inventory.addItem(e -> {
-            p.getPlayer().closeInventory();
-            TrailEditor v = new TrailEditor(p.getPlayer(), Enum.Categories.BOW_PARTICLES, "&9Editing &bBow Particles");
-            v.openInventory(p.getPlayer());
-        }, Itens.createItemLore(Material.BOW, 1, "&9Bow &bParticles",
-                Collections.singletonList("&fClick here to edit this trail.")), 1);
-
-        inventory.addItem(e -> {
-            p.getPlayer().closeInventory();
-            TrailEditor v = new TrailEditor(p.getPlayer(), Enum.Categories.WIN_BLOCKS, "&9Editing &bWin Blocks");
-            v.openInventory(p.getPlayer());
-        }, Itens.createItemLore(Material.FIREWORK_ROCKET, 1, "&9Win &bBlocks",
-                Collections.singletonList("&fClick here to edit this trail.")), 3);
-
-        inventory.openInventory(p.getPlayer());
-    }
-
     public static void openLanguage(RSWPlayer p) {
         GUIBuilder inventory = new GUIBuilder("&9Languages", 54, p.getUniqueId(),
                 Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
@@ -150,28 +129,28 @@ public class GUIManager {
 
         inventory.addItem(e -> {
             p.getPlayer().closeInventory();
-            ProfileContent v = new ProfileContent(p.getPlayer(), Enum.Categories.KITS);
+            ProfileContent v = new ProfileContent(p, Enum.Categories.KITS);
             v.openInventory(p);
         }, Itens.createItemLore(Material.CHEST, 1, "&bYour &9Kits",
                 Collections.singletonList("&fClick here to view this item.")), 0);
 
         inventory.addItem(e -> {
             p.getPlayer().closeInventory();
-            ProfileContent v = new ProfileContent(p.getPlayer(), Enum.Categories.CAGE_BLOCKS);
+            ProfileContent v = new ProfileContent(p, Enum.Categories.CAGE_BLOCKS);
             v.openInventory(p);
         }, Itens.createItemLore(Material.SPAWNER, 1, "&bYour &9Cage Blocks",
                 Collections.singletonList("&fClick here to view this item.")), 1);
 
         inventory.addItem(e -> {
             p.getPlayer().closeInventory();
-            ProfileContent v = new ProfileContent(p.getPlayer(), Enum.Categories.WIN_BLOCKS);
+            ProfileContent v = new ProfileContent(p, Enum.Categories.WIN_BLOCKS);
             v.openInventory(p);
         }, Itens.createItemLore(Material.FIREWORK_ROCKET, 1, "&bYour &9Win Blocks",
                 Collections.singletonList("&fClick here to view this item.")), 2);
 
         inventory.addItem(e -> {
             p.getPlayer().closeInventory();
-            ProfileContent v = new ProfileContent(p.getPlayer(), Enum.Categories.BOW_PARTICLES);
+            ProfileContent v = new ProfileContent(p, Enum.Categories.BOW_PARTICLES);
             v.openInventory(p);
         }, Itens.createItemLore(Material.BOW, 1, "&bYour &9Bow Particles",
                 Collections.singletonList("&fClick here to open this category.")), 3);

@@ -13,5 +13,9 @@ public class Items {
     public static ItemStack LEAVE = Itens.createItem(Material.MINECART, 1, "&cLeave &7(Right Click)");
     public static ItemStack CHESTS = Itens.createItem(Material.ENDER_CHEST, 1, "&9Chests &7(Right Click)");
     public static ItemStack SPECTATE = Itens.createItem(Material.COMPASS, 1, "&bSpectate &7(Right Click)");
+    public static ItemStack KIT = Itens.createItem(Material.BOW, 1, "&eKits &7(Right Click)");
+
+    public static ItemStack CHEST1 = Itens.createItem(Material.CHEST, 1, "Common Chest");
+    public static ItemStack CHEST2 = Itens.createItem(Material.CHEST, 1, "MID Chest");
 
 }

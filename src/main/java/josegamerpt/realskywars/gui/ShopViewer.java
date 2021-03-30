@@ -4,7 +4,7 @@ import josegamerpt.realskywars.classes.DisplayItem;
 import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.managers.CurrencyManager;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.managers.PlayerManager;
+import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
@@ -46,7 +46,7 @@ public class ShopViewer {
     public ShopViewer(UUID id, Enum.Categories t) {
         this.uuid = id;
         this.cat = t;
-        inv = Bukkit.getServer().createInventory(null, 54, Text.color("&b" + t.name()));
+        inv = Bukkit.getServer().createInventory(null, 54, Text.color(t.name()));
 
         List<DisplayItem> items = ShopManager.getCategoryContents(PlayerManager.getPlayer(PlayerManager.searchPlayer(id)), t);
 
@@ -113,9 +113,8 @@ public class ShopViewer {
                                     if (cm.canMakeOperation()) {
                                         cm.removeCoins();
 
-                                        gp.getBoughtItems().add(ChatColor.stripColor(a.getName()) + "|" + current.cat.name());
+                                        gp.buyItem(a.getName() + "|" + current.cat.name());
 
-                                        gp.saveData();
                                         a.setBought(true);
                                         current.inv.setItem(e.getRawSlot(),
                                                 Itens.createItemLoreEnchanted(e.getCurrentItem().getType(), 1,
