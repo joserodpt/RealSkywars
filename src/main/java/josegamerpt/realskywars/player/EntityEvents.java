@@ -19,12 +19,10 @@ public class EntityEvents implements Listener {
             if (e.getEntity().getLocation().getWorld().getName().equalsIgnoreCase(s)) {
                 switch (e.getEntityType()) {
                     case BAT:
-                    case CAT:
                     case CHICKEN:
                     case COD:
                     case COW:
                     case DONKEY:
-                    case FOX:
                     case HORSE:
                     case MUSHROOM_COW:
                     case MULE:
@@ -41,7 +39,6 @@ public class EntityEvents implements Listener {
                     case PUFFERFISH:
                     case TURTLE:
                     case VILLAGER:
-                    case WANDERING_TRADER:
                     case ENDER_DRAGON:
                         e.setCancelled(false);
                     default:

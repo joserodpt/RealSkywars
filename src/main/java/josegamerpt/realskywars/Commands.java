@@ -1,6 +1,7 @@
 package josegamerpt.realskywars;
 
-import josegamerpt.realskywars.classes.Enum;
+import josegamerpt.realskywars.chests.ChestManager;
+import josegamerpt.realskywars.classes.Selections;
 import josegamerpt.realskywars.classes.Kit;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.gui.*;
@@ -48,7 +49,7 @@ public class Commands extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
             this.rs.reload();
-            commandSender.sendMessage(LanguageManager.getString(p, Enum.TS.CONFIG_RELOAD, true));
+            commandSender.sendMessage(LanguageManager.getString(p, LanguageManager.TS.CONFIG_RELOAD, true));
         } else {
             commandSender.sendMessage(onlyPlayer);
         }
@@ -58,12 +59,12 @@ public class Commands extends CommandBase {
     public void joincmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
-            if (p.getRoom() == null) {
-                MapsViewer v = new MapsViewer(p, p.getSelection(Enum.Selection.MAPVIEWER),
+            if (p.getMatch() == null) {
+                MapsViewer v = new MapsViewer(p, p.getSelection(Selections.Key.MAPVIEWER),
                         "Maps");
                 v.openInventory(p);
             } else {
-                p.sendMessage(LanguageManager.getString(p, Enum.TS.ALREADY_IN_MATCH, true));
+                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.ALREADY_IN_MATCH, true));
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -74,7 +75,7 @@ public class Commands extends CommandBase {
     public void kitscmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
-            ProfileContent ds = new ProfileContent(p.getPlayer(), Enum.Categories.KITS, "&9Kits");
+            ProfileContent ds = new ProfileContent(p.getPlayer(), ShopManager.Categories.KITS, "&9Kits");
             ds.openInventory(p);
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -99,14 +100,14 @@ public class Commands extends CommandBase {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
             if (o == null) {
                 p.sendMessage(
-                        LanguageManager.getString(p, Enum.TS.CMD_COINS, true).replace("%coins%", p.getCoins() + ""));
+                        LanguageManager.getString(p, LanguageManager.TS.CMD_COINS, true).replace("%coins%", p.getCoins() + ""));
             } else {
                 RSWPlayer search = PlayerManager.getPlayer(target);
                 if (search != null) {
                     switch (o) {
                         case send:
                             if (coins == null) {
-                                p.sendMessage(LanguageManager.getString(p, Enum.TS.INSUFICIENT_COINS, true)
+                                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.INSUFICIENT_COINS, true)
                                         .replace("%coins%", p.getCoins() + ""));
                                 return;
                             }
@@ -114,39 +115,39 @@ public class Commands extends CommandBase {
                             if (c.canMakeOperation()) {
                                 c.transferCoins();
                             } else {
-                                p.sendMessage(LanguageManager.getString(p, Enum.TS.INSUFICIENT_COINS, true)
+                                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.INSUFICIENT_COINS, true)
                                         .replace("%coins%", p.getCoins() + ""));
                             }
                             break;
                         case set:
                             if (!p.getPlayer().hasPermission("RealSkywars.Admin"))
                             {
-                                p.sendMessage(LanguageManager.getString(p, Enum.TS.CMD_NOPERM, true));
+                                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.CMD_NOPERM, true));
                                 return;
                             }
                             if (search != null) {
                                 CurrencyManager c2 = new CurrencyManager(search, p, coins, true);
                                 c2.setCoins();
                             } else {
-                                p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_PLAYER_FOUND, true));
+                                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NO_PLAYER_FOUND, true));
                             }
                             break;
                         case add:
                             if (!p.getPlayer().hasPermission("RealSkywars.Admin"))
                             {
-                                p.sendMessage(LanguageManager.getString(p, Enum.TS.CMD_NOPERM, true));
+                                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.CMD_NOPERM, true));
                                 return;
                             }
                             if (search != null) {
                                 CurrencyManager c3 = new CurrencyManager(search, p, coins, true);
                                 c3.addCoins();
                             } else {
-                                p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_PLAYER_FOUND, true));
+                                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NO_PLAYER_FOUND, true));
                             }
                             break;
                     }
                 } else {
-                    p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_PLAYER_FOUND, true));
+                    p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NO_PLAYER_FOUND, true));
                 }
             }
         } else {
@@ -162,19 +163,19 @@ public class Commands extends CommandBase {
             String sep = "&9&m&l--------------------------------";
             Text.sendList(p.getPlayer(), Arrays.asList(sep, "&fLanguage Verification Started.", "&6"));
 
-            HashMap<String, HashMap<Enum.TS, String>> flag = LanguageManager.verifyLanguages();
+            HashMap<String, HashMap<LanguageManager.TS, String>> flag = LanguageManager.verifyLanguages();
             if (flag.size() == 0) {
                 p.sendMessage(LanguageManager.getPrefix() + Text.color("&aNo errors encountered."));
                 p.sendMessage(Text.color(sep));
             } else {
-                for (Map.Entry<String, HashMap<Enum.TS, String>> entry : flag.entrySet()) {
+                for (Map.Entry<String, HashMap<LanguageManager.TS, String>> entry : flag.entrySet()) {
                     String key = entry.getKey();
-                    HashMap<Enum.TS, String> value = entry.getValue();
+                    HashMap<LanguageManager.TS, String> value = entry.getValue();
 
                     p.sendMessage(Text.color("&6Found translation errors in Language: &b" + key));
 
-                    for (Map.Entry<Enum.TS, String> e : value.entrySet()) {
-                        Enum.TS t = e.getKey();
+                    for (Map.Entry<LanguageManager.TS, String> e : value.entrySet()) {
+                        LanguageManager.TS t = e.getKey();
                         Object s = e.getValue();
 
                         p.sendMessage(Text
@@ -199,9 +200,9 @@ public class Commands extends CommandBase {
             if (p.getSetup() != null) {
                 p.getSetup().setSpectatorLoc(p.getLocation());
                 p.getSetup().setSpectatorConfirm(true);
-                p.sendMessage(LanguageManager.getString(p, Enum.TS.CMD_FINISHSETUP, true));
+                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.CMD_FINISHSETUP, true));
             } else {
-                p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_SETUPMODE, true));
+                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NO_SETUPMODE, true));
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -212,10 +213,10 @@ public class Commands extends CommandBase {
     public void lobbycmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
-            if (p.getRoom() == null) {
+            if (p.getMatch() == null) {
                 GameManager.tpToLobby(p);
             } else {
-                p.sendMessage(LanguageManager.getString(p, Enum.TS.CMD_MATCH_CANCEL, true));
+                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.CMD_MATCH_CANCEL, true));
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -227,10 +228,10 @@ public class Commands extends CommandBase {
     public void forcestartcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer(Bukkit.getPlayer(commandSender.getName()));
-            if (p.getRoom() != null) {
-                p.sendMessage(p.getRoom().forceStart(p));
+            if (p.getMatch() != null) {
+                p.sendMessage(p.getMatch().forceStart(p));
             } else {
-                p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_MATCH, true));
+                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NO_MATCH, true));
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -242,12 +243,12 @@ public class Commands extends CommandBase {
     public void addsharik(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
-            if (p.getRoom() != null) {
-                p.getRoom().addPlayer(new RSWPlayer(true));
+            if (p.getMatch() != null) {
+                p.getMatch().addPlayer(new RSWPlayer(true));
                 p.sendMessage(Text.color(
                         "&4EXPERIMENTAL FEATURE. CAN RESULT IN SERVER & CLIENT CRASHES. &cAdded Null Player"));
             } else {
-                p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_MATCH, true));
+                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NO_MATCH, true));
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -258,10 +259,10 @@ public class Commands extends CommandBase {
     public void leave(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
-            if (p.getRoom() != null) {
-                p.getRoom().removePlayer(p);
+            if (p.getMatch() != null) {
+                p.getMatch().removePlayer(p);
             } else {
-                p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_MATCH, true));
+                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NO_MATCH, true));
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -281,7 +282,7 @@ public class Commands extends CommandBase {
             Config.file().set("Config.Lobby.Pitch", p.getLocation().getPitch());
             Config.save();
             GameManager.setLobbyLoc(p.getLocation());
-            p.sendMessage(LanguageManager.getString(p, Enum.TS.LOBBY_SET, true));
+            p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.LOBBY_SET, true));
         } else {
             commandSender.sendMessage(onlyPlayer);
         }
@@ -295,7 +296,7 @@ public class Commands extends CommandBase {
             if (p.getSetup() != null) {
                 MapManager.cancelSetup(p);
             } else {
-                p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_SETUPMODE, true));
+                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NO_SETUPMODE, true));
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -311,10 +312,10 @@ public class Commands extends CommandBase {
                 if (p.getSetup().isGUIConfirmed() && p.getSetup().areCagesConfirmed() & p.getSetup().isSpectatorLocConfirmed()) {
                     MapManager.finishSetup(p);
                 } else {
-                    p.sendMessage(LanguageManager.getString(p, Enum.TS.SETUP_NOT_FINISHED, true));
+                    p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.SETUP_NOT_FINISHED, true));
                 }
             } else {
-                p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_SETUPMODE, true));
+                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NO_SETUPMODE, true));
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -326,7 +327,7 @@ public class Commands extends CommandBase {
     public void maps(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
-            p.sendMessage(LanguageManager.getString(p, Enum.TS.CMD_MAPS, true).replace("%rooms%",
+            p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.CMD_MAPS, true).replace("%rooms%",
                     "" + GameManager.getRooms().size()));
             for (SWGameMode s : GameManager.getRooms()) {
                 TextComponent a = new TextComponent(Text.color("&7- &f" + s.getName()));
@@ -348,7 +349,7 @@ public class Commands extends CommandBase {
     public void players(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
-            p.sendMessage(LanguageManager.getString(p, Enum.TS.CMD_PLAYERS, true).replace("%players%",
+            p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.CMD_PLAYERS, true).replace("%players%",
                     PlayerManager.getPlayers().size() + ""));
             for (RSWPlayer pair : PlayerManager.getPlayers()) {
                 if (pair.getPlayer() != null) {
@@ -377,7 +378,7 @@ public class Commands extends CommandBase {
                 RoomSettings r = new RoomSettings(GameManager.getGame(name), p.getUniqueId());
                 r.openInventory(p);
             } else {
-                p.sendMessage(LanguageManager.getString(p, Enum.TS.NOMAP_FOUND, true));
+                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NOMAP_FOUND, true));
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -403,24 +404,24 @@ public class Commands extends CommandBase {
         Kit k = KitManager.getKit(name);
         if (k != null) {
             k.deleteKit();
-            commandSender.sendMessage(LanguageManager.getString(new RSWPlayer(false), Enum.TS.DELETEKIT_DONE, true));
+            commandSender.sendMessage(LanguageManager.getString(new RSWPlayer(false), LanguageManager.TS.DELETEKIT_DONE, true));
         } else {
-            commandSender.sendMessage(LanguageManager.getString(new RSWPlayer(false), Enum.TS.NO_KIT_FOUND, true));
+            commandSender.sendMessage(LanguageManager.getString(new RSWPlayer(false), LanguageManager.TS.NO_KIT_FOUND, true));
         }
     }
 
     @SubCommand("settier")
     @Completion("#enum")
     @Permission("RealSkywars.Admin")
-    public void settier(final CommandSender commandSender, Enum.TierType tt) {
+    public void settier(final CommandSender commandSender, ChestManager.TierType tt) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
-            if (p.getRoom() != null) {
-                p.getRoom().setTierType(tt, true);
-                p.sendMessage(LanguageManager.getString(p, Enum.TS.TIER_SET, true).replace("%chest%",
+            if (p.getMatch() != null) {
+                p.getMatch().setTierType(tt, true);
+                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.TIER_SET, true).replace("%chest%",
                         tt.name()));
             } else {
-                p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_MATCH, true));
+                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NO_MATCH, true));
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -431,7 +432,7 @@ public class Commands extends CommandBase {
     @SubCommand("set2chest")
     @Completion({"#enum", "#boolean"})
     @Permission("RealSkywars.Admin")
-    public void setchest(final CommandSender commandSender, Enum.TierType tt, Boolean middle) {
+    public void setchest(final CommandSender commandSender, ChestManager.TierType tt, Boolean middle) {
         if (commandSender instanceof Player) {
             RealSkywars.getChestManager().set2Chest(tt, middle, Itens.getInventory(((Player) commandSender)));
             Text.send(commandSender, "Itens set for " + tt.name() + " (middle: " + middle + ")");
@@ -443,7 +444,7 @@ public class Commands extends CommandBase {
     @SubCommand("gettier")
     @Completion({"#enum", "#boolean"})
     @Permission("RealSkywars.Admin")
-    public void gettier(final CommandSender commandSender, Enum.TierType tt, Boolean middle) {
+    public void gettier(final CommandSender commandSender, ChestManager.TierType tt, Boolean middle) {
         if (commandSender instanceof Player) {
             Player p = (Player) commandSender;
             RealSkywars.getChestManager().getChest(tt, middle).forEach(swChestItem -> p.getInventory().addItem(swChestItem.getItemStack()));
@@ -455,7 +456,7 @@ public class Commands extends CommandBase {
     @SubCommand("add2chest")
     @Completion({"#enum", "#boolean"})
     @Permission("RealSkywars.Admin")
-    public void addchest(final CommandSender commandSender, Enum.TierType tt, Boolean middle) {
+    public void addchest(final CommandSender commandSender, ChestManager.TierType tt, Boolean middle) {
         if (commandSender instanceof Player) {
             RealSkywars.getChestManager().add2Chest(tt, middle, Itens.getInventory(((Player) commandSender)));
             Text.send(commandSender, "Itens set for " + tt.name() + " (middle: " + middle + ")");
@@ -475,7 +476,7 @@ public class Commands extends CommandBase {
                 PlayerGUI playg = new PlayerGUI(PlayerManager.getPlayer(get), p.getUniqueId(), search);
                 playg.openInventory(p);
             } else {
-                p.sendMessage(LanguageManager.getString(p, Enum.TS.NO_PLAYER_FOUND, true));
+                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NO_PLAYER_FOUND, true));
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -512,10 +513,10 @@ public class Commands extends CommandBase {
                 if (teamPlayers == null) {
                     //solo
                     if (MapManager.getRegisteredMaps().contains(mapname)) {
-                        p.sendMessage(LanguageManager.getString(p, Enum.TS.MAP_EXISTS, true));
+                        p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.MAP_EXISTS, true));
                     } else {
                         if (p.getSetup() != null) {
-                            p.sendMessage(LanguageManager.getString(p, Enum.TS.SETUP_NOT_FINISHED, true));
+                            p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.SETUP_NOT_FINISHED, true));
                         } else {
                             MapManager.setupSolo(p, mapname, maxPlayersandTeams);
                         }
@@ -524,16 +525,16 @@ public class Commands extends CommandBase {
                     //teams
                     if (!MapManager.getRegisteredMaps().contains(mapname)) {
                         if (p.getSetup() != null) {
-                            p.sendMessage(LanguageManager.getString(p, Enum.TS.SETUP_NOT_FINISHED, true));
+                            p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.SETUP_NOT_FINISHED, true));
                         } else {
                             MapManager.setupTeams(p, mapname, maxPlayersandTeams, teamPlayers);
                         }
                     } else {
-                        p.sendMessage(LanguageManager.getString(p, Enum.TS.MAP_EXISTS, true));
+                        p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.MAP_EXISTS, true));
                     }
                 }
             } else {
-                p.sendMessage(LanguageManager.getString(p, Enum.TS.LOBBYLOC_NOT_SET, true));
+                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.LOBBYLOC_NOT_SET, true));
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -548,9 +549,9 @@ public class Commands extends CommandBase {
     public void delete(final CommandSender commandSender, String map) {
         if (MapManager.getRegisteredMaps().contains(map)) {
             MapManager.unregisterMap(MapManager.getMap(map));
-            commandSender.sendMessage(LanguageManager.getString(new RSWPlayer(false), Enum.TS.MAP_UNREGISTERED, true));
+            commandSender.sendMessage(LanguageManager.getString(new RSWPlayer(false), LanguageManager.TS.MAP_UNREGISTERED, true));
         } else {
-            commandSender.sendMessage(LanguageManager.getString(new RSWPlayer(false), Enum.TS.NOMAP_FOUND, true));
+            commandSender.sendMessage(LanguageManager.getString(new RSWPlayer(false), LanguageManager.TS.NOMAP_FOUND, true));
         }
     }
 
@@ -562,9 +563,9 @@ public class Commands extends CommandBase {
         RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
         if (MapManager.getRegisteredMaps().contains(map)) {
             MapManager.getMap(map).reset();
-            p.sendMessage(LanguageManager.getString(p, Enum.TS.ARENA_RESET, true));
+            p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.ARENA_RESET, true));
         } else {
-            p.sendMessage(LanguageManager.getString(p, Enum.TS.NOMAP_FOUND, true));
+            p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NOMAP_FOUND, true));
         }
     }
 

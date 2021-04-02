@@ -1,7 +1,6 @@
 package josegamerpt.realskywars.cages;
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -69,7 +68,7 @@ public class SoloCage implements Cage {
         w.getBlockAt(x + 1, y + 2, z).setType(m);
     }
 
-    public void setCage() { setCage(this.p.getCageBlock()); }
+    public void setCage() { setCage((Material) this.p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK)); }
     public void clearCage() { setCage(Material.AIR); }
 
     public void addPlayer(RSWPlayer pl) {
@@ -134,10 +133,6 @@ public class SoloCage implements Cage {
 
     public List<RSWPlayer> getPlayers() {
         return Collections.singletonList(this.p);
-    }
-
-    public Enum.CageType getType() {
-        return Enum.CageType.SOLO;
     }
 
     public void open() {

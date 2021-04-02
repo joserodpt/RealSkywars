@@ -1,11 +1,14 @@
 package josegamerpt.realskywars.classes;
 
 import josegamerpt.realskywars.cages.Cage;
+import josegamerpt.realskywars.chests.SWChest;
+import josegamerpt.realskywars.modes.SWGameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
+import static josegamerpt.realskywars.modes.SWGameMode.GameType.TEAMS;
 
 public class SetupRoom {
 
@@ -17,7 +20,7 @@ public class SetupRoom {
     private World worldMap;
     private Location spectatorLocation;
     private Boolean spec = true;
-    private Enum.GameType gameType;
+    private SWGameMode.GameType gameType;
     private boolean cagesConfirmed = false;
     private boolean speclocConfirm = false;
     private Boolean guiConfirm = false;
@@ -30,7 +33,7 @@ public class SetupRoom {
         this.name = nome;
         this.worldMap = w;
         this.maxPlayers = players;
-        this.gameType = Enum.GameType.SOLO;
+        this.gameType = SWGameMode.GameType.SOLO;
     }
 
     public SetupRoom(String nome, World w, int teams, int ppert) {
@@ -38,7 +41,7 @@ public class SetupRoom {
         this.worldMap = w;
         this.teams = teams;
         this.playersPerTeam = ppert;
-        this.gameType = Enum.GameType.TEAMS;
+        this.gameType = TEAMS;
 
         this.maxPlayers = teams * ppert;
     }
@@ -83,7 +86,7 @@ public class SetupRoom {
         this.speclocConfirm = b;
     }
 
-    public Enum.GameType getGameType() {
+    public SWGameMode.GameType getGameType() {
         return this.gameType;
     }
 

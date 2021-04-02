@@ -3,7 +3,6 @@ package josegamerpt.realskywars.managers;
 import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.classes.DisplayItem;
-import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.classes.Kit;
 import josegamerpt.realskywars.configuration.Shops;
 import josegamerpt.realskywars.player.PlayerManager;
@@ -17,7 +16,11 @@ import java.util.logging.Level;
 
 public class ShopManager {
 
-    public static ArrayList<DisplayItem> getCategoryContents(RSWPlayer p, Enum.Categories t) {
+    public enum Categories {
+        CAGE_BLOCKS, BOW_PARTICLES, KITS, WIN_BLOCKS
+    }
+
+    public static ArrayList<DisplayItem> getCategoryContents(RSWPlayer p, ShopManager.Categories t) {
         ArrayList<DisplayItem> items = new ArrayList<>();
         int i = 1;
 
@@ -32,10 +35,10 @@ public class ShopManager {
                 break;
             case KITS:
                 for (Kit a : KitManager.getKits()) {
-                    Boolean bought = PlayerManager.boughtItem(p, a.getName(), Enum.Categories.KITS);
+                    Boolean bought = PlayerManager.boughtItem(p, a.getName(), ShopManager.Categories.KITS);
 
                     DisplayItem s = new DisplayItem(a.getID(), a.getIcon(), a.getName(), a.getPrice(),
-                            bought, a.getPermission(), Enum.Categories.KITS);
+                            bought, a.getPermission(), ShopManager.Categories.KITS);
                     items.add(s);
                 }
                 rapidReturn = true;
@@ -80,7 +83,7 @@ public class ShopManager {
                     error = true;
                 }
 
-                DisplayItem s = new DisplayItem(i, m, name, price, bought, perm, Enum.Categories.CAGE_BLOCKS);
+                DisplayItem s = new DisplayItem(i, m, name, price, bought, perm, ShopManager.Categories.CAGE_BLOCKS);
                 if (material.equalsIgnoreCase("randomblock"))
                 {
                     s.addInfo("RandomBlock", "RandomBlock");

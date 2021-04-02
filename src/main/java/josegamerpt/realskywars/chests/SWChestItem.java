@@ -1,4 +1,4 @@
-package josegamerpt.realskywars.classes;
+package josegamerpt.realskywars.chests;
 
 import org.bukkit.inventory.ItemStack;
 

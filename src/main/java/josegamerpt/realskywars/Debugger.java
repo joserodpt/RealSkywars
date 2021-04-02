@@ -1,9 +1,5 @@
 package josegamerpt.realskywars;
 
-import josegamerpt.realskywars.classes.Enum;
-import josegamerpt.realskywars.managers.GameManager;
-import josegamerpt.realskywars.modes.SWGameMode;
-import josegamerpt.realskywars.modes.Teams;
 import org.bukkit.Bukkit;
 
 import java.util.logging.Level;
@@ -14,12 +10,6 @@ public class Debugger {
 	public static void print(Class a, String b) {
 		if (debug) {
 			Bukkit.getLogger().log(Level.WARNING, "[RSW,DEBUG] " + getName(a) +" : " + b);
-		}
-	}
-
-	public static void print(Class a, String b, Level l) {
-		if (debug) {
-			Bukkit.getLogger().log(l, "[RSW,DEBUG] " + getName(a) +" : " + b);
 		}
 	}
 

@@ -1,7 +1,6 @@
 package josegamerpt.realskywars.gui;
 
 import josegamerpt.realskywars.classes.DisplayItem;
-import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.managers.CurrencyManager;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.PlayerManager;
@@ -11,7 +10,6 @@ import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Pagination;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.HumanEntity;
@@ -39,11 +37,11 @@ public class ShopViewer {
     private Inventory inv;
     private UUID uuid;
     private HashMap<Integer, DisplayItem> display = new HashMap<>();
-    private Enum.Categories cat;
+    private ShopManager.Categories cat;
     int pageNumber = 0;
     Pagination<DisplayItem> p;
 
-    public ShopViewer(UUID id, Enum.Categories t) {
+    public ShopViewer(UUID id, ShopManager.Categories t) {
         this.uuid = id;
         this.cat = t;
         inv = Bukkit.getServer().createInventory(null, 54, Text.color(t.name()));
@@ -87,12 +85,12 @@ public class ShopViewer {
                             case 26:
                             case 35:
                                 nextPage(current);
-                                gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 50, 50);
+                                gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 break;
                             case 18:
                             case 27:
                                 backPage(current);
-                                gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 50, 50);
+                                gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 break;
                         }
 
@@ -100,13 +98,13 @@ public class ShopViewer {
                             DisplayItem a = current.display.get(e.getRawSlot());
 
                             if (!a.isInteractive()) {
-                                gp.sendMessage(LanguageManager.getString(gp, Enum.TS.NOT_BUYABLE, true));
+                                gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.NOT_BUYABLE, true));
                                 return;
                             }
 
                             if (gp.getPlayer().hasPermission(a.getPermission())) {
                                 if (a.isBought()) {
-                                    gp.sendMessage(LanguageManager.getString(gp, Enum.TS.SHOP_ALREADY_BOUGHT, true)
+                                    gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.SHOP_ALREADY_BOUGHT, true)
                                             .replace("%name%", a.getName()));
                                 } else {
                                     CurrencyManager cm = new CurrencyManager(gp, a.getPrice());
@@ -120,15 +118,15 @@ public class ShopViewer {
                                                 Itens.createItemLoreEnchanted(e.getCurrentItem().getType(), 1,
                                                         e.getCurrentItem().getItemMeta().getDisplayName(),
                                                         Collections.singletonList("&aYou already bought this!")));
-                                        gp.sendMessage(LanguageManager.getString(gp, Enum.TS.SHOP_BUY, true)
+                                        gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.SHOP_BUY, true)
                                                 .replace("%name%", a.getName()).replace("%coins%", a.getPrice() + ""));
                                     } else {
-                                        gp.sendMessage(LanguageManager.getString(gp, Enum.TS.INSUFICIENT_COINS, true)
+                                        gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.INSUFICIENT_COINS, true)
                                                 .replace("%coins%", gp.getCoins() + ""));
                                     }
                                 }
                             } else {
-                                gp.sendMessage(LanguageManager.getString(gp, Enum.TS.SHOP_NO_PERM, true));
+                                gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.SHOP_NO_PERM, true));
                             }
                         }
                     }

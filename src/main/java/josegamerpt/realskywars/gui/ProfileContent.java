@@ -1,9 +1,9 @@
 package josegamerpt.realskywars.gui;
 
 import josegamerpt.realskywars.classes.DisplayItem;
-import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.managers.KitManager;
 import josegamerpt.realskywars.managers.LanguageManager;
+import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
@@ -38,12 +38,12 @@ public class ProfileContent {
     private UUID uuid;
     private List<DisplayItem> items;
     private HashMap<Integer, DisplayItem> display = new HashMap<>();
-    private Enum.Categories cat;
+    private ShopManager.Categories cat;
     int pageNumber = 0;
     Pagination<DisplayItem> p;
     private Boolean disableMenu = false;
 
-    public ProfileContent(RSWPlayer as, Enum.Categories t) {
+    public ProfileContent(RSWPlayer as, ShopManager.Categories t) {
         this.uuid = as.getUniqueId();
         this.cat = t;
         inv = Bukkit.getServer().createInventory(null, 54, Text.color("Seeing " + t.name()));
@@ -56,7 +56,7 @@ public class ProfileContent {
         this.register();
     }
 
-    public ProfileContent(Player as, Enum.Categories t, String invName) {
+    public ProfileContent(Player as, ShopManager.Categories t, String invName) {
         this.uuid = as.getUniqueId();
         this.cat = t;
         inv = Bukkit.getServer().createInventory(null, 54, Text.color(invName));
@@ -101,12 +101,12 @@ public class ProfileContent {
                             case 26:
                             case 35:
                                 nextPage(current);
-                                gp.getPlayer().playSound(gp.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 50, 50);
+                                gp.getPlayer().playSound(gp.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 break;
                             case 18:
                             case 27:
                                 backPage(current);
-                                gp.getPlayer().playSound(gp.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 50, 50);
+                                gp.getPlayer().playSound(gp.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 break;
                         }
 
@@ -114,31 +114,31 @@ public class ProfileContent {
                             DisplayItem a = current.display.get(e.getRawSlot());
 
                             if (!a.isInteractive()) {
-                                gp.sendMessage(LanguageManager.getString(gp, Enum.TS.NOT_BUYABLE, true));
+                                gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.NOT_BUYABLE, true));
                                 return;
                             }
 
                             switch (current.cat) {
                                 case KITS:
                                     gp.setProperty(RSWPlayer.PlayerProperties.KIT, KitManager.getKit(a.getID()));
-                                    gp.sendMessage(LanguageManager.getString(gp, Enum.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", LanguageManager.getString(gp, Enum.TS.KITS, false)));
+                                    gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", LanguageManager.getString(gp, LanguageManager.TS.KITS, false)));
                                     gp.getPlayer().closeInventory();
                                     break;
                                 case BOW_PARTICLES:
                                     gp.setProperty(RSWPlayer.PlayerProperties.BOW_PARTICLES, a.getInfo("Particle"));
-                                    gp.sendMessage(LanguageManager.getString(gp, Enum.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", LanguageManager.getString(gp, Enum.TS.BOWPARTICLE, false)));
+                                    gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", LanguageManager.getString(gp, LanguageManager.TS.BOWPARTICLE, false)));
                                     break;
                                 case CAGE_BLOCKS:
                                     gp.setProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK, a.getItemStack().getType());
-                                    gp.sendMessage(LanguageManager.getString(gp, Enum.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", LanguageManager.getString(gp, Enum.TS.CAGEBLOCK, false)));
+                                    gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", LanguageManager.getString(gp, LanguageManager.TS.CAGEBLOCK, false)));
                                     break;
                                 case WIN_BLOCKS:
                                     if (a.containsInfo("RandomBlock")) {
                                         gp.setProperty(RSWPlayer.PlayerProperties.WIN_BLOCKS, "RandomBlock");
-                                        gp.sendMessage(LanguageManager.getString(gp, Enum.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", LanguageManager.getString(gp, Enum.TS.WINBLOCK, false)));
+                                        gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", LanguageManager.getString(gp, LanguageManager.TS.WINBLOCK, false)));
                                     } else {
                                         gp.setProperty(RSWPlayer.PlayerProperties.WIN_BLOCKS, a.getMaterial().name());
-                                        gp.sendMessage(LanguageManager.getString(gp, Enum.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", LanguageManager.getString(gp, Enum.TS.WINBLOCK, false)));
+                                        gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", LanguageManager.getString(gp, LanguageManager.TS.WINBLOCK, false)));
                                     }
                                     break;
                             }

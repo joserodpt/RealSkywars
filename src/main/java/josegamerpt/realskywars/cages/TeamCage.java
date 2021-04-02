@@ -1,6 +1,5 @@
 package josegamerpt.realskywars.cages;
 
-import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -142,10 +141,6 @@ public class TeamCage implements Cage {
         return this.p;
     }
 
-    public Enum.CageType getType() {
-        return Enum.CageType.TEAMS;
-    }
-
     @Override
     public void clearCage() {
         this.setCage(Material.AIR);
@@ -153,7 +148,7 @@ public class TeamCage implements Cage {
 
     @Override
     public void setCage() {
-        this.setCage(this.p.get(0).getCageBlock());
+        this.setCage((Material) this.p.get(0).getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK));
     }
 
     public void open() {

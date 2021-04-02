@@ -2,7 +2,7 @@ package josegamerpt.realskywars.player;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
-import josegamerpt.realskywars.classes.Enum;
+import josegamerpt.realskywars.classes.Selections;
 import josegamerpt.realskywars.classes.*;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.configuration.Players;
@@ -25,6 +25,9 @@ import org.bukkit.scoreboard.DisplaySlot;
 import java.util.*;
 
 public class RSWPlayer {
+
+    public enum PlayerData { ALL, COINS, STATS, NAME, LANG, BOUGHT, PREFS }
+    public enum Statistic {KILL, SOLO_WIN, TEAM_WIN, LOSE, DEATH, GAMES_PLAYED}
 
     private RoomTAB rt;
     private String anonName = "?";
@@ -49,7 +52,7 @@ public class RSWPlayer {
     private PlayerScoreboard playerscoreboard;
     private Material cageBlock = Material.GLASS;
     private ArrayList<String> bought = new ArrayList<>();
-    private HashMap<Enum.Selection, Enum.Selections> selections = new HashMap<>();
+    private HashMap<Selections.Key, Selections.Value> selections = new HashMap<>();
     private Boolean bot = false;
     private Kit kit;
     private Particle bowParticle;
@@ -135,17 +138,17 @@ public class RSWPlayer {
         return room != null;
     }
 
-    public void addStatistic(Enum.Statistic t, int i) {
+    public void addStatistic(RSWPlayer.Statistic t, int i) {
         switch (t) {
             case SOLO_WIN:
                 this.winsSOlO += i;
                 this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Win"));
-                this.addStatistic(Enum.Statistic.GAMES_PLAYED, 1);
+                this.addStatistic(RSWPlayer.Statistic.GAMES_PLAYED, 1);
                 break;
             case TEAM_WIN:
                 this.winsTEAMS += i;
                 this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Win"));
-                this.addStatistic(Enum.Statistic.GAMES_PLAYED, 1);
+                this.addStatistic(RSWPlayer.Statistic.GAMES_PLAYED, 1);
                 break;
             case KILL:
                 this.gamekills += i;
@@ -157,8 +160,8 @@ public class RSWPlayer {
             case DEATH:
                 this.deaths += i;
                 this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Death"));
-                this.addStatistic(Enum.Statistic.LOSE, 1);
-                this.addStatistic(Enum.Statistic.GAMES_PLAYED, 1);
+                this.addStatistic(RSWPlayer.Statistic.LOSE, 1);
+                this.addStatistic(RSWPlayer.Statistic.GAMES_PLAYED, 1);
                 break;
             case GAMES_PLAYED:
                 this.gamesPlayed += i;
@@ -171,7 +174,7 @@ public class RSWPlayer {
         this.coins += this.balanceGame;
         this.balanceGame = 0D;
         this.gamekills = 0;
-        PlayerManager.savePlayer(this);
+        PlayerManager.savePlayer(this, PlayerData.ALL);
     }
 
     public double getGameBalance() {
@@ -290,7 +293,7 @@ public class RSWPlayer {
                 if (m != this.cageBlock) {
                     this.cageBlock = m;
                     if (isInMatch()) {
-                        switch (this.getRoom().getMode()) {
+                        switch (this.getMatch().getGameType()) {
                             case SOLO:
                                 if (hasCage()) {
                                     this.cage.setCage();
@@ -304,6 +307,7 @@ public class RSWPlayer {
                         }
                     }
                 }
+                PlayerManager.savePlayer(this, PlayerData.PREFS);
                 break;
             case WIN_BLOCKS:
                 if (o.equals("RandomBlock")) {
@@ -344,20 +348,21 @@ public class RSWPlayer {
         return null;
     }
 
-    public Enum.Selections getSelection(Enum.Selection m) {
+    public Selections.Value getSelection(Selections.Key m) {
         return this.selections.get(m);
     }
 
-    public void setSelection(Enum.Selection s, Enum.Selections ss) {
+    public void setSelection(Selections.Key s, Selections.Value ss) {
         this.selections.remove(s);
         this.selections.put(s, ss);
+        PlayerManager.savePlayer(this, PlayerData.PREFS);
     }
 
     public RSWPlayer.PlayerState getState() {
         return this.state;
     }
 
-    public SWGameMode getRoom() {
+    public SWGameMode getMatch() {
         return this.room;
     }
 
@@ -373,11 +378,11 @@ public class RSWPlayer {
         this.setup = o;
     }
 
-    public <V, K> HashMap<Enum.Selection, Enum.Selections> getSelections() {
+    public HashMap<Selections.Key, Selections.Value> getSelections() {
         return this.selections;
     }
 
-    public void setSelections(HashMap<Enum.Selection, Enum.Selections> ss) {
+    public void setSelections(HashMap<Selections.Key, Selections.Value> ss) {
         this.selections = ss;
     }
 
@@ -413,10 +418,6 @@ public class RSWPlayer {
                 return this.bowParticle;
         }
         return null;
-    }
-
-    public Material getCageBlock() {
-        return this.cageBlock;
     }
 
     public double getCoins() {
@@ -456,15 +457,11 @@ public class RSWPlayer {
             this.room.removePlayer(this);
         }
 
-        stopTrails();
+        this.stopTrails();
 
         this.playerscoreboard.stop();
-        p.saveData();
+        this.saveData();
         PlayerManager.removePlayer(this);
-    }
-
-    public void sendCenterMessageList(List<String> l) {
-        l.forEach(s -> sendMessage(Text.centerMessage(s)));
     }
 
     public void sendTitle(String s, String s1, int i, int i1, int i2) {
@@ -525,7 +522,8 @@ public class RSWPlayer {
 
     public void buyItem(String s) {
         this.bought.add(ChatColor.stripColor(s));
-        this.saveData();
+        PlayerManager.savePlayer(this, PlayerData.PREFS);
+        PlayerManager.savePlayer(this, PlayerData.BOUGHT);
     }
 
     //ENUMs
@@ -592,8 +590,8 @@ public class RSWPlayer {
 
                 if (this.player.isInMatch())
                 {
-                    this.setHeader("\n" + LanguageManager.getPrefix() + "\n&fMapa: &b" + this.player.getRoom().getName() + "\n");
-                    this.setFooter("\n&fJogadores: &b" + this.player.getRoom().getPlayersCount() + "\n");
+                    this.setHeader("\n" + LanguageManager.getPrefix() + "\n&fMapa: &b" + this.player.getMatch().getName() + "\n");
+                    this.setFooter("\n&fJogadores: &b" + this.player.getMatch().getPlayersCount() + "\n");
                 } else {
                     this.setHeader("");
                     this.setFooter("");
@@ -629,14 +627,22 @@ public class RSWPlayer {
         }
 
         protected String variables(String s, RSWPlayer gp) {
-            if (gp.getRoom() != null) {
-                return s.replace("%space%", Text.makeSpace()).replace("%players%", gp.getRoom().getPlayersCount() + "")
-                        .replace("%spectators%", gp.getRoom().getSpectatorsCount() + "").replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + "")
-                        .replace("%map%", gp.getRoom().getName()).replace("%runtime%", Text.formatSeconds(gp.getRoom().getTimePassed()) + "").replace("%state%", GameManager.getStateString(gp, gp.getRoom().getState())).replace("%mode%", gp.getRoom().getMode().name()).replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");
+            if (gp.isInMatch()) {
+                return s.replace("%space%", Text.makeSpace()).replace("%players%", gp.getMatch().getPlayersCount() + "").replace("%nextevent%", nextEvent(gp.getMatch()))
+                        .replace("%spectators%", gp.getMatch().getSpectatorsCount() + "").replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + "")
+                        .replace("%map%", gp.getMatch().getName()).replace("%runtime%", Text.formatSeconds(gp.getMatch().getTimePassed()) + "").replace("%state%", GameManager.getStateString(gp, gp.getMatch().getState())).replace("%mode%", gp.getMatch().getGameType().name()).replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");
             } else {
                 return s.replace("%space%", Text.makeSpace()).replace("%coins%", gp.getCoins() + "")
                         .replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS) + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS) + "").replace("%playing%", "" + PlayerManager.countPlayingPlayers()).replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");
             }
+        }
+
+        private String nextEvent(SWGameMode match) {
+            if (match.getEvents().size() > 0)
+            {
+                return match.getEvents().get(0).getName();
+            }
+            return "-";
         }
 
         public void stop() {
@@ -659,21 +665,21 @@ public class RSWPlayer {
                                 if (GameManager.getLobbyLocation().getWorld() != linked.getWorld()) {
                                     return;
                                 }
-                                lista = LanguageManager.getList(linked, Enum.TL.SCOREBOARD_LOBBY_LINES);
-                                tit = LanguageManager.getString(linked, Enum.TS.SCOREBOARD_LOBBY_TITLE, false);
+                                lista = LanguageManager.getList(linked, LanguageManager.TL.SCOREBOARD_LOBBY_LINES);
+                                tit = LanguageManager.getString(linked, LanguageManager.TS.SCOREBOARD_LOBBY_TITLE, false);
                                 break;
                             case CAGE:
-                                lista = LanguageManager.getList(linked, Enum.TL.SCOREBOARD_CAGE_LINES);
-                                tit = LanguageManager.getString(linked, Enum.TS.SCOREBOARD_CAGE_TITLE, false).replace("%map%", linked.getRoom().getName());
+                                lista = LanguageManager.getList(linked, LanguageManager.TL.SCOREBOARD_CAGE_LINES);
+                                tit = LanguageManager.getString(linked, LanguageManager.TS.SCOREBOARD_CAGE_TITLE, false).replace("%map%", linked.getMatch().getName());
                                 break;
                             case SPECTATOR:
                             case EXTERNAL_SPECTATOR:
-                                lista = LanguageManager.getList(linked, Enum.TL.SCOREBOARD_SPECTATOR_LINES);
-                                tit = LanguageManager.getString(linked, Enum.TS.SCOREBOARD_SPECTATOR_TITLE, false).replace("%map%", linked.getRoom().getName());
+                                lista = LanguageManager.getList(linked, LanguageManager.TL.SCOREBOARD_SPECTATOR_LINES);
+                                tit = LanguageManager.getString(linked, LanguageManager.TS.SCOREBOARD_SPECTATOR_TITLE, false).replace("%map%", linked.getMatch().getName());
                                 break;
                             case PLAYING:
-                                lista = LanguageManager.getList(linked, Enum.TL.SCOREBOARD_PLAYING_LINES);
-                                tit = LanguageManager.getString(linked, Enum.TS.SCOREBOARD_PLAYING_TITLE, false).replace("%map%", linked.getRoom().getName());
+                                lista = LanguageManager.getList(linked, LanguageManager.TL.SCOREBOARD_PLAYING_LINES);
+                                tit = LanguageManager.getString(linked, LanguageManager.TS.SCOREBOARD_PLAYING_TITLE, false).replace("%map%", linked.getMatch().getName());
                                 break;
                             default:
                                 throw new IllegalStateException("Unexpected value SCOREBOARD!!! : " + linked.getState());

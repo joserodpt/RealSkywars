@@ -1,8 +1,9 @@
 package josegamerpt.realskywars.managers;
 
-import josegamerpt.realskywars.classes.Enum;
-import josegamerpt.realskywars.classes.Enum.GameState;
-import josegamerpt.realskywars.classes.Enum.Selections;
+import josegamerpt.realskywars.Debugger;
+import josegamerpt.realskywars.classes.SWEvent;
+import josegamerpt.realskywars.classes.Selections;
+import josegamerpt.realskywars.modes.SWGameMode.GameState;
 import josegamerpt.realskywars.modes.SWGameMode;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.modes.Placeholder;
@@ -47,7 +48,7 @@ public class GameManager {
         }
     }
 
-    public static List<SWGameMode> getRoomsWithSelection(Selections t) {
+    public static List<SWGameMode> getRoomsWithSelection(Selections.Value t) {
         List<SWGameMode> f = new ArrayList<>();
         switch (t) {
             case MAPV_ALL:
@@ -94,17 +95,17 @@ public class GameManager {
     public static String getStateString(RSWPlayer gp, GameState t) {
         switch (t) {
             case WAITING:
-                return LanguageManager.getString(gp, Enum.TS.MAP_WAITING, false);
+                return LanguageManager.getString(gp, LanguageManager.TS.MAP_WAITING, false);
             case AVAILABLE:
-                return LanguageManager.getString(gp, Enum.TS.MAP_AVAILABLE, false);
+                return LanguageManager.getString(gp, LanguageManager.TS.MAP_AVAILABLE, false);
             case STARTING:
-                return LanguageManager.getString(gp, Enum.TS.MAP_STARTING, false);
+                return LanguageManager.getString(gp, LanguageManager.TS.MAP_STARTING, false);
             case PLAYING:
-                return LanguageManager.getString(gp, Enum.TS.MAP_PLAYING, false);
+                return LanguageManager.getString(gp, LanguageManager.TS.MAP_PLAYING, false);
             case FINISHING:
-                return LanguageManager.getString(gp, Enum.TS.MAP_FINISHING, false);
+                return LanguageManager.getString(gp, LanguageManager.TS.MAP_FINISHING, false);
             case RESETTING:
-                return LanguageManager.getString(gp, Enum.TS.MAP_RESETTING, false);
+                return LanguageManager.getString(gp, LanguageManager.TS.MAP_RESETTING, false);
             default:
                 return "NaN";
         }
@@ -127,18 +128,18 @@ public class GameManager {
     public static void tpToLobby(RSWPlayer p) {
         if (lobbyLOC != null) {
             p.teleport(lobbyLOC);
-            p.sendMessage(LanguageManager.getString(p, Enum.TS.LOBBY_TELEPORT, true));
+            p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.LOBBY_TELEPORT, true));
         } else {
-            p.sendMessage(LanguageManager.getString(p, Enum.TS.LOBBYLOC_NOT_SET, true));
+            p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.LOBBYLOC_NOT_SET, true));
         }
     }
 
     public static void tpToLobby(Player p) {
         if (lobbyLOC != null) {
             p.teleport(lobbyLOC);
-            p.sendMessage(LanguageManager.getString(new RSWPlayer(false), Enum.TS.LOBBY_TELEPORT, true));
+            p.sendMessage(LanguageManager.getString(new RSWPlayer(false), LanguageManager.TS.LOBBY_TELEPORT, true));
         } else {
-            p.sendMessage(LanguageManager.getString(new RSWPlayer(false), Enum.TS.LOBBYLOC_NOT_SET, true));
+            p.sendMessage(LanguageManager.getString(new RSWPlayer(false), LanguageManager.TS.LOBBYLOC_NOT_SET, true));
         }
     }
 
@@ -184,9 +185,25 @@ public class GameManager {
         return lobbyLOC != null && lobbyLOC.getWorld().equals(location.getWorld());
     }
 
-    public static List<World> getRoomWorlds() {
-        List<World> sugests = new ArrayList<>();
-        rooms.forEach(gameRoom -> sugests.add(gameRoom.getWorld()));
-        return sugests;
+    public static ArrayList<SWEvent> parseEvents(SWGameMode sgm) {
+        ArrayList<SWEvent> ret = new ArrayList<>();
+        String search = "Config.Events.";
+        switch (sgm.getGameType())
+        {
+            case SOLO:
+                search += "Solo";
+                break;
+            case TEAMS:
+                search += "Teams";
+                break;
+        }
+        for (String s1 : Config.file().getStringList(search)) {
+            String[] parse = s1.split("&");
+            SWEvent.EventType et = SWEvent.EventType.valueOf(parse[0]);
+            int time = Integer.parseInt(parse[1]);
+            ret.add(new SWEvent(sgm, et, time));
+        }
+        Debugger.print(GameManager.class, ret.size() + "");
+        return ret;
     }
 }

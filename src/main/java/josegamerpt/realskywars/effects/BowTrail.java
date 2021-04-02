@@ -1,7 +1,6 @@
 package josegamerpt.realskywars.effects;
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
@@ -41,7 +40,7 @@ public class BowTrail implements Trail {
     }
 
     @Override
-    public Enum.TrailType getType() {
-        return Enum.TrailType.BOW;
+    public TrailType getType() {
+        return TrailType.BOW;
     }
 }

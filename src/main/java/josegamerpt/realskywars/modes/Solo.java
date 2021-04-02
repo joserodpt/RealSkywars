@@ -2,12 +2,13 @@ package josegamerpt.realskywars.modes;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
-import josegamerpt.realskywars.classes.Enum;
-import josegamerpt.realskywars.classes.SWChest;
+import josegamerpt.realskywars.chests.SWChest;
+import josegamerpt.realskywars.classes.SWEvent;
 import josegamerpt.realskywars.classes.SWWorld;
 import josegamerpt.realskywars.classes.Team;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.Countdown;
+import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.PlayerManager;
@@ -46,8 +47,8 @@ public class Solo implements SWGameMode {
     private final ArrayList<Cage> cages;
     private WorldBorder border;
     private BossBar bossBar;
-    private Enum.GameState state;
-    private Enum.TierType tierType = Enum.TierType.NORMAL;
+    private SWGameMode.GameState state;
+    private ChestManager.TierType tierType = ChestManager.TierType.NORMAL;
     private int timePassed = 0;
     private Boolean specEnabled;
     private Boolean instantEnding;
@@ -57,9 +58,11 @@ public class Solo implements SWGameMode {
     private Countdown winTimer;
     private BukkitTask timeCouterTask;
 
+    private ArrayList<SWEvent> events;
+
     // b-1, n-2, o-3, c-4
 
-    public Solo(int i, String nome, World w, Enum.GameState estado, ArrayList<Cage> cages, int maxPlayers,
+    public Solo(int i, String nome, World w, SWGameMode.GameState estado, ArrayList<Cage> cages, int maxPlayers,
                 Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests) {
         this.id = i;
         this.name = nome;
@@ -80,7 +83,9 @@ public class Solo implements SWGameMode {
 
         this.votes.add(2);
 
-        this.bossBar = Bukkit.createBossBar(Text.color(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_WAIT)),
+        this.events = GameManager.parseEvents(this);
+
+        this.bossBar = Bukkit.createBossBar(Text.color(LanguageManager.getString(LanguageManager.TSsingle.BOSSBAR_ARENA_WAIT)),
                 BarColor.WHITE, BarStyle.SOLID);
     }
 
@@ -138,15 +143,15 @@ public class Solo implements SWGameMode {
         }
     }
 
-    public Enum.GameType getMode() {
-        return Enum.GameType.SOLO;
+    public SWGameMode.GameType getGameType() {
+        return GameType.SOLO;
     }
 
-    public Enum.GameState getState() {
+    public SWGameMode.GameState getState() {
         return this.state;
     }
 
-    public void setState(Enum.GameState w) {
+    public void setState(SWGameMode.GameState w) {
         this.state = w;
     }
 
@@ -156,15 +161,15 @@ public class Solo implements SWGameMode {
 
     public String forceStart(RSWPlayer p) {
         if (this.getPlayersCount() < Config.file().getInt("Config.Min-Players-ToStart")) {
-            return LanguageManager.getString(p, Enum.TS.CMD_CANT_FORCESTART, true);
+            return LanguageManager.getString(p, LanguageManager.TS.CMD_CANT_FORCESTART, true);
         } else {
             switch (this.state) {
                 case PLAYING:
                 case FINISHING:
-                    return LanguageManager.getString(p, Enum.TS.ALREADY_STARTED, true);
+                    return LanguageManager.getString(p, LanguageManager.TS.ALREADY_STARTED, true);
                 default:
                     startGameFunction();
-                    return LanguageManager.getString(p, Enum.TS.CMD_MATCH_FORCESTART, true);
+                    return LanguageManager.getString(p, LanguageManager.TS.CMD_MATCH_FORCESTART, true);
             }
         }
     }
@@ -191,9 +196,9 @@ public class Solo implements SWGameMode {
 
     @Override
     public void reset() {
-        this.state = Enum.GameState.RESETTING;
+        this.state = GameState.RESETTING;
 
-        this.kickPlayers(LanguageManager.getString(new RSWPlayer(false), Enum.TS.ARENA_RESET, true));
+        this.kickPlayers(LanguageManager.getString(new RSWPlayer(false), LanguageManager.TS.ARENA_RESET, true));
         this.resetArena();
     }
 
@@ -224,6 +229,16 @@ public class Solo implements SWGameMode {
     }
 
     @Override
+    public ArrayList<SWEvent> getEvents() {
+        return this.events;
+    }
+
+    @Override
+    public int getMaxTime() {
+        return Config.file().getInt("Config.Maximum-Game-Time.Solo");
+    }
+
+    @Override
     public SWChest getChest(Location location) {
         for (SWChest chest : this.chests) {
             if (location.equals(chest.getLocation()))
@@ -235,25 +250,23 @@ public class Solo implements SWGameMode {
     }
 
     private void startGameFunction() {
-        this.state = Enum.GameState.PLAYING;
+        this.state = GameState.PLAYING;
 
         this.startRoomTimer.killTask();
-
-        int timeleft = Config.file().getInt("Config.Maximum-Game-Time");
 
         int bigger = MathUtils.bigger(votes.stream().mapToInt(i -> i).toArray());
         switch (bigger) {
             case 1:
-                this.setTierType(Enum.TierType.BASIC, true);
+                this.setTierType(ChestManager.TierType.BASIC, true);
                 break;
             case 3:
-                this.setTierType(Enum.TierType.OP, true);
+                this.setTierType(ChestManager.TierType.OP, true);
                 break;
             case 4:
-                this.setTierType(Enum.TierType.CAOS, true);
+                this.setTierType(ChestManager.TierType.CAOS, true);
                 break;
             default:
-                this.setTierType(Enum.TierType.NORMAL, true);
+                this.setTierType(ChestManager.TierType.NORMAL, true);
                 break;
         }
 
@@ -264,7 +277,7 @@ public class Solo implements SWGameMode {
                 this.bossBar.addPlayer(p.getPlayer());
 
                 //start msg
-                for (String s : Text.color(LanguageManager.getList(p, Enum.TL.ARENA_START))) {
+                for (String s : Text.color(LanguageManager.getList(p, LanguageManager.TL.ARENA_START))) {
                     p.sendCenterMessage(s.replace("%chests%", this.tierType.name())
                             .replace("%kit%", p.getKit().getName()));
                 }
@@ -278,26 +291,27 @@ public class Solo implements SWGameMode {
             }
         }
 
-        this.startTimer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), timeleft, () -> {
+        this.startTimer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), this.getMaxTime(), () -> {
             //
         }, () -> {
-            this.bossBar.setTitle(Text.color(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_DEATHMATCH)));
+            this.bossBar.setTitle(Text.color(LanguageManager.getString(LanguageManager.TSsingle.BOSSBAR_ARENA_DEATHMATCH)));
             this.bossBar.setProgress(0);
             this.bossBar.setColor(BarColor.RED);
 
-            this.getPlayers().forEach(rswPlayer -> rswPlayer.sendTitle("", Text.color(LanguageManager.getString(rswPlayer, Enum.TS.TITLE_DEATHMATCH, false)), 10, 20,
+            this.getPlayers().forEach(rswPlayer -> rswPlayer.sendTitle("", Text.color(LanguageManager.getString(rswPlayer, LanguageManager.TS.TITLE_DEATHMATCH, false)), 10, 20,
                     5));
 
             this.border.setSize(this.borderSize / 2, 30L);
             this.border.setCenter(this.arenaCuboid.getCenter());
 
         }, (t) -> {
-            this.bossBar.setTitle(Text.color(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_RUNTIME).replace("%time%",
+            this.bossBar.setTitle(Text.color(LanguageManager.getString(LanguageManager.TSsingle.BOSSBAR_ARENA_RUNTIME).replace("%time%",
                     Text.formatSeconds(t.getSecondsLeft()) + "")));
-            double div = (double) t.getSecondsLeft() / (double) timeleft;
+            double div = (double) t.getSecondsLeft() / (double) this.getMaxTime();
             this.bossBar.setProgress(div);
 
             //future events
+            tickEvents();
         });
         this.startTimer.scheduleTimer();
 
@@ -308,13 +322,23 @@ public class Solo implements SWGameMode {
         }.runTaskTimerAsynchronously(RealSkywars.getPlugin(), 0, 20); // Spelled Async wrong and I know it, deal with it haha
     }
 
+    private void tickEvents() {
+        ArrayList<SWEvent> s = new ArrayList<>(this.events);
+        for (SWEvent event : s) {
+            if (event.getTime() == this.timePassed)
+            {
+                this.events.remove(event);
+            }
+        }
+    }
+
     public void removePlayer(RSWPlayer p) {
         if (this.bossBar != null && !p.isBot()) {
             this.bossBar.removePlayer(p.getPlayer());
         }
 
         p.setInvincible(false);
-        p.sendMessage(Text.color(LanguageManager.getString(p, Enum.TS.MATCH_LEAVE, true)));
+        p.sendMessage(Text.color(LanguageManager.getString(p, LanguageManager.TS.MATCH_LEAVE, true)));
 
         switch (p.getState()) {
             case PLAYING:
@@ -357,7 +381,7 @@ public class Solo implements SWGameMode {
             }
         }
 
-        if (this.state == Enum.GameState.PLAYING || this.state == Enum.GameState.FINISHING) {
+        if (this.state == SWGameMode.GameState.PLAYING || this.state == SWGameMode.GameState.FINISHING) {
             checkWin();
         }
 
@@ -388,12 +412,12 @@ public class Solo implements SWGameMode {
     }
 
     public void addPlayer(RSWPlayer p) {
-        if (this.state == Enum.GameState.RESETTING) {
+        if (this.state == SWGameMode.GameState.RESETTING) {
             p.sendMessage(LanguageManager.getPrefix() + "&cYou cant join this room.");
             return;
         }
-        if (this.state == Enum.GameState.FINISHING || this.state == Enum.GameState.PLAYING
-                || this.state == Enum.GameState.STARTING) {
+        if (this.state == SWGameMode.GameState.FINISHING || this.state == SWGameMode.GameState.PLAYING
+                || this.state == SWGameMode.GameState.STARTING) {
             if (this.specEnabled) {
                 spectate(p, SpectateType.EXTERNAL, null);
             } else {
@@ -414,7 +438,7 @@ public class Solo implements SWGameMode {
         if (p.getPlayer() != null) {
             this.bossBar.addPlayer(p.getPlayer());
             p.heal();
-            ArrayList<String> up = LanguageManager.getList(p, Enum.TL.TITLE_ROOMJOIN);
+            ArrayList<String> up = LanguageManager.getList(p, LanguageManager.TL.TITLE_ROOMJOIN);
             p.getPlayer().sendTitle(up.get(0), up.get(1), 10, 120, 10);
         }
 
@@ -428,7 +452,7 @@ public class Solo implements SWGameMode {
         }
 
         for (RSWPlayer ws : this.inRoom) {
-            ws.sendMessage(LanguageManager.getString(ws, Enum.TS.PLAYER_JOIN_ARENA, true).replace("%player%",
+            ws.sendMessage(LanguageManager.getString(ws, LanguageManager.TS.PLAYER_JOIN_ARENA, true).replace("%player%",
                     p.getDisplayName()).replace("%players%", getPlayersCount() + "").replace("%maxplayers%", getMaxPlayers() + ""));
         }
 
@@ -461,18 +485,18 @@ public class Solo implements SWGameMode {
             if (getPlayersCount() < Config.file().getInt("Config.Min-Players-ToStart")) {
                 Bukkit.getScheduler().cancelTask(t.getTaskId());
                 for (RSWPlayer p : this.inRoom) {
-                    p.sendMessage(LanguageManager.getString(p, Enum.TS.ARENA_CANCEL, true));
+                    p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.ARENA_CANCEL, true));
                 }
-                this.bossBar.setTitle(Text.color(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_WAIT)));
+                this.bossBar.setTitle(Text.color(LanguageManager.getString(LanguageManager.TSsingle.BOSSBAR_ARENA_WAIT)));
                 this.bossBar.setProgress(0D);
-                this.state = Enum.GameState.WAITING;
+                this.state = SWGameMode.GameState.WAITING;
             } else {
-                this.state = Enum.GameState.STARTING;
+                this.state = SWGameMode.GameState.STARTING;
                 for (RSWPlayer p : this.inRoom) {
-                    p.sendMessage(LanguageManager.getString(p, Enum.TS.ARENA_START_COUNTDOWN, true)
+                    p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.ARENA_START_COUNTDOWN, true)
                             .replace("%time%", Text.formatSeconds(t.getSecondsLeft()) + ""));
                 }
-                this.bossBar.setTitle(Text.color(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_STARTING)
+                this.bossBar.setTitle(Text.color(LanguageManager.getString(LanguageManager.TSsingle.BOSSBAR_ARENA_STARTING)
                         .replace("%time%", Text.formatSeconds(t.getSecondsLeft()) + "")));
                 double div = (double) t.getSecondsLeft()
                         / (double) Config.file().getInt("Config.Time-To-Start");
@@ -491,11 +515,11 @@ public class Solo implements SWGameMode {
         return this.instantEnding;
     }
 
-    public Enum.TierType getTierType() {
+    public ChestManager.TierType getTierType() {
         return this.tierType;
     }
 
-    public void setTierType(Enum.TierType b, Boolean updateChests) {
+    public void setTierType(ChestManager.TierType b, Boolean updateChests) {
         this.tierType = b;
         if (updateChests) {
             this.chests.forEach(swChest -> swChest.setLoot(RealSkywars.getChestManager().getChest(this.tierType, swChest.isMiddle()), RealSkywars.getChestManager().getMaxItems(this.tierType, swChest.isMiddle())));
@@ -507,17 +531,7 @@ public class Solo implements SWGameMode {
     }
 
     public void resetArena() {
-        this.state = Enum.GameState.RESETTING;
-        this.world.resetWorld();
-
-        this.inRoom.clear();
-        this.voters.clear();
-        this.votes.clear();
-        this.votes.add(2);
-        this.bossBar = Bukkit.createBossBar(Text.color(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_WAIT)),
-                BarColor.WHITE, BarStyle.SOLID);
-
-        this.chests.forEach(SWChest::clear);
+        this.state = SWGameMode.GameState.RESETTING;
 
         if (this.timeCouterTask != null) {
             this.timeCouterTask.cancel();
@@ -531,6 +545,20 @@ public class Solo implements SWGameMode {
         if (this.startRoomTimer != null) {
             this.startRoomTimer.killTask();
         }
+
+        this.world.resetWorld();
+
+        this.inRoom.clear();
+        this.voters.clear();
+        this.votes.clear();
+        this.votes.add(2);
+        this.bossBar = Bukkit.createBossBar(Text.color(LanguageManager.getString(LanguageManager.TSsingle.BOSSBAR_ARENA_WAIT)),
+                BarColor.WHITE, BarStyle.SOLID);
+
+        this.events = GameManager.parseEvents(this);
+
+        this.chests.forEach(SWChest::clear);
+
         this.timePassed = 0;
     }
 
@@ -600,14 +628,14 @@ public class Solo implements SWGameMode {
                     }
                 }
 
-                p.sendMessage(LanguageManager.getString(p, Enum.TS.MATCH_SPECTATE, true));
+                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.MATCH_SPECTATE, true));
                 break;
         }
     }
 
     private void sendLog(RSWPlayer p) {
         if (p.getPlayer() != null) {
-            for (String s : Text.color(LanguageManager.getList(p, Enum.TL.END_LOG))) {
+            for (String s : Text.color(LanguageManager.getList(p, LanguageManager.TL.END_LOG))) {
                 p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE) + "")
                         .replace("%totalcoins%", p.getGameBalance() + "")
                         .replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + ""));
@@ -619,30 +647,30 @@ public class Solo implements SWGameMode {
     //LISTENER
 
     public void checkWin() {
-        if (getPlayersCount() == 1 && this.state != Enum.GameState.FINISHING) {
-            this.state = Enum.GameState.FINISHING;
+        if (getPlayersCount() == 1 && this.state != SWGameMode.GameState.FINISHING) {
+            this.state = SWGameMode.GameState.FINISHING;
             RSWPlayer p = getPlayers().get(0);
             p.setInvincible(true);
 
             this.startTimer.killTask();
             this.timeCouterTask.cancel();
 
-            this.bossBar.setTitle(LanguageManager.getString(Enum.TSsingle.BOSSBAR_ARENA_END));
+            this.bossBar.setTitle(LanguageManager.getString(LanguageManager.TSsingle.BOSSBAR_ARENA_END));
             this.bossBar.setProgress(0);
             this.bossBar.setColor(BarColor.BLUE);
 
-            PlayerManager.getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(LanguageManager.getString(gamePlayer, Enum.TS.WINNER_BROADCAST, true).replace("%winner%", p.getDisplayName()).replace("%map%", this.name)));
+            PlayerManager.getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(LanguageManager.getString(gamePlayer, LanguageManager.TS.WINNER_BROADCAST, true).replace("%winner%", p.getDisplayName()).replace("%map%", this.name)));
 
             this.winTimer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), Config.file().getInt("Config.Time-EndGame"),
                     () -> {
                         if (p.getPlayer() != null) {
-                            p.addStatistic(Enum.Statistic.SOLO_WIN, 1);
+                            p.addStatistic(RSWPlayer.Statistic.SOLO_WIN, 1);
                             p.executeWinBlock(Config.file().getInt("Config.Time-EndGame") - 2);
                         }
 
                         for (RSWPlayer g : this.inRoom) {
                             g.delCage();
-                            g.sendMessage(LanguageManager.getString(p, Enum.TS.MATCH_END, true).replace("%time%", "" + Text.formatSeconds(Config.file().getInt("Config.Time-EndGame"))));
+                            g.sendMessage(LanguageManager.getString(p, LanguageManager.TS.MATCH_END, true).replace("%time%", "" + Text.formatSeconds(Config.file().getInt("Config.Time-EndGame"))));
                         }
                     }, () -> {
                 this.bossBar.removeAll();

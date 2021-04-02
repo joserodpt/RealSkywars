@@ -2,10 +2,8 @@ package josegamerpt.realskywars.player;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.classes.DisplayItem;
-import josegamerpt.realskywars.classes.Enum;
-import josegamerpt.realskywars.classes.Enum.Selection;
-import josegamerpt.realskywars.classes.Enum.Selections;
-import josegamerpt.realskywars.classes.Enum.TS;
+import josegamerpt.realskywars.classes.Selections;
+import josegamerpt.realskywars.classes.Selections.Key;
 import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
@@ -14,6 +12,7 @@ import josegamerpt.realskywars.configuration.Items;
 import josegamerpt.realskywars.configuration.Players;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -64,20 +63,24 @@ public class PlayerManager {
             Double coin = Players.file().getDouble(p.getUniqueId() + ".Coins");
             ArrayList<String> bg = (ArrayList<String>) Players.file().getStringList(p.getUniqueId() + ".Bought-Items");
             String lang = Players.file().getString(p.getUniqueId() + ".Language");
+            String cageBlock = Players.file().getString(p.getUniqueId() + ".Preferences.Cage-Material");
 
             gp = new RSWPlayer(p, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, null, tkills, dead, solwin, tw, coin, lang, bg, los, gap);
-            HashMap<Selection, Selections> ss = new HashMap<>();
+            HashMap<Selections.Key, Selections.Value> ss = new HashMap<>();
             String mapv = Players.file().getString(p.getUniqueId() + ".Preferences.MAPVIEWER");
             if (mapv != null) {
-                Selections s = getSelection(mapv);
-                ss.put(Selection.MAPVIEWER, s);
+                Selections.Value s = getSelection(mapv);
+                ss.put(Key.MAPVIEWER, s);
+            }
+            if (cageBlock != null) {
+                gp.setProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK, Material.valueOf(cageBlock));
             }
             gp.setSelections(ss);
             gp.save();
         } else {
             gp = new RSWPlayer(p, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, null, 0, 0, 0, 0, 0D,
                     LanguageManager.getDefaultLanguage(), new ArrayList<>(), 0, 0);
-            gp.getSelections().put(Selection.MAPVIEWER, Selections.MAPV_ALL);
+            gp.getSelections().put(Selections.Key.MAPVIEWER, Selections.Value.MAPV_ALL);
             gp.save();
             gp.saveData();
         }
@@ -87,8 +90,8 @@ public class PlayerManager {
         }
     }
 
-    private static Selections getSelection(String mv) {
-        return Selections.valueOf(mv);
+    private static Selections.Value getSelection(String mv) {
+        return Selections.Value.valueOf(mv);
     }
 
     public static RSWPlayer getPlayer(Player p) {
@@ -100,38 +103,55 @@ public class PlayerManager {
         return null;
     }
 
-    public static void savePlayer(RSWPlayer p) {
+    public static void savePlayer(RSWPlayer p, RSWPlayer.PlayerData d) {
         if (p.getPlayer() != null) {
             if (!Players.file().isConfigurationSection(p.getUniqueId().toString())) {
                 RealSkywars.log("Creating empty player file for " + p.getName() + " UUID: " + p.getUniqueId().toString());
             }
-
-            Players.file().set(p.getUniqueId() + ".Coins", p.getCoins());
-            Players.file().set(p.getUniqueId() + ".Wins.Solo", p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO));
-            Players.file().set(p.getUniqueId() + ".Wins.Teams", p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS));
-            Players.file().set(p.getUniqueId() + ".Kills", p.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS));
-            Players.file().set(p.getUniqueId() + ".Deaths", p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS));
-            Players.file().set(p.getUniqueId() + ".Loses", p.getStatistics(RSWPlayer.PlayerStatistics.LOSES));
-            Players.file().set(p.getUniqueId() + ".Games-Played", p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED));
-            Players.file().set(p.getUniqueId() + ".Name", p.getName());
-            Players.file().set(p.getUniqueId() + ".Language", p.getLanguage());
-            for (Entry<Selection, Selections> entry : p.getSelections().entrySet()) {
-                Selection key = entry.getKey();
-                Selections value = entry.getValue();
-                Players.file().set(p.getUniqueId() + ".Preferences." + key.name(), value.name());
+            switch (d)
+            {
+                case ALL:
+                    savePlayer(p, RSWPlayer.PlayerData.NAME);
+                    savePlayer(p, RSWPlayer.PlayerData.LANG);
+                    savePlayer(p, RSWPlayer.PlayerData.COINS);
+                    savePlayer(p, RSWPlayer.PlayerData.PREFS);
+                    savePlayer(p, RSWPlayer.PlayerData.STATS);
+                    savePlayer(p, RSWPlayer.PlayerData.BOUGHT);
+                    break;
+                case NAME:
+                    Players.file().set(p.getUniqueId() + ".Name", p.getName());
+                    break;
+                case LANG:
+                    Players.file().set(p.getUniqueId() + ".Language", p.getLanguage());
+                    break;
+                case COINS:
+                    Players.file().set(p.getUniqueId() + ".Coins", p.getCoins());
+                    break;
+                case PREFS:
+                    for (Entry<Selections.Key, Selections.Value> entry : p.getSelections().entrySet()) {
+                        Selections.Key key = entry.getKey();
+                        Selections.Value value = entry.getValue();
+                        Players.file().set(p.getUniqueId() + ".Preferences." + key.name(), value.name());
+                    }
+                    if (p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK) != null)
+                    {
+                        Players.file().set(p.getUniqueId() + ".Preferences.Cage-Material", ((Material) p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK)).name());
+                    }
+                    break;
+                case STATS:
+                    Players.file().set(p.getUniqueId() + ".Wins.Solo", p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO));
+                    Players.file().set(p.getUniqueId() + ".Wins.Teams", p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS));
+                    Players.file().set(p.getUniqueId() + ".Kills", p.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS));
+                    Players.file().set(p.getUniqueId() + ".Deaths", p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS));
+                    Players.file().set(p.getUniqueId() + ".Loses", p.getStatistics(RSWPlayer.PlayerStatistics.LOSES));
+                    Players.file().set(p.getUniqueId() + ".Games-Played", p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED));
+                    break;
+                case BOUGHT:
+                    Players.file().set(p.getUniqueId() + ".Bought-Items", p.getBoughtItems());
+                    break;
             }
-            Players.file().set(p.getUniqueId() + ".Bought-Items", p.getBoughtItems());
             Players.save();
         }
-    }
-
-    public static Player searchPlayer(String name) {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.getName().equalsIgnoreCase(name)) {
-                return p;
-            }
-        }
-        return null;
     }
 
     public static Player searchPlayer(UUID u) {
@@ -145,10 +165,10 @@ public class PlayerManager {
 
     public static void setLanguage(RSWPlayer player, String s) {
         player.setProperty(RSWPlayer.PlayerProperties.LANGUAGE, s);
-        player.sendMessage(LanguageManager.getString(player, TS.LANGUAGE_SET, true).replace("%language%", "" + s));
+        player.sendMessage(LanguageManager.getString(player, LanguageManager.TS.LANGUAGE_SET, true).replace("%language%", "" + s));
     }
 
-    public static Boolean boughtItem(RSWPlayer p, String string, Enum.Categories c) {
+    public static Boolean boughtItem(RSWPlayer p, String string, ShopManager.Categories c) {
         return p.getBoughtItems().contains(ChatColor.stripColor(string + "|" + c.name()));
     }
 
@@ -159,7 +179,7 @@ public class PlayerManager {
         }
     }
 
-    public static List<DisplayItem> getBoughtItems(RSWPlayer player, Enum.Categories t) {
+    public static List<DisplayItem> getBoughtItems(RSWPlayer player, ShopManager.Categories t) {
         List<DisplayItem> bought = new ArrayList<>();
 
         for (DisplayItem a : ShopManager.getCategoryContents(player, t)) {

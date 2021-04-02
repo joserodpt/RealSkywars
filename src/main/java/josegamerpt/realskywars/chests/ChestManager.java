@@ -1,9 +1,6 @@
-package josegamerpt.realskywars.managers;
+package josegamerpt.realskywars.chests;
 
 import josegamerpt.realskywars.Debugger;
-import josegamerpt.realskywars.classes.Enum;
-import josegamerpt.realskywars.classes.SWChest;
-import josegamerpt.realskywars.classes.SWChestItem;
 import josegamerpt.realskywars.configuration.chests.*;
 import org.bukkit.inventory.ItemStack;
 
@@ -12,11 +9,15 @@ import java.util.List;
 
 public class ChestManager {
 
+    public enum TierType {
+        BASIC, NORMAL, OP, CAOS
+    }
+
     private int defaultChance = 50;
     private String header = "Itens.";
     private String itens = "Max-Itens-Per-Chest";
 
-    public void set2Chest(Enum.TierType t, Boolean middle, List<ItemStack> itens) {
+    public void set2Chest(ChestManager.TierType t, Boolean middle, List<ItemStack> itens) {
         switch (t) {
             case BASIC:
                 if (middle) {
@@ -105,7 +106,7 @@ public class ChestManager {
         }
     }
 
-    public List<SWChestItem> getChest(Enum.TierType t, Boolean middle) {
+    public List<SWChestItem> getChest(ChestManager.TierType t, Boolean middle) {
         ArrayList<SWChestItem> retrn = new ArrayList<>();
         switch (t) {
             case BASIC:
@@ -180,9 +181,8 @@ public class ChestManager {
         return retrn;
     }
 
-    public void add2Chest(Enum.TierType t, Boolean middle, List<ItemStack> tmp) {
-        List<SWChestItem> itens = new ArrayList<>();
-        itens.addAll(getChest(t, middle));
+    public void add2Chest(ChestManager.TierType t, Boolean middle, List<ItemStack> tmp) {
+        List<SWChestItem> itens = new ArrayList<>(getChest(t, middle));
         for (ItemStack itemStack : tmp) {
             itens.add(new SWChestItem(itemStack, 50));
         }
@@ -275,7 +275,7 @@ public class ChestManager {
         }
     }
 
-    public int getMaxItems(Enum.TierType tierType, Boolean middle) {
+    public int getMaxItems(ChestManager.TierType tierType, Boolean middle) {
         switch (tierType)
         {
             case BASIC:

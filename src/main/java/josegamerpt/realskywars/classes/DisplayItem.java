@@ -1,6 +1,7 @@
 package josegamerpt.realskywars.classes;
 
 import josegamerpt.realskywars.managers.KitManager;
+import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.utils.Itens;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -19,10 +20,10 @@ public class DisplayItem {
     private String name;
     private String permission;
     private Boolean interactive;
-    private Enum.Categories it;
+    private ShopManager.Categories it;
     private HashMap<String, Object> info = new HashMap<>();
 
-    public DisplayItem(int id, Material ma, String n, Double per, Boolean b, String perm, Enum.Categories t) {
+    public DisplayItem(int id, Material ma, String n, Double per, Boolean b, String perm, ShopManager.Categories t) {
         this.id = id;
         this.price = per;
         this.bought = b;
@@ -48,7 +49,7 @@ public class DisplayItem {
     }
 
     private void makeItemStack(Material m) {
-        if (it == Enum.Categories.KITS) {
+        if (it == ShopManager.Categories.KITS) {
             Kit k = KitManager.getKit(name);
             if (!bought) {
                 i = Itens.createItemLore(m, 1, k.getName(), k.getDescription(true));

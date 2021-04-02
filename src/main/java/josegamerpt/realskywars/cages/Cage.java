@@ -3,7 +3,6 @@ package josegamerpt.realskywars.cages;
 import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.Location;
 
-import josegamerpt.realskywars.classes.Enum;
 import org.bukkit.Material;
 
 import java.util.List;
@@ -27,8 +26,6 @@ public interface Cage {
     int getMaxPlayers();
 
     List<RSWPlayer> getPlayers();
-
-    Enum.CageType getType();
 
     void clearCage();
 

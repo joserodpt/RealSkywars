@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MapItem {
 
@@ -23,14 +22,14 @@ public class MapItem {
     private void makeIcon(RSWPlayer p) {
         int count = 1;
         if (g.isPlaceHolder()) {
-            icon = Itens.createItem(Material.BUCKET, count, LanguageManager.getString(p, Enum.TS.ITEMS_MAP_NOTFOUND_TITLE, false));
+            icon = Itens.createItem(Material.BUCKET, count, LanguageManager.getString(p, LanguageManager.TS.ITEMS_MAP_NOTFOUND_TITLE, false));
         } else {
             if (g.getPlayersCount() > 0) {
                 count = g.getPlayersCount();
             }
 
-            icon = Itens.createItemLore(getState(), count, LanguageManager.getString(p, Enum.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getName()).replace("%mode%", g.getMode().name()),
-                    variableList(LanguageManager.getList(p, Enum.TL.ITEMS_MAP_DESCRIPTION)));
+            icon = Itens.createItemLore(getState(), count, LanguageManager.getString(p, LanguageManager.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getName()).replace("%mode%", g.getGameType().name()),
+                    variableList(LanguageManager.getList(p, LanguageManager.TL.ITEMS_MAP_DESCRIPTION)));
         }
     }
 

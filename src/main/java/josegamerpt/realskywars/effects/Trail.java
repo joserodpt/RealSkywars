@@ -1,13 +1,15 @@
 package josegamerpt.realskywars.effects;
 
-import josegamerpt.realskywars.classes.Enum;
-
 public interface Trail {
+
+    enum TrailType {
+        BOW, WINBLOCK
+    }
 
     void startTask();
 
     void cancelTask();
 
-    Enum.TrailType getType();
+    TrailType getType();
 
 }

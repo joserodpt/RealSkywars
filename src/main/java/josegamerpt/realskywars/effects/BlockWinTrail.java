@@ -1,7 +1,6 @@
 package josegamerpt.realskywars.effects;
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -21,7 +20,6 @@ public class BlockWinTrail implements Trail {
     private BukkitTask task;
     private BlockWinType bwp;
     private Material single;
-    private List<Material> list;
     private List<Material> randBlocks = new ArrayList<>();
 
     public BlockWinTrail(RSWPlayer gp, int seconds) {
@@ -50,7 +48,7 @@ public class BlockWinTrail implements Trail {
 
     @Override
     public void startTask() {
-        this.task = Bukkit.getServer().getScheduler().runTaskTimer(RealSkywars.getPlugin(), () -> {
+        this.task = Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(RealSkywars.getPlugin(), () -> {
             float x = (float) (Math.random() * 2) - 1;
             float y = (float) (Math.random());
             float z = (float) (Math.random() * 2) - 1;
@@ -88,8 +86,8 @@ public class BlockWinTrail implements Trail {
     }
 
     @Override
-    public Enum.TrailType getType() {
-        return Enum.TrailType.WINBLOCK;
+    public TrailType getType() {
+        return TrailType.WINBLOCK;
     }
 
     public enum BlockWinType {

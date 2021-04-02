@@ -46,13 +46,13 @@ public class SWWorld {
         //Load world
         this.world = this.wm.createEmptyWorld(worldName, World.Environment.NORMAL);
         if (this.world != null) {
-            this.gameRoom.setState(Enum.GameState.AVAILABLE);
 
             WorldBorder wb = world.getWorldBorder();
 
             wb.setCenter(this.gameRoom.getArena().getCenter());
             wb.setSize(this.gameRoom.getBorderSize());
 
+            this.gameRoom.setState(SWGameMode.GameState.AVAILABLE);
             Debugger.print(Solo.class, "[ROOM " + this.gameRoom.getName() + " ID: " + this.gameRoom.getID() + "] sucessfully resetted.");
         } else {
             RealSkywars.log(Level.SEVERE, "ERROR! Could not load " + worldName);

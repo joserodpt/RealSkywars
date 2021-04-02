@@ -3,7 +3,7 @@ version: ${project.version}
 main: josegamerpt.realskywars.RealSkywars
 api-version: 1.14
 depend: [WorldEdit]
-softdepend: [Multiworld, Multiverse-Core]
+softdepend: [Multiworld, Multiverse-Core, HolographicDisplays]
 authors: [JoseGamer_PT]
 description: Simple Skywars plugin.
 load: POSTWORLD

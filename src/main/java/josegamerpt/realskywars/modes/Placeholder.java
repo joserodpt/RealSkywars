@@ -1,9 +1,10 @@
 package josegamerpt.realskywars.modes;
 
 import josegamerpt.realskywars.cages.Cage;
-import josegamerpt.realskywars.classes.Enum;
-import josegamerpt.realskywars.classes.SWChest;
+import josegamerpt.realskywars.chests.SWChest;
+import josegamerpt.realskywars.classes.SWEvent;
 import josegamerpt.realskywars.classes.Team;
+import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.ArenaCuboid;
 import org.bukkit.Location;
@@ -55,11 +56,8 @@ public class Placeholder implements SWGameMode {
     public void kickPlayers(String s) {
     }
 
-    public Enum.GameState getState() {
+    public SWGameMode.GameState getState() {
         return null;
-    }
-
-    public void setState(Enum.GameState w) {
     }
 
     public boolean isPlaceHolder() {
@@ -86,9 +84,10 @@ public class Placeholder implements SWGameMode {
     }
 
     @Override
-    public void setTierType(Enum.TierType b, Boolean updateChests) {
+    public void setTierType(ChestManager.TierType b, Boolean updateChests) {
 
     }
+
 
     public ArrayList<UUID> getVoters() {
         return null;
@@ -109,16 +108,21 @@ public class Placeholder implements SWGameMode {
         return false;
     }
 
-    public Enum.TierType getTierType() {
+    @Override
+    public ChestManager.TierType getTierType() {
         return null;
     }
-
 
     public int getTimePassed() {
         return 0;
     }
 
     public void resetArena() {
+    }
+
+    @Override
+    public void setState(GameState w) {
+
     }
 
     public void setSpectator(boolean b) {
@@ -135,7 +139,7 @@ public class Placeholder implements SWGameMode {
     public void checkWin() {
     }
 
-    public Enum.GameType getMode() {
+    public SWGameMode.GameType getGameType() {
         return null;
     }
 
@@ -184,6 +188,16 @@ public class Placeholder implements SWGameMode {
     @Override
     public ArrayList<SWChest> getChests() {
         return null;
+    }
+
+    @Override
+    public ArrayList<SWEvent> getEvents() {
+        return null;
+    }
+
+    @Override
+    public int getMaxTime() {
+        return 0;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package josegamerpt.realskywars.gui;
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.modes.SWGameMode;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.MapManager;
@@ -168,7 +167,7 @@ public class RoomSettings {
                                         // reset
                                         case 22:
                                             game.reset();
-                                            p.sendMessage(LanguageManager.getString(gp, Enum.TS.MAP_RESET_DONE, true));
+                                            p.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.MAP_RESET_DONE, true));
 
                                             ItemStack set = null;
                                             switch (game.getState()) {
@@ -199,33 +198,33 @@ public class RoomSettings {
                                             ItemStack set2 = null;
                                             switch (game.getState()) {
                                                 case AVAILABLE:
-                                                    game.setState(Enum.GameState.STARTING);
+                                                    game.setState(SWGameMode.GameState.STARTING);
                                                     set2 = aStarting;
                                                     break;
                                                 case FINISHING:
-                                                    game.setState(Enum.GameState.RESETTING);
+                                                    game.setState(SWGameMode.GameState.RESETTING);
                                                     set2 = aResetting;
                                                     break;
                                                 case PLAYING:
-                                                    game.setState(Enum.GameState.FINISHING);
+                                                    game.setState(SWGameMode.GameState.FINISHING);
                                                     set2 = aFinishing;
                                                     break;
                                                 case RESETTING:
-                                                    game.setState(Enum.GameState.AVAILABLE);
+                                                    game.setState(SWGameMode.GameState.AVAILABLE);
                                                     set2 = aAvailable;
                                                     break;
                                                 case STARTING:
-                                                    game.setState(Enum.GameState.WAITING);
+                                                    game.setState(SWGameMode.GameState.WAITING);
                                                     set2 = aWaiting;
                                                     break;
                                                 case WAITING:
-                                                    game.setState(Enum.GameState.PLAYING);
+                                                    game.setState(SWGameMode.GameState.PLAYING);
                                                     set2 = aPlaying;
                                                     break;
                                             }
                                             current.getInventory().setItem(10, set2);
 
-                                            p.sendMessage(LanguageManager.getString(gp, Enum.TS.GAME_STATUS_SET, true).replace("%status%", game.getState().name()));
+                                            p.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.GAME_STATUS_SET, true).replace("%status%", game.getState().name()));
                                             break;
                                         case 15:
                                             // settings

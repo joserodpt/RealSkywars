@@ -49,25 +49,25 @@ public class Countdown implements Runnable {
     @Override
     public void run() {
         // Is the timer up?
-        if (secondsLeft < 1) {
+        if (this.secondsLeft < 1) {
             // Do what was supposed to happen after the timer
-            afterTimer.run();
+            this.afterTimer.run();
 
             // Cancel timer
-            if (assignedTaskId != null)
-                Bukkit.getScheduler().cancelTask(assignedTaskId);
+            if (this.assignedTaskId != null)
+                Bukkit.getScheduler().cancelTask(this.assignedTaskId);
             return;
         }
 
         // Are we just starting?
-        if (secondsLeft == seconds)
-            beforeTimer.run();
+        if (this.secondsLeft == this.seconds)
+            this.beforeTimer.run();
 
         // Do what's supposed to happen every second
-        everySecond.accept(this);
+        this.everySecond.accept(this);
 
         // Decrement the seconds left
-        secondsLeft--;
+        this.secondsLeft--;
     }
 
     /**
@@ -85,15 +85,15 @@ public class Countdown implements Runnable {
      * @return Seconds left timer should run
      */
     public int getSecondsLeft() {
-        return secondsLeft;
+        return this.secondsLeft;
     }
 
     public Integer getTaskId() {
-        return assignedTaskId;
+        return this.assignedTaskId;
     }
 
     public void killTask() {
-        Bukkit.getScheduler().cancelTask(assignedTaskId);
+        Bukkit.getScheduler().cancelTask(this.assignedTaskId);
     }
 
     /**

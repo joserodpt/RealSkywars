@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import xyz.mackan.ItemNames.ItemNames;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -83,7 +82,7 @@ public class Kit {
         desc.add("&eThis kit contains:");
         for (ItemStack s : contents) {
             if (s != null) {
-                desc.add("&fx" + s.getAmount() + " &9" + ItemNames.getItemName(s));
+                desc.add("&fx" + s.getAmount() + " &9" + RealSkywars.getNMS().getItemName(s));
             }
         }
 

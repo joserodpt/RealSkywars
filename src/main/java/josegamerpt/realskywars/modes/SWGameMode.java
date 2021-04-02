@@ -2,9 +2,10 @@ package josegamerpt.realskywars.modes;
 
 import java.util.*;
 
-import josegamerpt.realskywars.classes.Enum;
-import josegamerpt.realskywars.classes.SWChest;
+import josegamerpt.realskywars.chests.SWChest;
+import josegamerpt.realskywars.classes.SWEvent;
 import josegamerpt.realskywars.classes.Team;
+import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.utils.ArenaCuboid;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -12,6 +13,14 @@ import org.bukkit.World;
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.player.RSWPlayer;
 public interface SWGameMode {
+
+	enum GameState {
+		AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING
+	}
+
+	enum GameType {
+		SOLO, TEAMS
+	}
 
 	void saveRoom();
 
@@ -31,7 +40,7 @@ public interface SWGameMode {
 
 	void kickPlayers(String msg);
 
-	Enum.GameState getState();
+	SWGameMode.GameState getState();
 
 	boolean isPlaceHolder();
 
@@ -45,7 +54,7 @@ public interface SWGameMode {
 
 	Location getPOS2();
 
-	void setTierType(Enum.TierType b, Boolean updateChests);
+	void setTierType(ChestManager.TierType b, Boolean updateChests);
 
 	ArrayList<UUID> getVoters();
 
@@ -57,13 +66,13 @@ public interface SWGameMode {
 
 	boolean isInstantEndEnabled();
 
-	Enum.TierType getTierType();
+	ChestManager.TierType getTierType();
 
 	int getTimePassed();
 
 	void resetArena();
 
-	void setState(Enum.GameState w);
+	void setState(SWGameMode.GameState w);
 
 	void setSpectator(boolean b);
 
@@ -73,7 +82,7 @@ public interface SWGameMode {
 
 	void checkWin();
 
-	Enum.GameType getMode();
+	SWGameMode.GameType getGameType();
 
 	ArrayList<Cage> getCages();
 
@@ -95,7 +104,10 @@ public interface SWGameMode {
 
     ArrayList<SWChest> getChests();
 
-    SWChest getChest(Location location);
+	ArrayList<SWEvent> getEvents();
+	int getMaxTime();
+
+	SWChest getChest(Location location);
 
     enum SpectateType { GAME, EXTERNAL }
 

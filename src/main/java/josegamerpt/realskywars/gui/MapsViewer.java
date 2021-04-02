@@ -1,6 +1,6 @@
 package josegamerpt.realskywars.gui;
 
-import josegamerpt.realskywars.classes.Enum;
+import josegamerpt.realskywars.classes.Selections;
 import josegamerpt.realskywars.modes.SWGameMode;
 import josegamerpt.realskywars.classes.MapItem;
 import josegamerpt.realskywars.managers.GameManager;
@@ -37,11 +37,11 @@ public class MapsViewer {
     private UUID uuid;
     private RSWPlayer gp;
     private HashMap<Integer, SWGameMode> display = new HashMap<>();
-    private Enum.Selections selMap;
+    private Selections.Value selMap;
     int pageNumber = 0;
     Pagination<SWGameMode> p;
 
-    public MapsViewer(RSWPlayer as, Enum.Selections t, String invName) {
+    public MapsViewer(RSWPlayer as, Selections.Value t, String invName) {
         this.uuid = as.getUniqueId();
         inv = Bukkit.getServer().createInventory(null, 54, Text.color(invName) + ": " + LanguageManager.getString(as, select(t), false));
 
@@ -81,12 +81,12 @@ public class MapsViewer {
                             case 26:
                             case 35:
                                 nextPage(current);
-                                gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 50, 50);
+                                gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 break;
                             case 18:
                             case 27:
                                 backPage(current);
-                                gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 50, 50);
+                                gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 break;
                         }
 
@@ -102,29 +102,29 @@ public class MapsViewer {
             }
 
             private void selectNext(RSWPlayer gp) {
-                Enum.Selections s = gp.getSelection(Enum.Selection.MAPVIEWER);
+                Selections.Value s = gp.getSelection(Selections.Key.MAPVIEWER);
                 switch (s) {
                     case MAPV_ALL:
-                        gp.setSelection(Enum.Selection.MAPVIEWER, Enum.Selections.MAPV_AVAILABLE);
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.MAPV_AVAILABLE);
                         break;
                     case MAPV_AVAILABLE:
-                        gp.setSelection(Enum.Selection.MAPVIEWER, Enum.Selections.MAPV_WAITING);
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.MAPV_WAITING);
                         break;
                     case MAPV_STARTING:
-                        gp.setSelection(Enum.Selection.MAPVIEWER, Enum.Selections.MAPV_SPECTATE);
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.MAPV_SPECTATE);
                         break;
                     case MAPV_WAITING:
-                        gp.setSelection(Enum.Selection.MAPVIEWER, Enum.Selections.MAPV_STARTING);
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.MAPV_STARTING);
                         break;
                     default:
-                        gp.setSelection(Enum.Selection.MAPVIEWER, Enum.Selections.MAPV_ALL);
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.MAPV_ALL);
                         break;
                 }
 
                 gp.getPlayer().closeInventory();
-                MapsViewer v = new MapsViewer(gp, gp.getSelection(Enum.Selection.MAPVIEWER), "Maps");
+                MapsViewer v = new MapsViewer(gp, gp.getSelection(Selections.Key.MAPVIEWER), "Maps");
                 v.openInventory(gp);
-                gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 50, 50);
+                gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
             }
 
             private void backPage(MapsViewer asd) {
@@ -159,18 +159,18 @@ public class MapsViewer {
         };
     }
 
-    private Enum.TS select(Enum.Selections t) {
+    private LanguageManager.TS select(Selections.Value t) {
         switch (t) {
             case MAPV_ALL:
-                return Enum.TS.MAP_ALL;
+                return LanguageManager.TS.MAP_ALL;
             case MAPV_WAITING:
-                return Enum.TS.MAP_WAITING;
+                return LanguageManager.TS.MAP_WAITING;
             case MAPV_SPECTATE:
-                return Enum.TS.MAP_SPECTATE;
+                return LanguageManager.TS.MAP_SPECTATE;
             case MAPV_STARTING:
-                return Enum.TS.MAP_STARTING;
+                return LanguageManager.TS.MAP_STARTING;
             case MAPV_AVAILABLE:
-                return Enum.TS.MAP_AVAILABLE;
+                return LanguageManager.TS.MAP_AVAILABLE;
         }
         return null;
     }
@@ -179,32 +179,32 @@ public class MapsViewer {
         ItemStack i;
         switch (selMap) {
             case MAPV_ALL:
-                i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
+                i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
                         Arrays.asList("&7Click to select the next filter.", "&9", "&9◼ &bAll Maps", "&9- &fAvailable",
                                 "&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate"));
                 break;
             case MAPV_AVAILABLE:
-                i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
+                i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
                         Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9◼ &bAvailable",
                                 "&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate"));
                 break;
             case MAPV_STARTING:
-                i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
+                i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
                         Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
                                 "&9- &fWaiting", "&9◼ &bStarting", "&9- &fSpectate"));
                 break;
             case MAPV_WAITING:
-                i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
+                i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
                         Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
                                 "&9◼ &bWaiting", "&9- &fStarting", "&9- &fSpectate"));
                 break;
             case MAPV_SPECTATE:
-                i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
+                i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
                         Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
                                 "&9- &fWaiting", "&9- &fStarting", "&9◼ &bSpectate"));
                 break;
             default:
-                i = Itens.createItemLore(Material.OAK_SIGN, 1, "&9Filter",
+                i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
                         Arrays.asList("&7Click to select the next filter.", "&9", "&9◼ &fAll Maps", "&9- &fAvailable",
                                 "&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate"));
                 break;

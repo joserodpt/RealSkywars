@@ -1,6 +1,5 @@
 package josegamerpt.realskywars.gui;
 
-import josegamerpt.realskywars.classes.Enum;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
@@ -36,10 +35,10 @@ public class PlayerGUI {
 
         // infoMap
         ArrayList<String> lore = new ArrayList<>();
-        for (String s : LanguageManager.getList(p, Enum.TL.STATS_ITEM_LORE)) {
+        for (String s : LanguageManager.getList(p, LanguageManager.TL.STATS_ITEM_LORE)) {
             lore.add(variables(s, target));
         }
-        ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, LanguageManager.getString(p, Enum.TS.STATS_ITEM_NAME, false).replace("%player%", target.getDisplayName()),
+        ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, LanguageManager.getString(p, LanguageManager.TS.STATS_ITEM_NAME, false).replace("%player%", target.getDisplayName()),
                 lore);
         inv.setItem(2, infoMap);
 
