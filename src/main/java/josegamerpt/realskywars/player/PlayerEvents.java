@@ -1,5 +1,6 @@
 package josegamerpt.realskywars.player;
 
+import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.SoloCage;
 import josegamerpt.realskywars.cages.TeamCage;
@@ -25,7 +26,6 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
@@ -49,61 +49,96 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void items(PlayerInteractEvent e) {
-        RSWPlayer gp = PlayerManager.getPlayer(e.getPlayer());
-        if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR && e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().hasItemMeta()) {
-
-            if (e.getPlayer().getInventory().getItemInMainHand()
-                    .equals(Items.PROFILE)) {
-                GUIManager.openPlayerMenu(gp, !gp.isInMatch());
-                e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-                e.setCancelled(true);
-            }
-
-            if (e.getPlayer().getInventory().getItemInMainHand()
-                    .equals(Items.KIT)) {
-                ProfileContent v = new ProfileContent(gp, ShopManager.Categories.KITS);
-                v.openInventory(gp);
-                e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-                e.setCancelled(true);
-            }
-
-            if (e.getPlayer().getInventory().getItemInMainHand()
-                    .equals(Items.SPECTATE)) {
-                GUIManager.openSpectate(gp);
-                e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-                e.setCancelled(true);
-            }
-            if (e.getPlayer().getInventory().getItemInMainHand()
-                    .equals(Items.MAPS)) {
-                MapsViewer v = new MapsViewer(gp, gp.getSelection(Selections.Key.MAPVIEWER), "Maps");
-                v.openInventory(gp);
-                e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-                e.setCancelled(true);
-            }
-            if (e.getPlayer().getInventory().getItemInMainHand()
-                    .equals(Items.LEAVE)) {
-                gp.getMatch().removePlayer(gp);
-                e.setCancelled(true);
-            }
-            if (e.getPlayer().getInventory().getItemInMainHand()
-                    .equals(Items.CHESTS)) {
-                GUIManager.openVote(gp);
-                e.setCancelled(true);
-            }
-            if (e.getPlayer().getInventory().getItemInMainHand()
-                    .equals(Items.SHOP)) {
-                GUIManager.openShopMenu(gp);
-                e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-                e.setCancelled(true);
-            }
-        }
-        if (e.getClickedBlock() != null && e.getClickedBlock().getState() instanceof Chest) {
-            if (gp.isInMatch()) {
-                SWChest chest = gp.getMatch().getChest(e.getClickedBlock().getLocation());
-                if (chest != null) {
-                    chest.refill();
+        switch (e.getAction())
+        {
+            case PHYSICAL:
+                if(GameManager.getLobbyLocation() != null && e.getPlayer().getWorld().equals(GameManager.getLobbyLocation().getWorld())){
+                    switch (e.getClickedBlock().getType())
+                    {
+                        case STONE_PRESSURE_PLATE:
+                            e.getPlayer().performCommand("rsw play SOLO");
+                            break;
+                        case HEAVY_WEIGHTED_PRESSURE_PLATE:
+                            e.getPlayer().performCommand("rsw play TEAMS");
+                            break;
+                    }
                 }
-            }
+                break;
+            case RIGHT_CLICK_BLOCK:
+            case RIGHT_CLICK_AIR:
+                RSWPlayer gp = PlayerManager.getPlayer(e.getPlayer());
+
+                if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand()
+                        .getType() == Material.COMPASS) {
+                    if (gp.isInMatch() && gp.getState() == RSWPlayer.PlayerState.PLAYING)
+                    {
+                        PlayerManager.trackPlayer(gp);
+                    }
+                    e.setCancelled(true);
+                }
+
+                if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().hasItemMeta()) {
+
+                    if (e.getPlayer().getInventory().getItemInMainHand()
+                            .equals(Items.PROFILE)) {
+                        GUIManager.openPlayerMenu(gp, !gp.isInMatch());
+                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                        e.setCancelled(true);
+                    }
+
+                    if (e.getPlayer().getInventory().getItemInMainHand()
+                            .equals(Items.KIT)) {
+                        ProfileContent v = new ProfileContent(gp, ShopManager.Categories.KITS);
+                        v.openInventory(gp);
+                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                        e.setCancelled(true);
+                    }
+
+                    if (e.getPlayer().getInventory().getItemInMainHand()
+                            .equals(Items.PLAYAGAIN)) {
+                        e.getPlayer().performCommand("rsw play " + gp.getMatch().getGameType().name());
+                        e.setCancelled(true);
+                    }
+
+                    if (e.getPlayer().getInventory().getItemInMainHand()
+                            .equals(Items.SPECTATE)) {
+                        GUIManager.openSpectate(gp);
+                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                        e.setCancelled(true);
+                    }
+                    if (e.getPlayer().getInventory().getItemInMainHand()
+                            .equals(Items.MAPS)) {
+                        MapsViewer v = new MapsViewer(gp, gp.getSelection(Selections.Key.MAPVIEWER), "Maps");
+                        v.openInventory(gp);
+                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                        e.setCancelled(true);
+                    }
+                    if (e.getPlayer().getInventory().getItemInMainHand()
+                            .equals(Items.LEAVE)) {
+                        gp.getMatch().removePlayer(gp);
+                        e.setCancelled(true);
+                    }
+                    if (e.getPlayer().getInventory().getItemInMainHand()
+                            .equals(Items.CHESTS)) {
+                        GUIManager.openVote(gp);
+                        e.setCancelled(true);
+                    }
+                    if (e.getPlayer().getInventory().getItemInMainHand()
+                            .equals(Items.SHOP)) {
+                        GUIManager.openShopMenu(gp);
+                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                        e.setCancelled(true);
+                    }
+                }
+                if (e.getClickedBlock() != null && e.getClickedBlock().getState() instanceof Chest) {
+                    if (gp.isInMatch()) {
+                        SWChest chest = gp.getMatch().getChest(e.getClickedBlock().getLocation());
+                        if (chest != null) {
+                            chest.refill();
+                        }
+                    }
+                }
+                break;
         }
     }
 
@@ -127,7 +162,7 @@ public class PlayerEvents implements Listener {
     public void place(BlockPlaceEvent event) {
         if (event.getPlayer().isOp()) {
             RSWPlayer pg = PlayerManager.getPlayer(event.getPlayer());
-            if (pg.getState() != null) {
+            if (pg.getSetup() != null) {
                 if (event.getBlock().getType() == Items.CAGESET.getType()) {
                     switch (pg.getSetup().getGameType()) {
                         case SOLO:
@@ -150,8 +185,7 @@ public class PlayerEvents implements Listener {
                             break;
                     }
                 }
-                if (event.getBlock().getType() == Items.CHEST1.getType()) {
-
+                if (event.getBlock().getType() == Material.CHEST && pg.getSetup() != null) {
                     String name = event.getItemInHand().getItemMeta().getDisplayName();
                     Block b = event.getBlock();
                     BlockData blockData = b.getBlockData();
@@ -354,7 +388,7 @@ public class PlayerEvents implements Listener {
             if (p != null && p.isInMatch()) {
                 Chest c = (Chest) event.getInventory().getHolder();
                 SWChest swc = p.getMatch().getChest(c.getLocation());
-                if (swc.isOpened()) {
+                if (swc != null && swc.isOpened()) {
                     Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> swc.startTasks(p.getMatch()), 1);
                 }
             }

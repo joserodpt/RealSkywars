@@ -15,7 +15,9 @@ import josegamerpt.realskywars.utils.Text;
 import org.apache.http.util.TextUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.bukkit.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -26,10 +28,20 @@ import java.util.*;
 
 public class RSWPlayer {
 
-    public enum PlayerData { ALL, COINS, STATS, NAME, LANG, BOUGHT, PREFS }
-    public enum Statistic {KILL, SOLO_WIN, TEAM_WIN, LOSE, DEATH, GAMES_PLAYED}
 
+    public void spawn(Class c) {
+        if (this.p != null)
+        {
+            Entity tnt = this.getWorld().spawn(this.getLocation().add(0,3, 0), c);
+            ((TNTPrimed)tnt).setFuseTicks(60);
+        }
+    }
+
+    public enum PlayerData { ALL, COINS, STATS, NAME, LANG, BOUGHT, PREFS;}
+
+    public enum Statistic {KILL, SOLO_WIN, TEAM_WIN, LOSE, DEATH, GAMES_PLAYED;}
     private RoomTAB rt;
+
     private String anonName = "?";
     private final List<Trail> trails = new ArrayList<>();
     private Player p;
@@ -59,7 +71,6 @@ public class RSWPlayer {
     private boolean winblockRandom = false;
     private Material winblockMaterial;
     private Boolean invincible = false;
-
     public RSWPlayer(Player jog, RSWPlayer.PlayerState estado, SWGameMode rom, int tk, int d, int solowin, int teamwin, Double coi, String lang,
                      ArrayList<String> bgh, int l, int gp) {
         anonName = Text.anonName();
@@ -144,15 +155,18 @@ public class RSWPlayer {
                 this.winsSOlO += i;
                 this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Win"));
                 this.addStatistic(RSWPlayer.Statistic.GAMES_PLAYED, 1);
+                this.sendMessage("&e+ &6" + Config.file().getDouble("Config.Coins.Per-Win") + "&e coins");
                 break;
             case TEAM_WIN:
                 this.winsTEAMS += i;
                 this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Win"));
                 this.addStatistic(RSWPlayer.Statistic.GAMES_PLAYED, 1);
+                this.sendMessage("&e+ &6" + Config.file().getDouble("Config.Coins.Per-Win") + "&e coins");
                 break;
             case KILL:
                 this.gamekills += i;
                 this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Kill"));
+                this.sendMessage("&e+ &6" + Config.file().getDouble("Config.Coins.Per-Kill") + "&e coins");
                 break;
             case LOSE:
                 this.loses += i;
@@ -162,6 +176,7 @@ public class RSWPlayer {
                 this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Death"));
                 this.addStatistic(RSWPlayer.Statistic.LOSE, 1);
                 this.addStatistic(RSWPlayer.Statistic.GAMES_PLAYED, 1);
+                this.sendMessage("&e+ &6" + Config.file().getDouble("Config.Coins.Per-Death") + "&e coins");
                 break;
             case GAMES_PLAYED:
                 this.gamesPlayed += i;
@@ -225,6 +240,13 @@ public class RSWPlayer {
             return this.p.getLocation();
         }
         return null;
+    }
+
+    public void playSound(Sound s, int i, int i1) {
+        if (this.p != null)
+        {
+            this.p.playSound(this.p.getLocation(), s, i, i1);
+        }
     }
 
     public World getWorld() {
@@ -353,7 +375,6 @@ public class RSWPlayer {
     }
 
     public void setSelection(Selections.Key s, Selections.Value ss) {
-        this.selections.remove(s);
         this.selections.put(s, ss);
         PlayerManager.savePlayer(this, PlayerData.PREFS);
     }
@@ -571,17 +592,12 @@ public class RSWPlayer {
             this.show.clear();
         }
 
-        public void setHeader(String s) {
+        public void setHeaderFooter(String h, String f) {
             if (!this.player.isBot()) {
-                this.player.getPlayer().setPlayerListHeader(Text.color(s));
+                this.player.getPlayer().setPlayerListHeaderFooter(Text.color(h), Text.color(f));
             }
         }
 
-        public void setFooter(String s) {
-            if (!this.player.isBot()) {
-                this.player.getPlayer().setPlayerListFooter(Text.color(s));
-            }
-        }
 
         public void updateRoomTAB() {
             if (!this.player.isBot()) {
@@ -590,26 +606,13 @@ public class RSWPlayer {
 
                 if (this.player.isInMatch())
                 {
-                    this.setHeader("\n" + LanguageManager.getPrefix() + "\n&fMapa: &b" + this.player.getMatch().getName() + "\n");
-                    this.setFooter("\n&fJogadores: &b" + this.player.getMatch().getPlayersCount() + "\n");
+                    this.setHeaderFooter("\n" + LanguageManager.getPrefix() + "\n&fMapa: &b" + this.player.getMatch().getName() + "\n",
+                            "\n&fJogadores: &b" + this.player.getMatch().getPlayersCount() + "\n");
                 } else {
-                    this.setHeader("");
-                    this.setFooter("");
+                    this.setHeaderFooter("", "");
                 }
             }
         }
-
-        private String getNames() {
-            ArrayList<String> n = new ArrayList<>();
-            for (Player player1 : this.show) {
-                if (player1 != null)
-                {
-                    n.add(player1.getName());
-                }
-            }
-            return Strings.join(n, ',');
-        }
-
     }
 
 

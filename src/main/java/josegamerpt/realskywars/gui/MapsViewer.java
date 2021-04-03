@@ -1,5 +1,6 @@
 package josegamerpt.realskywars.gui;
 
+import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.classes.Selections;
 import josegamerpt.realskywars.modes.SWGameMode;
 import josegamerpt.realskywars.classes.MapItem;
@@ -92,31 +93,35 @@ public class MapsViewer {
 
                         if (current.display.containsKey(e.getRawSlot())) {
                             SWGameMode a = current.display.get(e.getRawSlot());
-                            if (a.isPlaceHolder()) {
-                                return;
+                            if (!a.isPlaceHolder()) {
+                                a.addPlayer(gp);
                             }
-                            a.addPlayer(gp);
                         }
                     }
                 }
             }
 
             private void selectNext(RSWPlayer gp) {
-                Selections.Value s = gp.getSelection(Selections.Key.MAPVIEWER);
-                switch (s) {
+                switch (gp.getSelection(Selections.Key.MAPVIEWER)) {
                     case MAPV_ALL:
                         gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.MAPV_AVAILABLE);
                         break;
                     case MAPV_AVAILABLE:
                         gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.MAPV_WAITING);
                         break;
-                    case MAPV_STARTING:
-                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.MAPV_SPECTATE);
-                        break;
                     case MAPV_WAITING:
                         gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.MAPV_STARTING);
                         break;
-                    default:
+                    case MAPV_STARTING:
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.MAPV_SPECTATE);
+                        break;
+                    case MAPV_SPECTATE:
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.SOLO);
+                        break;
+                    case SOLO:
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.TEAMS);
+                        break;
+                    case TEAMS:
                         gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.MAPV_ALL);
                         break;
                 }
@@ -171,42 +176,51 @@ public class MapsViewer {
                 return LanguageManager.TS.MAP_STARTING;
             case MAPV_AVAILABLE:
                 return LanguageManager.TS.MAP_AVAILABLE;
+            case SOLO:
+                return LanguageManager.TS.SOLO;
+            case TEAMS:
+                return LanguageManager.TS.TEAMS;
         }
         return null;
     }
 
     private ItemStack makeSelIcon() {
-        ItemStack i;
+        ItemStack i = null;
         switch (selMap) {
             case MAPV_ALL:
                 i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
                         Arrays.asList("&7Click to select the next filter.", "&9", "&9◼ &bAll Maps", "&9- &fAvailable",
-                                "&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate"));
+                                "&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate", "&9- &fSolo", "&9- &fTeams"));
                 break;
             case MAPV_AVAILABLE:
                 i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
                         Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9◼ &bAvailable",
-                                "&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate"));
+                                "&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate", "&9- &fSolo", "&9- &fTeams"));
                 break;
             case MAPV_STARTING:
                 i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
                         Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
-                                "&9- &fWaiting", "&9◼ &bStarting", "&9- &fSpectate"));
+                                "&9- &fWaiting", "&9◼ &bStarting", "&9- &fSpectate", "&9- &fSolo", "&9- &fTeams"));
                 break;
             case MAPV_WAITING:
                 i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
                         Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
-                                "&9◼ &bWaiting", "&9- &fStarting", "&9- &fSpectate"));
+                                "&9◼ &bWaiting", "&9- &fStarting", "&9- &fSpectate", "&9- &fSolo", "&9- &fTeams"));
                 break;
             case MAPV_SPECTATE:
                 i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
                         Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
-                                "&9- &fWaiting", "&9- &fStarting", "&9◼ &bSpectate"));
+                                "&9- &fWaiting", "&9- &fStarting", "&9◼ &bSpectate", "&9- &fSolo", "&9- &fTeams"));
                 break;
-            default:
+            case SOLO:
                 i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
-                        Arrays.asList("&7Click to select the next filter.", "&9", "&9◼ &fAll Maps", "&9- &fAvailable",
-                                "&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate"));
+                        Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
+                                "&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate", "&9◼ &bSolo", "&9- &fTeams"));
+                break;
+            case TEAMS:
+                i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
+                        Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
+                                "&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate", "&9- &fSolo", "&9◼ &bTeams"));
                 break;
         }
         return i;

@@ -131,6 +131,8 @@ Languages:
           No-Permission: "&fYou &cdon't have permission &fto buy this item."
           Not-Buyable: "&fThis item &cisn't &abuyable&f."
         Arena:
+          Tracker-Found: "&fNow tracking &b%player%"
+          No-Tracker-Found: "&fThere is no player to track."
           Winner-Broadcast: "&b%winner% &fwon on the map &a%map%"
           Leave: "&eYou left the match."
           Already-Started: "&fThis match &calready &fstarted."
@@ -150,7 +152,8 @@ Languages:
         Maps: "&fThere are &b%rooms% &fmaps registered."
         Players: "&fThere are &b%players% &fGamePlayers online."
         Finish-Setup: "&fYou can now &afinish setup &fwith /rsw finishsetup."
-        No-Map-Found: "&fNo map has been found."
+        No-Game-Found: "&fNo game has been found. Try again later!"
+        Game-Found: "&fGame found! Adding you... please wait.."
         No-Tier-Found: "&fNo tier has been found."
         No-Player-Found: "&fNo player has been found."
         Map-Unregistered: "&fThe map has been &aunregistered&f."
@@ -182,6 +185,13 @@ Languages:
         Match-Cancelled: "&cMatch cancelled, not enough players."
         Start-Countdown: "&fSkywars will start in &9%time% &fsecond(s)"
         Match-End: "&fThe match ended. &aYou will be teleported to the lobby in &b%time% &aseconds."
+        Events:
+          Refill:
+            - "&9&LCHEST REFILL"
+            - "&6Chests are being refilled!"
+          TNTRain:
+            - "&c&lTNT RAIN"
+            - "&cWatch out for the TNT!"
         Title:
           Win: "&b%player% &awon!"
           DeathMatch: "&cThe world is shrinking..."

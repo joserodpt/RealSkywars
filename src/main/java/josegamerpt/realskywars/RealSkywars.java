@@ -153,6 +153,16 @@ public class RealSkywars extends JavaPlugin implements Listener {
                 if (tt == null) return new TypeResult(argument);
                 return new TypeResult(tt, argument);
             });
+            commandManager.getParameterHandler().register(SWGameMode.GameType.class, argument -> {
+                try {
+                    SWGameMode.GameType tt = SWGameMode.GameType.valueOf(argument.toString().toUpperCase());
+                    if (tt == null) return new TypeResult(argument);
+                    return new TypeResult(tt, argument);
+                } catch (Exception e)
+                {
+                    return new TypeResult(argument);
+                }
+            });
             commandManager.getParameterHandler().register(CurrencyManager.Operations.class, argument -> {
                 CurrencyManager.Operations tt = CurrencyManager.Operations.valueOf(argument.toString().toLowerCase());
                 if (tt == null) return new TypeResult(argument);
@@ -215,7 +225,7 @@ public class RealSkywars extends JavaPlugin implements Listener {
 
     public void onDisable() {
         GameManager.endGames();
-        GameManager.getRooms().forEach(SWGameMode::clear);
+        GameManager.getGames().forEach(SWGameMode::clear);
     }
 
     public void reload() {

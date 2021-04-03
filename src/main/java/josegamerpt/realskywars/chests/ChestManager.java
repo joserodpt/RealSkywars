@@ -307,7 +307,6 @@ public class ChestManager {
                     return CAOSchest.file().getInt(itens);
                 }
         }
-        Debugger.print(ChestManager.class, "getMaxItens returned 0 for " + tierType.name() + " : middle>" + middle);
         return 0;
     }
 }

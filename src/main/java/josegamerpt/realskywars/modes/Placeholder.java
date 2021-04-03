@@ -9,6 +9,8 @@ import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.ArenaCuboid;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.WorldBorder;
+import org.bukkit.boss.BossBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,11 @@ public class Placeholder implements SWGameMode {
         this.n = name;
     }
 
+    @Override
+    public boolean isFull() {
+        return true;
+    }
+
     public void saveRoom() {
     }
 
@@ -33,11 +40,26 @@ public class Placeholder implements SWGameMode {
         return 0;
     }
 
+    @Override
+    public BossBar getBossBar() {
+        return null;
+    }
+
+    @Override
+    public WorldBorder getBorder() {
+        return null;
+    }
+
     public int getPlayersCount() {
         return 0;
     }
 
     public ArrayList<RSWPlayer> getPlayers() {
+        return null;
+    }
+
+    @Override
+    public ArrayList<RSWPlayer> getInRoom() {
         return null;
     }
 

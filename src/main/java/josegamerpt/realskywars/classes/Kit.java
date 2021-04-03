@@ -148,7 +148,7 @@ public class Kit {
                 public void run() {
                     p.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
                 }
-            }.runTaskTimerAsynchronously(RealSkywars.getPlugin(), Config.file().getInt("Config.Kits.Ender-Pearl-Perk-Give-Interval:"), 20); // Spelled Async wrong and I know it, deal with it haha
+            }.runTaskTimerAsynchronously(RealSkywars.getPlugin(), Config.file().getInt("Config.Kits.Ender-Pearl-Perk-Give-Interval"), 20); // Spelled Async wrong and I know it, deal with it haha
         }
     }
 

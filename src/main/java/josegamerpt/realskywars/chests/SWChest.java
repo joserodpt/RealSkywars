@@ -4,6 +4,7 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import josegamerpt.realskywars.RealSkywars;
+import josegamerpt.realskywars.classes.SWEvent;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.modes.SWGameMode;
@@ -23,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class SWChest {
     private final int x;
@@ -152,9 +154,11 @@ public class SWChest {
         if (this.chestCTD == null && this.isChest()) {
 
             int time = Config.file().getInt("Config.Default-Refill-Time");
-            if (sgm.getEvents().size() > 0 && sgm.getEvents().get(0).isRefill())
+
+            Optional<SWEvent> e = getRefillTime(sgm);
+            if (e.isPresent())
             {
-                time = sgm.getEvents().get(0).getTimeLeft();
+                time = e.get().getTimeLeft();
             }
 
             RealSkywars.getNMS().chestAnimation(this.getChest(), true);
@@ -184,6 +188,10 @@ public class SWChest {
 
             this.chestCTD.scheduleTimer();
         }
+    }
+
+    private Optional<SWEvent> getRefillTime(SWGameMode sgm) {
+        return sgm.getEvents().stream().filter(c -> c.getEventType().equals(SWEvent.EventType.REFILL)).findFirst();
     }
 
     public void cancelTasks() {

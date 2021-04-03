@@ -32,7 +32,7 @@ public class Demolition {
             laser.start(plugin);
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> this.cage.clearCage(), this.delayExplosion * 20L);
-            Debugger.print(Demolition.class, "go!");
+            Debugger.print(Demolition.class, "go go destroy!" + this.cage.getLoc().toString());
         } catch (Exception e) {
             Debugger.print(Demolition.class, "Could not show win laser for " + this.cage.getLoc().toString() + "\n" + e.getMessage());
         }

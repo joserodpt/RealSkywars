@@ -12,7 +12,7 @@ public class LanguageManager {
 
     public enum TS {
         PLAYER_JOIN_ARENA, ARENA_CANCEL, ARENA_START_COUNTDOWN, LOBBY_TELEPORT, MATCH_LEAVE, PLAYER_LEAVE_ARENA, MATCH_END, TITLE_WIN, MATCH_SPECTATE, TITLE_DEATHMATCH,
-        CMD_NOPERM, CONFIG_RELOAD, ALREADY_IN_MATCH, CMD_COINS, NO_SETUPMODE, CMD_MATCH_CANCEL, CMD_MATCH_FORCESTART, NO_MATCH, LOBBY_SET, SETUP_NOT_FINISHED, CMD_MAPS, CMD_PLAYERS, CMD_FINISHSETUP, NOMAP_FOUND, NO_TIER_FOUND, TIER_SET, CHEST_BASIC, CHEST_NORMAL, CHEST_OP, CHEST_CAOS, SET_TIER, ADD_TIER, NO_PLAYER_FOUND, MAP_UNREGISTERED, MAP_EXISTS, LOBBYLOC_NOT_SET, INSUFICIENT_COINS, CMD_NOT_FOUND, CAGES_SET, ADDED_COINS, REMOVED_COINS, SET_COINS, SENDER_COINS, RECIEVER_COINS, LANGUAGE_SET, GENERATING_WORLD, NO_ARENA_BOUNDARIES, SAVING_ARENA, ARENA_REGISTERED, CHEST_VOTE, CHEST_ALREADY_VOTED, GAME_STATUS_SET, ARENA_RESET, MAP_RESET_DONE, SHOP_BUY, SHOP_ALREADY_BOUGHT, SHOP_NO_PERM, PROFILE_SELECTED, NOT_BUYABLE, NO_KIT_FOUND, DEL_PURCHASES, CAGEBLOCK, KITS, CMD_CANT_FORCESTART, SCOREBOARD_LOBBY_TITLE, SCOREBOARD_CAGE_TITLE, SCOREBOARD_SPECTATOR_TITLE, SCOREBOARD_PLAYING_TITLE, ITEMS_MAP_NOTFOUND_TITLE, ITEMS_MAP_TITLE, MAP_ALL, MAP_WAITING, MAP_SPECTATE, MAP_STARTING, MAP_AVAILABLE, MAP_PLAYING, MAP_FINISHING, MAP_RESETTING, COMPASS_TELEPORT, BOWPARTICLE, WINBLOCK, TEAM_LEAVE, TEAM_JOIN, TEAMMATE_DAMAGE_CANCEL, WINNER_BROADCAST, TEAM_BROADCAST_JOIN, TEAM_BROADCAST_LEAVE, ALREADY_STARTED, STATS_ITEM_NAME, DELETEKIT_DONE
+        CMD_NOPERM, CONFIG_RELOAD, ALREADY_IN_MATCH, CMD_COINS, NO_SETUPMODE, CMD_MATCH_CANCEL, CMD_MATCH_FORCESTART, NO_MATCH, LOBBY_SET, SETUP_NOT_FINISHED, CMD_MAPS, CMD_PLAYERS, CMD_FINISHSETUP, NO_GAME_FOUND, NO_TIER_FOUND, TIER_SET, CHEST_BASIC, CHEST_NORMAL, CHEST_OP, CHEST_CAOS, SET_TIER, ADD_TIER, NO_PLAYER_FOUND, MAP_UNREGISTERED, MAP_EXISTS, LOBBYLOC_NOT_SET, INSUFICIENT_COINS, CMD_NOT_FOUND, CAGES_SET, ADDED_COINS, REMOVED_COINS, SET_COINS, SENDER_COINS, RECIEVER_COINS, LANGUAGE_SET, GENERATING_WORLD, NO_ARENA_BOUNDARIES, SAVING_ARENA, ARENA_REGISTERED, CHEST_VOTE, CHEST_ALREADY_VOTED, GAME_STATUS_SET, ARENA_RESET, MAP_RESET_DONE, SHOP_BUY, SHOP_ALREADY_BOUGHT, SHOP_NO_PERM, PROFILE_SELECTED, NOT_BUYABLE, NO_KIT_FOUND, DEL_PURCHASES, CAGEBLOCK, KITS, CMD_CANT_FORCESTART, SCOREBOARD_LOBBY_TITLE, SCOREBOARD_CAGE_TITLE, SCOREBOARD_SPECTATOR_TITLE, SCOREBOARD_PLAYING_TITLE, ITEMS_MAP_NOTFOUND_TITLE, ITEMS_MAP_TITLE, MAP_ALL, MAP_WAITING, MAP_SPECTATE, MAP_STARTING, MAP_AVAILABLE, MAP_PLAYING, MAP_FINISHING, MAP_RESETTING, COMPASS_TELEPORT, BOWPARTICLE, WINBLOCK, TEAM_LEAVE, TEAM_JOIN, TEAMMATE_DAMAGE_CANCEL, WINNER_BROADCAST, TEAM_BROADCAST_JOIN, TEAM_BROADCAST_LEAVE, ALREADY_STARTED, STATS_ITEM_NAME, SOLO, TEAMS, GAME_FOUND, NO_TRACKER, TRACK_FOUND, DELETEKIT_DONE
     }
 
     public enum TSsingle {
@@ -20,7 +20,7 @@ public class LanguageManager {
     }
 
     public enum TL {
-        ARENA_START, END_LOG, SCOREBOARD_LOBBY_LINES, SCOREBOARD_CAGE_LINES, SCOREBOARD_SPECTATOR_LINES, SCOREBOARD_PLAYING_LINES, ITEMS_MAP_DESCRIPTION, TITLE_ROOMJOIN, STATS_ITEM_LORE, INITSETUP_ARENA
+        ARENA_START, END_LOG, SCOREBOARD_LOBBY_LINES, SCOREBOARD_CAGE_LINES, SCOREBOARD_SPECTATOR_LINES, SCOREBOARD_PLAYING_LINES, ITEMS_MAP_DESCRIPTION, TITLE_ROOMJOIN, STATS_ITEM_LORE, REFILL_EVENT_TITLE, TNTRAIN_EVENT_TITLE, INITSETUP_ARENA
     }
 
     private static ArrayList<String> langList = new ArrayList<>();
@@ -68,6 +68,12 @@ public class LanguageManager {
                 break;
             case STATS_ITEM_LORE:
                 trad = Text.color(Languages.file().getList("Languages." + lang + ".Itens.Statistics.Lore"));
+                break;
+            case REFILL_EVENT_TITLE:
+                trad = Text.color(Languages.file().getList("Languages." + lang + ".Messages.Arena.Events.Refill"));
+                break;
+            case TNTRAIN_EVENT_TITLE:
+                trad = Text.color(Languages.file().getList("Languages." + lang + ".Messages.Arena.Events.TNTRain"));
                 break;
             default:
                 trad.add("List not found (" + tl.name() + ")");
@@ -214,8 +220,11 @@ public class LanguageManager {
                 case CMD_FINISHSETUP:
                     tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.Commands.Finish-Setup"));
                     break;
-                case NOMAP_FOUND:
-                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.Commands.No-Map-Found"));
+                case NO_GAME_FOUND:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.Commands.No-Game-Found"));
+                    break;
+                case GAME_FOUND:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.Commands.Game-Found"));
                     break;
                 case NO_TIER_FOUND:
                     tr = Text
@@ -402,6 +411,18 @@ public class LanguageManager {
                     break;
                 case STATS_ITEM_NAME:
                     tr = Text.color(Languages.file().getString("Languages." + lang + ".Itens.Statistics.Name"));
+                    break;
+                case SOLO:
+                    tr = "&eSolo";
+                    break;
+                case TEAMS:
+                    tr = "&9Teams";
+                    break;
+                case NO_TRACKER:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.System.Arena.w"));
+                    break;
+                case TRACK_FOUND:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.System.Arena.Tracker-Found"));
                     break;
                 default:
                     tr = "String not found (" + ts.name() + ")";

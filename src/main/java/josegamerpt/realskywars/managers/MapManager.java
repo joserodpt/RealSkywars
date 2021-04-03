@@ -146,7 +146,7 @@ public class MapManager {
     }
 
     public static SWGameMode getMap(String s) {
-        for (SWGameMode g : GameManager.getRooms()) {
+        for (SWGameMode g : GameManager.getGames()) {
             if (g.getName().equalsIgnoreCase(s)) {
                 return g;
             }

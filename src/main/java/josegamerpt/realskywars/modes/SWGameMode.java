@@ -12,15 +12,20 @@ import org.bukkit.World;
 
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.player.RSWPlayer;
+import org.bukkit.WorldBorder;
+import org.bukkit.boss.BossBar;
+
 public interface SWGameMode {
 
-	enum GameState {
-		AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING
+    enum GameState {
+		AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING;
+	}
+	enum GameType {
+		SOLO, TEAMS;
+
 	}
 
-	enum GameType {
-		SOLO, TEAMS
-	}
+	boolean isFull();
 
 	void saveRoom();
 
@@ -28,9 +33,15 @@ public interface SWGameMode {
 
 	int getMaxPlayers();
 
+	BossBar getBossBar();
+
+	WorldBorder getBorder();
+
 	int getPlayersCount();
 
 	ArrayList<RSWPlayer> getPlayers();
+
+	ArrayList<RSWPlayer> getInRoom();
 
 	int getSpectatorsCount();
 

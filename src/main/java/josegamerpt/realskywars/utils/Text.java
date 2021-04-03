@@ -194,7 +194,20 @@ public class Text {
     }
 
     public static String formatSeconds(int n) {
-        return LocalTime.MIN.plusSeconds(n).toString();
+        int secs = n % 60;
+        int horas = n / 60;
+        int mins = horas % 60;
+        horas = horas / 60;
+        if (horas == 0 && mins != 0)
+        {
+            return mins + "m " + secs + "s";
+        }
+        if (mins == 0)
+        {
+            return secs + "s";
+        }
+        return horas + "h " + mins + "m " + secs + "s";
+
     }
 
     public static void sendList(Player p, List<String> list) { list.forEach(s -> p.sendMessage(color(s))); }

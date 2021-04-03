@@ -88,6 +88,11 @@ public class Teams implements SWGameMode {
                 BarColor.WHITE, BarStyle.SOLID);
     }
 
+    @Override
+    public boolean isFull() {
+        return this.getPlayersCount() == this.getMaxPlayers();
+    }
+
     public void saveRoom() {
         GameManager.addRoom(this);
     }
@@ -98,6 +103,16 @@ public class Teams implements SWGameMode {
 
     public int getMaxPlayers() {
         return this.maxPlayers;
+    }
+
+    @Override
+    public BossBar getBossBar() {
+        return this.bossBar;
+    }
+
+    @Override
+    public WorldBorder getBorder() {
+        return this.border;
     }
 
     public int getPlayersCount() {
@@ -112,6 +127,11 @@ public class Teams implements SWGameMode {
         }
 
         return players;
+    }
+
+    @Override
+    public ArrayList<RSWPlayer> getInRoom() {
+        return this.inRoom;
     }
 
     public ArrayList<RSWPlayer> getSpectators() {
@@ -294,41 +314,26 @@ public class Teams implements SWGameMode {
         this.startTimer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), timeleft, () -> {
             //
         }, () -> {
-            this.bossBar.setTitle(Text.color(LanguageManager.getString(LanguageManager.TSsingle.BOSSBAR_ARENA_DEATHMATCH)));
-            this.bossBar.setProgress(0);
-            this.bossBar.setColor(BarColor.RED);
-
-            this.getPlayers().forEach(rswPlayer -> rswPlayer.sendTitle("", Text.color(LanguageManager.getString(rswPlayer, LanguageManager.TS.TITLE_DEATHMATCH, false)), 10, 20,
-                    5));
-
-            this.border.setSize(this.borderSize / 2, 30L);
-            this.border.setCenter(this.arenaCuboid.getCenter());
+            //
         }, (t) -> {
             this.bossBar.setTitle(Text.color(LanguageManager.getString(LanguageManager.TSsingle.BOSSBAR_ARENA_RUNTIME).replace("%time%",
                     Text.formatSeconds(t.getSecondsLeft()) + "")));
             double div = (double) t.getSecondsLeft() / (double) timeleft;
             this.bossBar.setProgress(div);
-
-            //future events
-            tickEvents();
         });
         this.startTimer.scheduleTimer();
 
         this.timeCouterTask = new BukkitRunnable() {
             public void run() {
                 timePassed += 1;
+                tickEvents();
             }
-        }.runTaskTimerAsynchronously(RealSkywars.getPlugin(), 0, 20); // Spelled Async wrong and I know it, deal with it haha
+        }.runTaskTimer(RealSkywars.getPlugin(), 0, 20);
     }
 
     private void tickEvents() {
-        ArrayList<SWEvent> s = new ArrayList<>(this.events);
-        for (SWEvent event : s) {
-            if (event.getTime() == this.timePassed)
-            {
-                this.events.remove(event);
-            }
-        }
+        ArrayList<SWEvent> tmp = new ArrayList<>(this.events);
+        tmp.forEach(swEvent -> swEvent.tick());
     }
 
     public void removePlayer(RSWPlayer p) {

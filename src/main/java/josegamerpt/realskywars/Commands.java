@@ -1,8 +1,8 @@
 package josegamerpt.realskywars;
 
 import josegamerpt.realskywars.chests.ChestManager;
-import josegamerpt.realskywars.classes.Selections;
 import josegamerpt.realskywars.classes.Kit;
+import josegamerpt.realskywars.classes.Selections;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.gui.*;
 import josegamerpt.realskywars.managers.*;
@@ -55,8 +55,8 @@ public class Commands extends CommandBase {
         }
     }
 
-    @SubCommand("join")
-    public void joincmd(final CommandSender commandSender) {
+    @SubCommand("list")
+    public void listcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
             if (p.getMatch() == null) {
@@ -91,6 +91,21 @@ public class Commands extends CommandBase {
         }
     }
 
+    @SubCommand("play")
+    @Completion("#enum")
+    public void playcmd(final CommandSender commandSender, SWGameMode.GameType type) {
+        if (commandSender instanceof Player) {
+            RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
+            if (type != null) {
+                GameManager.findGame(p, type);
+            } else {
+                Text.send(commandSender, LanguageManager.getString(p, LanguageManager.TS.NO_GAME_FOUND, true));
+            }
+        } else {
+            commandSender.sendMessage(onlyPlayer);
+        }
+    }
+
     @SubCommand("coins")
     @Permission("RealSkywars.Coins")
     @Completion({"#enum", "#players", "#range:100"})
@@ -120,8 +135,7 @@ public class Commands extends CommandBase {
                             }
                             break;
                         case set:
-                            if (!p.getPlayer().hasPermission("RealSkywars.Admin"))
-                            {
+                            if (!p.getPlayer().hasPermission("RealSkywars.Admin")) {
                                 p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.CMD_NOPERM, true));
                                 return;
                             }
@@ -133,8 +147,7 @@ public class Commands extends CommandBase {
                             }
                             break;
                         case add:
-                            if (!p.getPlayer().hasPermission("RealSkywars.Admin"))
-                            {
+                            if (!p.getPlayer().hasPermission("RealSkywars.Admin")) {
                                 p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.CMD_NOPERM, true));
                                 return;
                             }
@@ -228,7 +241,7 @@ public class Commands extends CommandBase {
     public void forcestartcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer(Bukkit.getPlayer(commandSender.getName()));
-            if (p.getMatch() != null) {
+            if (p.isInMatch()) {
                 p.sendMessage(p.getMatch().forceStart(p));
             } else {
                 p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NO_MATCH, true));
@@ -243,7 +256,7 @@ public class Commands extends CommandBase {
     public void addsharik(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
-            if (p.getMatch() != null) {
+            if (p.isInMatch()) {
                 p.getMatch().addPlayer(new RSWPlayer(true));
                 p.sendMessage(Text.color(
                         "&4EXPERIMENTAL FEATURE. CAN RESULT IN SERVER & CLIENT CRASHES. &cAdded Null Player"));
@@ -259,7 +272,7 @@ public class Commands extends CommandBase {
     public void leave(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
-            if (p.getMatch() != null) {
+            if (p.isInMatch()) {
                 p.getMatch().removePlayer(p);
             } else {
                 p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NO_MATCH, true));
@@ -328,8 +341,8 @@ public class Commands extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
             p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.CMD_MAPS, true).replace("%rooms%",
-                    "" + GameManager.getRooms().size()));
-            for (SWGameMode s : GameManager.getRooms()) {
+                    "" + GameManager.getGames().size()));
+            for (SWGameMode s : GameManager.getGames()) {
                 TextComponent a = new TextComponent(Text.color("&7- &f" + s.getName()));
                 a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                         "/rsw map " + s.getName()));
@@ -378,7 +391,7 @@ public class Commands extends CommandBase {
                 RoomSettings r = new RoomSettings(GameManager.getGame(name), p.getUniqueId());
                 r.openInventory(p);
             } else {
-                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NOMAP_FOUND, true));
+                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NO_GAME_FOUND, true));
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -416,7 +429,7 @@ public class Commands extends CommandBase {
     public void settier(final CommandSender commandSender, ChestManager.TierType tt) {
         if (commandSender instanceof Player) {
             RSWPlayer p = PlayerManager.getPlayer((Player) commandSender);
-            if (p.getMatch() != null) {
+            if (p.isInMatch()) {
                 p.getMatch().setTierType(tt, true);
                 p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.TIER_SET, true).replace("%chest%",
                         tt.name()));
@@ -551,7 +564,7 @@ public class Commands extends CommandBase {
             MapManager.unregisterMap(MapManager.getMap(map));
             commandSender.sendMessage(LanguageManager.getString(new RSWPlayer(false), LanguageManager.TS.MAP_UNREGISTERED, true));
         } else {
-            commandSender.sendMessage(LanguageManager.getString(new RSWPlayer(false), LanguageManager.TS.NOMAP_FOUND, true));
+            commandSender.sendMessage(LanguageManager.getString(new RSWPlayer(false), LanguageManager.TS.NO_GAME_FOUND, true));
         }
     }
 
@@ -565,7 +578,7 @@ public class Commands extends CommandBase {
             MapManager.getMap(map).reset();
             p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.ARENA_RESET, true));
         } else {
-            p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NOMAP_FOUND, true));
+            p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.NO_GAME_FOUND, true));
         }
     }
 

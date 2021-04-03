@@ -4,22 +4,24 @@ import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.classes.DisplayItem;
 import josegamerpt.realskywars.classes.Selections;
 import josegamerpt.realskywars.classes.Selections.Key;
+import josegamerpt.realskywars.configuration.Items;
+import josegamerpt.realskywars.configuration.Players;
 import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.modes.SWGameMode;
-import josegamerpt.realskywars.configuration.Items;
-import josegamerpt.realskywars.configuration.Players;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 import java.util.Map.Entry;
 
 public class PlayerManager {
 
+    static HashMap<Player, Player> trackingPlayers = new HashMap<>();
     private static ArrayList<RSWPlayer> players = new ArrayList<>();
 
     public static void giveItems(Player p, PlayerItems i) {
@@ -27,18 +29,19 @@ public class PlayerManager {
             p.getInventory().clear();
             switch (i) {
                 case LOBBY:
-                    p.getInventory().setItem(1, Items.PROFILE);
+                    p.getInventory().setItem(0, Items.PROFILE);
                     p.getInventory().setItem(4, Items.MAPS);
-                    p.getInventory().setItem(7, Items.SHOP);
+                    p.getInventory().setItem(8, Items.SHOP);
                     break;
                 case CAGE:
-                    p.getInventory().setItem(0, Items.KIT);
+                    p.getInventory().setItem(1, Items.KIT);
                     p.getInventory().setItem(4, Items.CHESTS);
-                    p.getInventory().setItem(8, Items.LEAVE);
+                    p.getInventory().setItem(7, Items.LEAVE);
                     break;
                 case SPECTATOR:
-                    p.getInventory().setItem(0, Items.SPECTATE);
-                    p.getInventory().setItem(8, Items.LEAVE);
+                    p.getInventory().setItem(1, Items.SPECTATE);
+                    p.getInventory().setItem(2, Items.PLAYAGAIN);
+                    p.getInventory().setItem(7, Items.LEAVE);
                     break;
                 case SETUP:
                     p.getInventory().setItem(4, Items.CAGESET);
@@ -108,8 +111,7 @@ public class PlayerManager {
             if (!Players.file().isConfigurationSection(p.getUniqueId().toString())) {
                 RealSkywars.log("Creating empty player file for " + p.getName() + " UUID: " + p.getUniqueId().toString());
             }
-            switch (d)
-            {
+            switch (d) {
                 case ALL:
                     savePlayer(p, RSWPlayer.PlayerData.NAME);
                     savePlayer(p, RSWPlayer.PlayerData.LANG);
@@ -133,8 +135,7 @@ public class PlayerManager {
                         Selections.Value value = entry.getValue();
                         Players.file().set(p.getUniqueId() + ".Preferences." + key.name(), value.name());
                     }
-                    if (p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK) != null)
-                    {
+                    if (p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK) != null) {
                         Players.file().set(p.getUniqueId() + ".Preferences.Cage-Material", ((Material) p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK)).name());
                     }
                     break;
@@ -195,7 +196,7 @@ public class PlayerManager {
     }
 
     public static int countPlayingPlayers() {
-        return GameManager.getRooms().stream().mapToInt(SWGameMode::getPlayersCount).sum();
+        return GameManager.getGames().stream().mapToInt(SWGameMode::getPlayersCount).sum();
     }
 
     public static void stopScoreboards() {
@@ -212,6 +213,44 @@ public class PlayerManager {
 
     public static void removePlayer(RSWPlayer rswPlayer) {
         players.remove(rswPlayer);
+    }
+
+    public static void trackPlayer(RSWPlayer gp) {
+
+        ArrayList<RSWPlayer> tmp = new ArrayList<>(gp.getMatch().getPlayers());
+        tmp.remove(gp);
+
+        Optional<RSWPlayer> search = tmp.stream().filter(c -> c.getState().equals(RSWPlayer.PlayerState.PLAYING)).findAny();
+        if (!search.isPresent() || search.get().isBot()) {
+            gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.NO_TRACKER, true));
+            return;
+        }
+
+        Player player = gp.getPlayer();
+        Player target = search.get().getPlayer();
+
+        //Credit GITHUB PlayerCompass
+
+        trackingPlayers.put(player, target);
+        gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.TRACK_FOUND, true).replace("%player%", target.getDisplayName()));
+
+        new BukkitRunnable() {
+            public void run() {
+                //Cancel task if player is offline or is no longer tracking target
+                if (!player.isOnline() || !trackingPlayers.containsKey(player) || !trackingPlayers.get(player).equals(target))
+                    this.cancel();
+
+                    //Cancel task if target is offline
+                else if (!target.isOnline() || search.get().getState() != RSWPlayer.PlayerState.PLAYING) {
+                    if (gp.isInMatch()) {
+                        player.setCompassTarget(gp.getMatch().getSpectatorLocation());
+                    }
+                    this.cancel();
+                }
+
+                player.setCompassTarget(target.getLocation());
+            }
+        }.runTaskTimerAsynchronously(RealSkywars.getPlugin(), 5L, 10L);
     }
 
     public enum PlayerItems {LOBBY, CAGE, SETUP, SPECTATOR}
