@@ -1,12 +1,10 @@
-package josegamerpt.realskywars.worlds;
+package josegamerpt.realskywars.managers;
 
 import com.google.common.collect.Lists;
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.managers.GameManager;
-import org.bukkit.Difficulty;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.World.Environment;
-import org.bukkit.WorldCreator;
+import org.bukkit.generator.ChunkGenerator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,11 +12,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 
 public class WorldManager {
 
-    private static File[] verifiedListFiles(File directory) throws IOException {
+    //CREDIT to open source
+
+    public File[] verifiedListFiles(File directory) throws IOException {
         if (!directory.exists()) {
             final String message = directory + " does not exist";
             throw new IllegalArgumentException(message);
@@ -36,7 +37,7 @@ public class WorldManager {
         return files;
     }
 
-    private static boolean isSymlink(final File file) {
+    public boolean isSymlink(final File file) {
         if (file == null) {
             throw new NullPointerException("File must no be null");
         }
@@ -80,6 +81,7 @@ public class WorldManager {
         world.setWeatherDuration(Integer.MAX_VALUE);
         world.setKeepSpawnInMemory(false);
         world.setTicksPerAnimalSpawns(1);
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         world.setTicksPerMonsterSpawns(1);
         world.setAutoSave(false);
 
@@ -96,7 +98,7 @@ public class WorldManager {
     public void unloadWorld(String w, boolean save) {
         World world = RealSkywars.getPlugin().getServer().getWorld(w);
         if (world != null) {
-            world.getPlayers().forEach(GameManager::tpToLobby);
+            world.getPlayers().forEach(RealSkywars.getGameManager()::tpToLobby);
         }
         RealSkywars.getPlugin().getServer().unloadWorld(world, save);
     }
@@ -193,6 +195,19 @@ public class WorldManager {
                 final String message = "Unable to delete file: " + file;
                 throw new IOException(message);
             }
+        }
+    }
+
+
+    public class VoidWorld extends ChunkGenerator {
+        @Override
+        public ChunkData generateChunkData(World world, Random random, int x, int z,
+                                           BiomeGrid biome) {
+            return createChunkData(world);
+        }
+
+        public Location getFixedSpawnLocation(World world, Random random) {
+            return new Location(world, 0.0D, 128.0D, 0.0D);
         }
     }
 

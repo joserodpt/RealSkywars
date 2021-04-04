@@ -1,16 +1,15 @@
-package josegamerpt.realskywars.modes;
+package josegamerpt.realskywars.game.modes;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
+import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.chests.SWChest;
-import josegamerpt.realskywars.classes.SWEvent;
-import josegamerpt.realskywars.classes.SWWorld;
-import josegamerpt.realskywars.classes.Team;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.Countdown;
-import josegamerpt.realskywars.chests.ChestManager;
-import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
+import josegamerpt.realskywars.misc.SWEvent;
+import josegamerpt.realskywars.misc.SWWorld;
+import josegamerpt.realskywars.misc.Team;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.ArenaCuboid;
@@ -36,7 +35,6 @@ public class Teams implements SWGameMode {
     private ArenaCuboid arenaCuboid;
     private ArrayList<SWChest> chests;
 
-    private int id;
     private String name;
     private int maxPlayers;
     private int maxMembersTeam;
@@ -61,11 +59,11 @@ public class Teams implements SWGameMode {
 
     private ArrayList<SWEvent> events;
 
-    public Teams(int i, String nome, World w, SWGameMode.GameState estado, ArrayList<Team> teams, int maxPlayers,
+    public Teams(String nome, World w, SWGameMode.GameState estado, ArrayList<Team> teams, int maxPlayers,
                  Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests) {
-        this.id = i;
         this.name = nome;
         this.world = new SWWorld(this, w);
+
         this.state = estado;
         this.teams = teams;
         this.maxPlayers = maxPlayers;
@@ -82,9 +80,9 @@ public class Teams implements SWGameMode {
 
         this.votes.add(2);
 
-        this.events = GameManager.parseEvents(this);
+        this.events = RealSkywars.getGameManager().parseEvents(this);
 
-        this.bossBar = Bukkit.createBossBar(Text.color(LanguageManager.getString(LanguageManager.TSsingle.BOSSBAR_ARENA_WAIT)),
+        this.bossBar = Bukkit.createBossBar(Text.color(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_WAIT)),
                 BarColor.WHITE, BarStyle.SOLID);
     }
 
@@ -94,7 +92,7 @@ public class Teams implements SWGameMode {
     }
 
     public void saveRoom() {
-        GameManager.addRoom(this);
+        RealSkywars.getGameManager().addRoom(this);
     }
 
     public String getName() {
@@ -177,15 +175,15 @@ public class Teams implements SWGameMode {
 
     public String forceStart(RSWPlayer p) {
         if (this.getPlayersCount() < (this.maxMembersTeam() + 1)) {
-            return LanguageManager.getString(p, LanguageManager.TS.CMD_CANT_FORCESTART, true);
+            return RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_CANT_FORCESTART, true);
         } else {
             switch (this.state) {
                 case PLAYING:
                 case FINISHING:
-                    return LanguageManager.getString(p, LanguageManager.TS.ALREADY_STARTED, true);
+                    return RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ALREADY_STARTED, true);
                 default:
                     startGameFunction();
-                    return LanguageManager.getString(p, LanguageManager.TS.CMD_MATCH_FORCESTART, true);
+                    return RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_MATCH_FORCESTART, true);
             }
         }
     }
@@ -214,18 +212,13 @@ public class Teams implements SWGameMode {
     public void reset() {
         this.state = SWGameMode.GameState.RESETTING;
 
-        this.kickPlayers(LanguageManager.getString(new RSWPlayer(false), LanguageManager.TS.ARENA_RESET, true));
+        this.kickPlayers(RealSkywars.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.ARENA_RESET, true));
         this.resetArena();
     }
 
     @Override
     public ArenaCuboid getArena() {
         return this.arenaCuboid;
-    }
-
-    @Override
-    public int getID() {
-        return this.id;
     }
 
     @Override
@@ -252,8 +245,7 @@ public class Teams implements SWGameMode {
     @Override
     public SWChest getChest(Location location) {
         for (SWChest chest : this.chests) {
-            if (location.equals(chest.getLocation()))
-            {
+            if (location.equals(chest.getLocation())) {
                 return chest;
             }
         }
@@ -296,7 +288,7 @@ public class Teams implements SWGameMode {
                     this.bossBar.addPlayer(p.getPlayer());
 
                     //start msg
-                    for (String s : Text.color(LanguageManager.getList(p, LanguageManager.TL.ARENA_START))) {
+                    for (String s : Text.color(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.ARENA_START))) {
                         p.sendCenterMessage(s.replace("%chests%", this.tierType.name() + "")
                                 .replace("%kit%", p.getKit().getName() + ""));
                     }
@@ -316,7 +308,7 @@ public class Teams implements SWGameMode {
         }, () -> {
             //
         }, (t) -> {
-            this.bossBar.setTitle(Text.color(LanguageManager.getString(LanguageManager.TSsingle.BOSSBAR_ARENA_RUNTIME).replace("%time%",
+            this.bossBar.setTitle(Text.color(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_RUNTIME).replace("%time%",
                     Text.formatSeconds(t.getSecondsLeft()) + "")));
             double div = (double) t.getSecondsLeft() / (double) timeleft;
             this.bossBar.setProgress(div);
@@ -333,7 +325,7 @@ public class Teams implements SWGameMode {
 
     private void tickEvents() {
         ArrayList<SWEvent> tmp = new ArrayList<>(this.events);
-        tmp.forEach(swEvent -> swEvent.tick());
+        tmp.forEach(SWEvent::tick);
     }
 
     public void removePlayer(RSWPlayer p) {
@@ -342,25 +334,24 @@ public class Teams implements SWGameMode {
         }
 
         p.setInvincible(false);
-        p.sendMessage(Text.color(LanguageManager.getString(p, LanguageManager.TS.MATCH_LEAVE, true)));
+        p.sendMessage(Text.color(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MATCH_LEAVE, true)));
 
         switch (p.getState()) {
             case PLAYING:
             case CAGE:
             case EXTERNAL_SPECTATOR:
             case SPECTATOR:
-                GameManager.tpToLobby(p);
+                RealSkywars.getGameManager().tpToLobby(p);
                 break;
         }
 
-        PlayerManager.giveItems(p.getPlayer(), PlayerManager.PlayerItems.LOBBY);
+        RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.LOBBY);
 
         p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.LOBBY_OR_NOGAME);
         p.setFlying(false);
         p.heal();
 
-        if (p.hasKit())
-        {
+        if (p.hasKit()) {
             p.getKit().cancelTasks();
         }
 
@@ -387,7 +378,7 @@ public class Teams implements SWGameMode {
         }
 
         if (this.state == SWGameMode.GameState.PLAYING || this.state == SWGameMode.GameState.FINISHING) {
-                checkWin();
+            checkWin();
         }
     }
 
@@ -417,7 +408,7 @@ public class Teams implements SWGameMode {
 
     public void addPlayer(RSWPlayer p) {
         if (this.state == SWGameMode.GameState.RESETTING) {
-            p.sendMessage(LanguageManager.getPrefix() + "&cYou cant join this room.");
+            p.sendMessage(RealSkywars.getLanguageManager().getPrefix() + "&cYou cant join this room.");
             return;
         }
         if (this.state == SWGameMode.GameState.FINISHING || this.state == SWGameMode.GameState.PLAYING
@@ -425,12 +416,12 @@ public class Teams implements SWGameMode {
             if (this.specEnabled) {
                 spectate(p, SpectateType.EXTERNAL, null);
             } else {
-                p.sendMessage(LanguageManager.getPrefix() + "&cSpectating is not enabled in this room.");
+                p.sendMessage(RealSkywars.getLanguageManager().getPrefix() + "&cSpectating is not enabled in this room.");
             }
             return;
         }
         if (getPlayersCount() == this.maxPlayers) {
-            p.sendMessage(LanguageManager.getPrefix() + "&cThis room is full");
+            p.sendMessage(RealSkywars.getLanguageManager().getPrefix() + "&cThis room is full");
             return;
         }
 
@@ -439,7 +430,7 @@ public class Teams implements SWGameMode {
 
         for (RSWPlayer ws : this.inRoom) {
             if (p.getPlayer() != null) {
-                ws.sendMessage(LanguageManager.getString(ws, LanguageManager.TS.PLAYER_JOIN_ARENA, true).replace("%player%",
+                ws.sendMessage(RealSkywars.getLanguageManager().getString(ws, LanguageManager.TS.PLAYER_JOIN_ARENA, true).replace("%player%",
                         p.getDisplayName()).replace("%players%", getPlayersCount() + "").replace("%maxplayers%", getMaxPlayers() + ""));
             }
         }
@@ -449,7 +440,7 @@ public class Teams implements SWGameMode {
 
         if (p.getPlayer() != null) {
             this.bossBar.addPlayer(p.getPlayer());
-            ArrayList<String> up = LanguageManager.getList(p, LanguageManager.TL.TITLE_ROOMJOIN);
+            ArrayList<String> up = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.TITLE_ROOMJOIN);
             p.getPlayer().sendTitle(up.get(0), up.get(1), 10, 120, 10);
         }
 
@@ -462,7 +453,7 @@ public class Teams implements SWGameMode {
             }
         }
 
-        PlayerManager.giveItems(p.getPlayer(), PlayerManager.PlayerItems.CAGE);
+        RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.CAGE);
 
         //update tab
         if (!p.isBot()) {
@@ -490,18 +481,18 @@ public class Teams implements SWGameMode {
             if (getPlayersCount() < this.maxMembersTeam + 1) {
                 Bukkit.getScheduler().cancelTask(t.getTaskId());
                 for (RSWPlayer p : this.inRoom) {
-                    p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.ARENA_CANCEL, true));
+                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ARENA_CANCEL, true));
                 }
-                this.bossBar.setTitle(Text.color(LanguageManager.getString(LanguageManager.TSsingle.BOSSBAR_ARENA_WAIT)));
+                this.bossBar.setTitle(Text.color(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_WAIT)));
                 this.bossBar.setProgress(0D);
                 this.state = SWGameMode.GameState.WAITING;
             } else {
                 for (RSWPlayer p : this.getPlayers()) {
-                    p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.ARENA_START_COUNTDOWN, true)
-                            .replace("%time%", Text.formatSeconds(t.getSecondsLeft() ) + ""));
+                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ARENA_START_COUNTDOWN, true)
+                            .replace("%time%", Text.formatSeconds(t.getSecondsLeft()) + ""));
                 }
-                this.bossBar.setTitle(Text.color(LanguageManager.getString(LanguageManager.TSsingle.BOSSBAR_ARENA_STARTING)
-                        .replace("%time%", Text.formatSeconds(t.getSecondsLeft() ) + "")));
+                this.bossBar.setTitle(Text.color(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_STARTING)
+                        .replace("%time%", Text.formatSeconds(t.getSecondsLeft()) + "")));
                 double div = (double) t.getSecondsLeft()
                         / (double) Config.file().getInt("Config.Time-To-Start");
                 this.bossBar.setProgress(div);
@@ -529,6 +520,7 @@ public class Teams implements SWGameMode {
             this.chests.forEach(swChest -> swChest.setLoot(RealSkywars.getChestManager().getChest(this.tierType, swChest.isMiddle()), RealSkywars.getChestManager().getMaxItems(this.tierType, swChest.isMiddle())));
         }
     }
+
     public int getTimePassed() {
         return this.timePassed;
     }
@@ -556,10 +548,12 @@ public class Teams implements SWGameMode {
         this.voters.clear();
         this.votes.clear();
         this.votes.add(2);
-        this.bossBar = Bukkit.createBossBar(Text.color(LanguageManager.getString(LanguageManager.TSsingle.BOSSBAR_ARENA_WAIT)),
+        this.bossBar = Bukkit.createBossBar(Text.color(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_WAIT)),
                 BarColor.WHITE, BarStyle.SOLID);
 
-        this.events = GameManager.parseEvents(this);
+        this.events = RealSkywars.getGameManager().parseEvents(this);
+
+        this.chests.forEach(SWChest::clear);
 
         this.timePassed = 0;
     }
@@ -575,7 +569,7 @@ public class Teams implements SWGameMode {
     public void spectate(RSWPlayer p, SpectateType st, Location killLoc) {
         p.setInvincible(true);
         p.setFlying(true);
-        PlayerManager.giveItems(p.getPlayer(), PlayerManager.PlayerItems.SPECTATOR);
+        RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.SPECTATOR);
 
         switch (st) {
             case GAME:
@@ -601,8 +595,7 @@ public class Teams implements SWGameMode {
                     }
                 }
 
-                if (p.hasKit())
-                {
+                if (p.hasKit()) {
                     p.getKit().cancelTasks();
                 }
 
@@ -635,14 +628,14 @@ public class Teams implements SWGameMode {
                     }
                 }
 
-                p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.MATCH_SPECTATE, true));
+                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MATCH_SPECTATE, true));
                 break;
         }
     }
 
     private void sendLog(RSWPlayer p) {
         if (p.getPlayer() != null) {
-            for (String s : Text.color(LanguageManager.getList(p, LanguageManager.TL.END_LOG))) {
+            for (String s : Text.color(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.END_LOG))) {
                 p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE) + "")
                         .replace("%totalcoins%", p.getGameBalance() + "")
                         .replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + ""));
@@ -659,17 +652,18 @@ public class Teams implements SWGameMode {
             this.startTimer.killTask();
             this.timeCouterTask.cancel();
 
-            this.bossBar.setTitle(LanguageManager.getString(LanguageManager.TSsingle.BOSSBAR_ARENA_END));
+            this.bossBar.setTitle(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_END));
             this.bossBar.setProgress(0);
             this.bossBar.setColor(BarColor.BLUE);
 
-            PlayerManager.getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(LanguageManager.getString(gamePlayer, LanguageManager.TS.WINNER_BROADCAST, true).replace("%winner%", winTeam.getNames()).replace("%map%", this.name)));
+            RealSkywars.getPlayerManager().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(RealSkywars.getLanguageManager().getString(gamePlayer, LanguageManager.TS.WINNER_BROADCAST, true).replace("%winner%", winTeam.getNames()).replace("%map%", this.name)));
 
             this.winTimer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), Config.file().getInt("Config.Time-EndGame"),
                     () -> {
 
                         for (RSWPlayer p : winTeam.getMembers()) {
                             if (p.getPlayer() != null) {
+                                p.setInvincible(true);
                                 p.addStatistic(RSWPlayer.Statistic.TEAM_WIN, 1);
                                 p.executeWinBlock(Config.file().getInt("Config.Time-EndGame") - 2);
                             }
@@ -678,9 +672,9 @@ public class Teams implements SWGameMode {
 
                         for (RSWPlayer g : this.inRoom) {
                             if (g.getPlayer() != null) {
-                                g.sendMessage(LanguageManager.getString(g, LanguageManager.TS.MATCH_END, true).replace("%time%", "" + Text.formatSeconds(Config.file().getInt("Config.Time-EndGame"))));
+                                g.sendMessage(RealSkywars.getLanguageManager().getString(g, LanguageManager.TS.MATCH_END, true).replace("%time%", "" + Text.formatSeconds(Config.file().getInt("Config.Time-EndGame"))));
                                 g.getPlayer().sendTitle("",
-                                        Text.color(LanguageManager.getString(g, LanguageManager.TS.TITLE_WIN, true)
+                                        Text.color(RealSkywars.getLanguageManager().getString(g, LanguageManager.TS.TITLE_WIN, true)
                                                 .replace("%player%", winTeam.getNames())),
                                         10, 40, 10);
                             }

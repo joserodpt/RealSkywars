@@ -1,6 +1,7 @@
 package josegamerpt.realskywars.gui;
 
-import josegamerpt.realskywars.classes.SetupRoom;
+import josegamerpt.realskywars.RealSkywars;
+import josegamerpt.realskywars.misc.SetupRoom;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
@@ -16,29 +17,29 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.managers.MapManager;
-import josegamerpt.realskywars.player.PlayerManager;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class MapSettings {
 
     static Inventory inv;
     static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     static ItemStack confirm = Itens.createItemLore(Material.CHEST, 1, "&9Save Settings",
-			Collections.singletonList("&7Click here to confirm your settings."));
+            Collections.singletonList("&7Click here to confirm your settings."));
     static ItemStack saved = Itens.createItemLore(Material.ENDER_CHEST, 1, "&9Save Settings",
-			Collections.singletonList("&7Settings saved. You can now exit from this menu."));
+            Collections.singletonList("&7Settings saved. You can now exit from this menu."));
     // settings
     static ItemStack specon = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator",
-			Collections.singletonList("&7Spectator is turned &aON &7for dead players."));
+            Collections.singletonList("&7Spectator is turned &aON &7for dead players."));
     static ItemStack specoff = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator",
-			Collections.singletonList("&7Spectator is turned &cOFF &7for dead players."));
+            Collections.singletonList("&7Spectator is turned &cOFF &7for dead players."));
     static ItemStack ieon = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending",
-			Collections.singletonList("&7Instant Ending is turned &aON&7."));
+            Collections.singletonList("&7Instant Ending is turned &aON&7."));
     static ItemStack ieoff = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending",
-			Collections.singletonList("&7Instant Ending is turned &cOFF&7."));
+            Collections.singletonList("&7Instant Ending is turned &cOFF&7."));
     private static Map<UUID, MapSettings> inventories = new HashMap<>();
     SetupRoom gr;
     private UUID uuid;
@@ -102,7 +103,7 @@ public class MapSettings {
 
                             e.setCancelled(true);
 
-                            RSWPlayer gp = PlayerManager.getPlayer(p);
+                            RSWPlayer gp = RealSkywars.getPlayerManager().getPlayer(p);
 
                             if (gp.getSetup().isGUIConfirmed()) {
                                 return;
@@ -120,14 +121,13 @@ public class MapSettings {
                                     if (clickedItem == null || clickedItem.getType() == Material.AIR)
                                         return;
 
-                                    switch (e.getRawSlot())
-                                    {
+                                    switch (e.getRawSlot()) {
                                         case 22:
                                             gp.getSetup().setGUIConfirm(true);
                                             inv.setItem(22, saved);
                                             break;
 
-                                            //Settings
+                                        //Settings
                                         case 10:
                                             if (gp.getSetup().isSpectatingON()) {
                                                 inv.setItem(10, specoff);
@@ -164,14 +164,14 @@ public class MapSettings {
                     if (inventories.containsKey(uuid)) {
                         inventories.get(uuid).unregister();
 
-                        RSWPlayer gp = PlayerManager.getPlayer(p);
+                        RSWPlayer gp = RealSkywars.getPlayerManager().getPlayer(p);
                         if (!gp.getSetup().isGUIConfirmed()) {
                             Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
                                 MapSettings m = new MapSettings(gp.getSetup(), p.getUniqueId());
                                 m.openInventory(gp);
                             }, 3);
                         } else {
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> MapManager.continueSetup(gp), 10);
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> RealSkywars.getMapManager().continueSetup(gp), 10);
                         }
 
                     }

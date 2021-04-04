@@ -4,10 +4,10 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.classes.SWEvent;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.Countdown;
-import josegamerpt.realskywars.modes.SWGameMode;
+import josegamerpt.realskywars.game.modes.SWGameMode;
+import josegamerpt.realskywars.misc.SWEvent;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -113,7 +113,7 @@ public class SWChest {
         return this.getLocation().getBlock().getType().equals(Material.CHEST);
     }
 
-    public void refill() {
+    public void populate() {
         if (!isOpened() && isChest()) {
             this.opened = true;
             Inventory inv = getChest().getInventory();
@@ -156,12 +156,10 @@ public class SWChest {
             int time = Config.file().getInt("Config.Default-Refill-Time");
 
             Optional<SWEvent> e = getRefillTime(sgm);
-            if (e.isPresent())
-            {
+            if (e.isPresent()) {
                 time = e.get().getTimeLeft();
             }
 
-            RealSkywars.getNMS().chestAnimation(this.getChest(), true);
             if (this.holo == null || this.holo.isDeleted() && RealSkywars.hdInstalado) {
                 this.holo = HologramsAPI.createHologram(RealSkywars.getPlugin(), this.getLocation().add(0.5, 2, 0.5));
             }

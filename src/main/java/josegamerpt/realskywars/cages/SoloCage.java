@@ -33,56 +33,7 @@ public class SoloCage implements Cage {
         this.worldName = worldName;
     }
 
-    public int getID() {
-        return this.id;
-    }
-
-    public Location getLoc() {
-        return new Location(Bukkit.getWorld(this.worldName), this.x, this.y, this.z).add(0.5, 0, 0.5);
-    }
-
-    public boolean isEmpty() {
-        return p == null;
-    }
-
-    public void setCage(Material m) {
-        World w = Bukkit.getWorld(this.worldName);
-
-        w.getBlockAt(x, y - 1, z).setType(m);
-        w.getBlockAt(x, y, z + 1).setType(m);
-        w.getBlockAt(x, y, z - 1).setType(m);
-        w.getBlockAt(x, y + 3, z).setType(m);
-        w.getBlockAt(x, y + 1, z + 1).setType(m);
-        w.getBlockAt(x, y + 2, z + 1).setType(m);
-        w.getBlockAt(x, y + 2, z + 1).setType(m);
-        w.getBlockAt(x, y + 1, z - 1).setType(m);
-        w.getBlockAt(x, y + 2, z - 1).setType(m);
-        w.getBlockAt(x, y + 2, z - 1).setType(m);
-        w.getBlockAt(x - 1, y, z).setType(m);
-        w.getBlockAt(x - 1, y + 1, z).setType(m);
-        w.getBlockAt(x - 1, y + 2, z).setType(m);
-        w.getBlockAt(x - 1, y + 2, z).setType(m);
-        w.getBlockAt(x + 1, y, z).setType(m);
-        w.getBlockAt(x + 1, y + 1, z).setType(m);
-        w.getBlockAt(x + 1, y + 2, z).setType(m);
-        w.getBlockAt(x + 1, y + 2, z).setType(m);
-    }
-
-    public void setCage() { setCage((Material) this.p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK)); }
-    public void clearCage() { setCage(Material.AIR); }
-
-    public void addPlayer(RSWPlayer pl) {
-        this.p = pl;
-        pl.setCage(this);
-        this.setCage();
-        this.tpPlayer(pl);
-    }
-
-    public void removePlayer(RSWPlayer p) {
-        p.setCage(null);
-        this.p = null;
-    }
-
+    //CREDIT open source spigot
     public static Location lookAt(Location loc, Location lookat) {
         //Clone the loc to prevent applied changes to the input loc
         loc = loc.clone();
@@ -118,6 +69,61 @@ public class SoloCage implements Cage {
         return loc;
     }
 
+    public int getID() {
+        return this.id;
+    }
+
+    public Location getLoc() {
+        return new Location(Bukkit.getWorld(this.worldName), this.x, this.y, this.z).add(0.5, 0, 0.5);
+    }
+
+    public boolean isEmpty() {
+        return p == null;
+    }
+
+    public void setCage(Material m) {
+        World w = Bukkit.getWorld(this.worldName);
+
+        w.getBlockAt(x, y - 1, z).setType(m);
+        w.getBlockAt(x, y, z + 1).setType(m);
+        w.getBlockAt(x, y, z - 1).setType(m);
+        w.getBlockAt(x, y + 3, z).setType(m);
+        w.getBlockAt(x, y + 1, z + 1).setType(m);
+        w.getBlockAt(x, y + 2, z + 1).setType(m);
+        w.getBlockAt(x, y + 2, z + 1).setType(m);
+        w.getBlockAt(x, y + 1, z - 1).setType(m);
+        w.getBlockAt(x, y + 2, z - 1).setType(m);
+        w.getBlockAt(x, y + 2, z - 1).setType(m);
+        w.getBlockAt(x - 1, y, z).setType(m);
+        w.getBlockAt(x - 1, y + 1, z).setType(m);
+        w.getBlockAt(x - 1, y + 2, z).setType(m);
+        w.getBlockAt(x - 1, y + 2, z).setType(m);
+        w.getBlockAt(x + 1, y, z).setType(m);
+        w.getBlockAt(x + 1, y + 1, z).setType(m);
+        w.getBlockAt(x + 1, y + 2, z).setType(m);
+        w.getBlockAt(x + 1, y + 2, z).setType(m);
+    }
+
+    public void setCage() {
+        setCage((Material) this.p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK));
+    }
+
+    public void clearCage() {
+        setCage(Material.AIR);
+    }
+
+    public void addPlayer(RSWPlayer pl) {
+        this.p = pl;
+        pl.setCage(this);
+        this.setCage();
+        this.tpPlayer(pl);
+    }
+
+    public void removePlayer(RSWPlayer p) {
+        p.setCage(null);
+        this.p = null;
+    }
+
     public void tpPlayer(RSWPlayer p) {
         Location lookat = new Location(Bukkit.getWorld(this.worldName), locx, locy, locz);
         p.teleport(lookAt(getLoc(), lookat));
@@ -143,7 +149,7 @@ public class SoloCage implements Cage {
 
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
             if (this.p != null)
-             this.p.setInvincible(false);
+                this.p.setInvincible(false);
         }, 100);
     }
 

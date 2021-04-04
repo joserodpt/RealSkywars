@@ -1,6 +1,6 @@
-#Data Structure for Shops:
-# MATERIAL>PRICE>NAME>PERMISSION
 Main-Shop:
+  #Data Structure:
+  #MATERIAL>PRICE>NAME>PERMISSION
   Cage-Blocks:
     - SPAWNER>50>&5Spawner>RealSkywars.Spawner
     - DIAMOND_BLOCK>20>&bDiamond Cage>RealSkywars.Cage
@@ -59,6 +59,8 @@ Main-Shop:
     - INFESTED_CRACKED_STONE_BRICKS>20>&bINFESTED_CRACKED_STONE_BRICKS>RealSkywars.Cage
     - REDSTONE_BLOCK>20>&bREDSTONE_BLOCK>RealSkywars.Cage
     - TNT>20>&bTNT Block>RealSkywars.Cage
+  #Data Structure:
+  #MATERIAL>PRICE>NAME>PERMISSION>PARTICLE
   Bow-Particles:
     - GUNPOWDER>10>&cExplosion (Normal)>RealSkywars.Particle>EXPLOSION_NORMAL
     - TNT>10>&cExplosion &4(Large)>RealSkywars.Particle>EXPLOSION_LARGE
@@ -102,6 +104,8 @@ Main-Shop:
     - COMPOSTER>10>&9Composter &a(Green Particle)>RealSkywars.Particle>COMPOSTER
     - NETHER_STAR>30>&f&lFLASH>RealSkywars.Particle>FLASH
     - WATER_BUCKET>10>&9Falling &bWater>RealSkywars.Particle>FALLING_WATER
+  #Data Structure:
+  #MATERIAL>PRICE>NAME>PERMISSION
   Win-Blocks:
     - RANDOMBLOCK>10>&5Random &aBlocks>RealSkywars.Win-Block
     - DIAMOND_BLOCK>10>&9Diamond &7Blocks>RealSkywars.Win-Block

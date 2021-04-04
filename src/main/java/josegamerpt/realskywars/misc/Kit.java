@@ -1,8 +1,9 @@
-package josegamerpt.realskywars.classes;
+package josegamerpt.realskywars.misc;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.managers.KitManager;
+import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -41,48 +42,47 @@ public class Kit {
     }
 
     public void saveKit() {
-        KitManager.getKits().add(this);
-        KitManager.registerKit(this);
+        RealSkywars.getKitManager().getKits().add(this);
+        RealSkywars.getKitManager().registerKit(this);
     }
 
     public void save() {
-        KitManager.getKits().remove(this);
-        KitManager.getKits().add(this);
+        RealSkywars.getKitManager().getKits().remove(this);
+        RealSkywars.getKitManager().getKits().add(this);
     }
 
     public void deleteKit() {
-        KitManager.unregisterKit(this);
-        KitManager.getKits().remove(this);
+        RealSkywars.getKitManager().unregisterKit(this);
+        RealSkywars.getKitManager().getKits().remove(this);
     }
 
     public List<String> getDescription(boolean shop) {
-        if (!buyable)
-        {
+        if (!this.buyable) {
             return Collections.emptyList();
         }
 
         ArrayList<String> desc = new ArrayList<>();
 
-        desc.add("&fCusto: &9" + this.price);
+        desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_PRICE).replace("%price%", this.price.toString()));
 
-        if (enderPearlGive) {
-            desc.add("&fThis kit has the &5Ender &dPerk");
+        if (this.enderPearlGive) {
+            desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_ENDERPERK));
         }
 
         desc.add("");
         if (shop) {
-            desc.add("&fClick to buy this kit.");
+            desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_BUY));
         } else {
-            desc.add("&fClick to select this kit.");
+            desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_SELECT));
         }
 
         desc.add("");
 
         //contents
-        desc.add("&eThis kit contains:");
-        for (ItemStack s : contents) {
+        desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_CONTAINS));
+        for (ItemStack s : this.contents) {
             if (s != null) {
-                desc.add("&fx" + s.getAmount() + " &9" + RealSkywars.getNMS().getItemName(s));
+                desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_ITEM).replace("%amount%", s.getAmount() + "").replace("%item%", RealSkywars.getNMS().getItemName(s)));
             }
         }
 

@@ -11,7 +11,7 @@ import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 
-public class NMS116R3 implements SWnms {
+public class NMS116R3 implements RSWnms {
 
     @Override
     public void chestAnimation(Chest chest, boolean open) {

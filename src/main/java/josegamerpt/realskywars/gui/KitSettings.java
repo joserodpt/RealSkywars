@@ -1,7 +1,8 @@
 package josegamerpt.realskywars.gui;
 
-import josegamerpt.realskywars.classes.Kit;
+import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.managers.KitManager;
+import josegamerpt.realskywars.misc.Kit;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
@@ -17,9 +18,11 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import josegamerpt.realskywars.RealSkywars;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class KitSettings {
 
@@ -27,14 +30,14 @@ public class KitSettings {
     static Inventory inv;
     static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     static ItemStack confirm = Itens.createItemLore(Material.CHEST, 1, "&9Save Settings",
-			Collections.singletonList("&7Click here to confirm your settings."));
+            Collections.singletonList("&7Click here to confirm your settings."));
     static ItemStack saved = Itens.createItemLore(Material.ENDER_CHEST, 1, "&9Save Settings",
-			Collections.singletonList("&7Settings saved. You can now exit from this menu."));
+            Collections.singletonList("&7Settings saved. You can now exit from this menu."));
     // settings
     static ItemStack dragon = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds",
-			Collections.singletonList("&aON"));
+            Collections.singletonList("&aON"));
     static ItemStack dragoff = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds",
-			Collections.singletonList("&cOFF"));
+            Collections.singletonList("&cOFF"));
     private static Map<UUID, KitSettings> inventories = new HashMap<>();
     private UUID uuid;
 

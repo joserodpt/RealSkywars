@@ -1,4 +1,4 @@
-package josegamerpt.realskywars.classes;
+package josegamerpt.realskywars.misc;
 
 public class Selections {
 

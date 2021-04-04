@@ -1,6 +1,5 @@
 package josegamerpt.realskywars.chests;
 
-import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.configuration.chests.*;
 import org.bukkit.inventory.ItemStack;
 
@@ -8,10 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChestManager {
-
-    public enum TierType {
-        BASIC, NORMAL, OP, CAOS
-    }
 
     private int defaultChance = 50;
     private String header = "Itens.";
@@ -224,7 +219,7 @@ public class ChestManager {
                     NormalChest.file().set("Itens", null);
                     for (SWChestItem item : itens) {
                         NormalChest.file().set(header + i + ".ItemStack", item.getItemStack());
-                        NormalChest.file().set(header + i + ".Chance",item.getChance());
+                        NormalChest.file().set(header + i + ".Chance", item.getChance());
                         i++;
                     }
                     NormalChest.save();
@@ -236,7 +231,7 @@ public class ChestManager {
                     OPChestMiddle.file().set("Itens", null);
                     for (SWChestItem item : itens) {
                         OPChestMiddle.file().set(header + i + ".ItemStack", item.getItemStack());
-                        OPChestMiddle.file().set(header + i + ".Chance",item.getChance());
+                        OPChestMiddle.file().set(header + i + ".Chance", item.getChance());
                         i++;
                     }
                     OPChestMiddle.save();
@@ -276,37 +271,36 @@ public class ChestManager {
     }
 
     public int getMaxItems(ChestManager.TierType tierType, Boolean middle) {
-        switch (tierType)
-        {
+        switch (tierType) {
             case BASIC:
-                if (middle)
-                {
+                if (middle) {
                     return BasicChestMiddle.file().getInt(itens);
                 } else {
                     return BasicChest.file().getInt(itens);
                 }
             case NORMAL:
-                if (middle)
-                {
+                if (middle) {
                     return NormalChestMiddle.file().getInt(itens);
                 } else {
                     return NormalChest.file().getInt(itens);
                 }
             case OP:
-                if (middle)
-                {
+                if (middle) {
                     return OPChestMiddle.file().getInt(itens);
                 } else {
                     return OPChest.file().getInt(itens);
                 }
             case CAOS:
-                if (middle)
-                {
+                if (middle) {
                     return CAOSchestMiddle.file().getInt(itens);
                 } else {
                     return CAOSchest.file().getInt(itens);
                 }
         }
         return 0;
+    }
+
+    public enum TierType {
+        BASIC, NORMAL, OP, CAOS
     }
 }

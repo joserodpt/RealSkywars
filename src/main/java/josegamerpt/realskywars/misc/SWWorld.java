@@ -1,10 +1,10 @@
-package josegamerpt.realskywars.classes;
+package josegamerpt.realskywars.misc;
 
 import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.modes.SWGameMode;
-import josegamerpt.realskywars.modes.Solo;
-import josegamerpt.realskywars.worlds.WorldManager;
+import josegamerpt.realskywars.managers.WorldManager;
+import josegamerpt.realskywars.game.modes.SWGameMode;
+import josegamerpt.realskywars.game.modes.Solo;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 
@@ -13,30 +13,26 @@ import java.util.logging.Level;
 public class SWWorld {
 
     private final SWGameMode gameRoom;
+    private final WorldManager wm = RealSkywars.getWorldManager();
     private String worldName;
     private World world;
-    private final WorldManager wm = RealSkywars.getWorldManager();
 
-    public SWWorld(SWGameMode gameRoom, World w)
-    {
+    public SWWorld(SWGameMode gameRoom, World w) {
         this.gameRoom = gameRoom;
         w.setAutoSave(false);
         this.world = w;
         this.worldName = this.world.getName();
     }
 
-    public String getWorldName()
-    {
+    public String getWorldName() {
         return this.worldName;
     }
 
-    public World getWorld()
-    {
+    public World getWorld() {
         return this.world;
     }
 
-    public void resetWorld()
-    {
+    public void resetWorld() {
         //replace world
         this.wm.deleteWorld(worldName, true);
 
@@ -53,7 +49,7 @@ public class SWWorld {
             wb.setSize(this.gameRoom.getBorderSize());
 
             this.gameRoom.setState(SWGameMode.GameState.AVAILABLE);
-            Debugger.print(Solo.class, "[ROOM " + this.gameRoom.getName() + " ID: " + this.gameRoom.getID() + "] sucessfully resetted.");
+            Debugger.print(Solo.class, "[ROOM " + this.gameRoom.getName() + "] sucessfully resetted.");
         } else {
             RealSkywars.log(Level.SEVERE, "ERROR! Could not load " + worldName);
         }

@@ -27,7 +27,6 @@ public class TeamCage implements Cage {
         return this.id;
     }
 
-
     public Location getLoc() {
         return new Location(Bukkit.getWorld(this.worldName), this.loc.getBlockX(), this.loc.getBlockY(), this.loc.getBlockZ()).add(0.5, 0, 0.5);
     }

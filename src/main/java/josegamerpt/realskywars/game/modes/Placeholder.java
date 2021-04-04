@@ -1,9 +1,9 @@
-package josegamerpt.realskywars.modes;
+package josegamerpt.realskywars.game.modes;
 
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.chests.SWChest;
-import josegamerpt.realskywars.classes.SWEvent;
-import josegamerpt.realskywars.classes.Team;
+import josegamerpt.realskywars.misc.SWEvent;
+import josegamerpt.realskywars.misc.Team;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.ArenaCuboid;
@@ -190,11 +190,6 @@ public class Placeholder implements SWGameMode {
     @Override
     public ArenaCuboid getArena() {
         return null;
-    }
-
-    @Override
-    public int getID() {
-        return -1;
     }
 
     @Override

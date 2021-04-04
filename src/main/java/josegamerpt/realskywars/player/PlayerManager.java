@@ -1,19 +1,19 @@
 package josegamerpt.realskywars.player;
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.classes.DisplayItem;
-import josegamerpt.realskywars.classes.Selections;
-import josegamerpt.realskywars.classes.Selections.Key;
-import josegamerpt.realskywars.configuration.Items;
 import josegamerpt.realskywars.configuration.Players;
-import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
-import josegamerpt.realskywars.modes.SWGameMode;
+import josegamerpt.realskywars.misc.DisplayItem;
+import josegamerpt.realskywars.misc.Selections;
+import josegamerpt.realskywars.misc.Selections.Key;
+import josegamerpt.realskywars.game.modes.SWGameMode;
+import josegamerpt.realskywars.utils.Itens;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -21,32 +21,34 @@ import java.util.Map.Entry;
 
 public class PlayerManager {
 
-    static HashMap<Player, Player> trackingPlayers = new HashMap<>();
-    private static ArrayList<RSWPlayer> players = new ArrayList<>();
+    private HashMap<Player, Player> trackingPlayers = new HashMap<>();
+    private ArrayList<RSWPlayer> players = new ArrayList<>();
+    public static ArrayList<UUID> teleporting = new ArrayList<>();
 
-    public static void giveItems(Player p, PlayerItems i) {
+    public void giveItems(Player p, Items i) {
         if (p != null) {
             p.getInventory().clear();
+            RSWPlayer pg = RealSkywars.getPlayerManager().getPlayer(p);
             switch (i) {
                 case LOBBY:
-                    p.getInventory().setItem(0, Items.PROFILE);
-                    p.getInventory().setItem(4, Items.MAPS);
-                    p.getInventory().setItem(8, Items.SHOP);
+                    p.getInventory().setItem(0, getItem(pg, Items.PROFILE));
+                    p.getInventory().setItem(4, getItem(pg, Items.MAPS));
+                    p.getInventory().setItem(8, getItem(pg, Items.SHOP));
                     break;
                 case CAGE:
-                    p.getInventory().setItem(1, Items.KIT);
-                    p.getInventory().setItem(4, Items.CHESTS);
-                    p.getInventory().setItem(7, Items.LEAVE);
+                    p.getInventory().setItem(1, getItem(pg, Items.KIT));
+                    p.getInventory().setItem(4, getItem(pg, Items.CHESTS));
+                    p.getInventory().setItem(7, getItem(pg, Items.LEAVE));
                     break;
                 case SPECTATOR:
-                    p.getInventory().setItem(1, Items.SPECTATE);
-                    p.getInventory().setItem(2, Items.PLAYAGAIN);
-                    p.getInventory().setItem(7, Items.LEAVE);
+                    p.getInventory().setItem(1, getItem(pg, Items.SPECTATE));
+                    p.getInventory().setItem(2, getItem(pg, Items.PLAYAGAIN));
+                    p.getInventory().setItem(7, getItem(pg, Items.LEAVE));
                     break;
                 case SETUP:
-                    p.getInventory().setItem(4, Items.CAGESET);
-                    p.getInventory().setItem(0, Items.CHEST1);
-                    p.getInventory().setItem(8, Items.CHEST2);
+                    p.getInventory().setItem(4, getItem(pg, Items.CAGESET));
+                    p.getInventory().setItem(0, getItem(pg, Items.CHEST1));
+                    p.getInventory().setItem(8, getItem(pg, Items.CHEST2));
                     break;
                 default:
                     break;
@@ -54,7 +56,35 @@ public class PlayerManager {
         }
     }
 
-    public static void loadPlayer(Player p) {
+    public ItemStack getItem(RSWPlayer p, Items i) {
+        switch (i) {
+            case KIT:
+                return Itens.createItem(Material.BOW, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_KIT_NAME, false));
+            case PROFILE:
+                return Itens.createItem(Material.BOOK, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_PROFILE_NAME, false));
+            case CAGESET:
+                return Itens.createItem(Material.BEACON, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_CAGESET_NAME, false));
+            case MAPS:
+                return Itens.createItem(Material.NETHER_STAR, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_MAPS_NAME, false));
+            case SHOP:
+                return Itens.createItem(Material.EMERALD, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_SHOP_NAME, false));
+            case LEAVE:
+                return Itens.createItem(Material.MINECART, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_LEAVE_NAME, false));
+            case CHESTS:
+                return Itens.createItem(Material.ENDER_CHEST, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_CHESTS_NAME, false));
+            case SPECTATE:
+                return Itens.createItem(Material.MAP, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_SPECTATE_NAME, false));
+            case PLAYAGAIN:
+                return Itens.createItem(Material.TOTEM_OF_UNDYING, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_PLAYAGAIN_NAME, false));
+            case CHEST1:
+                return Itens.createItem(Material.CHEST, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_CHEST1_NAME, false));
+            case CHEST2:
+                return Itens.createItem(Material.CHEST, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_CHEST2_NAME, false));
+        }
+        return new ItemStack(Material.STICK);
+    }
+
+    public void loadPlayer(Player p) {
         RSWPlayer gp;
         if (Players.file().isConfigurationSection(p.getUniqueId().toString())) {
             int tkills = Players.file().getInt(p.getUniqueId() + ".Kills");
@@ -82,22 +112,22 @@ public class PlayerManager {
             gp.save();
         } else {
             gp = new RSWPlayer(p, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, null, 0, 0, 0, 0, 0D,
-                    LanguageManager.getDefaultLanguage(), new ArrayList<>(), 0, 0);
+                    RealSkywars.getLanguageManager().getDefaultLanguage(), new ArrayList<>(), 0, 0);
             gp.getSelections().put(Selections.Key.MAPVIEWER, Selections.Value.MAPV_ALL);
             gp.save();
             gp.saveData();
         }
         gp.heal();
-        if (GameManager.tpLobbyOnJoin()) {
-            GameManager.tpToLobby(gp);
+        if (RealSkywars.getGameManager().tpLobbyOnJoin()) {
+            RealSkywars.getGameManager().tpToLobby(gp);
         }
     }
 
-    private static Selections.Value getSelection(String mv) {
+    private Selections.Value getSelection(String mv) {
         return Selections.Value.valueOf(mv);
     }
 
-    public static RSWPlayer getPlayer(Player p) {
+    public RSWPlayer getPlayer(Player p) {
         for (RSWPlayer g : players) {
             if (g.getPlayer() == p) {
                 return g;
@@ -106,10 +136,10 @@ public class PlayerManager {
         return null;
     }
 
-    public static void savePlayer(RSWPlayer p, RSWPlayer.PlayerData d) {
+    public void savePlayer(RSWPlayer p, RSWPlayer.PlayerData d) {
         if (p.getPlayer() != null) {
-            if (!Players.file().isConfigurationSection(p.getUniqueId().toString())) {
-                RealSkywars.log("Creating empty player file for " + p.getName() + " UUID: " + p.getUniqueId().toString());
+            if (!Players.file().isConfigurationSection(p.getUUID().toString())) {
+                RealSkywars.log("Creating empty player file for " + p.getName() + " UUID: " + p.getUUID().toString());
             }
             switch (d) {
                 case ALL:
@@ -121,69 +151,58 @@ public class PlayerManager {
                     savePlayer(p, RSWPlayer.PlayerData.BOUGHT);
                     break;
                 case NAME:
-                    Players.file().set(p.getUniqueId() + ".Name", p.getName());
+                    Players.file().set(p.getUUID() + ".Name", p.getName());
                     break;
                 case LANG:
-                    Players.file().set(p.getUniqueId() + ".Language", p.getLanguage());
+                    Players.file().set(p.getUUID() + ".Language", p.getLanguage());
                     break;
                 case COINS:
-                    Players.file().set(p.getUniqueId() + ".Coins", p.getCoins());
+                    Players.file().set(p.getUUID() + ".Coins", p.getCoins());
                     break;
                 case PREFS:
                     for (Entry<Selections.Key, Selections.Value> entry : p.getSelections().entrySet()) {
                         Selections.Key key = entry.getKey();
                         Selections.Value value = entry.getValue();
-                        Players.file().set(p.getUniqueId() + ".Preferences." + key.name(), value.name());
+                        Players.file().set(p.getUUID() + ".Preferences." + key.name(), value.name());
                     }
                     if (p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK) != null) {
-                        Players.file().set(p.getUniqueId() + ".Preferences.Cage-Material", ((Material) p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK)).name());
+                        Players.file().set(p.getUUID() + ".Preferences.Cage-Material", ((Material) p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK)).name());
                     }
                     break;
                 case STATS:
-                    Players.file().set(p.getUniqueId() + ".Wins.Solo", p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO));
-                    Players.file().set(p.getUniqueId() + ".Wins.Teams", p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS));
-                    Players.file().set(p.getUniqueId() + ".Kills", p.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS));
-                    Players.file().set(p.getUniqueId() + ".Deaths", p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS));
-                    Players.file().set(p.getUniqueId() + ".Loses", p.getStatistics(RSWPlayer.PlayerStatistics.LOSES));
-                    Players.file().set(p.getUniqueId() + ".Games-Played", p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED));
+                    Players.file().set(p.getUUID() + ".Wins.Solo", p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO));
+                    Players.file().set(p.getUUID() + ".Wins.Teams", p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS));
+                    Players.file().set(p.getUUID() + ".Kills", p.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS));
+                    Players.file().set(p.getUUID() + ".Deaths", p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS));
+                    Players.file().set(p.getUUID() + ".Loses", p.getStatistics(RSWPlayer.PlayerStatistics.LOSES));
+                    Players.file().set(p.getUUID() + ".Games-Played", p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED));
                     break;
                 case BOUGHT:
-                    Players.file().set(p.getUniqueId() + ".Bought-Items", p.getBoughtItems());
+                    Players.file().set(p.getUUID() + ".Bought-Items", p.getBoughtItems());
                     break;
             }
             Players.save();
         }
     }
 
-    public static Player searchPlayer(UUID u) {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.getUniqueId().equals(u)) {
-                return p;
-            }
-        }
-        return null;
-    }
-
-    public static void setLanguage(RSWPlayer player, String s) {
+    public void setLanguage(RSWPlayer player, String s) {
         player.setProperty(RSWPlayer.PlayerProperties.LANGUAGE, s);
-        player.sendMessage(LanguageManager.getString(player, LanguageManager.TS.LANGUAGE_SET, true).replace("%language%", "" + s));
+        player.sendMessage(RealSkywars.getLanguageManager().getString(player, LanguageManager.TS.LANGUAGE_SET, true).replace("%language%", "" + s));
     }
 
-    public static Boolean boughtItem(RSWPlayer p, String string, ShopManager.Categories c) {
+    public Boolean boughtItem(RSWPlayer p, String string, ShopManager.Categories c) {
         return p.getBoughtItems().contains(ChatColor.stripColor(string + "|" + c.name()));
     }
 
-    public static void loadPlayers() {
-        PlayerManager.players.clear();
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            PlayerManager.loadPlayer(p);
-        }
+    public void loadPlayers() {
+        this.players.clear();
+        Bukkit.getOnlinePlayers().forEach(player -> RealSkywars.getPlayerManager().loadPlayer(player));
     }
 
-    public static List<DisplayItem> getBoughtItems(RSWPlayer player, ShopManager.Categories t) {
+    public List<DisplayItem> getBoughtItems(RSWPlayer player, ShopManager.Categories t) {
         List<DisplayItem> bought = new ArrayList<>();
 
-        for (DisplayItem a : ShopManager.getCategoryContents(player, t)) {
+        for (DisplayItem a : RealSkywars.getShopManager().getCategoryContents(player, t)) {
             if (a != null && a.isBought()) {
                 bought.add(a);
             }
@@ -195,34 +214,33 @@ public class PlayerManager {
         return bought;
     }
 
-    public static int countPlayingPlayers() {
-        return GameManager.getGames().stream().mapToInt(SWGameMode::getPlayersCount).sum();
+    public int countPlayingPlayers() {
+        return RealSkywars.getGameManager().getGames().stream().mapToInt(SWGameMode::getPlayersCount).sum();
     }
 
-    public static void stopScoreboards() {
+    public void stopScoreboards() {
         players.forEach(gamePlayer -> gamePlayer.getScoreboard().stop());
     }
 
-    public static ArrayList<RSWPlayer> getPlayers() {
+    public ArrayList<RSWPlayer> getPlayers() {
         return players;
     }
 
-    public static void addPlayer(RSWPlayer rswPlayer) {
+    public void addPlayer(RSWPlayer rswPlayer) {
         players.add(rswPlayer);
     }
 
-    public static void removePlayer(RSWPlayer rswPlayer) {
+    public void removePlayer(RSWPlayer rswPlayer) {
         players.remove(rswPlayer);
     }
 
-    public static void trackPlayer(RSWPlayer gp) {
-
+    public void trackPlayer(RSWPlayer gp) {
         ArrayList<RSWPlayer> tmp = new ArrayList<>(gp.getMatch().getPlayers());
         tmp.remove(gp);
 
         Optional<RSWPlayer> search = tmp.stream().filter(c -> c.getState().equals(RSWPlayer.PlayerState.PLAYING)).findAny();
         if (!search.isPresent() || search.get().isBot()) {
-            gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.NO_TRACKER, true));
+            gp.sendMessage(RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.NO_TRACKER, true));
             return;
         }
 
@@ -232,7 +250,7 @@ public class PlayerManager {
         //Credit GITHUB PlayerCompass
 
         trackingPlayers.put(player, target);
-        gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.TRACK_FOUND, true).replace("%player%", target.getDisplayName()));
+        gp.sendMessage(RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.TRACK_FOUND, true).replace("%player%", target.getDisplayName()));
 
         new BukkitRunnable() {
             public void run() {
@@ -250,9 +268,8 @@ public class PlayerManager {
 
                 player.setCompassTarget(target.getLocation());
             }
-        }.runTaskTimerAsynchronously(RealSkywars.getPlugin(), 5L, 10L);
+        }.runTaskTimerAsynchronously(RealSkywars.getPlugin(), 5L, 30L);
     }
 
-    public enum PlayerItems {LOBBY, CAGE, SETUP, SPECTATOR}
-
+    public enum Items {LOBBY, CAGE, SETUP, SPECTATOR, PROFILE, CAGESET, MAPS, SHOP, LEAVE, CHESTS, SPECTATE, KIT, PLAYAGAIN, CHEST1, CHEST2}
 }

@@ -40,18 +40,6 @@ public class Itens {
         return item;
     }
 
-    public static ItemStack getHead(Player player) {
-        ItemStack item = new ItemStack(Material.PLAYER_HEAD, 1);
-        SkullMeta skull = (SkullMeta) item.getItemMeta();
-        skull.setDisplayName(player.getName());
-        ArrayList<String> lore = new ArrayList<>();
-        lore.add("&fClick to Teleport");
-        skull.setLore(Text.color(lore));
-        skull.setOwningPlayer(Bukkit.getServer().getPlayer(player.getName()));
-        item.setItemMeta(skull);
-        return item;
-    }
-
     public static ItemStack addLore(ItemStack i, List<String> lor) {
         if (i != null) {
             ItemStack is = i.clone();

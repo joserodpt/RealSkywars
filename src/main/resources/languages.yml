@@ -7,81 +7,35 @@ Strings:
     DeathMatch: "&5Deathmatch"
     Run-Time: "&fTime left: &b%time%"
     Starting: "&fStarting in &b%time% &fseconds"
+  Admin-Shutdown: "&cAn ADMIN ordered all games to shut down."
+  Search:
+    Not-Found: "&aEmpty"
+  Shop:
+    Already-Bought: "&fItem &aalready bought."
+    Buy: "&fPrice: &b%price%&f. Click to buy!"
+  Menus:
+    Filter-Button:
+      Title: "&bFilter"
+      Description: "&fClick here to filter the contents of this page."
+    Next-Button:
+      Title: "&aNext"
+      Description: "&fClick here to go to the next page."
+    Back-Button:
+      Title: "&eBack"
+      Description: "&fClick here to go to the previous page."
+    Main-Menu-Button:
+      Title: "&9Menu"
+      Description: "&fClick here to go to the main menu."
+  Kit:
+    Price: "&fPrice: &9%price%"
+    Contains: "&eThis kit contains:"
+    Items: "&fx%amount% &b%item%"
+    Buy: "&fClick to buy this kit."
+    Select: "&fClick to select this kit."
+    Ender-Perk: "&fThis kit has the &5Ender &dPerk. It gives enderpearls in a timed interval."
+Default-Language: ENGLISH
 Languages:
   ENGLISH:
-    Itens:
-      Statistics:
-        Name: "&f%player% &fstatistics"
-        Lore:
-          - "%space%"
-          - " &fCoins: &e%coins%"
-          - "%space%"
-          - " &fSolo Wins: &a%solowins%"
-          - " &fTeam Wins: &a%teamwins%"
-          - " &fKills: &a%kills%"
-          - " &fDeaths: &a%deaths%"
-          - "%space%"
-          - " &fGames Played: &b%gamesplayed%"
-          - " &fLoses: &b%loses%"
-          - "%space%"
-
-      Map:
-        Not-Found: "&9No Maps Found"
-        Title: "&9%map% &7| &f%mode%"
-        Description:
-          - ""
-          - "&fPlayers: &b%players%&f/&b%maxplayers%"
-          - "&fClick to join!"
-          - ""
-    Scoreboards:
-      Lobby:
-        Lines:
-          - "%space%"
-          - " &fCoins: &e%coins%"
-          - "%space%"
-          - " &fSolo Wins: &a%solowins%"
-          - " &fTeam Wins: &a%teamwins%"
-          - " &fKills: &a%kills%"
-          - " &fDeaths: &a%deaths%"
-          - "%space%"
-          - " &fGames Played: &b%gamesplayed%"
-          - " &fLoses: &b%loses%"
-          - " &fPlaying: &b%playing% &fplayers"
-          - "%space%"
-        Title: " &aRealSkywars &fLobby "
-      Cage:
-        Lines:
-          - "%space%"
-          - " &fPlayers: &b%players%"
-          - " &fMode: &b%mode%"
-          - " &fState: &b%state%"
-          - "%space%"
-          - " &fWaiting for players..."
-          - "%space%"
-        Title: " &fMap: &b%map%"
-      Game:
-        Lines:
-          - "%space%"
-          - " &fPlayers: &b%players%"
-          - " &fSpectators: &b%spectators%"
-          - " &fNext Event: &b%nextevent%"
-          - " &fMode: &b%mode%"
-          - " &fKills: &b%kills%"
-          - "%space%"
-          - " &fTime passed: &b%runtime%"
-          - "%space%"
-        Title: " &fMap: &b%map%"
-      Spectate:
-        Lines:
-          - "%space%"
-          - " &fPlayers: &b%players%"
-          - " &fSpectators: &b%spectators%"
-          - " &fNext Event: &b%nextevent%"
-          - " &fMode: &b%mode%"
-          - "%space%"
-          - " &fTime passed: &b%runtime%"
-          - "%space%"
-        Title: " &fMap: &b%map% "
     Messages:
       System:
         States:
@@ -131,6 +85,10 @@ Languages:
           No-Permission: "&fYou &cdon't have permission &fto buy this item."
           Not-Buyable: "&fThis item &cisn't &abuyable&f."
         Arena:
+          Cant-Join: "&fYou &ccant &fjoin this room right now."
+          Blocked-Command: "&fThis command is &cblocked &fwhile you are in a match."
+          Spectating-Disabled: "&bSpectating &fis &cdisabled &fin this room."
+          Room-Full: "&fThis room is &cfull&f."
           Tracker-Found: "&fNow tracking &b%player%"
           No-Tracker-Found: "&fThere is no player to track."
           Winner-Broadcast: "&b%winner% &fwon on the map &a%map%"
@@ -209,3 +167,111 @@ Languages:
           - "&fTotal coins: &b%totalcoins%"
           - "&fKills: &b%kills%"
           - "&7&m&l                                 "
+    Menus:
+      Spectate-Title: "&9Players"
+      Chest-Vote-Title: "&5&lVote"
+      Language:
+        Title: "&9&lLanguage"
+        Select: "&fClick here to select this language."
+      Player-Profile:
+        Title: "&9&lYour Profile"
+        View-Item: "&fClick here to view this item."
+        Reset-Data:
+          Title: "&4Reset Your Data"
+          Alert: "&cProceed with caution. This action cannot be restored."
+      Shop-Menu-Title: "&fShop &9Categories"
+    Itens:
+      Profile:
+        Name: "&9Your Profile &7(Right Click)"
+      CageSet:
+        Name: "&bPlace me 2 add a Cage"
+      Maps:
+        Name: "&bMaps &7(Right Click)"
+      Shop:
+        Name: "&2Shop &7(Right Click)"
+      Leave:
+        Name: "&cLeave &7(Right Click)"
+      Chests:
+        Name: "&9Chests &7(Right Click)"
+      Spectate:
+        Name: "&bSpectate &7(Right Click)"
+      Kit:
+        Name: "&eKits &7(Right Click)"
+      PlayAgain:
+        Name: "&dPlay Again &7(Right Click)"
+      #Dont translate Chest1 & Chest2
+      Chest1:
+        Name: "Common Chest"
+      Chest2:
+        Name: "MID Chest"
+      Statistics:
+        Name: "&f%player% &fstatistics"
+        Lore:
+          - "%space%"
+          - " &fCoins: &e%coins%"
+          - "%space%"
+          - " &fSolo Wins: &a%solowins%"
+          - " &fTeam Wins: &a%teamwins%"
+          - " &fKills: &a%kills%"
+          - " &fDeaths: &a%deaths%"
+          - "%space%"
+          - " &fGames Played: &b%gamesplayed%"
+          - " &fLoses: &b%loses%"
+          - "%space%"
+      Map:
+        Not-Found: "&9No Maps Found"
+        Title: "&9%map% &7| &f%mode%"
+        Description:
+          - ""
+          - "&fPlayers: &b%players%&f/&b%maxplayers%"
+          - "&fClick to join!"
+          - ""
+    Scoreboards:
+      Lobby:
+        Lines:
+          - "%space%"
+          - " &fCoins: &e%coins%"
+          - "%space%"
+          - " &fSolo Wins: &a%solowins%"
+          - " &fTeam Wins: &a%teamwins%"
+          - " &fKills: &a%kills%"
+          - " &fDeaths: &a%deaths%"
+          - "%space%"
+          - " &fGames Played: &b%gamesplayed%"
+          - " &fLoses: &b%loses%"
+          - " &fPlaying: &b%playing% &fplayers"
+          - "%space%"
+        Title: " &aRealSkywars &fLobby "
+      Cage:
+        Lines:
+          - "%space%"
+          - " &fPlayers: &b%players%"
+          - " &fMode: &b%mode%"
+          - " &fState: &b%state%"
+          - "%space%"
+          - " &fWaiting for players..."
+          - "%space%"
+        Title: " &fMap: &b%map%"
+      Game:
+        Lines:
+          - "%space%"
+          - " &fPlayers: &b%players%"
+          - " &fSpectators: &b%spectators%"
+          - " &fNext Event: &b%nextevent%"
+          - " &fMode: &b%mode%"
+          - " &fKills: &b%kills%"
+          - "%space%"
+          - " &fTime passed: &b%runtime%"
+          - "%space%"
+        Title: " &fMap: &b%map%"
+      Spectate:
+        Lines:
+          - "%space%"
+          - " &fPlayers: &b%players%"
+          - " &fSpectators: &b%spectators%"
+          - " &fNext Event: &b%nextevent%"
+          - " &fMode: &b%mode%"
+          - "%space%"
+          - " &fTime passed: &b%runtime%"
+          - "%space%"
+        Title: " &fMap: &b%map% "

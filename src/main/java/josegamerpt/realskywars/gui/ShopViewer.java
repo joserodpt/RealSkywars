@@ -1,14 +1,13 @@
 package josegamerpt.realskywars.gui;
 
-import josegamerpt.realskywars.classes.DisplayItem;
+import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.managers.CurrencyManager;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.managers.ShopManager;
+import josegamerpt.realskywars.misc.DisplayItem;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Pagination;
-import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -26,27 +25,21 @@ import java.util.*;
 
 public class ShopViewer {
 
-    private static Map<UUID, ShopViewer> inventories = new HashMap<>();
     static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
-    static ItemStack menu = Itens.createItemLore(Material.CHEST, 1, "&9Menu",
-            Collections.singletonList("&fClick here to go back to the main menu."));
-    static ItemStack next = Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, "&aNext",
-            Collections.singletonList("&fClick here to go to the next page."));
-    static ItemStack back = Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, "&6Back",
-            Collections.singletonList("&fClick here to go back to the next page."));
+    private static Map<UUID, ShopViewer> inventories = new HashMap<>();
+    int pageNumber = 0;
+    Pagination<DisplayItem> p;
     private Inventory inv;
     private UUID uuid;
     private HashMap<Integer, DisplayItem> display = new HashMap<>();
     private ShopManager.Categories cat;
-    int pageNumber = 0;
-    Pagination<DisplayItem> p;
 
-    public ShopViewer(UUID id, ShopManager.Categories t) {
-        this.uuid = id;
+    public ShopViewer(RSWPlayer swPl, ShopManager.Categories t) {
+        this.uuid = swPl.getUUID();
         this.cat = t;
-        inv = Bukkit.getServer().createInventory(null, 54, Text.color(t.name()));
+        inv = Bukkit.getServer().createInventory(null, 54, getTitle(swPl, t));
 
-        List<DisplayItem> items = ShopManager.getCategoryContents(PlayerManager.getPlayer(PlayerManager.searchPlayer(id)), t);
+        List<DisplayItem> items = RealSkywars.getShopManager().getCategoryContents(swPl, t);
 
         p = new Pagination<>(28, items);
 
@@ -72,7 +65,7 @@ public class ShopViewer {
                         }
 
                         e.setCancelled(true);
-                        RSWPlayer gp = PlayerManager.getPlayer((Player) clicker);
+                        RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) clicker);
 
                         switch (e.getRawSlot()) {
                             case 49:
@@ -80,17 +73,17 @@ public class ShopViewer {
                                 if (inventories.containsKey(uuid)) {
                                     inventories.get(uuid).unregister();
                                 }
-                                GUIManager.openShopMenu(gp);
+                                GUIManager.openShopMenu(p);
                                 break;
                             case 26:
                             case 35:
                                 nextPage(current);
-                                gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                p.getPlayer().playSound(p.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 break;
                             case 18:
                             case 27:
                                 backPage(current);
-                                gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                p.getPlayer().playSound(p.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 break;
                         }
 
@@ -98,35 +91,35 @@ public class ShopViewer {
                             DisplayItem a = current.display.get(e.getRawSlot());
 
                             if (!a.isInteractive()) {
-                                gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.NOT_BUYABLE, true));
+                                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NOT_BUYABLE, true));
                                 return;
                             }
 
-                            if (gp.getPlayer().hasPermission(a.getPermission())) {
+                            if (p.getPlayer().hasPermission(a.getPermission())) {
                                 if (a.isBought()) {
-                                    gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.SHOP_ALREADY_BOUGHT, true)
+                                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SHOP_ALREADY_BOUGHT, true)
                                             .replace("%name%", a.getName()));
                                 } else {
-                                    CurrencyManager cm = new CurrencyManager(gp, a.getPrice());
+                                    CurrencyManager cm = new CurrencyManager(p, a.getPrice());
                                     if (cm.canMakeOperation()) {
                                         cm.removeCoins();
 
-                                        gp.buyItem(a.getName() + "|" + current.cat.name());
+                                        p.buyItem(a.getName() + "|" + current.cat.name());
 
                                         a.setBought(true);
                                         current.inv.setItem(e.getRawSlot(),
                                                 Itens.createItemLoreEnchanted(e.getCurrentItem().getType(), 1,
                                                         e.getCurrentItem().getItemMeta().getDisplayName(),
-                                                        Collections.singletonList("&aYou already bought this!")));
-                                        gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.SHOP_BUY, true)
+                                                        Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SHOP_ALREADY_BOUGHT, false).replace("%name%", a.getName()))));
+                                        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SHOP_BUY, true)
                                                 .replace("%name%", a.getName()).replace("%coins%", a.getPrice() + ""));
                                     } else {
-                                        gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.INSUFICIENT_COINS, true)
-                                                .replace("%coins%", gp.getCoins() + ""));
+                                        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.INSUFICIENT_COINS, true)
+                                                .replace("%coins%", p.getCoins() + ""));
                                     }
                                 }
                             } else {
-                                gp.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.SHOP_NO_PERM, true));
+                                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SHOP_NO_PERM, true));
                             }
                         }
                     }
@@ -166,6 +159,21 @@ public class ShopViewer {
         };
     }
 
+    private String getTitle(RSWPlayer p, ShopManager.Categories t) {
+        switch (t) {
+            case KITS:
+                return RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.KITS, false);
+            case BOW_PARTICLES:
+                return RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.BOWPARTICLE, false);
+            case WIN_BLOCKS:
+                return RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.WINBLOCK, false);
+            case CAGE_BLOCKS:
+                return RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CAGEBLOCK, false);
+            default:
+                return "? not found";
+        }
+    }
+
     public void fillChest(List<DisplayItem> items) {
 
         inv.clear();
@@ -190,12 +198,17 @@ public class ShopViewer {
         inv.setItem(9, placeholder);
         inv.setItem(17, placeholder);
 
-        inv.setItem(18, back);
-        inv.setItem(27, back);
-        inv.setItem(26, next);
-        inv.setItem(35, next);
+        inv.setItem(18, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE),
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
+        inv.setItem(27, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE),
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
+        inv.setItem(26, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE),
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
+        inv.setItem(35, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE),
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
 
-        inv.setItem(49, menu);
+        inv.setItem(49, Itens.createItemLore(Material.CHEST, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_MENU_TITLE),
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_MENU_DESC))));
 
         int slot = 0;
         for (ItemStack i : inv.getContents()) {

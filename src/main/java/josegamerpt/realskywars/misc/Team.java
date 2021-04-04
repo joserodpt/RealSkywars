@@ -1,5 +1,6 @@
-package josegamerpt.realskywars.classes;
+package josegamerpt.realskywars.misc;
 
+import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.cages.TeamCage;
 import josegamerpt.realskywars.managers.LanguageManager;
@@ -13,9 +14,9 @@ import java.util.List;
 public class Team {
 
     private final int id;
-    private ArrayList<RSWPlayer> members = new ArrayList<>();
     private final int maxMembers;
     private final TeamCage tc;
+    private ArrayList<RSWPlayer> members = new ArrayList<>();
     private Boolean eliminated = false;
     private Boolean playing = false;
 
@@ -26,7 +27,7 @@ public class Team {
     }
 
     public void addPlayer(RSWPlayer p) {
-        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(LanguageManager.getString(p, LanguageManager.TS.TEAM_BROADCAST_JOIN, true).replace("%player%", p.getName())));
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.TEAM_BROADCAST_JOIN, true).replace("%player%", p.getName())));
 
         this.members.add(p);
         p.setTeam(this);
@@ -35,19 +36,19 @@ public class Team {
         }
 
         p.teleport(this.tc.getLoc());
-        p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.TEAM_JOIN, true).replace("%team%", getName()));
+        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.TEAM_JOIN, true).replace("%team%", getName()));
     }
 
     public void removePlayer(RSWPlayer p) {
         this.members.remove(p);
 
-        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(LanguageManager.getString(p, LanguageManager.TS.TEAM_BROADCAST_LEAVE, true).replace("%player%", p.getName())));
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.TEAM_BROADCAST_LEAVE, true).replace("%player%", p.getName())));
 
         if (this.playing && members.size() == 0) {
             eliminated = true;
         }
         p.setTeam(null);
-        p.sendMessage(LanguageManager.getString(p, LanguageManager.TS.TEAM_LEAVE, true).replace("%team%", getName()));
+        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.TEAM_LEAVE, true).replace("%team%", getName()));
     }
 
     public Boolean isTeamFull() {

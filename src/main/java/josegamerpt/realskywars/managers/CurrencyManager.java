@@ -1,5 +1,6 @@
 package josegamerpt.realskywars.managers;
 
+import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.player.RSWPlayer;
 
 public class CurrencyManager {
@@ -33,9 +34,9 @@ public class CurrencyManager {
         fromEntity.setCoins(fromEntity.getCoins() - opQ);
         toPlayer.saveData();
         fromEntity.saveData();
-        fromEntity.sendMessage(LanguageManager.getString(toPlayer, LanguageManager.TS.SENDER_COINS, true).replace("%coins%", "" + opQ)
+        fromEntity.sendMessage(RealSkywars.getLanguageManager().getString(toPlayer, LanguageManager.TS.SENDER_COINS, true).replace("%coins%", "" + opQ)
                 .replace("%player%", toPlayer.getDisplayName()));
-        toPlayer.sendMessage(LanguageManager.getString(toPlayer, LanguageManager.TS.RECIEVER_COINS, true).replace("%coins%", "" + opQ)
+        toPlayer.sendMessage(RealSkywars.getLanguageManager().getString(toPlayer, LanguageManager.TS.RECIEVER_COINS, true).replace("%coins%", "" + opQ)
                 .replace("%player%", fromEntity.getDisplayName()));
     }
 
@@ -46,7 +47,7 @@ public class CurrencyManager {
         }
         toPlayer.setCoins(toPlayer.getCoins() + opQ);
         toPlayer.saveData();
-        toPlayer.sendMessage(LanguageManager.getString(toPlayer, LanguageManager.TS.ADDED_COINS, true).replace("%coins%", "" + opQ));
+        toPlayer.sendMessage(RealSkywars.getLanguageManager().getString(toPlayer, LanguageManager.TS.ADDED_COINS, true).replace("%coins%", "" + opQ));
     }
 
     public void removeCoins() {
@@ -57,13 +58,13 @@ public class CurrencyManager {
         }
         fromEntity.setCoins(fromEntity.getCoins() - opQ);
         fromEntity.saveData();
-        toPlayer.sendMessage(LanguageManager.getString(toPlayer, LanguageManager.TS.REMOVED_COINS, true).replace("%coins%", "" + opQ));
+        toPlayer.sendMessage(RealSkywars.getLanguageManager().getString(toPlayer, LanguageManager.TS.REMOVED_COINS, true).replace("%coins%", "" + opQ));
     }
 
     public void setCoins() {
         if (console) {
             toPlayer.setCoins(opQ);
-            toPlayer.sendMessage(LanguageManager.getString(toPlayer, LanguageManager.TS.SET_COINS, true).replace("%coins%", "" + opQ));
+            toPlayer.sendMessage(RealSkywars.getLanguageManager().getString(toPlayer, LanguageManager.TS.SET_COINS, true).replace("%coins%", "" + opQ));
             fromEntity.saveData();
             toPlayer.saveData();
         }

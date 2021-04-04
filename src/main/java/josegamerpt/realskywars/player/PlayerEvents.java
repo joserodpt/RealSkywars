@@ -4,18 +4,18 @@ import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.SoloCage;
 import josegamerpt.realskywars.cages.TeamCage;
-import josegamerpt.realskywars.classes.Selections;
 import josegamerpt.realskywars.chests.SWChest;
-import josegamerpt.realskywars.configuration.Items;
+import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.effects.BowTrail;
+import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.gui.GUIManager;
 import josegamerpt.realskywars.gui.MapsViewer;
 import josegamerpt.realskywars.gui.PlayerGUI;
 import josegamerpt.realskywars.gui.ProfileContent;
-import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
-import josegamerpt.realskywars.modes.SWGameMode;
+import josegamerpt.realskywars.misc.Selections;
+import josegamerpt.realskywars.player.PlayerManager.Items;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -25,6 +25,7 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -34,11 +35,32 @@ import org.bukkit.event.player.*;
 
 public class PlayerEvents implements Listener {
 
+    //block commands
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onCommand(PlayerCommandPreprocessEvent event) {
+        Player player = event.getPlayer();
+        RSWPlayer rsw = RealSkywars.getPlayerManager().getPlayer(player);
+        if (rsw != null && rsw.getPlayer() != null && rsw.isInMatch() && !player.isOp()) {
+            String command = event.getMessage();
+            Boolean block = true;
+            for (String s : Config.file().getStringList("Config.Allowed-Commands")) {
+                if (command.startsWith("/" + s)) {
+                    block = false;
+                }
+            }
+            if (block) {
+                rsw.sendMessage(RealSkywars.getLanguageManager().getString(rsw, LanguageManager.TS.BLOCKED_COMMAND, true));
+                Debugger.print(PlayerEvents.class, "blocked " + command + " for " + event.getPlayer());
+                event.setCancelled(true);
+            }
+        }
+    }
+
     //special items handling
     @EventHandler
     public void pegar(EntityPickupItemEvent e) {
         if (e.getEntity() instanceof Player) {
-            RSWPlayer gp = PlayerManager.getPlayer((Player) e.getEntity());
+            RSWPlayer gp = RealSkywars.getPlayerManager().getPlayer((Player) e.getEntity());
             switch (gp.getState()) {
                 case SPECTATOR:
                 case EXTERNAL_SPECTATOR:
@@ -49,12 +71,10 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void items(PlayerInteractEvent e) {
-        switch (e.getAction())
-        {
+        switch (e.getAction()) {
             case PHYSICAL:
-                if(GameManager.getLobbyLocation() != null && e.getPlayer().getWorld().equals(GameManager.getLobbyLocation().getWorld())){
-                    switch (e.getClickedBlock().getType())
-                    {
+                if (RealSkywars.getGameManager().getLobbyLocation() != null && e.getPlayer().getWorld().equals(RealSkywars.getGameManager().getLobbyLocation().getWorld())) {
+                    switch (e.getClickedBlock().getType()) {
                         case STONE_PRESSURE_PLATE:
                             e.getPlayer().performCommand("rsw play SOLO");
                             break;
@@ -66,87 +86,98 @@ public class PlayerEvents implements Listener {
                 break;
             case RIGHT_CLICK_BLOCK:
             case RIGHT_CLICK_AIR:
-                RSWPlayer gp = PlayerManager.getPlayer(e.getPlayer());
-
-                if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand()
-                        .getType() == Material.COMPASS) {
-                    if (gp.isInMatch() && gp.getState() == RSWPlayer.PlayerState.PLAYING)
-                    {
-                        PlayerManager.trackPlayer(gp);
-                    }
-                    e.setCancelled(true);
-                }
-
-                if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().hasItemMeta()) {
-
-                    if (e.getPlayer().getInventory().getItemInMainHand()
-                            .equals(Items.PROFILE)) {
-                        GUIManager.openPlayerMenu(gp, !gp.isInMatch());
-                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-                        e.setCancelled(true);
-                    }
-
-                    if (e.getPlayer().getInventory().getItemInMainHand()
-                            .equals(Items.KIT)) {
-                        ProfileContent v = new ProfileContent(gp, ShopManager.Categories.KITS);
-                        v.openInventory(gp);
-                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-                        e.setCancelled(true);
-                    }
-
-                    if (e.getPlayer().getInventory().getItemInMainHand()
-                            .equals(Items.PLAYAGAIN)) {
-                        e.getPlayer().performCommand("rsw play " + gp.getMatch().getGameType().name());
-                        e.setCancelled(true);
-                    }
-
-                    if (e.getPlayer().getInventory().getItemInMainHand()
-                            .equals(Items.SPECTATE)) {
-                        GUIManager.openSpectate(gp);
-                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-                        e.setCancelled(true);
-                    }
-                    if (e.getPlayer().getInventory().getItemInMainHand()
-                            .equals(Items.MAPS)) {
-                        MapsViewer v = new MapsViewer(gp, gp.getSelection(Selections.Key.MAPVIEWER), "Maps");
-                        v.openInventory(gp);
-                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-                        e.setCancelled(true);
-                    }
-                    if (e.getPlayer().getInventory().getItemInMainHand()
-                            .equals(Items.LEAVE)) {
-                        gp.getMatch().removePlayer(gp);
-                        e.setCancelled(true);
-                    }
-                    if (e.getPlayer().getInventory().getItemInMainHand()
-                            .equals(Items.CHESTS)) {
-                        GUIManager.openVote(gp);
-                        e.setCancelled(true);
-                    }
-                    if (e.getPlayer().getInventory().getItemInMainHand()
-                            .equals(Items.SHOP)) {
-                        GUIManager.openShopMenu(gp);
-                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-                        e.setCancelled(true);
+                RSWPlayer gp = RealSkywars.getPlayerManager().getPlayer(e.getPlayer());
+                if (RealSkywars.getGameManager().isInLobby(gp.getLocation())) {
+                    if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().hasItemMeta()) {
+                        if (e.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.BOOK)) {
+                            GUIManager.openPlayerMenu(gp, !gp.isInMatch());
+                            e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                            e.setCancelled(true);
+                        }
+                        if (e.getPlayer().getInventory().getItemInMainHand()
+                                .getType().equals(Material.NETHER_STAR)) {
+                            MapsViewer v = new MapsViewer(gp, gp.getSelection(Selections.Key.MAPVIEWER), "Maps");
+                            v.openInventory(gp);
+                            e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                            e.setCancelled(true);
+                        }
+                        if (e.getPlayer().getInventory().getItemInMainHand()
+                                .getType().equals(Material.EMERALD)) {
+                            GUIManager.openShopMenu(gp);
+                            e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                            e.setCancelled(true);
+                        }
                     }
                 }
-                if (e.getClickedBlock() != null && e.getClickedBlock().getState() instanceof Chest) {
-                    if (gp.isInMatch()) {
-                        SWChest chest = gp.getMatch().getChest(e.getClickedBlock().getLocation());
-                        if (chest != null) {
-                            chest.refill();
+
+                if (gp.isInMatch()) {
+                    if (gp.getState() == RSWPlayer.PlayerState.PLAYING) {
+                        //fill chests
+                        if (e.getClickedBlock() != null && e.getClickedBlock().getState() instanceof Chest) {
+                            SWChest chest = gp.getMatch().getChest(e.getClickedBlock().getLocation());
+                            if (chest != null) {
+                                chest.populate();
+                                if (chest.isOpened()) {
+                                    Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> chest.startTasks(gp.getMatch()), 1);
+                                }
+                            }
+                        }
+                        if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand()
+                                .getType() == Material.COMPASS) {
+                            RealSkywars.getPlayerManager().trackPlayer(gp);
+                            e.setCancelled(true);
+                        }
+                    }
+
+                    if (gp.getState().equals(RSWPlayer.PlayerState.CAGE)) {
+                        if (e.getPlayer().getInventory().getItemInMainHand()
+                                .getType().equals(Material.BOW)) {
+                            ProfileContent v = new ProfileContent(gp, ShopManager.Categories.KITS);
+                            v.openInventory(gp);
+                            e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                            e.setCancelled(true);
+                        }
+                        if (e.getPlayer().getInventory().getItemInMainHand()
+                                .getType().equals(Material.MINECART)) {
+                            gp.getMatch().removePlayer(gp);
+                            e.setCancelled(true);
+                        }
+                        if (e.getPlayer().getInventory().getItemInMainHand()
+                                .getType().equals(Material.ENDER_CHEST)) {
+                            GUIManager.openVote(gp);
+                            e.setCancelled(true);
+                        }
+                    }
+
+                    if (gp.getState().equals(RSWPlayer.PlayerState.SPECTATOR) || gp.getState().equals(RSWPlayer.PlayerState.EXTERNAL_SPECTATOR)) {
+                        if (e.getPlayer().getInventory().getItemInMainHand()
+                                .getType().equals(Material.TOTEM_OF_UNDYING)) {
+                            e.getPlayer().performCommand("rsw play " + gp.getMatch().getGameType().name());
+                            e.setCancelled(true);
+                        }
+                        if (e.getPlayer().getInventory().getItemInMainHand()
+                                .getType().equals(Material.MAP)) {
+                            GUIManager.openSpectate(gp);
+                            e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                            e.setCancelled(true);
+                        }
+                        if (e.getPlayer().getInventory().getItemInMainHand()
+                                .getType().equals(Material.MINECART)) {
+                            gp.getMatch().removePlayer(gp);
+                            e.setCancelled(true);
                         }
                     }
                 }
                 break;
         }
+
     }
 
     //player block interactions
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        RSWPlayer p = PlayerManager.getPlayer(event.getPlayer());
+        RSWPlayer p = RealSkywars.getPlayerManager().getPlayer(event.getPlayer());
         if (p != null) {
             switch (p.getState()) {
                 case SPECTATOR:
@@ -161,9 +192,9 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void place(BlockPlaceEvent event) {
         if (event.getPlayer().isOp()) {
-            RSWPlayer pg = PlayerManager.getPlayer(event.getPlayer());
+            RSWPlayer pg = RealSkywars.getPlayerManager().getPlayer(event.getPlayer());
             if (pg.getSetup() != null) {
-                if (event.getBlock().getType() == Items.CAGESET.getType()) {
+                if (event.getBlock().getType().equals(Material.BEACON)) {
                     switch (pg.getSetup().getGameType()) {
                         case SOLO:
                             if ((pg.getSetup().getCages().size() + 1) < pg.getSetup().getMaxPlayers()) {
@@ -171,7 +202,7 @@ public class PlayerEvents implements Listener {
                             } else {
                                 log(event, pg);
                                 pg.getSetup().confirmCages(true);
-                                pg.sendMessage(LanguageManager.getString(pg, LanguageManager.TS.CAGES_SET, false));
+                                pg.sendMessage(RealSkywars.getLanguageManager().getString(pg, LanguageManager.TS.CAGES_SET, false));
                             }
                             break;
                         case TEAMS:
@@ -180,7 +211,7 @@ public class PlayerEvents implements Listener {
                             } else {
                                 log(event, pg);
                                 pg.getSetup().confirmCages(true);
-                                pg.sendMessage(LanguageManager.getString(pg, LanguageManager.TS.CAGES_SET, false));
+                                pg.sendMessage(RealSkywars.getLanguageManager().getString(pg, LanguageManager.TS.CAGES_SET, false));
                             }
                             break;
                     }
@@ -249,7 +280,7 @@ public class PlayerEvents implements Listener {
     public void onEntityDamage(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();
-            RSWPlayer damaged = PlayerManager.getPlayer(p);
+            RSWPlayer damaged = RealSkywars.getPlayerManager().getPlayer(p);
             switch (e.getCause()) {
                 case VOID:
                     if (damaged.isInMatch()) {
@@ -270,7 +301,7 @@ public class PlayerEvents implements Listener {
                     }
                     break;
                 default:
-                    if (damaged.isInvencible() || GameManager.isInLobby(damaged.getLocation())) {
+                    if (damaged.isInvencible() || RealSkywars.getGameManager().isInLobby(damaged.getLocation())) {
                         e.setCancelled(true);
                     }
                     break;
@@ -288,14 +319,14 @@ public class PlayerEvents implements Listener {
         e.setDeathMessage(null);
 
         if (pkiller != null) {
-            RSWPlayer killer = PlayerManager.getPlayer(pkiller);
+            RSWPlayer killer = RealSkywars.getPlayerManager().getPlayer(pkiller);
             if (killer.isInMatch()) {
                 killer.addStatistic(RSWPlayer.Statistic.KILL, 1);
             }
             deathLoc = pkiller.getLocation();
         }
 
-        RSWPlayer killed = PlayerManager.getPlayer(pkilled);
+        RSWPlayer killed = RealSkywars.getPlayerManager().getPlayer(pkilled);
         if (killed.isInMatch() && killed.getMatch().getState().equals(SWGameMode.GameState.PLAYING)) {
             killed.addStatistic(RSWPlayer.Statistic.DEATH, 1);
 
@@ -320,10 +351,10 @@ public class PlayerEvents implements Listener {
         if (e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
             Player whoWasHit = (Player) e.getEntity();
             Player whoHit = (Player) e.getDamager();
-            RSWPlayer hitter = PlayerManager.getPlayer(whoHit);
-            RSWPlayer hurt = PlayerManager.getPlayer(whoWasHit);
+            RSWPlayer hitter = RealSkywars.getPlayerManager().getPlayer(whoHit);
+            RSWPlayer hurt = RealSkywars.getPlayerManager().getPlayer(whoWasHit);
             if (hitter.getTeam() != null && hitter.getTeam().getMembers().contains(hurt)) {
-                whoHit.sendMessage(LanguageManager.getString(hitter, LanguageManager.TS.TEAMMATE_DAMAGE_CANCEL, true));
+                whoHit.sendMessage(RealSkywars.getLanguageManager().getString(hitter, LanguageManager.TS.TEAMMATE_DAMAGE_CANCEL, true));
                 e.setCancelled(true);
             }
             if (hitter.getState() == RSWPlayer.PlayerState.SPECTATOR || hitter.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
@@ -335,10 +366,10 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractEntityEvent event) {
         if (event.getRightClicked() instanceof Player) {
-            RSWPlayer click = PlayerManager.getPlayer(event.getPlayer());
-            RSWPlayer clicked = PlayerManager.getPlayer((Player) event.getRightClicked());
+            RSWPlayer click = RealSkywars.getPlayerManager().getPlayer(event.getPlayer());
+            RSWPlayer clicked = RealSkywars.getPlayerManager().getPlayer((Player) event.getRightClicked());
             if (click != null && clicked != null) {
-                PlayerGUI playg = new PlayerGUI(click, click.getUniqueId(), clicked);
+                PlayerGUI playg = new PlayerGUI(click, click.getUUID(), clicked);
                 playg.openInventory(click);
             }
         }
@@ -346,10 +377,10 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        PlayerManager.giveItems(e.getPlayer(), PlayerManager.PlayerItems.LOBBY);
-        PlayerManager.loadPlayer(e.getPlayer());
+        RealSkywars.getPlayerManager().loadPlayer(e.getPlayer());
+        RealSkywars.getPlayerManager().giveItems(e.getPlayer(), PlayerManager.Items.LOBBY);
 
-        for (RSWPlayer player : PlayerManager.getPlayers()) {
+        for (RSWPlayer player : RealSkywars.getPlayerManager().getPlayers()) {
             if (player.isInMatch()) {
                 RSWPlayer.RoomTAB rt = player.getTab();
                 rt.remove(e.getPlayer());
@@ -360,7 +391,7 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-        RSWPlayer p = PlayerManager.getPlayer(e.getPlayer());
+        RSWPlayer p = RealSkywars.getPlayerManager().getPlayer(e.getPlayer());
 
         if (p != null) {
             p.leave();
@@ -373,7 +404,7 @@ public class PlayerEvents implements Listener {
                 e.getEntity().getShooter() instanceof Player &&
                 e.getEntity() instanceof Arrow) {
             Player p = (Player) e.getEntity().getShooter();
-            RSWPlayer gp = PlayerManager.getPlayer(p);
+            RSWPlayer gp = RealSkywars.getPlayerManager().getPlayer(p);
             assert gp != null;
             if (gp.getProperty(RSWPlayer.PlayerProperties.BOW_PARTICLES) != null && gp.isInMatch()) {
                 gp.addTrail(new BowTrail((Particle) gp.getProperty(RSWPlayer.PlayerProperties.BOW_PARTICLES), e.getEntity(), gp));
@@ -381,15 +412,16 @@ public class PlayerEvents implements Listener {
         }
     }
 
+    //make chest open
     @EventHandler
     public void onInv(InventoryCloseEvent event) {
         if (event.getInventory().getHolder() instanceof Chest) {
-            RSWPlayer p = PlayerManager.getPlayer((Player) event.getPlayer());
+            RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) event.getPlayer());
             if (p != null && p.isInMatch()) {
                 Chest c = (Chest) event.getInventory().getHolder();
                 SWChest swc = p.getMatch().getChest(c.getLocation());
                 if (swc != null && swc.isOpened()) {
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> swc.startTasks(p.getMatch()), 1);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> RealSkywars.getNMS().chestAnimation(swc.getChest(), true), 2);
                 }
             }
 

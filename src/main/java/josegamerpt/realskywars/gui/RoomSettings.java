@@ -1,10 +1,9 @@
 package josegamerpt.realskywars.gui;
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.modes.SWGameMode;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.MapManager;
-import josegamerpt.realskywars.player.PlayerManager;
+import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
@@ -25,7 +24,6 @@ import java.util.*;
 
 public class RoomSettings {
 
-    private static Map<UUID, RoomSettings> inventories = new HashMap<>();
     static SWGameMode game;
     static Inventory inv;
     static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
@@ -57,6 +55,7 @@ public class RoomSettings {
                     "&7Finishing", "&aResetting"));
     static ItemStack resetRoom = Itens.createItemLore(Material.BARRIER, 1, "&9Reset Room",
             Arrays.asList("&cClick here to reset the room.", "&4NOTE: ALL PLAYERS WILL BE KICKED FROM THE GAME."));
+    private static Map<UUID, RoomSettings> inventories = new HashMap<>();
     private static int refreshTask;
     private UUID uuid;
 
@@ -85,8 +84,7 @@ public class RoomSettings {
 
         // ARENASTATE
 
-        switch (game.getState())
-        {
+        switch (game.getState()) {
             case AVAILABLE:
                 inv.setItem(10, aAvailable);
                 break;
@@ -148,7 +146,7 @@ public class RoomSettings {
                             }
                             e.setCancelled(true);
 
-                            RSWPlayer gp = PlayerManager.getPlayer(p);
+                            RSWPlayer gp = RealSkywars.getPlayerManager().getPlayer(p);
 
                             if (inv != null) {
                                 if (inv.getHolder() == e.getInventory().getHolder()) {
@@ -167,7 +165,7 @@ public class RoomSettings {
                                         // reset
                                         case 22:
                                             game.reset();
-                                            p.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.MAP_RESET_DONE, true));
+                                            p.sendMessage(RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.MAP_RESET_DONE, true));
 
                                             ItemStack set = null;
                                             switch (game.getState()) {
@@ -224,7 +222,7 @@ public class RoomSettings {
                                             }
                                             current.getInventory().setItem(10, set2);
 
-                                            p.sendMessage(LanguageManager.getString(gp, LanguageManager.TS.GAME_STATUS_SET, true).replace("%status%", game.getState().name()));
+                                            p.sendMessage(RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.GAME_STATUS_SET, true).replace("%status%", game.getState().name()));
                                             break;
                                         case 15:
                                             // settings

@@ -48,7 +48,7 @@ public class BlockWinTrail implements Trail {
 
     @Override
     public void startTask() {
-        this.task = Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(RealSkywars.getPlugin(), () -> {
+        this.task = Bukkit.getServer().getScheduler().runTaskTimer(RealSkywars.getPlugin(), () -> {
             float x = (float) (Math.random() * 2) - 1;
             float y = (float) (Math.random());
             float z = (float) (Math.random() * 2) - 1;

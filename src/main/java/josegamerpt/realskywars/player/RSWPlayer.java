@@ -2,18 +2,18 @@ package josegamerpt.realskywars.player;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
-import josegamerpt.realskywars.classes.Selections;
-import josegamerpt.realskywars.classes.*;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.configuration.Players;
 import josegamerpt.realskywars.effects.BlockWinTrail;
 import josegamerpt.realskywars.effects.Trail;
-import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.modes.SWGameMode;
+import josegamerpt.realskywars.misc.Kit;
+import josegamerpt.realskywars.misc.Selections;
+import josegamerpt.realskywars.misc.SetupRoom;
+import josegamerpt.realskywars.misc.Team;
+import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.utils.Text;
 import org.apache.http.util.TextUtils;
-import org.apache.logging.log4j.util.Strings;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -28,25 +28,12 @@ import java.util.*;
 
 public class RSWPlayer {
 
-
-    public void spawn(Class c) {
-        if (this.p != null)
-        {
-            Entity tnt = this.getWorld().spawn(this.getLocation().add(0,3, 0), c);
-            ((TNTPrimed)tnt).setFuseTicks(60);
-        }
-    }
-
-    public enum PlayerData { ALL, COINS, STATS, NAME, LANG, BOUGHT, PREFS;}
-
-    public enum Statistic {KILL, SOLO_WIN, TEAM_WIN, LOSE, DEATH, GAMES_PLAYED;}
-    private RoomTAB rt;
-
-    private String anonName = "?";
     private final List<Trail> trails = new ArrayList<>();
+    private RoomTAB rt;
+    private String anonName = "?";
     private Player p;
     private PlayerState state = PlayerState.LOBBY_OR_NOGAME;
-    private String language = LanguageManager.getDefaultLanguage();
+    private String language = RealSkywars.getLanguageManager().getDefaultLanguage();
     private SWGameMode room;
     private SetupRoom setup;
     private Team team;
@@ -91,6 +78,12 @@ public class RSWPlayer {
 
         this.rt = new RoomTAB(this);
     }
+    public RSWPlayer(boolean anonName) {
+        if (anonName) {
+            this.anonName = Text.anonName();
+        }
+        bot = true;
+    }
 
     @Override
     public String toString() {
@@ -126,22 +119,21 @@ public class RSWPlayer {
                 '}';
     }
 
-    public RSWPlayer(boolean anonName) {
-        if (anonName)
-        {
-            this.anonName = Text.anonName();
+    public void spawnAbovePlayer(Class c) {
+        if (this.p != null) {
+            Entity tnt = this.getWorld().spawn(this.getLocation().add(0, 3, 0), c);
+            ((TNTPrimed) tnt).setFuseTicks(60);
         }
-        bot = true;
     }
 
     public void save() {
-        for (RSWPlayer gp : PlayerManager.getPlayers()) {
-            if (p != null && gp.getUniqueId().equals(p.getUniqueId())) {
+        for (RSWPlayer gp : RealSkywars.getPlayerManager().getPlayers()) {
+            if (p != null && gp.getUUID().equals(p.getUniqueId())) {
                 return;
             }
         }
         if (!this.bot) {
-            PlayerManager.addPlayer(this);
+            RealSkywars.getPlayerManager().addPlayer(this);
         }
     }
 
@@ -176,7 +168,7 @@ public class RSWPlayer {
                 this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Death"));
                 this.addStatistic(RSWPlayer.Statistic.LOSE, 1);
                 this.addStatistic(RSWPlayer.Statistic.GAMES_PLAYED, 1);
-                this.sendMessage("&e+ &6" + Config.file().getDouble("Config.Coins.Per-Death") + "&e coins");
+                this.sendMessage("&e- &6" + Config.file().getDouble("Config.Coins.Per-Death") + "&e coins");
                 break;
             case GAMES_PLAYED:
                 this.gamesPlayed += i;
@@ -189,7 +181,7 @@ public class RSWPlayer {
         this.coins += this.balanceGame;
         this.balanceGame = 0D;
         this.gamekills = 0;
-        PlayerManager.savePlayer(this, PlayerData.ALL);
+        RealSkywars.getPlayerManager().savePlayer(this, PlayerData.ALL);
     }
 
     public double getGameBalance() {
@@ -205,8 +197,8 @@ public class RSWPlayer {
     public void resetData() {
         Players.file().set(p.getUniqueId().toString(), null);
         Players.save();
-        PlayerManager.removePlayer(this);
-        p.kickPlayer(LanguageManager.getPrefix() + "§4Your data was resetted with success. \n §cPlease join the server again to complete the reset.");
+        RealSkywars.getPlayerManager().removePlayer(this);
+        p.kickPlayer(RealSkywars.getLanguageManager().getPrefix() + "§4Your data was resetted with success. \n §cPlease join the server again to complete the reset.");
     }
 
     public String getName() {
@@ -243,8 +235,7 @@ public class RSWPlayer {
     }
 
     public void playSound(Sound s, int i, int i1) {
-        if (this.p != null)
-        {
+        if (this.p != null) {
             this.p.playSound(this.p.getLocation(), s, i, i1);
         }
     }
@@ -260,10 +251,10 @@ public class RSWPlayer {
         if (t < 0) {
             return;
         }
-        if (winblockRandom) {
+        if (this.winblockRandom) {
             addTrail(new BlockWinTrail(this, t));
         } else {
-            if (winblockMaterial != null) {
+            if (this.winblockMaterial != null) {
                 addTrail(new BlockWinTrail(this, t, winblockMaterial));
             }
         }
@@ -287,13 +278,14 @@ public class RSWPlayer {
         }
     }
 
-    public UUID getUniqueId() {
+    public UUID getUUID() {
         return p.getUniqueId();
     }
 
     public String getLanguage() {
         return this.language;
     }
+
     public void setLanguage(String lang) {
         this.language = lang;
     }
@@ -329,7 +321,7 @@ public class RSWPlayer {
                         }
                     }
                 }
-                PlayerManager.savePlayer(this, PlayerData.PREFS);
+                RealSkywars.getPlayerManager().savePlayer(this, PlayerData.PREFS);
                 break;
             case WIN_BLOCKS:
                 if (o.equals("RandomBlock")) {
@@ -376,7 +368,7 @@ public class RSWPlayer {
 
     public void setSelection(Selections.Key s, Selections.Value ss) {
         this.selections.put(s, ss);
-        PlayerManager.savePlayer(this, PlayerData.PREFS);
+        RealSkywars.getPlayerManager().savePlayer(this, PlayerData.PREFS);
     }
 
     public RSWPlayer.PlayerState getState() {
@@ -482,7 +474,7 @@ public class RSWPlayer {
 
         this.playerscoreboard.stop();
         this.saveData();
-        PlayerManager.removePlayer(this);
+        RealSkywars.getPlayerManager().removePlayer(this);
     }
 
     public void sendTitle(String s, String s1, int i, int i1, int i2) {
@@ -508,8 +500,7 @@ public class RSWPlayer {
     }
 
     public CharSequence getDisplayName() {
-        if (!this.bot)
-        {
+        if (!this.bot) {
             return this.p.getDisplayName();
         }
         return this.anonName;
@@ -524,15 +515,13 @@ public class RSWPlayer {
     }
 
     public void hidePlayer(Plugin plugin, Player pl) {
-        if (!this.bot && pl != null && !GameManager.endingGames)
-        {
+        if (!this.bot && pl != null && !RealSkywars.getGameManager().endingGames) {
             this.getPlayer().hidePlayer(plugin, pl);
         }
     }
 
     public void showPlayer(Plugin plugin, Player pl) {
-        if (!this.bot && pl != null && !GameManager.endingGames)
-        {
+        if (!this.bot && pl != null && !RealSkywars.getGameManager().endingGames) {
             this.getPlayer().showPlayer(plugin, pl);
         }
     }
@@ -543,9 +532,13 @@ public class RSWPlayer {
 
     public void buyItem(String s) {
         this.bought.add(ChatColor.stripColor(s));
-        PlayerManager.savePlayer(this, PlayerData.PREFS);
-        PlayerManager.savePlayer(this, PlayerData.BOUGHT);
+        RealSkywars.getPlayerManager().savePlayer(this, PlayerData.PREFS);
+        RealSkywars.getPlayerManager().savePlayer(this, PlayerData.BOUGHT);
     }
+
+    public enum PlayerData {ALL, COINS, STATS, NAME, LANG, BOUGHT, PREFS }
+
+    public enum Statistic {KILL, SOLO_WIN, TEAM_WIN, LOSE, DEATH, GAMES_PLAYED }
 
     //ENUMs
 
@@ -570,7 +563,7 @@ public class RSWPlayer {
         }
 
         public void add(Player p) {
-            if (p.getUniqueId() != this.player.getUniqueId() && !show.contains(p)) {
+            if (p.getUniqueId() != this.player.getUUID() && !show.contains(p)) {
                 show.add(p);
             }
         }
@@ -604,9 +597,8 @@ public class RSWPlayer {
                 Bukkit.getOnlinePlayers().forEach(pl -> this.player.hidePlayer(RealSkywars.getPlugin(), pl));
                 this.show.forEach(rswPlayer -> this.player.showPlayer(RealSkywars.getPlugin(), rswPlayer));
 
-                if (this.player.isInMatch())
-                {
-                    this.setHeaderFooter("\n" + LanguageManager.getPrefix() + "\n&fMapa: &b" + this.player.getMatch().getName() + "\n",
+                if (this.player.isInMatch()) {
+                    this.setHeaderFooter("\n" + RealSkywars.getLanguageManager().getPrefix() + "\n&fMapa: &b" + this.player.getMatch().getName() + "\n",
                             "\n&fJogadores: &b" + this.player.getMatch().getPlayersCount() + "\n");
                 } else {
                     this.setHeaderFooter("", "");
@@ -620,12 +612,12 @@ public class RSWPlayer {
 
     public class PlayerScoreboard {
 
-        public RSWPlayer linked;
-        public BukkitTask task;
+        private RSWPlayer linked;
+        private BukkitTask task;
 
         public PlayerScoreboard(RSWPlayer r) {
-            linked = r;
-            if (GameManager.getLobbyLocation() != null)
+            this.linked = r;
+            if (RealSkywars.getGameManager().getLobbyLocation() != null)
                 run();
         }
 
@@ -633,16 +625,15 @@ public class RSWPlayer {
             if (gp.isInMatch()) {
                 return s.replace("%space%", Text.makeSpace()).replace("%players%", gp.getMatch().getPlayersCount() + "").replace("%nextevent%", nextEvent(gp.getMatch()))
                         .replace("%spectators%", gp.getMatch().getSpectatorsCount() + "").replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + "")
-                        .replace("%map%", gp.getMatch().getName()).replace("%runtime%", Text.formatSeconds(gp.getMatch().getTimePassed()) + "").replace("%state%", GameManager.getStateString(gp, gp.getMatch().getState())).replace("%mode%", gp.getMatch().getGameType().name()).replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");
+                        .replace("%map%", gp.getMatch().getName()).replace("%runtime%", Text.formatSeconds(gp.getMatch().getTimePassed()) + "").replace("%state%", RealSkywars.getGameManager().getStateString(gp, gp.getMatch().getState())).replace("%mode%", gp.getMatch().getGameType().name()).replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");
             } else {
                 return s.replace("%space%", Text.makeSpace()).replace("%coins%", gp.getCoins() + "")
-                        .replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS) + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS) + "").replace("%playing%", "" + PlayerManager.countPlayingPlayers()).replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");
+                        .replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS) + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS) + "").replace("%playing%", "" + RealSkywars.getPlayerManager().countPlayingPlayers()).replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");
             }
         }
 
         private String nextEvent(SWGameMode match) {
-            if (match.getEvents().size() > 0)
-            {
+            if (match.getEvents().size() > 0) {
                 return match.getEvents().get(0).getName();
             }
             return "-";
@@ -650,39 +641,39 @@ public class RSWPlayer {
 
         public void stop() {
             if (this.task != null) {
-                task.cancel();
+                this.task.cancel();
             }
         }
 
         public void run() {
-            task = new BukkitRunnable() {
+            this.task = new BukkitRunnable() {
                 public void run() {
                     ArrayList<String> lista;
                     String tit;
                     if (linked.getState() != null) {
                         switch (linked.getState()) {
                             case LOBBY_OR_NOGAME:
-                                if (!GameManager.scoreboardInLobby()) {
+                                if (!RealSkywars.getGameManager().scoreboardInLobby()) {
                                     return;
                                 }
-                                if (GameManager.getLobbyLocation().getWorld() != linked.getWorld()) {
+                                if (RealSkywars.getGameManager().getLobbyLocation().getWorld() != linked.getWorld()) {
                                     return;
                                 }
-                                lista = LanguageManager.getList(linked, LanguageManager.TL.SCOREBOARD_LOBBY_LINES);
-                                tit = LanguageManager.getString(linked, LanguageManager.TS.SCOREBOARD_LOBBY_TITLE, false);
+                                lista = RealSkywars.getLanguageManager().getList(linked, LanguageManager.TL.SCOREBOARD_LOBBY_LINES);
+                                tit = RealSkywars.getLanguageManager().getString(linked, LanguageManager.TS.SCOREBOARD_LOBBY_TITLE, false);
                                 break;
                             case CAGE:
-                                lista = LanguageManager.getList(linked, LanguageManager.TL.SCOREBOARD_CAGE_LINES);
-                                tit = LanguageManager.getString(linked, LanguageManager.TS.SCOREBOARD_CAGE_TITLE, false).replace("%map%", linked.getMatch().getName());
+                                lista = RealSkywars.getLanguageManager().getList(linked, LanguageManager.TL.SCOREBOARD_CAGE_LINES);
+                                tit = RealSkywars.getLanguageManager().getString(linked, LanguageManager.TS.SCOREBOARD_CAGE_TITLE, false).replace("%map%", linked.getMatch().getName());
                                 break;
                             case SPECTATOR:
                             case EXTERNAL_SPECTATOR:
-                                lista = LanguageManager.getList(linked, LanguageManager.TL.SCOREBOARD_SPECTATOR_LINES);
-                                tit = LanguageManager.getString(linked, LanguageManager.TS.SCOREBOARD_SPECTATOR_TITLE, false).replace("%map%", linked.getMatch().getName());
+                                lista = RealSkywars.getLanguageManager().getList(linked, LanguageManager.TL.SCOREBOARD_SPECTATOR_LINES);
+                                tit = RealSkywars.getLanguageManager().getString(linked, LanguageManager.TS.SCOREBOARD_SPECTATOR_TITLE, false).replace("%map%", linked.getMatch().getName());
                                 break;
                             case PLAYING:
-                                lista = LanguageManager.getList(linked, LanguageManager.TL.SCOREBOARD_PLAYING_LINES);
-                                tit = LanguageManager.getString(linked, LanguageManager.TS.SCOREBOARD_PLAYING_TITLE, false).replace("%map%", linked.getMatch().getName());
+                                lista = RealSkywars.getLanguageManager().getList(linked, LanguageManager.TL.SCOREBOARD_PLAYING_LINES);
+                                tit = RealSkywars.getLanguageManager().getString(linked, LanguageManager.TS.SCOREBOARD_PLAYING_TITLE, false).replace("%map%", linked.getMatch().getName());
                                 break;
                             default:
                                 throw new IllegalStateException("Unexpected value SCOREBOARD!!! : " + linked.getState());
@@ -724,11 +715,11 @@ public class RSWPlayer {
                     }
                 }
                 if (p.getPlayer().getScoreboard() == null
-                        || p.getPlayer().getScoreboard().getObjective(p.getUniqueId().toString().substring(0, 16)) == null) {
+                        || p.getPlayer().getScoreboard().getObjective(p.getUUID().toString().substring(0, 16)) == null) {
                     p.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-                    p.getPlayer().getScoreboard().registerNewObjective(p.getUniqueId().toString().substring(0, 16), "dummy",
+                    p.getPlayer().getScoreboard().registerNewObjective(p.getUUID().toString().substring(0, 16), "dummy",
                             "dummy");
-                    p.getPlayer().getScoreboard().getObjective(p.getUniqueId().toString().substring(0, 16))
+                    p.getPlayer().getScoreboard().getObjective(p.getUUID().toString().substring(0, 16))
                             .setDisplaySlot(DisplaySlot.SIDEBAR);
                 }
                 p.getPlayer().getScoreboard().getObjective(DisplaySlot.SIDEBAR).setDisplayName(title);

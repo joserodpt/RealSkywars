@@ -1,21 +1,27 @@
+Version: 1
+Debug-Mode: false
 Config:
   Auto-Teleport-To-Lobby: true
-  Time-To-Start: 2
-  Min-Players-ToStart: 2
-  Time-EndGame: 5
   Lobby-Scoreboard: true
+  #Time in seconds
+  Time-To-Start: 10
+  Min-Players-ToStart: 2
+  Time-EndGame: 10
   Maximum-Game-Time:
     Solo: 300
     Teams: 500
-  Default-Language: ENGLISH
   Shuffle-Items-In-Chest: true
   Kits:
     Ender-Pearl-Perk-Give-Interval: 120
   Default-Refill-Time: 180
+  #Events: REFILL, TNTRAIN
+  #REFILL refills the chests.
+  #TNTRAIN, when executed, summons a TNT above all game players.
+  #Event Config: <event>&<time of execution>
   Events:
     Solo:
-      - REFILL&30
-      - REFILL&67
+      - REFILL&60
+      - REFILL&120
     Teams:
       - REFILL&120
       - REFILL&260
@@ -23,5 +29,16 @@ Config:
     Per-Win: 10
     Per-Kill: 5
     Per-Death: -5
-Version: 1
-Debug-Mode: true
+  Allowed-Commands:
+    - "sw"
+    - "rsw"
+    - "realskywars"
+  Random-Nicknames:
+    - "Strawberry"
+    - "Dog"
+    - "Cat"
+    - "White"
+    - "Black"
+    - "Red"
+    - "Green"
+    - "Blue"

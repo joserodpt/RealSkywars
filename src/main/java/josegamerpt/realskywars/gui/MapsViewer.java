@@ -1,12 +1,10 @@
 package josegamerpt.realskywars.gui;
 
-import josegamerpt.realskywars.Debugger;
-import josegamerpt.realskywars.classes.Selections;
-import josegamerpt.realskywars.modes.SWGameMode;
-import josegamerpt.realskywars.classes.MapItem;
-import josegamerpt.realskywars.managers.GameManager;
+import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.player.PlayerManager;
+import josegamerpt.realskywars.misc.MapItem;
+import josegamerpt.realskywars.misc.Selections;
+import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Pagination;
@@ -29,26 +27,22 @@ import java.util.*;
 public class MapsViewer {
 
     private static Map<UUID, MapsViewer> inventories = new HashMap<>();
-    static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
-    static ItemStack next = Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, "&aNext",
-            Collections.singletonList("&fClick here to go to the next page."));
-    static ItemStack back = Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, "&6Back",
-            Collections.singletonList("&fClick here to go back to the next page."));
+    int pageNumber = 0;
+    Pagination<SWGameMode> p;
+    private ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     private Inventory inv;
     private UUID uuid;
     private RSWPlayer gp;
     private HashMap<Integer, SWGameMode> display = new HashMap<>();
     private Selections.Value selMap;
-    int pageNumber = 0;
-    Pagination<SWGameMode> p;
 
     public MapsViewer(RSWPlayer as, Selections.Value t, String invName) {
-        this.uuid = as.getUniqueId();
-        inv = Bukkit.getServer().createInventory(null, 54, Text.color(invName) + ": " + LanguageManager.getString(as, select(t), false));
+        this.uuid = as.getUUID();
+        inv = Bukkit.getServer().createInventory(null, 54, Text.color(invName) + ": " + RealSkywars.getLanguageManager().getString(as, select(t), false));
 
         gp = as;
         this.selMap = t;
-        List<SWGameMode> items = GameManager.getRoomsWithSelection(t);
+        List<SWGameMode> items = RealSkywars.getGameManager().getRoomsWithSelection(t);
 
         p = new Pagination<>(28, items);
         fillChest(p.getPage(pageNumber), as);
@@ -73,7 +67,7 @@ public class MapsViewer {
                         }
 
                         e.setCancelled(true);
-                        RSWPlayer gp = PlayerManager.getPlayer((Player) clicker);
+                        RSWPlayer gp = RealSkywars.getPlayerManager().getPlayer((Player) clicker);
 
                         switch (e.getRawSlot()) {
                             case 49:
@@ -184,48 +178,6 @@ public class MapsViewer {
         return null;
     }
 
-    private ItemStack makeSelIcon() {
-        ItemStack i = null;
-        switch (selMap) {
-            case MAPV_ALL:
-                i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
-                        Arrays.asList("&7Click to select the next filter.", "&9", "&9◼ &bAll Maps", "&9- &fAvailable",
-                                "&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate", "&9- &fSolo", "&9- &fTeams"));
-                break;
-            case MAPV_AVAILABLE:
-                i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
-                        Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9◼ &bAvailable",
-                                "&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate", "&9- &fSolo", "&9- &fTeams"));
-                break;
-            case MAPV_STARTING:
-                i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
-                        Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
-                                "&9- &fWaiting", "&9◼ &bStarting", "&9- &fSpectate", "&9- &fSolo", "&9- &fTeams"));
-                break;
-            case MAPV_WAITING:
-                i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
-                        Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
-                                "&9◼ &bWaiting", "&9- &fStarting", "&9- &fSpectate", "&9- &fSolo", "&9- &fTeams"));
-                break;
-            case MAPV_SPECTATE:
-                i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
-                        Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
-                                "&9- &fWaiting", "&9- &fStarting", "&9◼ &bSpectate", "&9- &fSolo", "&9- &fTeams"));
-                break;
-            case SOLO:
-                i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
-                        Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
-                                "&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate", "&9◼ &bSolo", "&9- &fTeams"));
-                break;
-            case TEAMS:
-                i = Itens.createItemLore(Material.SIGN, 1, "&9Filter",
-                        Arrays.asList("&7Click to select the next filter.", "&9", "&9- &fAll Maps", "&9- &fAvailable",
-                                "&9- &fWaiting", "&9- &fStarting", "&9- &fSpectate", "&9- &fSolo", "&9◼ &bTeams"));
-                break;
-        }
-        return i;
-    }
-
     public void openInventory(RSWPlayer player) {
         Inventory inv = getInventory();
         InventoryView openInv = player.getPlayer().getOpenInventory();
@@ -262,10 +214,14 @@ public class MapsViewer {
         inv.setItem(9, placeholder);
         inv.setItem(17, placeholder);
 
-        inv.setItem(18, back);
-        inv.setItem(27, back);
-        inv.setItem(26, next);
-        inv.setItem(35, next);
+        inv.setItem(18, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE),
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
+        inv.setItem(27, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE),
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
+        inv.setItem(26, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE),
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
+        inv.setItem(35, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE),
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
 
         int slot = 0;
         for (ItemStack i : inv.getContents()) {
@@ -281,7 +237,8 @@ public class MapsViewer {
             slot++;
         }
 
-        inv.setItem(49, makeSelIcon());
+        inv.setItem(49, Itens.createItemLore(Material.SIGN, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_FILTER_TITLE),
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_FILTER_DESC))));
     }
 
     public Inventory getInventory() {

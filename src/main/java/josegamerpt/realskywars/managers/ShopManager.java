@@ -2,10 +2,9 @@ package josegamerpt.realskywars.managers;
 
 import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.classes.DisplayItem;
-import josegamerpt.realskywars.classes.Kit;
+import josegamerpt.realskywars.misc.DisplayItem;
+import josegamerpt.realskywars.misc.Kit;
 import josegamerpt.realskywars.configuration.Shops;
-import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Material;
@@ -20,7 +19,7 @@ public class ShopManager {
         CAGE_BLOCKS, BOW_PARTICLES, KITS, WIN_BLOCKS
     }
 
-    public static ArrayList<DisplayItem> getCategoryContents(RSWPlayer p, ShopManager.Categories t) {
+    public ArrayList<DisplayItem> getCategoryContents(RSWPlayer p, ShopManager.Categories t) {
         ArrayList<DisplayItem> items = new ArrayList<>();
         int i = 1;
 
@@ -34,12 +33,11 @@ public class ShopManager {
                 cat = "Win-Blocks";
                 break;
             case KITS:
-                for (Kit a : KitManager.getKits()) {
-                    Boolean bought = PlayerManager.boughtItem(p, a.getName(), ShopManager.Categories.KITS);
+                for (Kit a : RealSkywars.getKitManager().getKits()) {
+                    Boolean bought = RealSkywars.getPlayerManager().boughtItem(p, a.getName(), ShopManager.Categories.KITS);
 
-                    DisplayItem s = new DisplayItem(a.getID(), a.getIcon(), a.getName(), a.getPrice(),
-                            bought, a.getPermission(), ShopManager.Categories.KITS);
-                    items.add(s);
+                    items.add(new DisplayItem(a.getID(), a.getIcon(), a.getName(), a.getPrice(),
+                            bought, a.getPermission(), ShopManager.Categories.KITS));
                 }
                 rapidReturn = true;
                 break;
@@ -59,7 +57,7 @@ public class ShopManager {
                 String material = parse[0];
                 String name = Text.color(parse[2]);
                 String perm = parse[3];
-                Boolean bought = PlayerManager.boughtItem(p, name, t);
+                Boolean bought = RealSkywars.getPlayerManager().boughtItem(p, name, t);
 
                 try {
                     price = Double.parseDouble(parse[1]);

@@ -10,31 +10,18 @@ import java.util.HashMap;
 
 public class LanguageManager {
 
-    public enum TS {
-        PLAYER_JOIN_ARENA, ARENA_CANCEL, ARENA_START_COUNTDOWN, LOBBY_TELEPORT, MATCH_LEAVE, PLAYER_LEAVE_ARENA, MATCH_END, TITLE_WIN, MATCH_SPECTATE, TITLE_DEATHMATCH,
-        CMD_NOPERM, CONFIG_RELOAD, ALREADY_IN_MATCH, CMD_COINS, NO_SETUPMODE, CMD_MATCH_CANCEL, CMD_MATCH_FORCESTART, NO_MATCH, LOBBY_SET, SETUP_NOT_FINISHED, CMD_MAPS, CMD_PLAYERS, CMD_FINISHSETUP, NO_GAME_FOUND, NO_TIER_FOUND, TIER_SET, CHEST_BASIC, CHEST_NORMAL, CHEST_OP, CHEST_CAOS, SET_TIER, ADD_TIER, NO_PLAYER_FOUND, MAP_UNREGISTERED, MAP_EXISTS, LOBBYLOC_NOT_SET, INSUFICIENT_COINS, CMD_NOT_FOUND, CAGES_SET, ADDED_COINS, REMOVED_COINS, SET_COINS, SENDER_COINS, RECIEVER_COINS, LANGUAGE_SET, GENERATING_WORLD, NO_ARENA_BOUNDARIES, SAVING_ARENA, ARENA_REGISTERED, CHEST_VOTE, CHEST_ALREADY_VOTED, GAME_STATUS_SET, ARENA_RESET, MAP_RESET_DONE, SHOP_BUY, SHOP_ALREADY_BOUGHT, SHOP_NO_PERM, PROFILE_SELECTED, NOT_BUYABLE, NO_KIT_FOUND, DEL_PURCHASES, CAGEBLOCK, KITS, CMD_CANT_FORCESTART, SCOREBOARD_LOBBY_TITLE, SCOREBOARD_CAGE_TITLE, SCOREBOARD_SPECTATOR_TITLE, SCOREBOARD_PLAYING_TITLE, ITEMS_MAP_NOTFOUND_TITLE, ITEMS_MAP_TITLE, MAP_ALL, MAP_WAITING, MAP_SPECTATE, MAP_STARTING, MAP_AVAILABLE, MAP_PLAYING, MAP_FINISHING, MAP_RESETTING, COMPASS_TELEPORT, BOWPARTICLE, WINBLOCK, TEAM_LEAVE, TEAM_JOIN, TEAMMATE_DAMAGE_CANCEL, WINNER_BROADCAST, TEAM_BROADCAST_JOIN, TEAM_BROADCAST_LEAVE, ALREADY_STARTED, STATS_ITEM_NAME, SOLO, TEAMS, GAME_FOUND, NO_TRACKER, TRACK_FOUND, DELETEKIT_DONE
-    }
+    private ArrayList<String> langList = new ArrayList<>();
 
-    public enum TSsingle {
-        BOSSBAR_ARENA_RUNTIME, BOSSBAR_ARENA_STARTING, BOSSBAR_ARENA_END, BOSSBAR_ARENA_WAIT, BOSSBAR_ARENA_DEATHMATCH
-    }
-
-    public enum TL {
-        ARENA_START, END_LOG, SCOREBOARD_LOBBY_LINES, SCOREBOARD_CAGE_LINES, SCOREBOARD_SPECTATOR_LINES, SCOREBOARD_PLAYING_LINES, ITEMS_MAP_DESCRIPTION, TITLE_ROOMJOIN, STATS_ITEM_LORE, REFILL_EVENT_TITLE, TNTRAIN_EVENT_TITLE, INITSETUP_ARENA
-    }
-
-    private static ArrayList<String> langList = new ArrayList<>();
-
-    public static void loadLanguages() {
+    public void loadLanguages() {
         langList.clear();
         langList.addAll(Languages.file().getConfigurationSection("Languages").getKeys(false));
     }
 
-    public static String getDefaultLanguage() {
+    public String getDefaultLanguage() {
         return langList.contains(Config.file().getString("Config.Default-Language")) ? Config.file().getString("Config.Default-Language") : langList.get(0);
     }
 
-    public static ArrayList<String> getList(RSWPlayer p, TL tl) {
+    public ArrayList<String> getList(RSWPlayer p, TL tl) {
         String lang = p.getLanguage();
         ArrayList<String> trad = new ArrayList<>();
 
@@ -82,7 +69,7 @@ public class LanguageManager {
         return trad;
     }
 
-    public static String getString(RSWPlayer p, TS ts, boolean b) {
+    public String getString(RSWPlayer p, TS ts, boolean b) {
         if (!b) {
             return Text.color(getString(p, ts));
         } else {
@@ -90,11 +77,11 @@ public class LanguageManager {
         }
     }
 
-    public static String getPrefix() {
+    public String getPrefix() {
         return Text.color(Languages.file().getString("Strings.Prefix"));
     }
 
-    public static HashMap<String, HashMap<TS, String>> verifyLanguages() {
+    public HashMap<String, HashMap<TS, String>> verifyLanguages() {
         HashMap<String, HashMap<TS, String>> flag = new HashMap<>();
         HashMap<TS, String> flagItem = new HashMap<>();
         for (String s : getLanguages()) {
@@ -111,13 +98,13 @@ public class LanguageManager {
         return flag;
     }
 
-    private static String getString(String l, TS ts) {
+    private String getString(String l, TS ts) {
         RSWPlayer Decoy = new RSWPlayer(false);
         Decoy.setLanguage(l);
         return getString(Decoy, ts);
     }
 
-    private static String getString(RSWPlayer p, TS ts) {
+    private String getString(RSWPlayer p, TS ts) {
         String lang = p.getLanguage();
         String tr;
 
@@ -419,10 +406,82 @@ public class LanguageManager {
                     tr = "&9Teams";
                     break;
                 case NO_TRACKER:
-                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.System.Arena.w"));
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.System.Arena.No-Tracker-Found"));
                     break;
                 case TRACK_FOUND:
                     tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.System.Arena.Tracker-Found"));
+                    break;
+                case ITEM_KIT_NAME:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Itens.Kit.Name"));
+                    break;
+                case ITEM_MAPS_NAME:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Itens.Maps.Name"));
+                    break;
+                case ITEM_CAGESET_NAME:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Itens.CageSet.Name"));
+                    break;
+                case ITEM_CHEST1_NAME:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Itens.Chest1.Name"));
+                    break;
+                case ITEM_CHEST2_NAME:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Itens.Chest2.Name"));
+                    break;
+                case ITEM_CHESTS_NAME:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Itens.Chests.Name"));
+                    break;
+                case ITEM_LEAVE_NAME:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Itens.Leave.Name"));
+                    break;
+                case ITEM_PLAYAGAIN_NAME:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Itens.PlayAgain.Name"));
+                    break;
+                case ITEM_PROFILE_NAME:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Itens.Profile.Name"));
+                    break;
+                case ITEM_SHOP_NAME:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Itens.Shop.Name"));
+                    break;
+                case ITEM_SPECTATE_NAME:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Itens.Spectate.Name"));
+                    break;
+                case MENU_PLAYERP_RESET_ALERT:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Menus.Player-Profile.Reset-Data.Alert"));
+                    break;
+                case MENU_PLAYERP_VIEWITEM:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Menus.Player-Profile.View-Item"));
+                    break;
+                case MENU_PLAYERP_RESET_TITLE:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Menus.Player-Profile.Reset-Data.Title"));
+                    break;
+                case MENU_CHESTVOTE_TITLE:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Menus.Chest-Vote-Title"));
+                    break;
+                case MENU_LANG_SELECT:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Menus.Language.Select"));
+                    break;
+                case MENU_LANG_TITLE:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Menus.Language.Title"));
+                    break;
+                case MENU_PLAYERP_TITLE:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Menus.Player-Profile.Title"));
+                    break;
+                case MENUS_SPECTATE_TITLE:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Menus.Spectate-Title"));
+                    break;
+                case MENUS_SHOP_TILE:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Menus.Shop-Menu-Title"));
+                    break;
+                case CANT_JOIN:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.System.Arena.Cant-Join"));
+                    break;
+                case ROOM_FULL:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.System.Arena.Room-Full"));
+                    break;
+                case SPECTATING_DISABLED:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.System.Arena.Spectating-Disabled"));
+                    break;
+                case BLOCKED_COMMAND:
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.System.Arena.Blocked-Command"));
                     break;
                 default:
                     tr = "String not found (" + ts.name() + ")";
@@ -436,27 +495,82 @@ public class LanguageManager {
         return tr;
     }
 
-    public static boolean checkSelect() {
+    public boolean checkSelect() {
         return langList.size() != 0;
     }
 
-    public static String getString(TSsingle ts) {
-        if (ts.equals(TSsingle.BOSSBAR_ARENA_DEATHMATCH)) {
-            return Text.color(Languages.file().getString("Strings.Boss-Bar.DeathMatch"));
-        } else if (ts.equals(TSsingle.BOSSBAR_ARENA_END)) {
-            return Text.color(Languages.file().getString("Strings.Boss-Bar.End"));
-        } else if (ts.equals(TSsingle.BOSSBAR_ARENA_RUNTIME)) {
-            return Text.color(Languages.file().getString("Strings.Boss-Bar.Run-Time"));
-        } else if (ts.equals(TSsingle.BOSSBAR_ARENA_WAIT)) {
-            return Text.color(Languages.file().getString("Strings.Boss-Bar.Wait"));
-        } else if (ts.equals(TSsingle.BOSSBAR_ARENA_STARTING)) {
-            return Text.color(Languages.file().getString("Strings.Boss-Bar.Starting"));
-        } else {
-            return "String not found (" + ts.name() + ")";
+    public String getString(TSsingle ts) {
+        try {
+            switch (ts) {
+                default:
+                    return "String not found (" + ts.name() + ")";
+                case BOSSBAR_ARENA_END:
+                    return Text.color(Languages.file().getString("Strings.Boss-Bar.End"));
+                case BOSSBAR_ARENA_WAIT:
+                    return Text.color(Languages.file().getString("Strings.Boss-Bar.Wait"));
+                case BOSSBAR_ARENA_RUNTIME:
+                    return Text.color(Languages.file().getString("Strings.Boss-Bar.Run-Time"));
+                case BOSSBAR_ARENA_STARTING:
+                    return Text.color(Languages.file().getString("Strings.Boss-Bar.Starting"));
+                case BOSSBAR_ARENA_DEATHMATCH:
+                    return Text.color(Languages.file().getString("Strings.Boss-Bar.DeathMatch"));
+                case SEARCH_NOTFOUND_NAME:
+                    return Text.color(Languages.file().getString("Strings.Search.Not-Found"));
+                case SHOP_BUY:
+                    return Text.color(Languages.file().getString("Strings.Shop.Buy"));
+                case SHOP_BOUGHT:
+                    return Text.color(Languages.file().getString("Strings.Shop.Already-Bought"));
+                case ADMIN_SHUTDOWN:
+                    return Text.color(Languages.file().getString("Strings.Admin-Shutdown"));
+                case KIT_BUY:
+                    return Text.color(Languages.file().getString("Strings.Kit.Buy"));
+                case KIT_ITEM:
+                    return Text.color(Languages.file().getString("Strings.Kit.Items"));
+                case KIT_PRICE:
+                    return Text.color(Languages.file().getString("Strings.Kit.Price"));
+                case KIT_SELECT:
+                    return Text.color(Languages.file().getString("Strings.Kit.Select"));
+                case KIT_CONTAINS:
+                    return Text.color(Languages.file().getString("Strings.Kit.Contains"));
+                case KIT_ENDERPERK:
+                    return Text.color(Languages.file().getString("Strings.Kit.Ender-Perk"));
+                case BUTTONS_BACK_DESC:
+                    return Text.color(Languages.file().getString("Strings.Menus.Back-Button.Description"));
+                case BUTTONS_FILTER_DESC:
+                    return Text.color(Languages.file().getString("Strings.Menus.Filter-Button.Description"));
+                case BUTTONS_NEXT_DESC:
+                    return Text.color(Languages.file().getString("Strings.Menus.Next-Button.Description"));
+                case BUTTONS_BACK_TITLE:
+                    return Text.color(Languages.file().getString("Strings.Menus.Back-Button.Title"));
+                case BUTTONS_FILTER_TITLE:
+                    return Text.color(Languages.file().getString("Strings.Menus.Filter-Button.Title"));
+                case BUTTONS_NEXT_TITLE:
+                    return Text.color(Languages.file().getString("Strings.Menus.Next-Button.Title"));
+                case BUTTONS_MENU_DESC:
+                    return Text.color(Languages.file().getString("Strings.Menus.Main-Menu-Button.Description"));
+                case BUTTONS_MENU_TITLE:
+                    return Text.color(Languages.file().getString("Strings.Menus.Main-Menu-Button.Title"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error finding translation (" + ts.name() + ") check console";
         }
     }
 
-    public static ArrayList<String> getLanguages() {
+    public ArrayList<String> getLanguages() {
         return langList;
+    }
+
+    public enum TS {
+        PLAYER_JOIN_ARENA, ARENA_CANCEL, ARENA_START_COUNTDOWN, LOBBY_TELEPORT, MATCH_LEAVE, PLAYER_LEAVE_ARENA, MATCH_END, TITLE_WIN, MATCH_SPECTATE, TITLE_DEATHMATCH,
+        CMD_NOPERM, CONFIG_RELOAD, ALREADY_IN_MATCH, CMD_COINS, NO_SETUPMODE, CMD_MATCH_CANCEL, CMD_MATCH_FORCESTART, NO_MATCH, LOBBY_SET, SETUP_NOT_FINISHED, CMD_MAPS, CMD_PLAYERS, CMD_FINISHSETUP, NO_GAME_FOUND, NO_TIER_FOUND, TIER_SET, CHEST_BASIC, CHEST_NORMAL, CHEST_OP, CHEST_CAOS, SET_TIER, ADD_TIER, NO_PLAYER_FOUND, MAP_UNREGISTERED, MAP_EXISTS, LOBBYLOC_NOT_SET, INSUFICIENT_COINS, CMD_NOT_FOUND, CAGES_SET, ADDED_COINS, REMOVED_COINS, SET_COINS, SENDER_COINS, RECIEVER_COINS, LANGUAGE_SET, GENERATING_WORLD, NO_ARENA_BOUNDARIES, SAVING_ARENA, ARENA_REGISTERED, CHEST_VOTE, CHEST_ALREADY_VOTED, GAME_STATUS_SET, ARENA_RESET, MAP_RESET_DONE, SHOP_BUY, SHOP_ALREADY_BOUGHT, SHOP_NO_PERM, PROFILE_SELECTED, NOT_BUYABLE, NO_KIT_FOUND, DEL_PURCHASES, CAGEBLOCK, KITS, CMD_CANT_FORCESTART, SCOREBOARD_LOBBY_TITLE, SCOREBOARD_CAGE_TITLE, SCOREBOARD_SPECTATOR_TITLE, SCOREBOARD_PLAYING_TITLE, ITEMS_MAP_NOTFOUND_TITLE, ITEMS_MAP_TITLE, MAP_ALL, MAP_WAITING, MAP_SPECTATE, MAP_STARTING, MAP_AVAILABLE, MAP_PLAYING, MAP_FINISHING, MAP_RESETTING, COMPASS_TELEPORT, BOWPARTICLE, WINBLOCK, TEAM_LEAVE, TEAM_JOIN, TEAMMATE_DAMAGE_CANCEL, WINNER_BROADCAST, TEAM_BROADCAST_JOIN, TEAM_BROADCAST_LEAVE, ALREADY_STARTED, STATS_ITEM_NAME, SOLO, TEAMS, GAME_FOUND, NO_TRACKER, TRACK_FOUND, ITEM_KIT_NAME, ITEM_PROFILE_NAME, ITEM_CAGESET_NAME, ITEM_CHESTS_NAME, ITEM_LEAVE_NAME, ITEM_MAPS_NAME, ITEM_SHOP_NAME, ITEM_SPECTATE_NAME, ITEM_PLAYAGAIN_NAME, ITEM_CHEST1_NAME, ITEM_CHEST2_NAME, MENUS_SHOP_TILE, MENUS_SPECTATE_TITLE, MENU_CHESTVOTE_TITLE, MENU_LANG_TITLE, MENU_LANG_SELECT, MENU_PLAYERP_TITLE, MENU_PLAYERP_VIEWITEM, MENU_PLAYERP_RESET_ALERT, MENU_PLAYERP_RESET_TITLE, CANT_JOIN, SPECTATING_DISABLED, ROOM_FULL, BLOCKED_COMMAND, DELETEKIT_DONE
+    }
+
+    public enum TSsingle {
+        BOSSBAR_ARENA_RUNTIME, BOSSBAR_ARENA_STARTING, BOSSBAR_ARENA_END, BOSSBAR_ARENA_WAIT, SEARCH_NOTFOUND_NAME, SHOP_BOUGHT, SHOP_BUY, ADMIN_SHUTDOWN, KIT_PRICE, KIT_ENDERPERK, KIT_BUY, KIT_SELECT, KIT_CONTAINS, KIT_ITEM, BUTTONS_NEXT_TITLE, BUTTONS_NEXT_DESC, BUTTONS_BACK_TITLE, BUTTONS_BACK_DESC, BUTTONS_FILTER_TITLE, BUTTONS_FILTER_DESC, BUTTONS_MENU_TITLE, BUTTONS_MENU_DESC, BOSSBAR_ARENA_DEATHMATCH
+    }
+
+    public enum TL {
+        ARENA_START, END_LOG, SCOREBOARD_LOBBY_LINES, SCOREBOARD_CAGE_LINES, SCOREBOARD_SPECTATOR_LINES, SCOREBOARD_PLAYING_LINES, ITEMS_MAP_DESCRIPTION, TITLE_ROOMJOIN, STATS_ITEM_LORE, REFILL_EVENT_TITLE, TNTRAIN_EVENT_TITLE, INITSETUP_ARENA
     }
 }

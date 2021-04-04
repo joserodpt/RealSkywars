@@ -1,14 +1,14 @@
-package josegamerpt.realskywars.classes;
+package josegamerpt.realskywars.misc;
 
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.chests.SWChest;
-import josegamerpt.realskywars.modes.SWGameMode;
+import josegamerpt.realskywars.game.modes.SWGameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.ArrayList;
 
-import static josegamerpt.realskywars.modes.SWGameMode.GameType.TEAMS;
+import static josegamerpt.realskywars.game.modes.SWGameMode.GameType.TEAMS;
 
 public class SetupRoom {
 

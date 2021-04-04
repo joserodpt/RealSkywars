@@ -7,8 +7,7 @@ public class SWChestItem {
     private final ItemStack itemstack;
     private final int chance;
 
-    public SWChestItem(ItemStack i, int chance)
-    {
+    public SWChestItem(ItemStack i, int chance) {
         this.itemstack = i;
         this.chance = chance;
     }
@@ -17,8 +16,7 @@ public class SWChestItem {
         return this.itemstack;
     }
 
-    public int getChance()
-    {
+    public int getChance() {
         return this.chance;
     }
 }

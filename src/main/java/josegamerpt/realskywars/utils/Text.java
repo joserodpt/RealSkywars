@@ -1,6 +1,7 @@
 package josegamerpt.realskywars.utils;
 
 import josegamerpt.realskywars.RealSkywars;
+import josegamerpt.realskywars.configuration.Config;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -50,9 +51,10 @@ public class Text {
         return returnMessage.toString();
     }
 
-    static List<String> nicks = Arrays.asList("Morango", "Pêssego", "Azul", "Vermelho", "Branco");
-
-    public static String anonName() { return nicks.get(RealSkywars.getRandom().nextInt(nicks.size())) + " #" + RealSkywars.getRandom().nextInt(99); }
+    public static String anonName() {
+        List<String> nicks = Config.file().getStringList("Config.Random-Nicknames");
+        return nicks.get(RealSkywars.getRandom().nextInt(nicks.size())) + " #" + RealSkywars.getRandom().nextInt(99);
+    }
 
     public enum DefaultFontInfo {
 

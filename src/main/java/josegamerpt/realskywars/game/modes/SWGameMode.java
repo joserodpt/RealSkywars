@@ -1,10 +1,10 @@
-package josegamerpt.realskywars.modes;
+package josegamerpt.realskywars.game.modes;
 
 import java.util.*;
 
 import josegamerpt.realskywars.chests.SWChest;
-import josegamerpt.realskywars.classes.SWEvent;
-import josegamerpt.realskywars.classes.Team;
+import josegamerpt.realskywars.misc.SWEvent;
+import josegamerpt.realskywars.misc.Team;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.utils.ArenaCuboid;
 import org.bukkit.Location;
@@ -18,11 +18,10 @@ import org.bukkit.boss.BossBar;
 public interface SWGameMode {
 
     enum GameState {
-		AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING;
+		AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING
 	}
 	enum GameType {
-		SOLO, TEAMS;
-
+		SOLO, TEAMS
 	}
 
 	boolean isFull();
@@ -106,8 +105,6 @@ public interface SWGameMode {
     void reset();
 
 	ArenaCuboid getArena();
-
-	int getID();
 
 	int getBorderSize();
 

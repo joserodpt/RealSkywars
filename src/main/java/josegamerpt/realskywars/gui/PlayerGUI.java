@@ -1,5 +1,6 @@
 package josegamerpt.realskywars.gui;
 
+import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
@@ -17,14 +18,17 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class PlayerGUI {
 
-    private static Map<UUID, PlayerGUI> inventories = new HashMap<>();
-    private static Map<UUID, Integer> refresh = new HashMap<>();
     static Inventory inv;
     static RSWPlayer gp;
+    private static Map<UUID, PlayerGUI> inventories = new HashMap<>();
+    private static Map<UUID, Integer> refresh = new HashMap<>();
     private UUID uuid;
 
     public PlayerGUI(RSWPlayer p, UUID id, RSWPlayer target) {
@@ -35,19 +39,14 @@ public class PlayerGUI {
 
         // infoMap
         ArrayList<String> lore = new ArrayList<>();
-        for (String s : LanguageManager.getList(p, LanguageManager.TL.STATS_ITEM_LORE)) {
+        for (String s : RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.STATS_ITEM_LORE)) {
             lore.add(variables(s, target));
         }
-        ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, LanguageManager.getString(p, LanguageManager.TS.STATS_ITEM_NAME, false).replace("%player%", target.getDisplayName()),
+        ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.STATS_ITEM_NAME, false).replace("%player%", target.getDisplayName()),
                 lore);
         inv.setItem(2, infoMap);
 
         inventories.put(id, this);
-    }
-
-    protected String variables(String s, RSWPlayer gp) {
-            return s.replace("%space%", Text.makeSpace()).replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS) + "")
-                    .replace("%coins%", gp.getCoins() + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS) + "").replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");
     }
 
     public static Listener getListener() {
@@ -92,6 +91,11 @@ public class PlayerGUI {
                 }
             }
         };
+    }
+
+    protected String variables(String s, RSWPlayer gp) {
+        return s.replace("%space%", Text.makeSpace()).replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS) + "")
+                .replace("%coins%", gp.getCoins() + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS) + "").replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");
     }
 
     public void openInventory(RSWPlayer player) {

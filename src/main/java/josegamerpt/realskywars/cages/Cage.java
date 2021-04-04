@@ -2,7 +2,6 @@ package josegamerpt.realskywars.cages;
 
 import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.Location;
-
 import org.bukkit.Material;
 
 import java.util.List;

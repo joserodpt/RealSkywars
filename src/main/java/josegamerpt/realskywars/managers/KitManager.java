@@ -1,6 +1,6 @@
 package josegamerpt.realskywars.managers;
 
-import josegamerpt.realskywars.classes.Kit;
+import josegamerpt.realskywars.misc.Kit;
 import josegamerpt.realskywars.configuration.Kits;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.ChatColor;
@@ -12,9 +12,10 @@ import java.util.List;
 
 public class KitManager {
 
-    private static ArrayList<Kit> kits = new ArrayList<>();
+    private ArrayList<Kit> kits = new ArrayList<>();
+    public enum KitPerks {ENDER_PEARl}
 
-    public static void loadKits() {
+    public void loadKits() {
         kits.clear();
         if (Kits.file().getConfigurationSection("Kits") != null) {
             for (String s : Kits.file().getConfigurationSection("Kits").getKeys(false)) {
@@ -36,7 +37,7 @@ public class KitManager {
         }
     }
 
-    public static void registerKit(Kit k) {
+    public void registerKit(Kit k) {
         Kits.file().set("Kits." + k.getID() + ".Name", k.getName());
         Kits.file().set("Kits." + k.getID() + ".Price", k.getPrice());
         Kits.file().set("Kits." + k.getID() + ".Icon", k.getIcon().name());
@@ -46,12 +47,12 @@ public class KitManager {
         Kits.save();
     }
 
-    private static ItemStack[] getKitContents(int asd) {
+    private ItemStack[] getKitContents(int asd) {
         List<?> list = Kits.file().getList("Kits." + asd + ".Contents");
         return list.toArray(new ItemStack[0]);
     }
 
-    public static int getNewID() {
+    public int getNewID() {
         if (Kits.file().getConfigurationSection("Kits") != null) {
             return Kits.file().getConfigurationSection("Kits").getKeys(false).size() + 1;
         } else {
@@ -59,11 +60,11 @@ public class KitManager {
         }
     }
 
-    public static ArrayList<Kit> getKits() {
+    public ArrayList<Kit> getKits() {
         return kits;
     }
 
-    public static Kit getKit(int id) {
+    public Kit getKit(int id) {
         for (Kit k : kits) {
             if (k.getID() == id) {
                 return k;
@@ -72,12 +73,12 @@ public class KitManager {
         return null;
     }
 
-    public static void unregisterKit(Kit k) {
+    public void unregisterKit(Kit k) {
         Kits.file().set("Kits." + k.getID(), null);
         Kits.save();
     }
 
-    public static Kit getKit(String string) {
+    public Kit getKit(String string) {
         for (Kit k : kits) {
             if (k.getName().equalsIgnoreCase(string)) {
                 return k;
@@ -86,16 +87,15 @@ public class KitManager {
         return new Kit();
     }
 
-    public static int getKitCount() {
+    public int getKitCount() {
         return kits.size();
     }
 
-    public static List<String> getKitNames() {
+    public List<String> getKitNames() {
         List<String> sugests = new ArrayList<>();
         kits.forEach(kit -> sugests.add(ChatColor.stripColor(kit.getName())));
         return sugests;
 
     }
 
-    public enum KitPerks {ENDER_PEARl}
 }

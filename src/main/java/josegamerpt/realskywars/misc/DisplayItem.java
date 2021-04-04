@@ -1,12 +1,14 @@
-package josegamerpt.realskywars.classes;
+package josegamerpt.realskywars.misc;
 
-import josegamerpt.realskywars.managers.KitManager;
+import josegamerpt.realskywars.Debugger;
+import josegamerpt.realskywars.RealSkywars;
+import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.utils.Itens;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -37,7 +39,7 @@ public class DisplayItem {
 
     public DisplayItem() {
         this.interactive = false;
-        this.i = Itens.createItemLore(Material.BUCKET, 1, "&aEmpty", Collections.singletonList("&fNothing found in this category."));
+        this.i = Itens.createItem(Material.BUCKET, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.SEARCH_NOTFOUND_NAME));
     }
 
     public void makeItem() {
@@ -49,20 +51,35 @@ public class DisplayItem {
     }
 
     private void makeItemStack(Material m) {
-        if (it == ShopManager.Categories.KITS) {
-            Kit k = KitManager.getKit(name);
-            if (!bought) {
-                i = Itens.createItemLore(m, 1, k.getName(), k.getDescription(true));
-            } else {
-                i = Itens.createItemLoreEnchanted(m, 1, k.getName(), k.getDescription(false));
-            }
-        } else {
-            if (bought) {
-                i = Itens.createItemLoreEnchanted(m, 1, name, Collections.singletonList("&aYou already bought this."));
-            } else {
-                i = Itens.createItemLore(m, 1, name, Arrays.asList("&fPrice: &b" + price, "&fClick to Buy."));
-            }
+        switch (this.it) {
+            case KITS:
+                Kit k = RealSkywars.getKitManager().getKit(name);
+                if (!this.bought) {
+                    i = Itens.createItemLore(m, 1, k.getName(), k.getDescription(true));
+                } else {
+                    i = Itens.createItemLoreEnchanted(m, 1, k.getName(), k.getDescription(false));
+                }
+                break;
+            default:
+                if (this.bought) {
+                    i = Itens.createItemLoreEnchanted(m, 1, formatName(name), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BOUGHT)));
+                } else {
+                    i = Itens.createItemLore(m, 1, formatName(name), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BUY).replace("%price%", this.getPrice().toString())));
+                }
+                break;
         }
+    }
+
+    private String formatName(String name) {
+        String ret;
+        try {
+            Material m = Material.valueOf(ChatColor.stripColor(name));
+            ret = "&b" + RealSkywars.getNMS().getItemName(new ItemStack(m));
+        } catch (Exception e) {
+            ret = name;
+        }
+        Debugger.print(DisplayItem.class, ret);
+        return ret;
     }
 
     public Object getInfo(String s) {
