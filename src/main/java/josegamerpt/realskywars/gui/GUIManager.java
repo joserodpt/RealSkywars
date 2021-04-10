@@ -3,10 +3,12 @@ package josegamerpt.realskywars.gui;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
+import josegamerpt.realskywars.kits.Kit;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.GUIBuilder;
 import josegamerpt.realskywars.utils.Itens;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 
@@ -177,6 +179,34 @@ public class GUIManager {
             inventory.addItem(e -> p.resetData(), Itens.createItemLore(Material.BARRIER, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_RESET_TITLE, false),
                     Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_RESET_ALERT, false))), 8);
         }
+
+        inventory.openInventory(p.getPlayer());
+    }
+
+    public static void openKitPreview(RSWPlayer p, Kit kit, int id) {
+        GUIBuilder inventory = new GUIBuilder(kit.getName(), 45, p.getUUID());
+
+        int i = 0;
+        for (ItemStack content : kit.getContents()) {
+            if (content != null) {
+                inventory.addItem(event -> {
+                }, content, i);
+                i++;
+            }
+        }
+
+        inventory.setItem(event -> {
+            if (id == 0)
+            {
+                p.getPlayer().closeInventory();
+                ProfileContent pc = new ProfileContent(p, ShopManager.Categories.KITS);
+                pc.openInventory(p);
+            } else {
+                p.getPlayer().closeInventory();
+                ShopViewer s = new ShopViewer(p, ShopManager.Categories.KITS);
+                s.openInventory(p);
+            }
+        }, Itens.createItem(Material.BIRCH_DOOR, 1, ""), 44);
 
         inventory.openInventory(p.getPlayer());
     }

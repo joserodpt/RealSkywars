@@ -24,7 +24,11 @@ public class Debugger {
 
 	public static void execute() {
 		if (false) {
-
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.getPlugin(), new Runnable() {
+				@Override
+				public void run() {
+				}
+			}, 20, 20);
 		}
 	}
 }

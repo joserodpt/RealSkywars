@@ -161,7 +161,7 @@ public class Placeholder implements SWGameMode {
     public void checkWin() {
     }
 
-    public SWGameMode.GameType getGameType() {
+    public Mode getGameMode() {
         return null;
     }
 

@@ -1,6 +1,7 @@
 package josegamerpt.realskywars.managers;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.cages.SoloCage;
@@ -63,7 +64,7 @@ public class MapManager {
                 World w = Bukkit.getWorld(worldName);
 
                 Location specLoc = getSpecLoc(s);
-                SWGameMode.GameType t = getGameType(s);
+                SWGameMode.Mode t = getGameType(s);
                 switch (t) {
                     case SOLO:
                         Solo gs = new Solo(s, w, GameState.AVAILABLE, getCages(s, specLoc), Maps.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s));
@@ -89,24 +90,28 @@ public class MapManager {
     }
 
     private ArrayList<SWChest> getChests(String worldName, String section) {
-        ConfigurationSection cs = Maps.file().getConfigurationSection(section + ".Chests");
-        Set<String> keys = cs.getKeys(false);
         ArrayList<SWChest> chests = new ArrayList<>();
-        for (String i : keys) {
-            int x = Maps.file().getInt(section + ".Chests." + i + ".LocationX");
-            int y = Maps.file().getInt(section + ".Chests." + i + ".LocationY");
-            int z = Maps.file().getInt(section + ".Chests." + i + ".LocationZ");
-            BlockFace f = BlockFace.valueOf(Maps.file().getString(section + ".Chests." + i + ".Face"));
+        ConfigurationSection cs = Maps.file().getConfigurationSection(section + ".Chests");
+        if (cs != null) {
+            Set<String> keys = cs.getKeys(false);
+            for (String i : keys) {
+                int x = Maps.file().getInt(section + ".Chests." + i + ".LocationX");
+                int y = Maps.file().getInt(section + ".Chests." + i + ".LocationY");
+                int z = Maps.file().getInt(section + ".Chests." + i + ".LocationZ");
+                BlockFace f = BlockFace.valueOf(Maps.file().getString(section + ".Chests." + i + ".Face"));
 
-            SWChest.ChestTYPE ct = SWChest.ChestTYPE.valueOf(Maps.file().getString(section + ".Chests." + i + ".Type"));
+                SWChest.ChestTYPE ct = SWChest.ChestTYPE.valueOf(Maps.file().getString(section + ".Chests." + i + ".Type"));
 
-            chests.add(new SWChest(ct, worldName, x, y, z, f));
+                chests.add(new SWChest(ct, worldName, x, y, z, f));
+            }
+        } else {
+            Debugger.print(MapManager.class, "There are no chests in " + worldName + " (possibly a bug? Check config pls!)");
         }
         return chests;
     }
 
-    private SWGameMode.GameType getGameType(String s) {
-        return SWGameMode.GameType.valueOf(Maps.file().getString(s + ".Settings.GameType"));
+    private SWGameMode.Mode getGameType(String s) {
+        return SWGameMode.Mode.valueOf(Maps.file().getString(s + ".Settings.GameType"));
     }
 
     private Boolean isInstantEndingEnabled(String s) {
@@ -179,7 +184,7 @@ public class MapManager {
         Maps.file().set(s + ".number-of-players", g.getMaxPlayers());
 
         // Locations Cages
-        switch (g.getGameType()) {
+        switch (g.getGameMode()) {
             case SOLO:
                 for (Cage c : g.getCages()) {
                     Location loc = c.getLoc();
@@ -220,7 +225,7 @@ public class MapManager {
         // Settings
         Maps.file().set(s + ".Settings.Spectator", g.isSpectatorEnabled());
         Maps.file().set(s + ".Settings.Instant-Ending", g.isInstantEndEnabled());
-        Maps.file().set(s + ".Settings.GameType", g.getGameType().name());
+        Maps.file().set(s + ".Settings.GameType", g.getGameMode().name());
 
         // Border
         Maps.file().set(s + ".World.Border.POS1-X", g.getPOS1().getX());
@@ -315,7 +320,7 @@ public class MapManager {
 
                 if (loaded) {
                     // Save Data
-                    SWGameMode.GameType gt = p.getSetup().getGameType();
+                    SWGameMode.Mode gt = p.getSetup().getGameType();
                     switch (gt) {
                         case SOLO:
                             Solo gs = new Solo(p.getSetup().getName(), p.getSetup().getWorld(), GameState.AVAILABLE, p.getSetup().getCages(), p.getSetup().getMaxPlayers(), p.getSetup().getSpectatorLocation(), p.getSetup().isSpectatingON(), p.getSetup().isInstantEnding(), pos1, pos2, p.getSetup().getChests());

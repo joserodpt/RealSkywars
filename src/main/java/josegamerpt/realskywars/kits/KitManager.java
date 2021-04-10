@@ -1,6 +1,6 @@
-package josegamerpt.realskywars.managers;
+package josegamerpt.realskywars.kits;
 
-import josegamerpt.realskywars.misc.Kit;
+import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Kits;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.ChatColor;
@@ -9,11 +9,11 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class KitManager {
 
     private ArrayList<Kit> kits = new ArrayList<>();
-    public enum KitPerks {ENDER_PEARl}
 
     public void loadKits() {
         kits.clear();
@@ -22,13 +22,21 @@ public class KitManager {
                 int id = Integer.parseInt(s);
                 String name = Text.color(Kits.file().getString("Kits." + id + ".Name"));
                 Double price = Kits.file().getDouble("Kits." + id + ".Price");
-                Material mat = Material.getMaterial(Kits.file().getString("Kits." + id + ".Icon"));
+
+                String matString = Kits.file().getString("Kits." + id + ".Icon");
+                Material mat;
+                Kit kit;
+                try {
+                    mat = Material.getMaterial(matString);
+                } catch (Exception e) {
+                    mat = Material.BARRIER;
+                    RealSkywars.log(Level.WARNING, matString + " isnt a valid material [KIT]");
+                }
                 ItemStack[] k = getKitContents(id);
                 String perm = Kits.file().getString("Kits." + id + ".Permission");
-                Kit kit = new Kit(id, name, price, mat, k, perm);
+                kit = new Kit(id, name, price, mat, k, perm);
 
-                if (Kits.file().getBoolean("Kits." + id + ".Perks.EnderPearl"))
-                {
+                if (Kits.file().getBoolean("Kits." + id + ".Perks.EnderPearl")) {
                     kit.setPerk(KitPerks.ENDER_PEARl, true);
                 }
 
@@ -97,5 +105,7 @@ public class KitManager {
         return sugests;
 
     }
+
+    public enum KitPerks {ENDER_PEARl}
 
 }

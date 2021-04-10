@@ -20,7 +20,7 @@ public interface SWGameMode {
     enum GameState {
 		AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING
 	}
-	enum GameType {
+	enum Mode {
 		SOLO, TEAMS
 	}
 
@@ -92,7 +92,7 @@ public interface SWGameMode {
 
 	void checkWin();
 
-	SWGameMode.GameType getGameType();
+	Mode getGameMode();
 
 	ArrayList<Cage> getCages();
 

@@ -8,7 +8,7 @@ import org.bukkit.World;
 
 import java.util.ArrayList;
 
-import static josegamerpt.realskywars.game.modes.SWGameMode.GameType.TEAMS;
+import static josegamerpt.realskywars.game.modes.SWGameMode.Mode.TEAMS;
 
 public class SetupRoom {
 
@@ -20,7 +20,7 @@ public class SetupRoom {
     private World worldMap;
     private Location spectatorLocation;
     private Boolean spec = true;
-    private SWGameMode.GameType gameType;
+    private SWGameMode.Mode mode;
     private boolean cagesConfirmed = false;
     private boolean speclocConfirm = false;
     private Boolean guiConfirm = false;
@@ -33,7 +33,7 @@ public class SetupRoom {
         this.name = nome;
         this.worldMap = w;
         this.maxPlayers = players;
-        this.gameType = SWGameMode.GameType.SOLO;
+        this.mode = SWGameMode.Mode.SOLO;
     }
 
     public SetupRoom(String nome, World w, int teams, int ppert) {
@@ -41,7 +41,7 @@ public class SetupRoom {
         this.worldMap = w;
         this.teams = teams;
         this.playersPerTeam = ppert;
-        this.gameType = TEAMS;
+        this.mode = TEAMS;
 
         this.maxPlayers = teams * ppert;
     }
@@ -86,8 +86,8 @@ public class SetupRoom {
         this.speclocConfirm = b;
     }
 
-    public SWGameMode.GameType getGameType() {
-        return this.gameType;
+    public SWGameMode.Mode getGameType() {
+        return this.mode;
     }
 
     public void addCage(Cage c) {

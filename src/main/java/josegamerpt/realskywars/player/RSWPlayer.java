@@ -7,7 +7,7 @@ import josegamerpt.realskywars.configuration.Players;
 import josegamerpt.realskywars.effects.BlockWinTrail;
 import josegamerpt.realskywars.effects.Trail;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.misc.Kit;
+import josegamerpt.realskywars.kits.Kit;
 import josegamerpt.realskywars.misc.Selections;
 import josegamerpt.realskywars.misc.SetupRoom;
 import josegamerpt.realskywars.misc.Team;
@@ -24,6 +24,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class RSWPlayer {
@@ -307,7 +309,7 @@ public class RSWPlayer {
                 if (m != this.cageBlock) {
                     this.cageBlock = m;
                     if (isInMatch()) {
-                        switch (this.getMatch().getGameType()) {
+                        switch (this.getMatch().getGameMode()) {
                             case SOLO:
                                 if (hasCage()) {
                                     this.cage.setCage();
@@ -328,7 +330,7 @@ public class RSWPlayer {
                     this.winblockRandom = true;
                 } else {
                     this.winblockRandom = false;
-                    this.winblockMaterial = Material.valueOf((String) o);
+                    this.winblockMaterial = Material.getMaterial((String) o);
                 }
                 break;
             case STATE:
@@ -625,7 +627,7 @@ public class RSWPlayer {
             if (gp.isInMatch()) {
                 return s.replace("%space%", Text.makeSpace()).replace("%players%", gp.getMatch().getPlayersCount() + "").replace("%nextevent%", nextEvent(gp.getMatch()))
                         .replace("%spectators%", gp.getMatch().getSpectatorsCount() + "").replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + "")
-                        .replace("%map%", gp.getMatch().getName()).replace("%runtime%", Text.formatSeconds(gp.getMatch().getTimePassed()) + "").replace("%state%", RealSkywars.getGameManager().getStateString(gp, gp.getMatch().getState())).replace("%mode%", gp.getMatch().getGameType().name()).replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");
+                        .replace("%map%", gp.getMatch().getName()).replace("%runtime%", Text.formatSeconds(gp.getMatch().getTimePassed()) + "").replace("%state%", RealSkywars.getGameManager().getStateString(gp, gp.getMatch().getState())).replace("%mode%", gp.getMatch().getGameMode().name()).replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");
             } else {
                 return s.replace("%space%", Text.makeSpace()).replace("%coins%", gp.getCoins() + "")
                         .replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS) + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS) + "").replace("%playing%", "" + RealSkywars.getPlayerManager().countPlayingPlayers()).replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");

@@ -69,10 +69,10 @@ public class GameManager {
                 games.stream().filter(r -> r.getState().equals(GameState.PLAYING) || r.getState().equals(GameState.FINISHING)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
                 break;
             case SOLO:
-                games.stream().filter(r -> r.getGameType().equals(SWGameMode.GameType.SOLO)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                games.stream().filter(r -> r.getGameMode().equals(SWGameMode.Mode.SOLO)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
                 break;
             case TEAMS:
-                games.stream().filter(r -> r.getGameType().equals(SWGameMode.GameType.TEAMS)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                games.stream().filter(r -> r.getGameMode().equals(SWGameMode.Mode.TEAMS)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
                 break;
             default:
                 break;
@@ -180,7 +180,7 @@ public class GameManager {
     public ArrayList<SWEvent> parseEvents(SWGameMode sgm) {
         ArrayList<SWEvent> ret = new ArrayList<>();
         String search = "Teams";
-        switch (sgm.getGameType()) {
+        switch (sgm.getGameMode()) {
             case SOLO:
                 search = "Solo";
                 break;
@@ -198,25 +198,22 @@ public class GameManager {
         return ret;
     }
 
-    public void findGame(RSWPlayer p, SWGameMode.GameType type) {
+    public void findGame(RSWPlayer p, SWGameMode.Mode type) {
         if (PlayerManager.teleporting.contains(p.getUUID()))
         {
             return;
         } else {
             PlayerManager.teleporting.add(p.getUUID());
-            Optional<SWGameMode> o = this.games.stream().filter(c -> c.getGameType().equals(type) && c.getState().equals(GameState.AVAILABLE) || c.getState().equals(GameState.STARTING) && !c.isFull()).findFirst();
+            Optional<SWGameMode> o = this.games.stream().filter(c -> c.getGameMode().equals(type) && c.getState().equals(GameState.AVAILABLE) || c.getState().equals(GameState.STARTING) && !c.isFull()).findFirst();
             if (o.isPresent() && !o.get().isPlaceHolder()) {
                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.GAME_FOUND, true));
                 if (p.isInMatch()) {
                     p.getMatch().removePlayer(p);
                 }
-                Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), new Runnable() {
-                    @Override
-                    public void run() {
-                        o.get().addPlayer(p);
-                        PlayerManager.teleporting.remove(p.getUUID());
-                    }
-                }, 10);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
+                    o.get().addPlayer(p);
+                    PlayerManager.teleporting.remove(p.getUUID());
+                }, 5);
             } else {
                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_GAME_FOUND, true));
                 PlayerManager.teleporting.remove(p.getUUID());

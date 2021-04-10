@@ -14,6 +14,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -94,6 +95,12 @@ public class ProfileContent {
                                 return;
                             }
 
+
+                            if (e.getClick() == ClickType.RIGHT && current.cat == ShopManager.Categories.KITS) {
+                                gp.getPlayer().closeInventory();
+                                GUIManager.openKitPreview(gp, RealSkywars.getKitManager().getKit(a.getID()), 0);
+                                return;
+                            }
                             switch (current.cat) {
                                 case KITS:
                                     gp.setProperty(RSWPlayer.PlayerProperties.KIT, RealSkywars.getKitManager().getKit(a.getID()));
@@ -153,7 +160,9 @@ public class ProfileContent {
                     }
                 }
             }
-        };
+        }
+
+                ;
     }
 
     private String getTitle(RSWPlayer p, ShopManager.Categories t) {

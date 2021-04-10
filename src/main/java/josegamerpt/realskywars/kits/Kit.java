@@ -1,14 +1,12 @@
-package josegamerpt.realskywars.misc;
+package josegamerpt.realskywars.kits;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Config;
-import josegamerpt.realskywars.managers.KitManager;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.RSWPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +22,7 @@ public class Kit {
     private String permission;
     private boolean buyable;
     private boolean enderPearlGive = false;
-    private BukkitTask enderTask;
+    private int enderTask = -2;
 
     public Kit(int ID, String n, Double cost, Material ic, ItemStack[] contents, String perm) {
         this.id = ID;
@@ -33,6 +31,16 @@ public class Kit {
         this.icon = ic;
         this.contents = contents;
         this.permission = perm;
+        this.buyable = true;
+    }
+
+    public Kit(int ID, String n, Double cost, ItemStack[] contents) {
+        this.id = ID;
+        this.name = n;
+        this.price = cost;
+        this.icon = Material.LEATHER_CHESTPLATE;
+        this.contents = contents;
+        this.permission = "RealSkywars.Kit";
         this.buyable = true;
     }
 
@@ -144,17 +152,19 @@ public class Kit {
 
     private void startTasks(RSWPlayer p) {
         if (this.enderPearlGive) {
-            this.enderTask = new BukkitRunnable() {
-                public void run() {
+            this.enderTask = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
+                if (p.isInMatch()) {
                     p.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+                } else {
+                    Bukkit.getScheduler().cancelTask(enderTask);
                 }
-            }.runTaskTimerAsynchronously(RealSkywars.getPlugin(), Config.file().getInt("Config.Kits.Ender-Pearl-Perk-Give-Interval"), 20); // Spelled Async wrong and I know it, deal with it haha
+            }, Config.file().getInt("Config.Kits.Ender-Pearl-Perk-Give-Interval"));
         }
     }
 
     public void cancelTasks() {
-        if (this.enderTask != null) {
-            this.enderTask.cancel();
+        if (this.enderTask != -2) {
+            Bukkit.getScheduler().cancelTask(this.enderTask);
         }
     }
 }

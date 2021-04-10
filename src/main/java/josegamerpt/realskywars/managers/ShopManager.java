@@ -3,7 +3,7 @@ package josegamerpt.realskywars.managers;
 import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.misc.DisplayItem;
-import josegamerpt.realskywars.misc.Kit;
+import josegamerpt.realskywars.kits.Kit;
 import josegamerpt.realskywars.configuration.Shops;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Text;

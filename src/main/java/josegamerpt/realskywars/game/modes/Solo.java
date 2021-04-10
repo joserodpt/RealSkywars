@@ -159,8 +159,8 @@ public class Solo implements SWGameMode {
         }
     }
 
-    public SWGameMode.GameType getGameType() {
-        return GameType.SOLO;
+    public Mode getGameMode() {
+        return Mode.SOLO;
     }
 
     public SWGameMode.GameState getState() {
@@ -334,19 +334,14 @@ public class Solo implements SWGameMode {
         p.setInvincible(false);
         p.sendMessage(Text.color(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MATCH_LEAVE, true)));
 
-        switch (p.getState()) {
-            case PLAYING:
-            case CAGE:
-            case EXTERNAL_SPECTATOR:
-            case SPECTATOR:
-                RealSkywars.getGameManager().tpToLobby(p);
-                break;
-        }
-        RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.LOBBY);
+        RealSkywars.getGameManager().tpToLobby(p);
+
 
         p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.LOBBY_OR_NOGAME);
         p.setFlying(false);
         p.heal();
+
+        RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.LOBBY);
 
         if (p.hasKit()) {
             p.getKit().cancelTasks();
@@ -405,69 +400,71 @@ public class Solo implements SWGameMode {
     }
 
     public void addPlayer(RSWPlayer p) {
-        if (this.state == SWGameMode.GameState.RESETTING) {
-            p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CANT_JOIN, true));
-            return;
-        }
-        if (this.state == SWGameMode.GameState.FINISHING || this.state == SWGameMode.GameState.PLAYING
-                || this.state == SWGameMode.GameState.STARTING) {
-            if (this.specEnabled) {
-                spectate(p, SpectateType.EXTERNAL, null);
-            } else {
-                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SPECTATING_DISABLED, true));
-            }
-            return;
-        }
-        if (this.getPlayersCount() == this.maxPlayers) {
-            p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ROOM_FULL, true));
-            return;
-        }
-
-        p.setRoom(this);
-        p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.CAGE);
-
-        this.inRoom.add(p);
-
-        if (p.getPlayer() != null) {
-            this.bossBar.addPlayer(p.getPlayer());
-            p.heal();
-            ArrayList<String> up = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.TITLE_ROOMJOIN);
-            p.getPlayer().sendTitle(up.get(0), up.get(1), 10, 120, 10);
-        }
-
-        //cage
-
-        for (Cage c : this.cages) {
-            if (c.isEmpty() && p.getPlayer() != null) {
-                c.addPlayer(p);
+        switch (this.state)
+        {
+            case RESETTING:
+                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CANT_JOIN, true));
                 break;
-            }
-        }
-
-        for (RSWPlayer ws : this.inRoom) {
-            ws.sendMessage(RealSkywars.getLanguageManager().getString(ws, LanguageManager.TS.PLAYER_JOIN_ARENA, true).replace("%player%",
-                    p.getDisplayName()).replace("%players%", getPlayersCount() + "").replace("%maxplayers%", getMaxPlayers() + ""));
-        }
-
-        RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.CAGE);
-
-        //update tab
-        if (!p.isBot()) {
-            for (RSWPlayer player : this.getPlayers()) {
-                if (!player.isBot()) {
-                    RSWPlayer.RoomTAB rt = player.getTab();
-                    List<Player> players = this.getPlayers().stream().map(RSWPlayer::getPlayer).collect(Collectors.toList());
-                    rt.clear();
-                    rt.add(players);
-                    rt.updateRoomTAB();
+            case FINISHING:
+            case PLAYING:
+                if (this.specEnabled) {
+                    spectate(p, SpectateType.EXTERNAL, null);
+                } else {
+                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SPECTATING_DISABLED, true));
                 }
-            }
-        }
+                break;
+            default:
+                if (this.getPlayersCount() == this.maxPlayers) {
+                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ROOM_FULL, true));
+                    return;
+                }
 
-        if (getPlayersCount() == Config.file().getInt("Config.Min-Players-ToStart")) {
-            startRoom();
-        }
+                p.setRoom(this);
+                p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.CAGE);
 
+                this.inRoom.add(p);
+
+                if (p.getPlayer() != null) {
+                    this.bossBar.addPlayer(p.getPlayer());
+                    p.heal();
+                    ArrayList<String> up = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.TITLE_ROOMJOIN);
+                    p.getPlayer().sendTitle(up.get(0), up.get(1), 10, 120, 10);
+                }
+
+                //cage
+
+                for (Cage c : this.cages) {
+                    if (c.isEmpty() && p.getPlayer() != null) {
+                        c.addPlayer(p);
+                        break;
+                    }
+                }
+
+                for (RSWPlayer ws : this.inRoom) {
+                    ws.sendMessage(RealSkywars.getLanguageManager().getString(ws, LanguageManager.TS.PLAYER_JOIN_ARENA, true).replace("%player%",
+                            p.getDisplayName()).replace("%players%", getPlayersCount() + "").replace("%maxplayers%", getMaxPlayers() + ""));
+                }
+
+                RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.CAGE);
+
+                //update tab
+                if (!p.isBot()) {
+                    for (RSWPlayer player : this.getPlayers()) {
+                        if (!player.isBot()) {
+                            RSWPlayer.RoomTAB rt = player.getTab();
+                            List<Player> players = this.getPlayers().stream().map(RSWPlayer::getPlayer).collect(Collectors.toList());
+                            rt.clear();
+                            rt.add(players);
+                            rt.updateRoomTAB();
+                        }
+                    }
+                }
+
+                if (getPlayersCount() == Config.file().getInt("Config.Min-Players-ToStart")) {
+                    startRoom();
+                }
+                break;
+        }
     }
 
     private void startRoom() {
@@ -566,7 +563,6 @@ public class Solo implements SWGameMode {
     public void spectate(RSWPlayer p, SpectateType st, Location killLoc) {
         p.setInvincible(true);
         p.setFlying(true);
-        RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.SPECTATOR);
 
         switch (st) {
             case GAME:
@@ -593,6 +589,9 @@ public class Solo implements SWGameMode {
                 new Demolition(this.getSpectatorLocation(), p.getCage(), 5, 3).start(RealSkywars.getPlugin());
 
                 sendLog(p);
+
+                RealSkywars.getPlayerManager().sendClick(p, this.getGameMode());
+
                 checkWin();
                 break;
             case EXTERNAL:
@@ -623,6 +622,8 @@ public class Solo implements SWGameMode {
                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MATCH_SPECTATE, true));
                 break;
         }
+
+        RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.SPECTATOR);
     }
 
     private void sendLog(RSWPlayer p) {

@@ -147,10 +147,11 @@ public class SoloCage implements Cage {
         World w = Bukkit.getWorld(this.worldName);
         w.getBlockAt(x, y - 1, z).setType(m);
 
+        this.p.setInvincible(true);
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
             if (this.p != null)
                 this.p.setInvincible(false);
-        }, 100);
+        }, 200);
     }
 
 }

@@ -96,7 +96,7 @@ public class PlayerEvents implements Listener {
                         }
                         if (e.getPlayer().getInventory().getItemInMainHand()
                                 .getType().equals(Material.NETHER_STAR)) {
-                            MapsViewer v = new MapsViewer(gp, gp.getSelection(Selections.Key.MAPVIEWER), "Maps");
+                            MapsViewer v = new MapsViewer(gp, gp.getSelection(Selections.Key.MAPVIEWER), RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.MAPS_NAME, false));
                             v.openInventory(gp);
                             e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                             e.setCancelled(true);
@@ -152,7 +152,7 @@ public class PlayerEvents implements Listener {
                     if (gp.getState().equals(RSWPlayer.PlayerState.SPECTATOR) || gp.getState().equals(RSWPlayer.PlayerState.EXTERNAL_SPECTATOR)) {
                         if (e.getPlayer().getInventory().getItemInMainHand()
                                 .getType().equals(Material.TOTEM_OF_UNDYING)) {
-                            e.getPlayer().performCommand("rsw play " + gp.getMatch().getGameType().name());
+                            e.getPlayer().performCommand("rsw play " + gp.getMatch().getGameMode().name());
                             e.setCancelled(true);
                         }
                         if (e.getPlayer().getInventory().getItemInMainHand()
@@ -285,6 +285,16 @@ public class PlayerEvents implements Listener {
                 case VOID:
                     if (damaged.isInMatch()) {
                         e.setDamage(0);
+
+                        if (damaged.getState().name().contains("SPEC"))
+                        {
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
+                                damaged.getPlayer().spigot().respawn();
+                                damaged.teleport(damaged.getMatch().getSpectatorLocation());
+                            }, 1);
+                            return;
+                        }
+
                         switch (damaged.getMatch().getState()) {
                             case PLAYING:
                                 damaged.addStatistic(RSWPlayer.Statistic.DEATH, 1);
@@ -327,6 +337,16 @@ public class PlayerEvents implements Listener {
         }
 
         RSWPlayer killed = RealSkywars.getPlayerManager().getPlayer(pkilled);
+
+        if (killed.getState().name().contains("SPEC"))
+        {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
+                killed.getPlayer().spigot().respawn();
+                killed.teleport(killed.getMatch().getSpectatorLocation());
+            }, 1);
+            return;
+        }
+
         if (killed.isInMatch() && killed.getMatch().getState().equals(SWGameMode.GameState.PLAYING)) {
             killed.addStatistic(RSWPlayer.Statistic.DEATH, 1);
 
@@ -368,7 +388,7 @@ public class PlayerEvents implements Listener {
         if (event.getRightClicked() instanceof Player) {
             RSWPlayer click = RealSkywars.getPlayerManager().getPlayer(event.getPlayer());
             RSWPlayer clicked = RealSkywars.getPlayerManager().getPlayer((Player) event.getRightClicked());
-            if (click != null && clicked != null) {
+            if (click != null && clicked != null && !clicked.isInMatch()) {
                 PlayerGUI playg = new PlayerGUI(click, click.getUUID(), clicked);
                 playg.openInventory(click);
             }

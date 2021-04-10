@@ -30,13 +30,14 @@ Strings:
     Price: "&fPrice: &9%price%"
     Contains: "&eThis kit contains:"
     Items: "&fx%amount% &b%item%"
-    Buy: "&fClick to buy this kit."
-    Select: "&fClick to select this kit."
+    Buy: "&fClick to buy this kit. Right click to preview."
+    Select: "&fClick to select this kit. Right click to preview."
     Ender-Perk: "&fThis kit has the &5Ender &dPerk. It gives enderpearls in a timed interval."
 Default-Language: ENGLISH
 Languages:
   ENGLISH:
     Messages:
+      Maps: "Maps"
       System:
         States:
           All: "&2All"
@@ -94,6 +95,7 @@ Languages:
           Winner-Broadcast: "&b%winner% &fwon on the map &a%map%"
           Leave: "&eYou left the match."
           Already-Started: "&fThis match &calready &fstarted."
+          Play-Again: "&eWant to play again? &lClick here!"
           Init-Setup:
             - "&f&nYou are now in setup mode. You can paste your shematic or make a new map."
             - "&9> &aUse the beacon to place %cages% cages. "

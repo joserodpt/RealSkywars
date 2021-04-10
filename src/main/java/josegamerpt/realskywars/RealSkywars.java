@@ -6,6 +6,7 @@ import josegamerpt.realskywars.configuration.checkers.ConfigChecker;
 import josegamerpt.realskywars.configuration.checkers.LangChecker;
 import josegamerpt.realskywars.configuration.chests.*;
 import josegamerpt.realskywars.gui.*;
+import josegamerpt.realskywars.kits.KitManager;
 import josegamerpt.realskywars.managers.*;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.nms.*;
@@ -204,9 +205,9 @@ public class RealSkywars extends JavaPlugin {
                     if (tt == null) return new TypeResult(argument);
                     return new TypeResult(tt, argument);
                 });
-                commandManager.getParameterHandler().register(SWGameMode.GameType.class, argument -> {
+                commandManager.getParameterHandler().register(SWGameMode.Mode.class, argument -> {
                     try {
-                        SWGameMode.GameType tt = SWGameMode.GameType.valueOf(argument.toString().toUpperCase());
+                        SWGameMode.Mode tt = SWGameMode.Mode.valueOf(argument.toString().toUpperCase());
                         if (tt == null) return new TypeResult(argument);
                         return new TypeResult(tt, argument);
                     } catch (Exception e) {
@@ -215,6 +216,11 @@ public class RealSkywars extends JavaPlugin {
                 });
                 commandManager.getParameterHandler().register(CurrencyManager.Operations.class, argument -> {
                     CurrencyManager.Operations tt = CurrencyManager.Operations.valueOf(argument.toString().toLowerCase());
+                    if (tt == null) return new TypeResult(argument);
+                    return new TypeResult(tt, argument);
+                });
+                commandManager.getParameterHandler().register(Commands.KIT.class, argument -> {
+                    Commands.KIT tt = Commands.KIT.valueOf(argument.toString().toLowerCase());
                     if (tt == null) return new TypeResult(argument);
                     return new TypeResult(tt, argument);
                 });

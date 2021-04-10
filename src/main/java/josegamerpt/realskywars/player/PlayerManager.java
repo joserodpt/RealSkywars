@@ -9,6 +9,8 @@ import josegamerpt.realskywars.misc.Selections;
 import josegamerpt.realskywars.misc.Selections.Key;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.utils.Itens;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -42,7 +44,9 @@ public class PlayerManager {
                     break;
                 case SPECTATOR:
                     p.getInventory().setItem(1, getItem(pg, Items.SPECTATE));
-                    p.getInventory().setItem(2, getItem(pg, Items.PLAYAGAIN));
+                    if (pg.getState() != RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
+                        p.getInventory().setItem(2, getItem(pg, Items.PLAYAGAIN));
+                    }
                     p.getInventory().setItem(7, getItem(pg, Items.LEAVE));
                     break;
                 case SETUP:
@@ -106,7 +110,7 @@ public class PlayerManager {
                 ss.put(Key.MAPVIEWER, s);
             }
             if (cageBlock != null) {
-                gp.setProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK, Material.valueOf(cageBlock));
+                gp.setProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK, Material.getMaterial(cageBlock));
             }
             gp.setSelections(ss);
             gp.save();
@@ -269,6 +273,12 @@ public class PlayerManager {
                 player.setCompassTarget(target.getLocation());
             }
         }.runTaskTimerAsynchronously(RealSkywars.getPlugin(), 5L, 30L);
+    }
+
+    public void sendClick(RSWPlayer p, SWGameMode.Mode gameMode) {
+        TextComponent component = new TextComponent(TextComponent.fromLegacyText(" > " + RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.PLAY_AGAIN, false)));
+        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw play " + gameMode.name().toLowerCase()));
+        p.getPlayer().spigot().sendMessage(component);
     }
 
     public enum Items {LOBBY, CAGE, SETUP, SPECTATOR, PROFILE, CAGESET, MAPS, SHOP, LEAVE, CHESTS, SPECTATE, KIT, PLAYAGAIN, CHEST1, CHEST2}

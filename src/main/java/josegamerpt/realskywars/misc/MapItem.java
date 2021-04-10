@@ -29,7 +29,7 @@ public class MapItem {
                 count = g.getPlayersCount();
             }
 
-            icon = Itens.createItemLore(getState(), count, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getName()).replace("%mode%", g.getGameType().name()),
+            icon = Itens.createItemLore(getState(), count, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getName()).replace("%mode%", g.getGameMode().name()),
                     variableList(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.ITEMS_MAP_DESCRIPTION)));
         }
     }

@@ -15,6 +15,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -41,10 +42,12 @@ public class ShopViewer {
 
         List<DisplayItem> items = RealSkywars.getShopManager().getCategoryContents(swPl, t);
 
-        p = new Pagination<>(28, items);
-
-        fillChest(p.getPage(pageNumber));
-
+        if (items.size() > 0) {
+            p = new Pagination<>(28, items);
+            fillChest(p.getPage(pageNumber));
+        } else {
+            fillChest(Collections.emptyList());
+        }
         this.register();
     }
 
@@ -92,6 +95,12 @@ public class ShopViewer {
 
                             if (!a.isInteractive()) {
                                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NOT_BUYABLE, true));
+                                return;
+                            }
+
+                            if (e.getClick() == ClickType.RIGHT && current.cat == ShopManager.Categories.KITS) {
+                                p.getPlayer().closeInventory();
+                                GUIManager.openKitPreview(p, RealSkywars.getKitManager().getKit(a.getID()), 1);
                                 return;
                             }
 

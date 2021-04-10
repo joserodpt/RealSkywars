@@ -2,6 +2,7 @@ package josegamerpt.realskywars.misc;
 
 import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
+import josegamerpt.realskywars.kits.Kit;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.utils.Itens;
@@ -73,7 +74,7 @@ public class DisplayItem {
     private String formatName(String name) {
         String ret;
         try {
-            Material m = Material.valueOf(ChatColor.stripColor(name));
+            Material m = Material.getMaterial(ChatColor.stripColor(name));
             ret = "&b" + RealSkywars.getNMS().getItemName(new ItemStack(m));
         } catch (Exception e) {
             ret = name;

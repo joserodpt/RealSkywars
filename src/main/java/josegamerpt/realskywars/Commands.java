@@ -7,9 +7,8 @@ import josegamerpt.realskywars.gui.*;
 import josegamerpt.realskywars.managers.CurrencyManager;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
-import josegamerpt.realskywars.misc.Kit;
+import josegamerpt.realskywars.kits.Kit;
 import josegamerpt.realskywars.misc.Selections;
-import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
@@ -20,7 +19,6 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -34,6 +32,7 @@ public class Commands extends CommandBase {
 
     public RealSkywars rs;
     private String onlyPlayer = "[RealSkywars] Only players can run this command.";
+    public enum KIT { create, delete }
 
     public Commands(RealSkywars rs) {
         this.rs = rs;
@@ -63,7 +62,7 @@ public class Commands extends CommandBase {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
             if (p.getMatch() == null) {
                 MapsViewer v = new MapsViewer(p, p.getSelection(Selections.Key.MAPVIEWER),
-                        "Maps");
+                        RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MAPS_NAME, false));
                 v.openInventory(p);
             } else {
                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ALREADY_IN_MATCH, true));
@@ -84,6 +83,46 @@ public class Commands extends CommandBase {
         }
     }
 
+    @SubCommand("kit")
+    @Completion({"#enum", "#kits", "#range:100"})
+    @Permission("RealSkywars.Admin")
+    public void kitcmd(final CommandSender commandSender, Commands.KIT action, String name, @Optional Double cost) {
+        if (commandSender instanceof Player) {
+            RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
+
+            if (action == null)
+            {
+                p.sendMessage(RealSkywars.getLanguageManager().getPrefix() + "Unknown kit command action.");
+                return;
+            }
+            switch (action)
+            {
+                case create:
+                    if (cost == null)
+                    {
+                        p.sendMessage(RealSkywars.getLanguageManager().getPrefix() + "Cost value not accepted.");
+                        return;
+                    }
+                    Kit k = new Kit(RealSkywars.getKitManager().getNewID(), name, cost,
+                            p.getInventory().getContents());
+                    KitSettings m = new KitSettings(k, p.getUUID());
+                    m.openInventory(p);
+                    break;
+                case delete:
+                    Kit k2 = RealSkywars.getKitManager().getKit(name);
+                    if (k2 != null) {
+                        k2.deleteKit();
+                        commandSender.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.DELETEKIT_DONE, true));
+                    } else {
+                        commandSender.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_KIT_FOUND, true));
+                    }
+                    break;
+            }
+        } else {
+            commandSender.sendMessage(onlyPlayer);
+        }
+    }
+
     @SubCommand("shop")
     public void shopcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
@@ -95,7 +134,7 @@ public class Commands extends CommandBase {
 
     @SubCommand("play")
     @Completion("#enum")
-    public void playcmd(final CommandSender commandSender, SWGameMode.GameType type) {
+    public void playcmd(final CommandSender commandSender, SWGameMode.Mode type) {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
             if (type != null && p != null && p.getPlayer() != null) {
@@ -417,19 +456,6 @@ public class Commands extends CommandBase {
         }
     }
 
-    @SubCommand("delkit")
-    @Completion("#kits")
-    @Permission("RealSkywars.Admin")
-    public void delkit(final CommandSender commandSender, String name) {
-        Kit k = RealSkywars.getKitManager().getKit(name);
-        if (k != null) {
-            k.deleteKit();
-            commandSender.sendMessage(RealSkywars.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.DELETEKIT_DONE, true));
-        } else {
-            commandSender.sendMessage(RealSkywars.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.NO_KIT_FOUND, true));
-        }
-    }
-
     @SubCommand("settier")
     @Completion("#enum")
     @Permission("RealSkywars.Admin")
@@ -498,22 +524,6 @@ public class Commands extends CommandBase {
             } else {
                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_PLAYER_FOUND, true));
             }
-        } else {
-            commandSender.sendMessage(onlyPlayer);
-        }
-    }
-
-    @SubCommand("createkit")
-    @Permission("RealSkywars.Admin")
-    @Completion({"#range:30", "#range:20"})
-    @WrongUsage("&c/rsw createkit <name> <price>")
-    public void createkit(final CommandSender commandSender, String kitname, Double cost) {
-        if (commandSender instanceof Player) {
-            RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
-            Kit k = new Kit(RealSkywars.getKitManager().getNewID(), kitname, cost, Material.LEATHER_CHESTPLATE,
-                    p.getInventory().getContents(), "RealSkywars.Kit");
-            KitSettings m = new KitSettings(k, p.getUUID());
-            m.openInventory(p);
         } else {
             commandSender.sendMessage(onlyPlayer);
         }

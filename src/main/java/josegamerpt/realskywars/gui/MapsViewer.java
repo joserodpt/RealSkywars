@@ -121,7 +121,7 @@ public class MapsViewer {
                 }
 
                 gp.getPlayer().closeInventory();
-                MapsViewer v = new MapsViewer(gp, gp.getSelection(Selections.Key.MAPVIEWER), "Maps");
+                MapsViewer v = new MapsViewer(gp, gp.getSelection(Selections.Key.MAPVIEWER), RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.MAPS_NAME, false));
                 v.openInventory(gp);
                 gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
             }
