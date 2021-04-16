@@ -87,7 +87,7 @@ public class PlayerEvents implements Listener {
             case RIGHT_CLICK_BLOCK:
             case RIGHT_CLICK_AIR:
                 RSWPlayer gp = RealSkywars.getPlayerManager().getPlayer(e.getPlayer());
-                if (RealSkywars.getGameManager().isInLobby(gp.getLocation())) {
+                if (RealSkywars.getGameManager().isInLobby(gp.getLocation().getWorld())) {
                     if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().hasItemMeta()) {
                         if (e.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.BOOK)) {
                             GUIManager.openPlayerMenu(gp, !gp.isInMatch());
@@ -311,7 +311,7 @@ public class PlayerEvents implements Listener {
                     }
                     break;
                 default:
-                    if (damaged.isInvencible() || RealSkywars.getGameManager().isInLobby(damaged.getLocation())) {
+                    if (damaged.isInvencible() || RealSkywars.getGameManager().isInLobby(damaged.getLocation().getWorld())) {
                         e.setCancelled(true);
                     }
                     break;

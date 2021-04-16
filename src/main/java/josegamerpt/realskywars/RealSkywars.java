@@ -220,8 +220,14 @@ public class RealSkywars extends JavaPlugin {
                     return new TypeResult(tt, argument);
                 });
                 commandManager.getParameterHandler().register(Commands.KIT.class, argument -> {
-                    Commands.KIT tt = Commands.KIT.valueOf(argument.toString().toLowerCase());
-                    if (tt == null) return new TypeResult(argument);
+                    Commands.KIT tt;
+                    try {
+                        tt = Commands.KIT.valueOf(argument.toString().toLowerCase());
+                        if (tt == null) return new TypeResult(argument);
+                    } catch (IllegalArgumentException e)
+                    {
+                        return new TypeResult(argument);
+                    }
                     return new TypeResult(tt, argument);
                 });
 

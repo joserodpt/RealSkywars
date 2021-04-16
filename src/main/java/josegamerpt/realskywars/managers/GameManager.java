@@ -160,12 +160,12 @@ public class GameManager {
     }
 
     public void setLobbyLoc(Location location) {
-        lobbyLOC = location;
+        this.lobbyLOC = location;
     }
 
     public List<String> getRoomNames() {
         List<String> sugests = new ArrayList<>();
-        games.forEach(gameRoom -> sugests.add(ChatColor.stripColor(gameRoom.getName())));
+        this.games.forEach(gameRoom -> sugests.add(ChatColor.stripColor(gameRoom.getName())));
         return sugests;
     }
 
@@ -173,8 +173,8 @@ public class GameManager {
         return loginTP;
     }
 
-    public boolean isInLobby(Location location) {
-        return lobbyLOC != null && lobbyLOC.getWorld().equals(location.getWorld());
+    public boolean isInLobby(World w) {
+        return this.lobbyLOC != null && this.lobbyLOC.getWorld().equals(w);
     }
 
     public ArrayList<SWEvent> parseEvents(SWGameMode sgm) {
@@ -217,6 +217,11 @@ public class GameManager {
             } else {
                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_GAME_FOUND, true));
                 PlayerManager.teleporting.remove(p.getUUID());
+
+                if (this.getLobbyLocation().getWorld().equals(p.getWorld()))
+                {
+                    this.tpToLobby(p);
+                }
             }
         }
     }

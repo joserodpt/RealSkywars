@@ -13,7 +13,6 @@ import josegamerpt.realskywars.misc.SetupRoom;
 import josegamerpt.realskywars.misc.Team;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.utils.Text;
-import org.apache.http.util.TextUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -24,8 +23,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class RSWPlayer {
@@ -191,7 +188,7 @@ public class RSWPlayer {
     }
 
     public void sendMessage(String string) {
-        if (!this.bot && !TextUtils.isEmpty(string)) {
+        if (!this.bot) {
             p.sendMessage(Text.color(string));
         }
     }

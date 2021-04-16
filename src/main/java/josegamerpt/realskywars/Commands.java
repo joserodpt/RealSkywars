@@ -19,6 +19,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -32,7 +33,7 @@ public class Commands extends CommandBase {
 
     public RealSkywars rs;
     private String onlyPlayer = "[RealSkywars] Only players can run this command.";
-    public enum KIT { create, delete }
+    public enum KIT { create, delete, give }
 
     public Commands(RealSkywars rs) {
         this.rs = rs;
@@ -113,6 +114,15 @@ public class Commands extends CommandBase {
                     if (k2 != null) {
                         k2.deleteKit();
                         commandSender.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.DELETEKIT_DONE, true));
+                    } else {
+                        commandSender.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_KIT_FOUND, true));
+                    }
+                    break;
+                case give:
+                    Kit k3 = RealSkywars.getKitManager().getKit(name);
+                    if (k3 != null) {
+                        k3.give(p);
+                        p.playSound(Sound.ENTITY_VILLAGER_YES, 50, 50);
                     } else {
                         commandSender.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_KIT_FOUND, true));
                     }

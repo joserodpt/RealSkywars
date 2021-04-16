@@ -56,9 +56,9 @@ public class DisplayItem {
             case KITS:
                 Kit k = RealSkywars.getKitManager().getKit(name);
                 if (!this.bought) {
-                    i = Itens.createItemLore(m, 1, k.getName(), k.getDescription(true));
+                    i = Itens.createItemLore(m, 1, "&r&f" + k.getName(), k.getDescription(true));
                 } else {
-                    i = Itens.createItemLoreEnchanted(m, 1, k.getName(), k.getDescription(false));
+                    i = Itens.createItemLoreEnchanted(m, 1, "&r&f" + k.getName(), k.getDescription(false));
                 }
                 break;
             default:
@@ -79,7 +79,7 @@ public class DisplayItem {
         } catch (Exception e) {
             ret = name;
         }
-        Debugger.print(DisplayItem.class, ret);
+        ret = "&r&f" + ret;
         return ret;
     }
 
