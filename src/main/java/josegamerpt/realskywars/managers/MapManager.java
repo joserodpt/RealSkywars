@@ -1,6 +1,7 @@
 package josegamerpt.realskywars.managers;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+
 import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
@@ -44,16 +45,15 @@ public class MapManager {
 
     public void loadMaps() {
         RealSkywars.getGameManager().clearRooms();
+        String root = RealSkywars.getPlugin().getServer().getWorldContainer().getAbsolutePath();
 
-        int id = 0;
         for (String s : getRegisteredMaps()) {
             if (getGameType(s) == null) {
-                throw new IllegalStateException("Mode doesnt exist: " + s);
+                throw new IllegalStateException("Mode " + Maps.file().getString(s + ".Settings.GameType") + " doesnt exist! Map: " + s);
             }
 
             String worldName = Maps.file().getString(s + ".world");
 
-            String root = RealSkywars.getPlugin().getServer().getWorldContainer().getAbsolutePath();
             File source = new File(root, worldName);
             if (!source.exists()) {
                 RealSkywars.getWorldManager().copyWorld(worldName, WorldManager.CopyTo.ROOT);
@@ -67,7 +67,7 @@ public class MapManager {
                 SWGameMode.Mode t = getGameType(s);
                 switch (t) {
                     case SOLO:
-                        Solo gs = new Solo(s, w, GameState.AVAILABLE, getCages(s, specLoc), Maps.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s));
+                        Solo gs = new Solo(s, w, GameState.AVAILABLE, getCages(s, specLoc), Maps.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s));
                         gs.saveRoom();
                         break;
                     case TEAMS:
@@ -78,15 +78,18 @@ public class MapManager {
                             ts.add(new Team(tc, (Maps.file().getInt(s + ".number-of-players") / cgs.size()), c.getLoc(), worldName));
                             tc++;
                         }
-                        Teams teas = new Teams(s, w, GameState.AVAILABLE, ts, Maps.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s));
+                        Teams teas = new Teams(s, w, GameState.AVAILABLE, ts, Maps.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s));
                         teas.saveRoom();
                         break;
                     default:
                         throw new IllegalStateException("Mode doesnt exist: " + t.name());
                 }
             }
-            id++;
         }
+    }
+
+    private Boolean isRanked(String s) {
+        return Maps.file().getBoolean(s + ".ranked");
     }
 
     private ArrayList<SWChest> getChests(String worldName, String section) {
@@ -177,9 +180,12 @@ public class MapManager {
         // World
         Maps.file().set(s + ".world", g.getWorld().getName());
 
+
         // Map Name
         Maps.file().set(s + ".name", s);
 
+        //Ranked
+        Maps.file().set(s + ".ranked", g.isRanked());
         // Number Players
         Maps.file().set(s + ".number-of-players", g.getMaxPlayers());
 
@@ -323,7 +329,7 @@ public class MapManager {
                     SWGameMode.Mode gt = p.getSetup().getGameType();
                     switch (gt) {
                         case SOLO:
-                            Solo gs = new Solo(p.getSetup().getName(), p.getSetup().getWorld(), GameState.AVAILABLE, p.getSetup().getCages(), p.getSetup().getMaxPlayers(), p.getSetup().getSpectatorLocation(), p.getSetup().isSpectatingON(), p.getSetup().isInstantEnding(), pos1, pos2, p.getSetup().getChests());
+                            Solo gs = new Solo(p.getSetup().getName(), p.getSetup().getWorld(), GameState.AVAILABLE, p.getSetup().getCages(), p.getSetup().getMaxPlayers(), p.getSetup().getSpectatorLocation(), p.getSetup().isSpectatingON(), p.getSetup().isInstantEnding(), pos1, pos2, p.getSetup().getChests(), p.getSetup().isRanked());
                             gs.saveRoom();
                             saveMap(gs);
                             break;
@@ -334,7 +340,7 @@ public class MapManager {
                                 ts.add(new Team(tc, p.getSetup().getPlayersPerTeam(), c.getLoc(), p.getSetup().getWorld().getName()));
                                 tc++;
                             }
-                            Teams t = new Teams(p.getSetup().getName(), p.getSetup().getWorld(), GameState.AVAILABLE, ts, p.getSetup().getMaxPlayers(), p.getSetup().getSpectatorLocation(), p.getSetup().isSpectatingON(), p.getSetup().isInstantEnding(), pos1, pos2, p.getSetup().getChests());
+                            Teams t = new Teams(p.getSetup().getName(), p.getSetup().getWorld(), GameState.AVAILABLE, ts, p.getSetup().getMaxPlayers(), p.getSetup().getSpectatorLocation(), p.getSetup().isSpectatingON(), p.getSetup().isInstantEnding(), pos1, pos2, p.getSetup().getChests(), p.getSetup().isRanked());
                             t.saveRoom();
                             saveMap(t);
                             break;

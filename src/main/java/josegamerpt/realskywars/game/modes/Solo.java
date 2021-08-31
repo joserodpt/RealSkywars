@@ -12,10 +12,7 @@ import josegamerpt.realskywars.misc.SWWorld;
 import josegamerpt.realskywars.misc.Team;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
-import josegamerpt.realskywars.utils.ArenaCuboid;
-import josegamerpt.realskywars.utils.Demolition;
-import josegamerpt.realskywars.utils.MathUtils;
-import josegamerpt.realskywars.utils.Text;
+import josegamerpt.realskywars.utils.*;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -35,6 +32,7 @@ public class Solo implements SWGameMode {
     private final String name;
     private final int maxPlayers;
     private final int borderSize;
+    private Boolean ranked;
     private final ArrayList<RSWPlayer> inRoom = new ArrayList<>();
     private final ArrayList<Integer> votes = new ArrayList<>();
     private final ArrayList<UUID> voters = new ArrayList<>();
@@ -60,7 +58,7 @@ public class Solo implements SWGameMode {
     // b-1, n-2, o-3, c-4
 
     public Solo(String nome, World w, SWGameMode.GameState estado, ArrayList<Cage> cages, int maxPlayers,
-                Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests) {
+                Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd) {
         this.name = nome;
         this.world = new SWWorld(this, w);
 
@@ -76,6 +74,7 @@ public class Solo implements SWGameMode {
         this.border.setCenter(this.arenaCuboid.getCenter());
         this.border.setSize(this.borderSize);
         this.chests = chests;
+        this.ranked = rankd;
 
         this.votes.add(2);
 
@@ -93,6 +92,11 @@ public class Solo implements SWGameMode {
     @Override
     public WorldBorder getBorder() {
         return this.border;
+    }
+
+    @Override
+    public Boolean isRanked() {
+        return this.ranked;
     }
 
     @Override
@@ -465,6 +469,9 @@ public class Solo implements SWGameMode {
                 }
                 break;
         }
+
+        //signal that is ranked
+        if (this.ranked) p.sendActionbar("&b&lRANKED");
     }
 
     private void startRoom() {
@@ -629,9 +636,9 @@ public class Solo implements SWGameMode {
     private void sendLog(RSWPlayer p) {
         if (p.getPlayer() != null) {
             for (String s : Text.color(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.END_LOG))) {
-                p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE) + "")
+                p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE, this.isRanked()) + "")
                         .replace("%totalcoins%", p.getGameBalance() + "")
-                        .replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + ""));
+                        .replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, this.isRanked()) + ""));
             }
             p.saveData();
         }
@@ -658,7 +665,7 @@ public class Solo implements SWGameMode {
                     () -> {
                         if (p.getPlayer() != null) {
                             p.setInvincible(true);
-                            p.addStatistic(RSWPlayer.Statistic.SOLO_WIN, 1);
+                            p.addStatistic(RSWPlayer.Statistic.SOLO_WIN, 1, this.isRanked());
                             p.executeWinBlock(Config.file().getInt("Config.Time-EndGame") - 2);
                         }
 
@@ -672,12 +679,13 @@ public class Solo implements SWGameMode {
                 this.kickPlayers(null);
                 this.resetArena();
             }, (t) -> {
-                // if (Players.get(0).p != null) {
-                //     firework(Players.get(0));
-                // }
                 double div = (double) t.getSecondsLeft() / (double) Config.file().getInt("Config.Time-EndGame");
                 if (div <= 1 && div >= 0) {
                     bossBar.setProgress(div);
+                }
+                RSWPlayer p2 = this.getPlayers().get(0);
+                if (p2.getPlayer() != null) {
+                    FireworkUtils.spawnRandomFirework(p2.getLocation());
                 }
             });
 

@@ -182,6 +182,9 @@ public class SWChest {
                 if (RealSkywars.hdInstalado) {
                     linha.setText(Text.formatSeconds(t.getSecondsLeft()));
                 }
+                if (this.isChest()) {
+                    RealSkywars.getNMS().chestAnimation(this.getChest(), true);
+                }
             });
 
             this.chestCTD.scheduleTimer();

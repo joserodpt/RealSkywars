@@ -20,9 +20,12 @@ public interface SWGameMode {
     enum GameState {
 		AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING
 	}
+
 	enum Mode {
 		SOLO, TEAMS
 	}
+
+	Boolean isRanked();
 
 	boolean isFull();
 

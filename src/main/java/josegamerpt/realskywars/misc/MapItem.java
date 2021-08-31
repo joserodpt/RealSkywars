@@ -1,8 +1,8 @@
 package josegamerpt.realskywars.misc;
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.game.modes.SWGameMode;
+import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import org.bukkit.Material;
@@ -22,51 +22,47 @@ public class MapItem {
 
     private void makeIcon(RSWPlayer p) {
         int count = 1;
-        if (g.isPlaceHolder()) {
-            icon = Itens.createItem(Material.BUCKET, count, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_NOTFOUND_TITLE, false));
+        if (this.g.isPlaceHolder()) {
+            this.icon = Itens.createItem(Material.BUCKET, count, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_NOTFOUND_TITLE, false));
         } else {
-            if (g.getPlayersCount() > 0) {
-                count = g.getPlayersCount();
+            if (this.g.getPlayersCount() > 0) {
+                count = this.g.getPlayersCount();
             }
 
-            icon = Itens.createItemLore(getState(), count, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getName()).replace("%mode%", g.getGameMode().name()),
+            this.icon = Itens.createItemLore(getStateMaterial(), count, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(this.g.isRanked()),
                     variableList(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.ITEMS_MAP_DESCRIPTION)));
         }
+    }
+
+    private String rankedFormatting(Boolean ranked) {
+        return ranked ? "&bRANKED" : "";
     }
 
     private ArrayList<String> variableList(ArrayList<String> list) {
         ArrayList<String> a = new ArrayList<>();
         for (String s : list) {
-            a.add(s.replace("%players%", g.getPlayersCount() + "").replace("%maxplayers%", g.getMaxPlayers() + ""));
+            a.add(s.replace("%players%", this.g.getPlayersCount() + "").replace("%maxplayers%", this.g.getMaxPlayers() + ""));
         }
         return a;
     }
 
-    private Material getState() {
-        Material m;
-        switch (g.getState()) {
+    private Material getStateMaterial() {
+        switch (this.g.getState()) {
             case WAITING:
-                m = Material.LIGHT_BLUE_CONCRETE;
-                break;
+                return this.g.isRanked() ? Material.LIGHT_BLUE_CONCRETE : Material.LIGHT_BLUE_WOOL;
             case AVAILABLE:
-                m = Material.GREEN_CONCRETE;
-                break;
+                return this.g.isRanked() ? Material.GREEN_CONCRETE : Material.GREEN_WOOL;
             case STARTING:
-                m = Material.YELLOW_CONCRETE;
-                break;
+                return this.g.isRanked() ? Material.YELLOW_CONCRETE : Material.YELLOW_WOOL;
             case PLAYING:
-                m = Material.RED_CONCRETE;
-                break;
+                return this.g.isRanked() ? Material.RED_CONCRETE : Material.RED_WOOL;
             case FINISHING:
-                m = Material.PURPLE_CONCRETE;
-                break;
+                return this.g.isRanked() ? Material.PURPLE_CONCRETE : Material.PURPLE_WOOL;
             case RESETTING:
-                m = Material.BLACK_CONCRETE;
-                break;
+                return this.g.isRanked() ? Material.BLACK_CONCRETE : Material.BLACK_WOOL;
             default:
-                m = Material.DIRT;
+                return this.g.isRanked() ? Material.BEACON : Material.DIRT;
         }
-        return m;
     }
 
     public ItemStack geIcon() {

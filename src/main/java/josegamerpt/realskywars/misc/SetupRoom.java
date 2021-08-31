@@ -28,6 +28,7 @@ public class SetupRoom {
 
     private int teams;
     private int playersPerTeam;
+    private Boolean ranked = false;
 
     public SetupRoom(String nome, World w, int players) {
         this.name = nome;
@@ -144,5 +145,13 @@ public class SetupRoom {
 
     public ArrayList<SWChest> getChests() {
         return this.chests;
+    }
+
+    public Boolean isRanked() {
+        return this.ranked;
+    }
+
+    public void setRanked(boolean b) {
+        this.ranked = b;
     }
 }

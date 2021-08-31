@@ -40,6 +40,12 @@ public class MapSettings {
             Collections.singletonList("&7Instant Ending is turned &aON&7."));
     static ItemStack ieoff = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending",
             Collections.singletonList("&7Instant Ending is turned &cOFF&7."));
+
+    static ItemStack rankedon = Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&9Ranked",
+            Collections.singletonList("&7Ranked Mode is turned &aON&7."));
+    static ItemStack rankedoff = Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&9Ranked",
+            Collections.singletonList("&7Ranked Mode is turned &cOFF&7."));
+
     private static Map<UUID, MapSettings> inventories = new HashMap<>();
     SetupRoom gr;
     private UUID uuid;
@@ -67,16 +73,27 @@ public class MapSettings {
         inv.setItem(17, placeholder);
 
         // ITEMS
+        //spectating
         if (g.isSpectatingON()) {
             inv.setItem(10, specon);
         } else {
             inv.setItem(10, specoff);
         }
+
+        //ranked
+        if (g.isRanked()) {
+            inv.setItem(13, rankedon);
+        } else {
+            inv.setItem(13, rankedoff);
+        }
+
+        //instantending
         if (g.isInstantEnding()) {
             inv.setItem(16, ieon);
         } else {
             inv.setItem(16, ieoff);
         }
+
 
         inv.setItem(22, confirm);
 
@@ -135,6 +152,14 @@ public class MapSettings {
                                                 inv.setItem(10, specon);
                                             }
                                             gp.getSetup().setSpectating(!gp.getSetup().isSpectatingON());
+                                            break;
+                                        case 13:
+                                            if (gp.getSetup().isRanked()) {
+                                                inv.setItem(13, rankedoff);
+                                            } else {
+                                                inv.setItem(13, rankedon);
+                                            }
+                                            gp.getSetup().setRanked(!gp.getSetup().isRanked());
                                             break;
                                         case 16:
 

@@ -91,6 +91,7 @@ public class PlayerManager {
     public void loadPlayer(Player p) {
         RSWPlayer gp;
         if (Players.file().isConfigurationSection(p.getUniqueId().toString())) {
+            //GENERAL
             int tkills = Players.file().getInt(p.getUniqueId() + ".Kills");
             int dead = Players.file().getInt(p.getUniqueId() + ".Deaths");
             int solwin = Players.file().getInt(p.getUniqueId() + ".Wins.Solo");
@@ -98,11 +99,20 @@ public class PlayerManager {
             int gap = Players.file().getInt(p.getUniqueId() + ".Games-Played");
             int los = Players.file().getInt(p.getUniqueId() + ".Loses");
             Double coin = Players.file().getDouble(p.getUniqueId() + ".Coins");
+
+            //
+            int ranked_tkills = Players.file().getInt(p.getUniqueId() + ".RankedKills");
+            int ranked_dead = Players.file().getInt(p.getUniqueId() + ".RankedDeaths");
+            int ranked_solwin = Players.file().getInt(p.getUniqueId() + ".Wins.RankedSolo");
+            int ranked_tw = Players.file().getInt(p.getUniqueId() + ".Wins.RankedTeams");
+            int ranked_gap = Players.file().getInt(p.getUniqueId() + ".RankedGames-Played");
+            int ranked_los = Players.file().getInt(p.getUniqueId() + ".RankedLoses");
+
             ArrayList<String> bg = (ArrayList<String>) Players.file().getStringList(p.getUniqueId() + ".Bought-Items");
             String lang = Players.file().getString(p.getUniqueId() + ".Language");
             String cageBlock = Players.file().getString(p.getUniqueId() + ".Preferences.Cage-Material");
 
-            gp = new RSWPlayer(p, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, null, tkills, dead, solwin, tw, coin, lang, bg, los, gap);
+            gp = new RSWPlayer(p, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, null, tkills, dead, solwin, tw, coin, lang, bg, los, gap, ranked_tkills, ranked_dead, ranked_solwin, ranked_tw, ranked_los, ranked_gap);
             HashMap<Selections.Key, Selections.Value> ss = new HashMap<>();
             String mapv = Players.file().getString(p.getUniqueId() + ".Preferences.MAPVIEWER");
             if (mapv != null) {
@@ -116,7 +126,7 @@ public class PlayerManager {
             gp.save();
         } else {
             gp = new RSWPlayer(p, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, null, 0, 0, 0, 0, 0D,
-                    RealSkywars.getLanguageManager().getDefaultLanguage(), new ArrayList<>(), 0, 0);
+                    RealSkywars.getLanguageManager().getDefaultLanguage(), new ArrayList<>(), 0, 0, 0, 0, 0, 0, 0, 0);
             gp.getSelections().put(Selections.Key.MAPVIEWER, Selections.Value.MAPV_ALL);
             gp.save();
             gp.saveData();
@@ -174,12 +184,24 @@ public class PlayerManager {
                     }
                     break;
                 case STATS:
-                    Players.file().set(p.getUUID() + ".Wins.Solo", p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO));
-                    Players.file().set(p.getUUID() + ".Wins.Teams", p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS));
-                    Players.file().set(p.getUUID() + ".Kills", p.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS));
-                    Players.file().set(p.getUUID() + ".Deaths", p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS));
-                    Players.file().set(p.getUUID() + ".Loses", p.getStatistics(RSWPlayer.PlayerStatistics.LOSES));
-                    Players.file().set(p.getUUID() + ".Games-Played", p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED));
+                    Players.file().set(p.getUUID() + ".Wins.Solo", p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false));
+                    Players.file().set(p.getUUID() + ".Wins.RankedSolo", p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true));
+
+                    Players.file().set(p.getUUID() + ".Wins.Teams", p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false));
+                    Players.file().set(p.getUUID() + ".Wins.RankedTeams", p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true));
+
+                    Players.file().set(p.getUUID() + ".Kills", p.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS, false));
+                    Players.file().set(p.getUUID() + ".RankedKills", p.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS, true));
+
+                    Players.file().set(p.getUUID() + ".Deaths", p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false));
+                    Players.file().set(p.getUUID() + ".RankedDeaths", p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, true));
+
+                    Players.file().set(p.getUUID() + ".Loses", p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false));
+                    Players.file().set(p.getUUID() + ".RankedLoses", p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, true));
+
+                    Players.file().set(p.getUUID() + ".Games-Played", p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false));
+                    Players.file().set(p.getUUID() + ".RankedGames-Played", p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true));
+
                     break;
                 case BOUGHT:
                     Players.file().set(p.getUUID() + ".Bought-Items", p.getBoughtItems());

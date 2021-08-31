@@ -94,8 +94,8 @@ public class PlayerGUI {
     }
 
     protected String variables(String s, RSWPlayer gp) {
-        return s.replace("%space%", Text.makeSpace()).replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS) + "")
-                .replace("%coins%", gp.getCoins() + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS) + "").replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED) + "");
+        return s.replace("%space%", Text.makeSpace()).replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS, false) + "")
+                .replace("%coins%", gp.getCoins() + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false) + "").replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false) + "");
     }
 
     public void openInventory(RSWPlayer player) {

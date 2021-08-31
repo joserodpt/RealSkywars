@@ -25,6 +25,11 @@ public class Placeholder implements SWGameMode {
     }
 
     @Override
+    public Boolean isRanked() {
+        return false;
+    }
+
+    @Override
     public boolean isFull() {
         return true;
     }

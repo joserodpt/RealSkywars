@@ -25,6 +25,5 @@ public class NMS114R1 implements RSWnms {
     public String getItemName(ItemStack itemStack) {
         net.minecraft.server.v1_14_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(itemStack);
         return LocaleLanguage.a().a(nmsStack.getItem().getName());
-
     }
 }

@@ -1,6 +1,7 @@
 package josegamerpt.realskywars.misc;
 
 import josegamerpt.realskywars.RealSkywars;
+import josegamerpt.realskywars.configuration.Languages;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.player.RSWPlayer;
@@ -25,7 +26,7 @@ public class SWEvent {
     }
 
     public String getName() {
-        return this.et.name() + " " + Text.formatSeconds(this.getTimeLeft());
+        return Text.color(Languages.file().getString("Strings.Events." + this.et.name()) + " " + Text.formatSeconds(this.getTimeLeft()));
     }
 
     public int getTimeLeft() {

@@ -52,22 +52,19 @@ public class DisplayItem {
     }
 
     private void makeItemStack(Material m) {
-        switch (this.it) {
-            case KITS:
-                Kit k = RealSkywars.getKitManager().getKit(name);
-                if (!this.bought) {
-                    i = Itens.createItemLore(m, 1, "&r&f" + k.getName(), k.getDescription(true));
-                } else {
-                    i = Itens.createItemLoreEnchanted(m, 1, "&r&f" + k.getName(), k.getDescription(false));
-                }
-                break;
-            default:
-                if (this.bought) {
-                    i = Itens.createItemLoreEnchanted(m, 1, formatName(name), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BOUGHT)));
-                } else {
-                    i = Itens.createItemLore(m, 1, formatName(name), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BUY).replace("%price%", this.getPrice().toString())));
-                }
-                break;
+        if (this.it == ShopManager.Categories.KITS) {
+            Kit k = RealSkywars.getKitManager().getKit(name);
+            if (!this.bought) {
+                i = Itens.createItemLore(m, 1, "&r&f" + k.getName(), k.getDescription(true));
+            } else {
+                i = Itens.createItemLoreEnchanted(m, 1, "&r&f" + k.getName(), k.getDescription(false));
+            }
+        } else {
+            if (this.bought) {
+                i = Itens.createItemLoreEnchanted(m, 1, formatName(name), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BOUGHT)));
+            } else {
+                i = Itens.createItemLore(m, 1, formatName(name), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BUY).replace("%price%", this.getPrice().toString())));
+            }
         }
     }
 
@@ -84,10 +81,7 @@ public class DisplayItem {
     }
 
     public Object getInfo(String s) {
-        if (info.containsKey(s)) {
-            return info.get(s);
-        }
-        return null;
+        return info.get(s);
     }
 
     public boolean containsInfo(String randomBlock) {

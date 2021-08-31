@@ -1,6 +1,7 @@
 package josegamerpt.realskywars;
 
 import josegamerpt.realskywars.chests.ChestManager;
+import josegamerpt.realskywars.commands.Commands;
 import josegamerpt.realskywars.configuration.*;
 import josegamerpt.realskywars.configuration.checkers.ConfigChecker;
 import josegamerpt.realskywars.configuration.checkers.LangChecker;
@@ -248,6 +249,7 @@ public class RealSkywars extends JavaPlugin {
         } else {
             getLogger().severe("Your server version " + getServerVersion() + " is not supported by RealSkywars.");
             getLogger().severe("If you think this is a bug, contact the plugin developer.");
+            log(star);
             Bukkit.getPluginManager().disablePlugin(this);
         }
     }
@@ -261,6 +263,9 @@ public class RealSkywars extends JavaPlugin {
         getLogger().info("Your server is running version " + version);
 
         switch (version) {
+            case "v1_17_R1":
+                nms = new NMS117R1();
+                break;
             case "v1_16_R3":
                 nms = new NMS116R3();
                 break;

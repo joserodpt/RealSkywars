@@ -1,5 +1,6 @@
-package josegamerpt.realskywars;
+package josegamerpt.realskywars.commands;
 
+import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.modes.SWGameMode;

@@ -38,6 +38,7 @@ public class Teams implements SWGameMode {
     private String name;
     private int maxPlayers;
     private int maxMembersTeam;
+    private Boolean ranked;
     private SWGameMode.GameState state;
     private WorldBorder border;
     private BossBar bossBar;
@@ -60,7 +61,7 @@ public class Teams implements SWGameMode {
     private ArrayList<SWEvent> events;
 
     public Teams(String nome, World w, SWGameMode.GameState estado, ArrayList<Team> teams, int maxPlayers,
-                 Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests) {
+                 Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd) {
         this.name = nome;
         this.world = new SWWorld(this, w);
 
@@ -77,6 +78,7 @@ public class Teams implements SWGameMode {
         this.borderSize = this.arenaCuboid.getSizeX();
         this.border.setSize(this.borderSize);
         this.chests = chests;
+        this.ranked = rankd;
 
         this.votes.add(2);
 
@@ -84,6 +86,11 @@ public class Teams implements SWGameMode {
 
         this.bossBar = Bukkit.createBossBar(Text.color(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_WAIT)),
                 BarColor.WHITE, BarStyle.SOLID);
+    }
+
+    @Override
+    public Boolean isRanked() {
+        return this.ranked;
     }
 
     @Override
@@ -469,6 +476,9 @@ public class Teams implements SWGameMode {
                 }
                 break;
         }
+
+        //signal that is ranked
+        if (this.ranked) p.sendActionbar("&b&lRANKED");
     }
 
     private void startRoom() {
@@ -638,9 +648,9 @@ public class Teams implements SWGameMode {
     private void sendLog(RSWPlayer p) {
         if (p.getPlayer() != null) {
             for (String s : Text.color(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.END_LOG))) {
-                p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE) + "")
+                p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE, this.isRanked()) + "")
                         .replace("%totalcoins%", p.getGameBalance() + "")
-                        .replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + ""));
+                        .replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, this.isRanked()) + ""));
             }
             p.saveData();
         }
@@ -662,11 +672,10 @@ public class Teams implements SWGameMode {
 
             this.winTimer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), Config.file().getInt("Config.Time-EndGame"),
                     () -> {
-
                         for (RSWPlayer p : winTeam.getMembers()) {
                             if (p.getPlayer() != null) {
                                 p.setInvincible(true);
-                                p.addStatistic(RSWPlayer.Statistic.TEAM_WIN, 1);
+                                p.addStatistic(RSWPlayer.Statistic.TEAM_WIN, 1, this.isRanked());
                                 p.executeWinBlock(Config.file().getInt("Config.Time-EndGame") - 2);
                             }
                             sendLog(p);
