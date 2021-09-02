@@ -1,7 +1,7 @@
 package josegamerpt.realskywars.managers;
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.misc.SWEvent;
+import josegamerpt.realskywars.game.SWEvent;
 import josegamerpt.realskywars.misc.Selections;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.modes.Placeholder;
@@ -13,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,29 +49,35 @@ public class GameManager {
         }
     }
 
-    public List<SWGameMode> getRoomsWithSelection(Selections.Value t) {
+    public List<SWGameMode> getRoomsWithSelection(Selections.Values t) {
         List<SWGameMode> f = new ArrayList<>();
         switch (t) {
             case MAPV_ALL:
-                f.addAll(games);
+                f.addAll(this.games);
                 break;
             case MAPV_WAITING:
-                games.stream().filter(r -> r.getState().equals(GameState.WAITING)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                this.games.stream().filter(r -> r.getState().equals(GameState.WAITING)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
                 break;
             case MAPV_STARTING:
-                games.stream().filter(r -> r.getState().equals(GameState.STARTING)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                this.games.stream().filter(r -> r.getState().equals(GameState.STARTING)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
                 break;
             case MAPV_AVAILABLE:
-                games.stream().filter(r -> r.getState().equals(GameState.AVAILABLE)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                this.games.stream().filter(r -> r.getState().equals(GameState.AVAILABLE)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
                 break;
             case MAPV_SPECTATE:
-                games.stream().filter(r -> r.getState().equals(GameState.PLAYING) || r.getState().equals(GameState.FINISHING)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                this.games.stream().filter(r -> r.getState().equals(GameState.PLAYING) || r.getState().equals(GameState.FINISHING)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
                 break;
             case SOLO:
-                games.stream().filter(r -> r.getGameMode().equals(SWGameMode.Mode.SOLO)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                this.games.stream().filter(r -> r.getGameMode().equals(SWGameMode.Mode.SOLO)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
                 break;
             case TEAMS:
-                games.stream().filter(r -> r.getGameMode().equals(SWGameMode.Mode.TEAMS)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                this.games.stream().filter(r -> r.getGameMode().equals(SWGameMode.Mode.TEAMS)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                break;
+            case SOLO_RANKED:
+                this.games.stream().filter(r -> r.isRanked() && r.getGameMode().equals(SWGameMode.Mode.SOLO)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                break;
+            case TEAMS_RANKED:
+                this.games.stream().filter(r -> r.isRanked() && r.getGameMode().equals(SWGameMode.Mode.TEAMS)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
                 break;
             default:
                 break;
@@ -123,15 +128,6 @@ public class GameManager {
             p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.LOBBY_TELEPORT, true));
         } else {
             p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.LOBBYLOC_NOT_SET, true));
-        }
-    }
-
-    public void tpToLobby(Player p) {
-        if (this.lobbyLOC != null) {
-            p.teleport(this.lobbyLOC);
-            p.sendMessage(RealSkywars.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.LOBBY_TELEPORT, true));
-        } else {
-            p.sendMessage(RealSkywars.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.LOBBYLOC_NOT_SET, true));
         }
     }
 

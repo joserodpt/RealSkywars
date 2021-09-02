@@ -1,4 +1,4 @@
-package josegamerpt.realskywars.misc;
+package josegamerpt.realskywars.game;
 
 import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;

@@ -3,8 +3,8 @@ package josegamerpt.realskywars.game.modes;
 import java.util.*;
 
 import josegamerpt.realskywars.chests.SWChest;
-import josegamerpt.realskywars.misc.SWEvent;
-import josegamerpt.realskywars.misc.Team;
+import josegamerpt.realskywars.game.SWEvent;
+import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.utils.ArenaCuboid;
 import org.bukkit.Location;

@@ -1,4 +1,4 @@
-package josegamerpt.realskywars.game.modes;
+package josegamerpt.realskywars.game.modes.teams;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
@@ -6,10 +6,10 @@ import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.Countdown;
+import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.misc.SWEvent;
-import josegamerpt.realskywars.misc.SWWorld;
-import josegamerpt.realskywars.misc.Team;
+import josegamerpt.realskywars.game.SWEvent;
+import josegamerpt.realskywars.game.SWWorld;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.ArenaCuboid;

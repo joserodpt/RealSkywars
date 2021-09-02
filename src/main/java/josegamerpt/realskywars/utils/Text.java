@@ -45,7 +45,7 @@ public class Text {
                 sb.append(" ");
                 compensated += spaceLength;
             }
-            returnMessage.append(sb.toString()).append(line).append("\n");
+            returnMessage.append(sb).append(line).append("\n");
         }
 
         return returnMessage.toString();
@@ -213,9 +213,8 @@ public class Text {
     }
 
     public static void sendList(Player p, List<String> list) { list.forEach(s -> p.sendMessage(color(s))); }
-
     public static void sendList(Player p, ArrayList<String> list, Object var) { list.forEach(s ->  p.sendMessage(color(s).replace("%CAGES%", var + ""))); }
-
+    public static void sendList(CommandSender p, List<String> list) { list.forEach(s -> p.sendMessage(color(s))); }
     public static void sendList(CommandSender p, ArrayList<String> list) { list.forEach(s -> p.sendMessage(color(s))); }
     public static void send(CommandSender p, String s) { p.sendMessage(color(s)); }
 

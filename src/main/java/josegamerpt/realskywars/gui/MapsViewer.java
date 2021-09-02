@@ -34,9 +34,9 @@ public class MapsViewer {
     private UUID uuid;
     private RSWPlayer gp;
     private HashMap<Integer, SWGameMode> display = new HashMap<>();
-    private Selections.Value selMap;
+    private Selections.Values selMap;
 
-    public MapsViewer(RSWPlayer as, Selections.Value t, String invName) {
+    public MapsViewer(RSWPlayer as, Selections.Values t, String invName) {
         this.uuid = as.getUUID();
         inv = Bukkit.getServer().createInventory(null, 54, Text.color(invName) + ": " + RealSkywars.getLanguageManager().getString(as, select(t), false));
 
@@ -98,25 +98,31 @@ public class MapsViewer {
             private void selectNext(RSWPlayer gp) {
                 switch (gp.getSelection(Selections.Key.MAPVIEWER)) {
                     case MAPV_ALL:
-                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.MAPV_AVAILABLE);
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Values.MAPV_AVAILABLE);
                         break;
                     case MAPV_AVAILABLE:
-                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.MAPV_WAITING);
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Values.MAPV_WAITING);
                         break;
                     case MAPV_WAITING:
-                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.MAPV_STARTING);
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Values.MAPV_STARTING);
                         break;
                     case MAPV_STARTING:
-                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.MAPV_SPECTATE);
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Values.MAPV_SPECTATE);
                         break;
                     case MAPV_SPECTATE:
-                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.SOLO);
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Values.SOLO);
                         break;
                     case SOLO:
-                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.TEAMS);
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Values.SOLO_RANKED);
+                        break;
+                    case SOLO_RANKED:
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Values.TEAMS);
                         break;
                     case TEAMS:
-                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Value.MAPV_ALL);
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Values.TEAMS_RANKED);
+                        break;
+                    case TEAMS_RANKED:
+                        gp.setSelection(Selections.Key.MAPVIEWER, Selections.Values.MAPV_ALL);
                         break;
                 }
 
@@ -158,7 +164,7 @@ public class MapsViewer {
         };
     }
 
-    private LanguageManager.TS select(Selections.Value t) {
+    private LanguageManager.TS select(Selections.Values t) {
         switch (t) {
             case MAPV_ALL:
                 return LanguageManager.TS.MAP_ALL;
@@ -172,6 +178,10 @@ public class MapsViewer {
                 return LanguageManager.TS.MAP_AVAILABLE;
             case SOLO:
                 return LanguageManager.TS.SOLO;
+            case SOLO_RANKED:
+                return LanguageManager.TS.SOLO_RANKED;
+            case TEAMS_RANKED:
+                return LanguageManager.TS.TEAMS_RANKED;
             case TEAMS:
                 return LanguageManager.TS.TEAMS;
         }

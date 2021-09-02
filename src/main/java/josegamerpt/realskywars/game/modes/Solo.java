@@ -7,9 +7,9 @@ import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.misc.SWEvent;
-import josegamerpt.realskywars.misc.SWWorld;
-import josegamerpt.realskywars.misc.Team;
+import josegamerpt.realskywars.game.SWEvent;
+import josegamerpt.realskywars.game.SWWorld;
+import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.*;
@@ -404,74 +404,75 @@ public class Solo implements SWGameMode {
     }
 
     public void addPlayer(RSWPlayer p) {
-        switch (this.state)
-        {
-            case RESETTING:
-                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CANT_JOIN, true));
-                break;
-            case FINISHING:
-            case PLAYING:
-                if (this.specEnabled) {
-                    spectate(p, SpectateType.EXTERNAL, null);
-                } else {
-                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SPECTATING_DISABLED, true));
-                }
-                break;
-            default:
-                if (this.getPlayersCount() == this.maxPlayers) {
-                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ROOM_FULL, true));
-                    return;
-                }
-
-                p.setRoom(this);
-                p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.CAGE);
-
-                this.inRoom.add(p);
-
-                if (p.getPlayer() != null) {
-                    this.bossBar.addPlayer(p.getPlayer());
-                    p.heal();
-                    ArrayList<String> up = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.TITLE_ROOMJOIN);
-                    p.getPlayer().sendTitle(up.get(0), up.get(1), 10, 120, 10);
-                }
-
-                //cage
-
-                for (Cage c : this.cages) {
-                    if (c.isEmpty() && p.getPlayer() != null) {
-                        c.addPlayer(p);
-                        break;
+        if (RealSkywars.getPartyManager().checkForParties(p, this)) {
+            switch (this.state) {
+                case RESETTING:
+                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CANT_JOIN, true));
+                    break;
+                case FINISHING:
+                case PLAYING:
+                    if (this.specEnabled) {
+                        spectate(p, SpectateType.EXTERNAL, null);
+                    } else {
+                        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SPECTATING_DISABLED, true));
                     }
-                }
+                    break;
+                default:
+                    if (this.getPlayersCount() == this.maxPlayers) {
+                        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ROOM_FULL, true));
+                        return;
+                    }
 
-                for (RSWPlayer ws : this.inRoom) {
-                    ws.sendMessage(RealSkywars.getLanguageManager().getString(ws, LanguageManager.TS.PLAYER_JOIN_ARENA, true).replace("%player%",
-                            p.getDisplayName()).replace("%players%", getPlayersCount() + "").replace("%maxplayers%", getMaxPlayers() + ""));
-                }
+                    p.setRoom(this);
+                    p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.CAGE);
 
-                RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.CAGE);
+                    this.inRoom.add(p);
 
-                //update tab
-                if (!p.isBot()) {
-                    for (RSWPlayer player : this.getPlayers()) {
-                        if (!player.isBot()) {
-                            RSWPlayer.RoomTAB rt = player.getTab();
-                            List<Player> players = this.getPlayers().stream().map(RSWPlayer::getPlayer).collect(Collectors.toList());
-                            rt.clear();
-                            rt.add(players);
-                            rt.updateRoomTAB();
+                    if (p.getPlayer() != null) {
+                        this.bossBar.addPlayer(p.getPlayer());
+                        p.heal();
+                        ArrayList<String> up = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.TITLE_ROOMJOIN);
+                        p.getPlayer().sendTitle(up.get(0), up.get(1), 10, 120, 10);
+                    }
+
+                    //cage
+
+                    for (Cage c : this.cages) {
+                        if (c.isEmpty() && p.getPlayer() != null) {
+                            c.addPlayer(p);
+                            break;
                         }
                     }
-                }
 
-                if (getPlayersCount() == Config.file().getInt("Config.Min-Players-ToStart")) {
-                    startRoom();
-                }
-                break;
+                    for (RSWPlayer ws : this.inRoom) {
+                        ws.sendMessage(RealSkywars.getLanguageManager().getString(ws, LanguageManager.TS.PLAYER_JOIN_ARENA, true).replace("%player%",
+                                p.getDisplayName()).replace("%players%", getPlayersCount() + "").replace("%maxplayers%", getMaxPlayers() + ""));
+                    }
+
+                    RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.CAGE);
+
+                    //update tab
+                    if (!p.isBot()) {
+                        for (RSWPlayer player : this.getPlayers()) {
+                            if (!player.isBot()) {
+                                RSWPlayer.RoomTAB rt = player.getTab();
+                                List<Player> players = this.getPlayers().stream().map(RSWPlayer::getPlayer).collect(Collectors.toList());
+                                rt.clear();
+                                rt.add(players);
+                                rt.updateRoomTAB();
+                            }
+                        }
+                    }
+
+                    if (getPlayersCount() == Config.file().getInt("Config.Min-Players-ToStart")) {
+                        startRoom();
+                    }
+                    break;
+            }
+
+            //signal that is ranked
+            if (this.ranked) p.sendActionbar("&b&lRANKED");
         }
-
-        //signal that is ranked
-        if (this.ranked) p.sendActionbar("&b&lRANKED");
     }
 
     private void startRoom() {

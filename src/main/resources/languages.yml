@@ -43,6 +43,45 @@ Languages:
     Messages:
       Maps: "Mapas"
       System:
+        Party:
+          Already-In: "&fJá estás numa party."
+          Kick: "&f%player% &cfoi kickado da party."
+          Join: "&f%player% &aentrou na party."
+          Leave: "&f%player% &csaiu da party."
+          Not-In-Party: "&cNão estás numa party."
+          Already-Created: "&cJá tens uma party criada."
+          Created: "&aCriaste uma party! Convida jogadores com /party invite <nome>"
+          Insufficient-Room-Space: "&cNão podes teleportar a party para essa sala porque não têm espaço suficiente para todos."
+          Disband: "&cDispersaste a party."
+          Invite:
+            Not-Found: "&cO convite para esse jogador &cnão foi encontrado."
+            Sent: "&bConvite enviado para &f%player%"
+            Recieved: "&b%player% &fconvidou-te para entrares na sua party! Aceita com &a/party accept"
+            Accepted: "&aEntraste na party de &b%player%"
+            Cant-Invite-Yourself: "&cNão te podes convidar a ti mesmo."
+          Not-Owner: "&cNão podes executar essa ação porque não és o dono da party."
+        TAB:
+          Other:
+            Header:
+              - "&f"
+              - " &f&lReal&b&lSkywars"
+              - " &a&lLobby"
+              - "&f"
+            Footer:
+              - "&f"
+              - "&fA jogar: &b%players%"
+              - "&f"
+          InGame:
+            Header:
+              - "&f"
+              - " &f&lReal&b&lSkywars"
+              - " &fYou are playing on"
+              - " &b%map%"
+              - "&f"
+            Footer:
+              - "%space%"
+              - "&fPlayers: &b%players%"
+              - "%space%"
         States:
           All: "&2Tudo"
           Available: "&aDisponível"
@@ -235,18 +274,17 @@ Languages:
     Scoreboards:
       Lobby:
         Lines:
-          - "%space%"
           - " &fMoedas: &e%coins%"
           - "%space%"
-          - " &fVitórias SOLO: &a%solowins% &7/ &b%rankedsolowins%"
-          - " &fVitórias EQUIPA: &a%teamwins% &7/ &b%rankedteamwins%"
-          - " &fKills: &a%kills% &7/ &b%rankedkills%"
-          - " &fMortes: &a%deaths% &7/ &b%rankeddeaths%"
+          - " &fVitórias SOLO: &a%solowins%"
+          - " &fVitórias EQUIPA: &a%teamwins%"
+          - " &fKills: &a%kills%"
+          - " &fMortes: &a%deaths%"
           - "%space%"
-          - " &fVitórias SOLO: &a%solowins% &7/ &b%rankedsolowins%"
-          - " &fVitórias EQUIPA: &a%teamwins% &7/ &b%rankedteamwins%"
-          - " &fKills: &a%kills% &7/ &b%rankedkills%"
-          - " &fMortes: &a%deaths% &7/ &b%rankeddeaths%"
+          - " &bR &fVitórias SOLO: &b%rankedsolowins%"
+          - " &bR &fVitórias EQUIPA: &b%rankedteamwins%"
+          - " &bR &fKills: &b%rankedkills%"
+          - " &bR &fMortes: &b%rankeddeaths%"
           - "%space%"
           - " &fJogos: &a%gamesplayed% &7/ &b%rankedgamesplayed%"
           - " &fDerrotas: &a%loses% &7/ &b%rankedloses%"
@@ -286,6 +324,45 @@ Languages:
     Messages:
       Maps: "Maps"
       System:
+        Party:
+          Already-In: "&fYou are already in a party."
+          Kick: "&f%player% &chas been kicked from the party."
+          Join: "&f%player% &ajoined the party."
+          Leave: "&f%player% &ceft the party."
+          Not-In-Party: "&cYou are not in a party."
+          Already-Created: "&cYou have a party created."
+          Created: "&aParty created! Invite others with /party invite <name>"
+          Insufficient-Room-Space: "&cYou cant teleport the party to that room because there is not enough available slots."
+          Disband: "&cYou disbanded the party."
+          Invite:
+            Not-Found: "&cThe invite for that player &ccould not be found."
+            Sent: "&bInvite sent for &f%player%"
+            Recieved: "&b%player% &finvited you to join their party! Accept it with &a/party accept"
+            Accepted: "&aYou joined &b%player% &aparty"
+            Cant-Invite-Yourself: "&cYou cant invite yourself."
+          Not-Owner: "&cYou cant do that because you are not the owner of the party."
+        TAB:
+          Other:
+            Header:
+             - "&f"
+             - " &f&lReal&b&lSkywars"
+             - " &a&lLobby"
+             - "&f"
+            Footer:
+              - "&f"
+              - "&fPlayers: &b%players%"
+              - "&f"
+          InGame:
+            Header:
+              - "&f"
+              - " &f&lReal&b&lSkywars"
+              - " &fYou are playing on"
+              - " &b%map%"
+              - "&f"
+            Footer:
+              - "%space%"
+              - "&fPlayers: &b%players%"
+              - "%space%"
         States:
           All: "&2All"
           Available: "&aAvailable"
@@ -352,7 +429,7 @@ Languages:
         Config-Reload: "&aConfiguration reloaded."
         Coins: "&fYou have &b%coins% &fcoins."
         Match-Force-Start: "&fThe match has been &aforcefully &fstarted."
-        Match-Force-Start-Denial: "&fYou &ccant &fforce start this match because there are insuficient players."
+        Match-Force-Start-Denial: "&fYou &ccant &fforce start this match because there are insufficient players."
         No-Match: "&cYou aren't in a match."
         Lobby-Set: "&fThe lobby &ahas been set&f."
         Setup-Not-Finished: "&cThe setup isn't finished."

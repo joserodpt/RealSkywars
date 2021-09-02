@@ -6,8 +6,8 @@ public class Selections {
         MAPVIEWER
     }
 
-    public enum Value {
-        MAPV_SPECTATE, MAPV_AVAILABLE, MAPV_STARTING, MAPV_WAITING, MAPV_ALL, SOLO, TEAMS
+    public enum Values {
+        MAPV_SPECTATE, MAPV_AVAILABLE, MAPV_STARTING, MAPV_WAITING, MAPV_ALL, SOLO, TEAMS, SOLO_RANKED, TEAMS_RANKED
     }
 
 }

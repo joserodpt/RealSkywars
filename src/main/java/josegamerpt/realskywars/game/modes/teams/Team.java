@@ -1,4 +1,4 @@
-package josegamerpt.realskywars.misc;
+package josegamerpt.realskywars.game.modes.teams;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
@@ -65,9 +65,7 @@ public class Team {
 
     public String getNames() {
         List<String> list = new ArrayList<>();
-        for (RSWPlayer p : members) {
-            list.add(p.getName());
-        }
+        this.members.forEach(rswPlayer -> list.add(rswPlayer.getDisplayName()));
         return String.join(", ", list);
     }
 

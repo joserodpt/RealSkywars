@@ -2,8 +2,10 @@ package josegamerpt.realskywars.managers;
 
 import com.google.common.collect.Lists;
 import josegamerpt.realskywars.RealSkywars;
+import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
+import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 
 import java.io.File;
@@ -98,9 +100,18 @@ public class WorldManager {
     public void unloadWorld(String w, boolean save) {
         World world = RealSkywars.getPlugin().getServer().getWorld(w);
         if (world != null) {
-            world.getPlayers().forEach(RealSkywars.getGameManager()::tpToLobby);
+            world.getPlayers().forEach(this::tpToLobby);
         }
         RealSkywars.getPlugin().getServer().unloadWorld(world, save);
+    }
+
+    private void tpToLobby(Player p) {
+        if (RealSkywars.getGameManager().getLobbyLocation() != null) {
+            p.teleport(RealSkywars.getGameManager().getLobbyLocation());
+            p.sendMessage(RealSkywars.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.LOBBY_TELEPORT, true));
+        } else {
+            p.sendMessage(RealSkywars.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.LOBBYLOC_NOT_SET, true));
+        }
     }
 
     public void copyWorld(File source, File target) {

@@ -30,13 +30,13 @@ import java.util.Map;
 
 @Command("realskywars")
 @Alias({"sw", "rsw"})
-public class Commands extends CommandBase {
+public class RealSkywarsCMD extends CommandBase {
 
     public RealSkywars rs;
     private String onlyPlayer = "[RealSkywars] Only players can run this command.";
     public enum KIT { create, delete, give }
 
-    public Commands(RealSkywars rs) {
+    public RealSkywarsCMD(RealSkywars rs) {
         this.rs = rs;
     }
 
@@ -88,7 +88,7 @@ public class Commands extends CommandBase {
     @SubCommand("kit")
     @Completion({"#enum", "#kits", "#range:100"})
     @Permission("RealSkywars.Admin")
-    public void kitcmd(final CommandSender commandSender, Commands.KIT action, String name, @Optional Double cost) {
+    public void kitcmd(final CommandSender commandSender, RealSkywarsCMD.KIT action, String name, @Optional Double cost) {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
 

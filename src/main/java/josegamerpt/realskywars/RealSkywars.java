@@ -1,7 +1,9 @@
 package josegamerpt.realskywars;
 
 import josegamerpt.realskywars.chests.ChestManager;
-import josegamerpt.realskywars.commands.Commands;
+import josegamerpt.realskywars.commands.PartyCMD;
+import josegamerpt.realskywars.commands.RealSkywarsCMD;
+import josegamerpt.realskywars.commands.SairCMD;
 import josegamerpt.realskywars.configuration.*;
 import josegamerpt.realskywars.configuration.checkers.ConfigChecker;
 import josegamerpt.realskywars.configuration.checkers.LangChecker;
@@ -11,6 +13,7 @@ import josegamerpt.realskywars.kits.KitManager;
 import josegamerpt.realskywars.managers.*;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.nms.*;
+import josegamerpt.realskywars.party.PartyManager;
 import josegamerpt.realskywars.player.EntityEvents;
 import josegamerpt.realskywars.player.PlayerEvents;
 import josegamerpt.realskywars.player.PlayerManager;
@@ -41,6 +44,8 @@ public class RealSkywars extends JavaPlugin {
     private static GameManager gamem = new GameManager();
     private static ShopManager shopm = new ShopManager();
     private static KitManager kitm = new KitManager();
+    private static PartyManager partym = new PartyManager();
+
     private static ChestManager chestManager;
     private static RSWnms nms;
     private static Random rand = new Random();
@@ -67,9 +72,7 @@ public class RealSkywars extends JavaPlugin {
         return lm;
     }
 
-    public static PlayerManager getPlayerManager() {
-        return playerm;
-    }
+    public static PlayerManager getPlayerManager() { return playerm; }
 
     public static MapManager getMapManager() {
         return mapm;
@@ -85,6 +88,10 @@ public class RealSkywars extends JavaPlugin {
 
     public static KitManager getKitManager() {
         return kitm;
+    }
+
+    public static PartyManager getPartyManager() {
+        return partym;
     }
 
     public static RSWnms getNMS() {
@@ -220,10 +227,10 @@ public class RealSkywars extends JavaPlugin {
                     if (tt == null) return new TypeResult(argument);
                     return new TypeResult(tt, argument);
                 });
-                commandManager.getParameterHandler().register(Commands.KIT.class, argument -> {
-                    Commands.KIT tt;
+                commandManager.getParameterHandler().register(RealSkywarsCMD.KIT.class, argument -> {
+                    RealSkywarsCMD.KIT tt;
                     try {
-                        tt = Commands.KIT.valueOf(argument.toString().toLowerCase());
+                        tt = RealSkywarsCMD.KIT.valueOf(argument.toString().toLowerCase());
                         if (tt == null) return new TypeResult(argument);
                     } catch (IllegalArgumentException e)
                     {
@@ -238,7 +245,7 @@ public class RealSkywars extends JavaPlugin {
                 commandManager.getMessageHandler().register("cmd.wrong.usage", sender -> sender.sendMessage(lm.getPrefix() + Text.color("&cWrong usage for the command!")));
 
                 //registo de comandos #portugal
-                commandManager.register(new Commands(this));
+                commandManager.register(new RealSkywarsCMD(this), new SairCMD(this), new PartyCMD(this));
 
                 long elapsedTimeMillis = System.currentTimeMillis() - start;
 

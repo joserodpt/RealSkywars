@@ -12,6 +12,7 @@ import josegamerpt.realskywars.gui.GUIManager;
 import josegamerpt.realskywars.gui.MapsViewer;
 import josegamerpt.realskywars.gui.PlayerGUI;
 import josegamerpt.realskywars.gui.ProfileContent;
+import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.misc.Selections;
@@ -299,6 +300,9 @@ public class PlayerEvents implements Listener {
                             damaged.teleport(damaged.getMatch().getSpectatorLocation());
                         }
 
+                    } else {
+                        damaged.heal();
+                        RealSkywars.getGameManager().tpToLobby(damaged);
                     }
                     break;
                 default:
@@ -389,8 +393,6 @@ public class PlayerEvents implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         RealSkywars.getPlayerManager().loadPlayer(e.getPlayer());
         RSWPlayer pl = RealSkywars.getPlayerManager().getPlayer(e.getPlayer());
-
-        Debugger.print(PlayerEvents.class, pl.toString());
 
         for (RSWPlayer player : RealSkywars.getPlayerManager().getPlayers()) {
             if (player.isInMatch()) {

@@ -113,10 +113,10 @@ public class PlayerManager {
             String cageBlock = Players.file().getString(p.getUniqueId() + ".Preferences.Cage-Material");
 
             gp = new RSWPlayer(p, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, null, tkills, dead, solwin, tw, coin, lang, bg, los, gap, ranked_tkills, ranked_dead, ranked_solwin, ranked_tw, ranked_los, ranked_gap);
-            HashMap<Selections.Key, Selections.Value> ss = new HashMap<>();
+            HashMap<Selections.Key, Selections.Values> ss = new HashMap<>();
             String mapv = Players.file().getString(p.getUniqueId() + ".Preferences.MAPVIEWER");
             if (mapv != null) {
-                Selections.Value s = getSelection(mapv);
+                Selections.Values s = getSelection(mapv);
                 ss.put(Key.MAPVIEWER, s);
             }
             if (cageBlock != null) {
@@ -127,7 +127,7 @@ public class PlayerManager {
         } else {
             gp = new RSWPlayer(p, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, null, 0, 0, 0, 0, 0D,
                     RealSkywars.getLanguageManager().getDefaultLanguage(), new ArrayList<>(), 0, 0, 0, 0, 0, 0, 0, 0);
-            gp.getSelections().put(Selections.Key.MAPVIEWER, Selections.Value.MAPV_ALL);
+            gp.getSelections().put(Selections.Key.MAPVIEWER, Selections.Values.MAPV_ALL);
             gp.save();
             gp.saveData();
         }
@@ -137,12 +137,12 @@ public class PlayerManager {
         }
     }
 
-    private Selections.Value getSelection(String mv) {
-        return Selections.Value.valueOf(mv);
+    private Selections.Values getSelection(String mv) {
+        return Selections.Values.valueOf(mv);
     }
 
     public RSWPlayer getPlayer(Player p) {
-        for (RSWPlayer g : players) {
+        for (RSWPlayer g : this.players) {
             if (g.getPlayer() == p) {
                 return g;
             }
@@ -174,9 +174,9 @@ public class PlayerManager {
                     Players.file().set(p.getUUID() + ".Coins", p.getCoins());
                     break;
                 case PREFS:
-                    for (Entry<Selections.Key, Selections.Value> entry : p.getSelections().entrySet()) {
+                    for (Entry<Selections.Key, Selections.Values> entry : p.getSelections().entrySet()) {
                         Selections.Key key = entry.getKey();
-                        Selections.Value value = entry.getValue();
+                        Selections.Values value = entry.getValue();
                         Players.file().set(p.getUUID() + ".Preferences." + key.name(), value.name());
                     }
                     if (p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK) != null) {
@@ -240,7 +240,7 @@ public class PlayerManager {
         return bought;
     }
 
-    public int countPlayingPlayers() {
+    public int getPlayingPlayers() {
         return RealSkywars.getGameManager().getGames().stream().mapToInt(SWGameMode::getPlayersCount).sum();
     }
 

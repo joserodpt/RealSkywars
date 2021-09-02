@@ -1,7 +1,7 @@
 package josegamerpt.realskywars.gui;
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.misc.SetupRoom;
+import josegamerpt.realskywars.game.SetupRoom;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;

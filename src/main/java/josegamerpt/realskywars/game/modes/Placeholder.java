@@ -2,8 +2,8 @@ package josegamerpt.realskywars.game.modes;
 
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.chests.SWChest;
-import josegamerpt.realskywars.misc.SWEvent;
-import josegamerpt.realskywars.misc.Team;
+import josegamerpt.realskywars.game.SWEvent;
+import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.ArenaCuboid;
