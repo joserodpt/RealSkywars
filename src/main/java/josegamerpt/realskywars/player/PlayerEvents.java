@@ -12,7 +12,6 @@ import josegamerpt.realskywars.gui.GUIManager;
 import josegamerpt.realskywars.gui.MapsViewer;
 import josegamerpt.realskywars.gui.PlayerGUI;
 import josegamerpt.realskywars.gui.ProfileContent;
-import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.misc.Selections;

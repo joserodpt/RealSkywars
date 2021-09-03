@@ -1,19 +1,20 @@
 package josegamerpt.realskywars.game.modes;
 
-import java.util.*;
-
+import josegamerpt.realskywars.cages.Cage;
+import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.game.SWEvent;
 import josegamerpt.realskywars.game.modes.teams.Team;
-import josegamerpt.realskywars.chests.ChestManager;
+import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.ArenaCuboid;
 import org.bukkit.Location;
 import org.bukkit.World;
-
-import josegamerpt.realskywars.cages.Cage;
-import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.WorldBorder;
 import org.bukkit.boss.BossBar;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public interface SWGameMode {
 

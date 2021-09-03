@@ -1,10 +1,10 @@
 package josegamerpt.realskywars.gui;
 
 import josegamerpt.realskywars.RealSkywars;
+import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.misc.MapItem;
 import josegamerpt.realskywars.misc.Selections;
-import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Pagination;

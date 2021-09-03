@@ -1,6 +1,5 @@
 package josegamerpt.realskywars.misc;
 
-import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.kits.Kit;
 import josegamerpt.realskywars.managers.LanguageManager;

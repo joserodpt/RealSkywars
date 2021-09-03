@@ -2,8 +2,8 @@ package josegamerpt.realskywars.game;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Languages;
-import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.game.modes.SWGameMode;
+import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Sound;

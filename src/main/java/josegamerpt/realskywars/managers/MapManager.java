@@ -1,20 +1,19 @@
 package josegamerpt.realskywars.managers;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-
 import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.cages.SoloCage;
-import josegamerpt.realskywars.game.modes.SWGameMode.GameState;
 import josegamerpt.realskywars.chests.SWChest;
-import josegamerpt.realskywars.game.SetupRoom;
-import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.configuration.Maps;
-import josegamerpt.realskywars.gui.MapSettings;
+import josegamerpt.realskywars.game.SetupRoom;
 import josegamerpt.realskywars.game.modes.SWGameMode;
+import josegamerpt.realskywars.game.modes.SWGameMode.GameState;
 import josegamerpt.realskywars.game.modes.Solo;
+import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.game.modes.teams.Teams;
+import josegamerpt.realskywars.gui.MapSettings;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Text;

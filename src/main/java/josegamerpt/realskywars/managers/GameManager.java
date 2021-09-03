@@ -1,12 +1,12 @@
 package josegamerpt.realskywars.managers;
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.game.SWEvent;
-import josegamerpt.realskywars.misc.Selections;
 import josegamerpt.realskywars.configuration.Config;
+import josegamerpt.realskywars.game.SWEvent;
 import josegamerpt.realskywars.game.modes.Placeholder;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.game.modes.SWGameMode.GameState;
+import josegamerpt.realskywars.misc.Selections;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.Bukkit;
@@ -56,28 +56,28 @@ public class GameManager {
                 f.addAll(this.games);
                 break;
             case MAPV_WAITING:
-                this.games.stream().filter(r -> r.getState().equals(GameState.WAITING)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                f.addAll(this.games.stream().filter(r -> r.getState().equals(GameState.WAITING)).collect(Collectors.toList()));
                 break;
             case MAPV_STARTING:
-                this.games.stream().filter(r -> r.getState().equals(GameState.STARTING)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                f.addAll(this.games.stream().filter(r -> r.getState().equals(GameState.STARTING)).collect(Collectors.toList()));
                 break;
             case MAPV_AVAILABLE:
-                this.games.stream().filter(r -> r.getState().equals(GameState.AVAILABLE)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                f.addAll(this.games.stream().filter(r -> r.getState().equals(GameState.AVAILABLE)).collect(Collectors.toList()));
                 break;
             case MAPV_SPECTATE:
                 this.games.stream().filter(r -> r.getState().equals(GameState.PLAYING) || r.getState().equals(GameState.FINISHING)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
                 break;
             case SOLO:
-                this.games.stream().filter(r -> r.getGameMode().equals(SWGameMode.Mode.SOLO)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                f.addAll(this.games.stream().filter(r -> r.getGameMode().equals(SWGameMode.Mode.SOLO)).collect(Collectors.toList()));
                 break;
             case TEAMS:
-                this.games.stream().filter(r -> r.getGameMode().equals(SWGameMode.Mode.TEAMS)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                f.addAll(this.games.stream().filter(r -> r.getGameMode().equals(SWGameMode.Mode.TEAMS)).collect(Collectors.toList()));
                 break;
             case SOLO_RANKED:
-                this.games.stream().filter(r -> r.isRanked() && r.getGameMode().equals(SWGameMode.Mode.SOLO)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                f.addAll(this.games.stream().filter(r -> r.isRanked() && r.getGameMode().equals(SWGameMode.Mode.SOLO)).collect(Collectors.toList()));
                 break;
             case TEAMS_RANKED:
-                this.games.stream().filter(r -> r.isRanked() && r.getGameMode().equals(SWGameMode.Mode.TEAMS)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                f.addAll(this.games.stream().filter(r -> r.isRanked() && r.getGameMode().equals(SWGameMode.Mode.TEAMS)).collect(Collectors.toList()));
                 break;
             default:
                 break;
@@ -195,10 +195,8 @@ public class GameManager {
     }
 
     public void findGame(RSWPlayer p, SWGameMode.Mode type) {
-        if (PlayerManager.teleporting.contains(p.getUUID()))
+        if (!PlayerManager.teleporting.contains(p.getUUID()))
         {
-            return;
-        } else {
             PlayerManager.teleporting.add(p.getUUID());
             Optional<SWGameMode> o = this.games.stream().filter(c -> c.getGameMode().equals(type) && c.getState().equals(GameState.AVAILABLE) || c.getState().equals(GameState.STARTING) && !c.isFull()).findFirst();
             if (o.isPresent() && !o.get().isPlaceHolder()) {

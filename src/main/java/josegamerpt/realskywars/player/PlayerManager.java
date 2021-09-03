@@ -2,12 +2,12 @@ package josegamerpt.realskywars.player;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Players;
+import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.misc.DisplayItem;
 import josegamerpt.realskywars.misc.Selections;
 import josegamerpt.realskywars.misc.Selections.Key;
-import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.utils.Itens;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
