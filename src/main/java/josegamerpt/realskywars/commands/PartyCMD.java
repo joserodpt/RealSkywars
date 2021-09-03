@@ -59,7 +59,7 @@ public class PartyCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer(((Player) commandSender));
             if (p.hasParty()) {
-                if (p.getParty().isOwner()) {
+                if (p.getParty().isOwner(p)) {
                     p.disbandParty();
                 } else {
                     p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.PARTY_NOT_OWNER, true));
@@ -112,7 +112,7 @@ public class PartyCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer(((Player) commandSender));
             if (p.hasParty()) {
-                if (p.getParty().isOwner()) {
+                if (p.getParty().isOwner(p)) {
                     if (player != null && p.getPlayer() != player) {
                         p.getParty().kick(RealSkywars.getPlayerManager().getPlayer(player));
                     } else {
@@ -135,7 +135,7 @@ public class PartyCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer(((Player) commandSender));
             if (p.hasParty()) {
-                if (p.getParty().isOwner()) {
+                if (p.getParty().isOwner(p)) {
                     p.disbandParty();
                 } else {
                     p.getParty().playerLeave(p);

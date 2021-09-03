@@ -516,7 +516,7 @@ public class RSWPlayer {
         }
 
         if (this.hasParty()) {
-            if (this.getParty().isOwner()) {
+            if (this.getParty().isOwner(this)) {
                 this.disbandParty();
             } else {
                 this.leaveParty();
@@ -591,7 +591,7 @@ public class RSWPlayer {
     }
 
     public void createParty() {
-        this.party = new Party(this, true);
+        this.party = new Party(this);
     }
 
     public void disbandParty() {
@@ -603,10 +603,11 @@ public class RSWPlayer {
     }
 
     public void joinParty(RSWPlayer player) {
-        this.party = new Party(player, false);
+        this.party = player.getParty();
     }
 
     public void leaveParty() {
+        this.party.playerLeave(this);
         this.party = null;
         this.sendMessage(RealSkywars.getLanguageManager().getString(this, LanguageManager.TS.PARTY_LEAVE, true).replace("%player%", this.getDisplayName()));
     }
@@ -647,7 +648,6 @@ public class RSWPlayer {
         public void add(List<Player> p) {
             show.addAll(p);
         }
-
 
         public void remove(Player p) {
             show.remove(p);

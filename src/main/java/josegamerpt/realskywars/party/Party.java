@@ -10,14 +10,12 @@ import java.util.List;
 public class Party {
 
     private RSWPlayer player;
-    private Boolean owner;
     private List<RSWPlayer> members = new ArrayList<>();
     private boolean allowJoin;
 
-    public Party(RSWPlayer player, Boolean owner)
+    public Party(RSWPlayer player)
     {
         this.player = player;
-        this.owner = owner;
     }
 
     public void playerJoin(RSWPlayer p)
@@ -30,8 +28,6 @@ public class Party {
 
     public void playerLeave(RSWPlayer p)
     {
-        p.leaveParty();
-        this.members.remove(p);
         this.player.sendMessage(RealSkywars.getLanguageManager().getString(this.player, LanguageManager.TS.PARTY_LEAVE, true).replace("%player%", p.getDisplayName()));
         this.members.forEach(rswPlayer -> rswPlayer.sendMessage(RealSkywars.getLanguageManager().getString(rswPlayer, LanguageManager.TS.PARTY_LEAVE, true).replace("%player%", p.getDisplayName())));
     }
@@ -45,15 +41,15 @@ public class Party {
 
     public void disband() {
         this.members.forEach(rswPlayer -> rswPlayer.sendMessage(RealSkywars.getLanguageManager().getString(rswPlayer, LanguageManager.TS.PARTY_DISBAND, true).replace("%player%", this.player.getDisplayName())));
-        this.members.forEach(rswPlayer -> rswPlayer.leaveParty());
+        this.members.forEach(RSWPlayer::leaveParty);
         this.members.clear();
         this.player.sendMessage(RealSkywars.getLanguageManager().getString(this.player, LanguageManager.TS.PARTY_DISBAND, true).replace("%player%", this.player.getDisplayName()));
         this.player.leaveParty();
 
     }
 
-    public boolean isOwner() {
-        return this.owner;
+    public boolean isOwner(RSWPlayer p) {
+        return this.player == p;
     }
 
     public List<RSWPlayer> getMembers() {

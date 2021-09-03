@@ -46,6 +46,7 @@ public class PlayerEvents implements Listener {
             for (String s : Config.file().getStringList("Config.Allowed-Commands")) {
                 if (command.startsWith("/" + s)) {
                     block = false;
+                    break;
                 }
             }
             if (block) {
@@ -276,40 +277,36 @@ public class PlayerEvents implements Listener {
         if (e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();
             RSWPlayer damaged = RealSkywars.getPlayerManager().getPlayer(p);
-            switch (e.getCause()) {
-                case VOID:
-                    if (damaged.isInMatch()) {
-                        e.setDamage(0);
-                        if (damaged.getState().name().contains("SPEC")) {
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
-                                damaged.getPlayer().spigot().respawn();
-                                damaged.teleport(damaged.getMatch().getSpectatorLocation());
-                            }, 1);
-                            return;
-                        }
-
-                        if (damaged.getMatch().getState() == SWGameMode.GameState.PLAYING)
-                        {
-                            damaged.addStatistic(RSWPlayer.Statistic.DEATH, 1, damaged.getMatch().isRanked());
-
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
-                                damaged.getPlayer().spigot().respawn();
-                                damaged.getMatch().spectate(damaged, SWGameMode.SpectateType.GAME, damaged.getMatch().getSpectatorLocation());
-                            }, 1);
-                        } else {
+            if (e.getCause() == EntityDamageEvent.DamageCause.VOID) {
+                if (damaged.isInMatch()) {
+                    e.setDamage(0);
+                    if (damaged.getState().name().contains("SPEC")) {
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
+                            damaged.getPlayer().spigot().respawn();
                             damaged.teleport(damaged.getMatch().getSpectatorLocation());
-                        }
+                        }, 1);
+                        return;
+                    }
 
+                    if (damaged.getMatch().getState() == SWGameMode.GameState.PLAYING) {
+                        damaged.addStatistic(RSWPlayer.Statistic.DEATH, 1, damaged.getMatch().isRanked());
+
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
+                            damaged.getPlayer().spigot().respawn();
+                            damaged.getMatch().spectate(damaged, SWGameMode.SpectateType.GAME, damaged.getMatch().getSpectatorLocation());
+                        }, 1);
                     } else {
-                        damaged.heal();
-                        RealSkywars.getGameManager().tpToLobby(damaged);
+                        damaged.teleport(damaged.getMatch().getSpectatorLocation());
                     }
-                    break;
-                default:
-                    if (damaged.isInvencible() || RealSkywars.getGameManager().isInLobby(damaged.getLocation().getWorld())) {
-                        e.setCancelled(true);
-                    }
-                    break;
+
+                } else {
+                    damaged.heal();
+                    RealSkywars.getGameManager().tpToLobby(damaged);
+                }
+            } else {
+                if (damaged.isInvencible() || RealSkywars.getGameManager().isInLobby(damaged.getLocation().getWorld())) {
+                    e.setCancelled(true);
+                }
             }
         }
 
@@ -391,8 +388,9 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        RealSkywars.getPlayerManager().loadPlayer(e.getPlayer());
-        RSWPlayer pl = RealSkywars.getPlayerManager().getPlayer(e.getPlayer());
+        RSWPlayer pl = RealSkywars.getPlayerManager().loadPlayer(e.getPlayer());
+        Bukkit.getOnlinePlayers().forEach(player -> pl.getTab().add(player));
+        pl.getTab().updateRoomTAB();
 
         for (RSWPlayer player : RealSkywars.getPlayerManager().getPlayers()) {
             if (player.isInMatch()) {

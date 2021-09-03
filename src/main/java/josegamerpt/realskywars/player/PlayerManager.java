@@ -88,7 +88,7 @@ public class PlayerManager {
         return new ItemStack(Material.STICK);
     }
 
-    public void loadPlayer(Player p) {
+    public RSWPlayer loadPlayer(Player p) {
         RSWPlayer gp;
         if (Players.file().isConfigurationSection(p.getUniqueId().toString())) {
             //GENERAL
@@ -135,6 +135,7 @@ public class PlayerManager {
         if (RealSkywars.getGameManager().tpLobbyOnJoin()) {
             RealSkywars.getGameManager().tpToLobby(gp);
         }
+        return gp;
     }
 
     private Selections.Values getSelection(String mv) {

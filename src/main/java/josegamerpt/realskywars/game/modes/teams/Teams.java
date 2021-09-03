@@ -408,77 +408,77 @@ public class Teams implements SWGameMode {
     }
 
     public void addPlayer(RSWPlayer p) {
-
-        switch (this.state)
-        {
-            case RESETTING:
-                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CANT_JOIN, true));
-                break;
-            case FINISHING:
-            case PLAYING:
-                if (this.specEnabled) {
-                    spectate(p, SpectateType.EXTERNAL, null);
-                } else {
-                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SPECTATING_DISABLED, true));
-                }
-                break;
-            default:
-                if (this.getPlayersCount() == this.maxPlayers) {
-                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ROOM_FULL, true));
-                    return;
-                }
-
-                p.setRoom(this);
-                p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.CAGE);
-
-                for (RSWPlayer ws : this.inRoom) {
-                    if (p.getPlayer() != null) {
-                        ws.sendMessage(RealSkywars.getLanguageManager().getString(ws, LanguageManager.TS.PLAYER_JOIN_ARENA, true).replace("%player%",
-                                p.getDisplayName()).replace("%players%", this.getPlayersCount() + "").replace("%maxplayers%", getMaxPlayers() + ""));
+        if (RealSkywars.getPartyManager().checkForParties(p, this)) {
+            switch (this.state) {
+                case RESETTING:
+                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CANT_JOIN, true));
+                    break;
+                case FINISHING:
+                case PLAYING:
+                    if (this.specEnabled) {
+                        spectate(p, SpectateType.EXTERNAL, null);
+                    } else {
+                        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SPECTATING_DISABLED, true));
                     }
-                }
-
-                this.inRoom.add(p);
-                p.heal();
-
-                if (p.getPlayer() != null) {
-                    this.bossBar.addPlayer(p.getPlayer());
-                    ArrayList<String> up = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.TITLE_ROOMJOIN);
-                    p.getPlayer().sendTitle(up.get(0), up.get(1), 10, 120, 10);
-                }
-
-                //cage
-
-                for (Team c : this.teams) {
-                    if (!c.isTeamFull()) {
-                        c.addPlayer(p);
-                        break;
+                    break;
+                default:
+                    if (this.getPlayersCount() == this.maxPlayers) {
+                        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ROOM_FULL, true));
+                        return;
                     }
-                }
 
-                RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.CAGE);
+                    p.setRoom(this);
+                    p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.CAGE);
 
-                //update tab
-                if (!p.isBot()) {
-                    for (RSWPlayer player : this.getPlayers()) {
-                        if (!player.isBot()) {
-                            RSWPlayer.RoomTAB rt = player.getTab();
-                            List<Player> players = this.getPlayers().stream().map(RSWPlayer::getPlayer).collect(Collectors.toList());
-                            rt.clear();
-                            rt.add(players);
-                            rt.updateRoomTAB();
+                    for (RSWPlayer ws : this.inRoom) {
+                        if (p.getPlayer() != null) {
+                            ws.sendMessage(RealSkywars.getLanguageManager().getString(ws, LanguageManager.TS.PLAYER_JOIN_ARENA, true).replace("%player%",
+                                    p.getDisplayName()).replace("%players%", this.getPlayersCount() + "").replace("%maxplayers%", getMaxPlayers() + ""));
                         }
                     }
-                }
 
-                if (this.getPlayersCount() == this.maxMembersTeam + 1) {
-                    startRoom();
-                }
-                break;
+                    this.inRoom.add(p);
+                    p.heal();
+
+                    if (p.getPlayer() != null) {
+                        this.bossBar.addPlayer(p.getPlayer());
+                        ArrayList<String> up = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.TITLE_ROOMJOIN);
+                        p.getPlayer().sendTitle(up.get(0), up.get(1), 10, 120, 10);
+                    }
+
+                    //cage
+
+                    for (Team c : this.teams) {
+                        if (!c.isTeamFull()) {
+                            c.addPlayer(p);
+                            break;
+                        }
+                    }
+
+                    RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.CAGE);
+
+                    //update tab
+                    if (!p.isBot()) {
+                        for (RSWPlayer player : this.getPlayers()) {
+                            if (!player.isBot()) {
+                                RSWPlayer.RoomTAB rt = player.getTab();
+                                List<Player> players = this.getPlayers().stream().map(RSWPlayer::getPlayer).collect(Collectors.toList());
+                                rt.clear();
+                                rt.add(players);
+                                rt.updateRoomTAB();
+                            }
+                        }
+                    }
+
+                    if (this.getPlayersCount() == this.maxMembersTeam + 1) {
+                        startRoom();
+                    }
+                    break;
+            }
+
+            //signal that is ranked
+            if (this.ranked) p.sendActionbar("&b&lRANKED");
         }
-
-        //signal that is ranked
-        if (this.ranked) p.sendActionbar("&b&lRANKED");
     }
 
     private void startRoom() {

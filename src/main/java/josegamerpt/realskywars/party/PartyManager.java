@@ -5,6 +5,7 @@ import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.RSWPlayer;
+import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 
@@ -23,7 +24,7 @@ public class PartyManager {
     public void sendInvite(RSWPlayer emissor, RSWPlayer recetor) {
         if (emissor != recetor) {
             if (emissor.hasParty()) {
-                if (emissor.getParty().isOwner() && !emissor.getParty().getMembers().contains(recetor)) {
+                if (emissor.getParty().isOwner(emissor) && !emissor.getParty().getMembers().contains(recetor)) {
                     invites.put(recetor, emissor);
                     emissor.sendMessage(RealSkywars.getLanguageManager().getString(emissor, LanguageManager.TS.PARTY_INVITE_SENT, true).replace("%player%", recetor.getDisplayName()));
                     recetor.sendMessage(RealSkywars.getLanguageManager().getString(recetor, LanguageManager.TS.PARTY_INVITE_RECIEVED, true).replace("%player%", emissor.getDisplayName()));
@@ -47,9 +48,9 @@ public class PartyManager {
     public boolean checkForParties(RSWPlayer p, SWGameMode swgm) {
         int current = 0 , max = 0, toAdd = 0;
 
-        Boolean result;
+        boolean result;
         if (p.hasParty()) {
-            if (p.getParty().isOwner()) {
+            if (p.getParty().isOwner(p)) {
                 current = swgm.getPlayersCount();
                 max = swgm.getMaxPlayers();
 
@@ -60,23 +61,37 @@ public class PartyManager {
                     result = false;
                 } else {
                     p.getParty().setAllowJoin(true);
-                    p.getParty().getMembers().forEach(rswPlayer -> swgm.addPlayer(rswPlayer));
+                    p.getParty().getMembers().forEach(swgm::addPlayer);
                     result = true;
-                    p.getParty().setAllowJoin(false);
+
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> p.getParty().setAllowJoin(false), 20L);
+
                 }
             } else {
-                if (!p.getParty().allowJoin())
+                if (p.getParty().allowJoin())
                 {
+                    if (p.isInMatch())
+                    {
+                        if (p.getMatch().equals(swgm))
+                        {
+                            result = false;
+                        } else {
+                            p.getMatch().removePlayer(p);
+                            result = true;
+                        }
+                    } else {
+                        result = true;
+                    }
+                } else {
                     p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.PARTY_NOT_OWNER, true));
                     result = false;
                 }
-                result = true;
             }
         } else {
             result =  true;
         }
 
-        Debugger.print(PartyManager.class, "current: " + current + " max: " + max + " to add:" + toAdd + " valid: " + result);
+        Debugger.print(PartyManager.class, "player:" + p.getName() + "current: " + current + " max: " + max + " to add:" + toAdd + " valid: " + result);
         return result;
     }
 }
