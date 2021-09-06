@@ -246,6 +246,11 @@ public class RealSkywars extends JavaPlugin {
                 //registo de comandos #portugal
                 commandManager.register(new RealSkywarsCMD(this), new SairCMD(this), new PartyCMD(this));
 
+                //placeholderAPI support
+                if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+                    new RealSkywarsPlaceholderAPI(this).register();
+                }
+
                 long elapsedTimeMillis = System.currentTimeMillis() - start;
 
                 float elapsedTimeSec = elapsedTimeMillis / 1000F;
@@ -293,7 +298,7 @@ public class RealSkywars extends JavaPlugin {
 
     public void onDisable() {
         RealSkywars.getGameManager().endGames();
-        RealSkywars.getGameManager().getGames().forEach(SWGameMode::clear);
+        RealSkywars.getGameManager().getGames(PlayerManager.Modes.ALL).forEach(SWGameMode::clear);
     }
 
     public void reload() {

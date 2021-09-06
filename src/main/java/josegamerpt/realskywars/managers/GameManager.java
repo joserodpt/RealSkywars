@@ -15,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,19 +66,19 @@ public class GameManager {
                 f.addAll(this.games.stream().filter(r -> r.getState().equals(GameState.AVAILABLE)).collect(Collectors.toList()));
                 break;
             case MAPV_SPECTATE:
-                this.games.stream().filter(r -> r.getState().equals(GameState.PLAYING) || r.getState().equals(GameState.FINISHING)).collect(Collectors.toList()).forEach(gameMode -> f.add(gameMode));
+                f.addAll(this.games.stream().filter(r -> r.getState().equals(GameState.PLAYING) || r.getState().equals(GameState.FINISHING)).collect(Collectors.toList()));
                 break;
             case SOLO:
-                f.addAll(this.games.stream().filter(r -> r.getGameMode().equals(SWGameMode.Mode.SOLO)).collect(Collectors.toList()));
+                f.addAll(this.getGames(PlayerManager.Modes.SOLO));
                 break;
             case TEAMS:
-                f.addAll(this.games.stream().filter(r -> r.getGameMode().equals(SWGameMode.Mode.TEAMS)).collect(Collectors.toList()));
+                f.addAll(this.getGames(PlayerManager.Modes.TEAMS));
                 break;
             case SOLO_RANKED:
-                f.addAll(this.games.stream().filter(r -> r.isRanked() && r.getGameMode().equals(SWGameMode.Mode.SOLO)).collect(Collectors.toList()));
+                f.addAll(this.getGames(PlayerManager.Modes.SOLO_RANKED));
                 break;
             case TEAMS_RANKED:
-                f.addAll(this.games.stream().filter(r -> r.isRanked() && r.getGameMode().equals(SWGameMode.Mode.TEAMS)).collect(Collectors.toList()));
+                f.addAll(this.getGames(PlayerManager.Modes.TEAMS_RANKED));
                 break;
             default:
                 break;
@@ -147,8 +148,23 @@ public class GameManager {
         games.clear();
     }
 
-    public ArrayList<SWGameMode> getGames() {
-        return games;
+    public List<SWGameMode> getGames(PlayerManager.Modes pt) {
+        switch (pt)
+        {
+            case ALL:
+                return this.games;
+            case SOLO:
+                return this.games.stream().filter(r -> r.getGameMode().equals(SWGameMode.Mode.SOLO)).collect(Collectors.toList());
+            case TEAMS:
+                return this.games.stream().filter(r -> r.getGameMode().equals(SWGameMode.Mode.TEAMS)).collect(Collectors.toList());
+            case RANKED:
+                return this.games.stream().filter(SWGameMode::isRanked).collect(Collectors.toList());
+            case SOLO_RANKED:
+                return this.games.stream().filter(r -> r.isRanked() && r.getGameMode().equals(SWGameMode.Mode.SOLO)).collect(Collectors.toList());
+            case TEAMS_RANKED:
+                return this.games.stream().filter(r -> r.isRanked() && r.getGameMode().equals(SWGameMode.Mode.TEAMS)).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 
     public void addRoom(SWGameMode s) {

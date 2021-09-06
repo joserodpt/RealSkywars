@@ -150,7 +150,7 @@ public class MapManager {
     }
 
     public SWGameMode getMap(String s) {
-        for (SWGameMode g : RealSkywars.getGameManager().getGames()) {
+        for (SWGameMode g : RealSkywars.getGameManager().getGames(PlayerManager.Modes.ALL)) {
             if (g.getName().equalsIgnoreCase(s)) {
                 return g;
             }

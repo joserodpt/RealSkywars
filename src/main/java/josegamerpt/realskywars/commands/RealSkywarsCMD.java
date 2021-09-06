@@ -10,6 +10,7 @@ import josegamerpt.realskywars.managers.CurrencyManager;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.misc.Selections;
+import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
@@ -397,8 +398,8 @@ public class RealSkywarsCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
             p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_MAPS, true).replace("%rooms%",
-                    "" + RealSkywars.getGameManager().getGames().size()));
-            for (SWGameMode s : RealSkywars.getGameManager().getGames()) {
+                    "" + RealSkywars.getGameManager().getGames(PlayerManager.Modes.ALL).size()));
+            for (SWGameMode s : RealSkywars.getGameManager().getGames(PlayerManager.Modes.ALL)) {
                 TextComponent a = new TextComponent(Text.color("&7- &f" + s.getName()));
                 a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                         "/rsw map " + s.getName()));

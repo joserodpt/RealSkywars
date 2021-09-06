@@ -241,8 +241,10 @@ public class PlayerManager {
         return bought;
     }
 
-    public int getPlayingPlayers() {
-        return RealSkywars.getGameManager().getGames().stream().mapToInt(SWGameMode::getPlayersCount).sum();
+    public enum Modes { SOLO, SOLO_RANKED, TEAMS, TEAMS_RANKED, RANKED, ALL }
+
+    public int getPlayingPlayers(Modes pt) {
+        return RealSkywars.getGameManager().getGames(pt).stream().mapToInt(SWGameMode::getPlayersCount).sum();
     }
 
     public void stopScoreboards() {

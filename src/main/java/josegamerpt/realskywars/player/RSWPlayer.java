@@ -674,13 +674,13 @@ public class RSWPlayer {
                 this.show.forEach(rswPlayer -> this.player.showPlayer(RealSkywars.getPlugin(), rswPlayer));
 
                 if (this.player.isInMatch()) {
-                    String header = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", RealSkywars.getPlayerManager().getPlayingPlayers() + "");
-                    String footer = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", RealSkywars.getPlayerManager().getPlayingPlayers() + "");
+                    String header = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", RealSkywars.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL) + "");
+                    String footer = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", RealSkywars.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL) + "");
 
                     this.setHeaderFooter(header, footer);
                 } else {
-                    String header = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_OTHER)).replace("%players%", RealSkywars.getPlayerManager().getPlayingPlayers() + "");
-                    String footer = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_OTHER)).replace("%players%", RealSkywars.getPlayerManager().getPlayingPlayers() + "");
+                    String header = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_OTHER)).replace("%players%", RealSkywars.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL) + "");
+                    String footer = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_OTHER)).replace("%players%", RealSkywars.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL) + "");
 
                     this.setHeaderFooter(header, footer);
                 }
@@ -722,14 +722,14 @@ public class RSWPlayer {
             } else {
                 return s.replace("%space%", Text.makeSpace())
                         .replace("%coins%", gp.getCoins() + "")
-                        .replace("%playing%", "" + RealSkywars.getPlayerManager().getPlayingPlayers())
+                        .replace("%playing%", "" + RealSkywars.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL))
                         .replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS, false) + "")
                         .replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false) + "")
                         .replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false) + "")
                         .replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false) + "")
                         .replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false) + "")
                         .replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false) + "")
-                        .replace("%playing%", "" + RealSkywars.getPlayerManager().getPlayingPlayers())
+                        .replace("%playing%", "" + RealSkywars.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL))
                         .replace("%rankedkills%", gp.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS, true) + "")
                         .replace("%rankeddeaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, true) + "")
                         .replace("%rankedsolowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true) + "")
