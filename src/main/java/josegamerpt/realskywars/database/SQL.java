@@ -1,4 +1,4 @@
-package josegamerpt.realskywars.configuration;
+package josegamerpt.realskywars.database;
 
 import josegamerpt.realskywars.RealSkywars;
 import org.bukkit.configuration.file.FileConfiguration;

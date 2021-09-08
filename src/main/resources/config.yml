@@ -7,6 +7,7 @@ Config:
   Time-To-Start: 10
   Min-Players-ToStart: 2
   Time-EndGame: 10
+  Refresh-Leaderboards: 600
   Maximum-Game-Time:
     Solo: 300
     Teams: 500

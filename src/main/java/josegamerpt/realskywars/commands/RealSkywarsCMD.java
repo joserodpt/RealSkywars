@@ -1,8 +1,10 @@
 package josegamerpt.realskywars.commands;
 
+import com.j256.ormlite.stmt.QueryBuilder;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.configuration.Config;
+import josegamerpt.realskywars.database.PlayerData;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.gui.*;
 import josegamerpt.realskywars.kits.Kit;
@@ -611,4 +613,10 @@ public class RealSkywarsCMD extends CommandBase {
         }
     }
 
+    @SubCommand("refreshLeaderboards")
+    @Permission("RealSkywars.Admin")
+    public void reset(final CommandSender commandSender) {
+        RealSkywars.getLeaderboardManager().refreshLeaderboards();
+        Text.send(commandSender, "Ok.");
+    }
 }

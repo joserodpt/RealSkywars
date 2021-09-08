@@ -248,4 +248,8 @@ public class PlayerData {
             this.games_played = (int) a;
         }
     }
+
+    public UUID getUUID() {
+        return this.uuid;
+    }
 }

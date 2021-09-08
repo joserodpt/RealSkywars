@@ -9,7 +9,7 @@ public class Debugger {
 
 	public static void print(Class a, String b) {
 		if (debug) {
-			Bukkit.getLogger().log(Level.WARNING, "[RSW,DEBUG] " + getName(a) +" : " + b);
+			Bukkit.getLogger().log(Level.WARNING, "[RSW:DEBUG] " + getName(a) +" : " + b);
 		}
 	}
 

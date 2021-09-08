@@ -9,9 +9,11 @@ import josegamerpt.realskywars.configuration.checkers.ConfigChecker;
 import josegamerpt.realskywars.configuration.checkers.LangChecker;
 import josegamerpt.realskywars.configuration.chests.*;
 import josegamerpt.realskywars.database.DatabaseManager;
+import josegamerpt.realskywars.database.SQL;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.gui.*;
 import josegamerpt.realskywars.kits.KitManager;
+import josegamerpt.realskywars.leaderboards.LeaderboardManager;
 import josegamerpt.realskywars.managers.*;
 import josegamerpt.realskywars.nms.*;
 import josegamerpt.realskywars.party.PartyManager;
@@ -46,6 +48,7 @@ public class RealSkywars extends JavaPlugin {
     private static ShopManager shopm = new ShopManager();
     private static KitManager kitm = new KitManager();
     private static PartyManager partym = new PartyManager();
+    private static LeaderboardManager lbm = new LeaderboardManager();
 
     private static ChestManager chestManager;
     private static RSWnms nms;
@@ -110,6 +113,10 @@ public class RealSkywars extends JavaPlugin {
 
     public static DatabaseManager getDatabaseManager() {
         return databaseManager;
+    }
+
+    public static LeaderboardManager getLeaderboardManager() {
+        return lbm;
     }
 
     public void onEnable() {
@@ -197,6 +204,9 @@ public class RealSkywars extends JavaPlugin {
                 pm.registerEvents(KitSettings.getListener(), this);
                 pm.registerEvents(MapsViewer.getListener(), this);
 
+                //load leaderboard
+                lbm.refreshLeaderboards();
+
                 log("Loading maps.");
                 mapm.loadMaps();
                 log("Loaded " + RealSkywars.getGameManager().getLoadedInt() + " maps.");
@@ -263,6 +273,9 @@ public class RealSkywars extends JavaPlugin {
                 if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
                     new RealSkywarsPlaceholderAPI(this).register();
                 }
+
+                //refresh leaderboards
+                Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> lbm.refreshLeaderboards(), Config.file().getInt("Config.Refresh-Leaderboards"), Config.file().getInt("Config.Refresh-Leaderboards"));
 
                 long elapsedTimeMillis = System.currentTimeMillis() - start;
 

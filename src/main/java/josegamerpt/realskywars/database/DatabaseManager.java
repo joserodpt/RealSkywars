@@ -6,7 +6,6 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.jdbc.db.DatabaseTypeUtils;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import josegamerpt.realskywars.configuration.SQL;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -102,4 +101,7 @@ public class DatabaseManager {
         }
     }
 
+    public Dao<PlayerData, UUID> getQueryDao() {
+        return this.playerDataDao;
+    }
 }
