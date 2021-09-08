@@ -64,7 +64,7 @@ public class RealSkywarsCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
             if (p.getMatch() == null) {
-                MapsViewer v = new MapsViewer(p, p.getSelection(Selections.Key.MAPVIEWER),
+                MapsViewer v = new MapsViewer(p, p.getMapViewerPref(),
                         RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MAPS_NAME, false));
                 v.openInventory(p);
             } else {

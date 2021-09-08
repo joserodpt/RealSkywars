@@ -9,9 +9,9 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.IOException;
 
-public class Players implements Listener {
+public class SQL implements Listener {
 
-    private static String name = "players.yml";
+    private static String name = "sql.yml";
     private static File file;
     private static FileConfiguration customFile;
 
@@ -19,10 +19,7 @@ public class Players implements Listener {
         file = new File(p.getDataFolder(), name);
 
         if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException ignored) {
-            }
+            p.saveResource("sql.yml", false);
         }
         customFile = YamlConfiguration.loadConfiguration(file);
     }

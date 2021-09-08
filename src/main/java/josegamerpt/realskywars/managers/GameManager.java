@@ -50,7 +50,7 @@ public class GameManager {
         }
     }
 
-    public List<SWGameMode> getRoomsWithSelection(Selections.Values t) {
+    public List<SWGameMode> getRoomsWithSelection(Selections.MapViewerPref t) {
         List<SWGameMode> f = new ArrayList<>();
         switch (t) {
             case MAPV_ALL:

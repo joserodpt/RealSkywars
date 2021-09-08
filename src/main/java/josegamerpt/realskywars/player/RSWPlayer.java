@@ -3,7 +3,6 @@ package josegamerpt.realskywars.player;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.configuration.Config;
-import josegamerpt.realskywars.configuration.Players;
 import josegamerpt.realskywars.effects.BlockWinTrail;
 import josegamerpt.realskywars.effects.Trail;
 import josegamerpt.realskywars.game.SetupRoom;
@@ -45,7 +44,7 @@ public class RSWPlayer {
 
     private int gamekills;
 
-    private int totalkills;
+    private int kills;
     private int deaths;
     private int winsSolo;
     private int winsTEAMS;
@@ -64,7 +63,7 @@ public class RSWPlayer {
     private PlayerScoreboard playerscoreboard;
     private Material cageBlock = Material.GLASS;
     private ArrayList<String> bought = new ArrayList<>();
-    private HashMap<Selections.Key, Selections.Values> selections = new HashMap<>();
+    private Selections.MapViewerPref mapViewerPref;
     private Boolean bot = false;
     private Kit kit;
     private Particle bowParticle;
@@ -72,14 +71,13 @@ public class RSWPlayer {
     private Material winblockMaterial;
     private Boolean invincible = false;
 
-    public RSWPlayer(Player jog, RSWPlayer.PlayerState estado, SWGameMode rom, int tk, int d, int solowin, int teamwin, Double coi, String lang,
+    public RSWPlayer(Player jog, RSWPlayer.PlayerState estado, int kills, int d, int solowin, int teamwin, Double coi, String lang,
                      ArrayList<String> bgh, int l, int gp, int rankedTotalkills, int rankedDeaths, int rankedWinsSolo, int rankedWinsTEAMS, int rankedLoses, int rankedGamesPlayed) {
         anonName = Text.anonName();
 
         this.p = jog;
         this.state = estado;
-        this.room = rom;
-        this.totalkills = tk;
+        this.kills = kills;
         this.winsSolo = solowin;
         this.winsTEAMS = teamwin;
         this.deaths = d;
@@ -121,7 +119,7 @@ public class RSWPlayer {
                 ", team=" + team +
                 ", cage=" + cage +
                 ", gamekills=" + gamekills +
-                ", totalkills=" + totalkills +
+                ", totalkills=" + kills +
                 ", deaths=" + deaths +
                 ", winsSolo=" + winsSolo +
                 ", winsTEAMS=" + winsTEAMS +
@@ -138,7 +136,6 @@ public class RSWPlayer {
                 ", playerscoreboard=" + playerscoreboard +
                 ", cageBlock=" + cageBlock +
                 ", bought=" + bought +
-                ", selections=" + selections +
                 ", bot=" + bot +
                 ", kit=" + kit +
                 ", bowParticle=" + bowParticle +
@@ -226,11 +223,11 @@ public class RSWPlayer {
     }
 
     public void saveData() {
-        this.totalkills += this.gamekills;
+        this.kills += this.gamekills;
         this.coins += this.balanceGame;
         this.balanceGame = 0D;
         this.gamekills = 0;
-        RealSkywars.getPlayerManager().savePlayer(this, PlayerData.ALL);
+        RealSkywars.getPlayerManager().savePlayer(this);
     }
 
     public double getGameBalance() {
@@ -244,10 +241,9 @@ public class RSWPlayer {
     }
 
     public void resetData() {
-        Players.file().set(p.getUniqueId().toString(), null);
-        Players.save();
+        RealSkywars.getDatabaseManager().getPlayerData(this.getPlayer()).thenAccept(playerData -> RealSkywars.getDatabaseManager().deletePlayerData(playerData, true));
         RealSkywars.getPlayerManager().removePlayer(this);
-        p.kickPlayer(RealSkywars.getLanguageManager().getPrefix() + "§4Your data was resetted with success. \n §cPlease join the server again to complete the reset.");
+        p.kickPlayer(RealSkywars.getLanguageManager().getPrefix() + "§4Your data was cleared with success. \n §cPlease join the server again to complete the reset.");
     }
 
     public String getName() {
@@ -343,6 +339,9 @@ public class RSWPlayer {
 
     public void setProperty(PlayerProperties pp, Object o) {
         switch (pp) {
+            case MAPVIEWER_PREF:
+                this.mapViewerPref = Selections.MapViewerPref.valueOf((String) o);
+                break;
             case KIT:
                 this.kit = (Kit) o;
                 break;
@@ -368,7 +367,7 @@ public class RSWPlayer {
                         }
                     }
                 }
-                RealSkywars.getPlayerManager().savePlayer(this, PlayerData.PREFS);
+                RealSkywars.getPlayerManager().savePlayer(this);
                 break;
             case WIN_BLOCKS:
                 if (o.equals("RandomBlock")) {
@@ -398,7 +397,7 @@ public class RSWPlayer {
             case WINS_TEAMS:
                 return ranked ? this.rankedWinsTEAMS : this.winsTEAMS;
             case TOTAL_KILLS:
-                return ranked ? this.rankedTotalkills : this.totalkills;
+                return ranked ? this.rankedTotalkills : this.kills;
             case GAMES_PLAYED:
                 return ranked ? this.rankedGamesPlayed : this.gamesPlayed;
             case GAME_BALANCE:
@@ -407,15 +406,6 @@ public class RSWPlayer {
                 return this.gamekills;
         }
         return null;
-    }
-
-    public Selections.Values getSelection(Selections.Key m) {
-        return this.selections.get(m);
-    }
-
-    public void setSelection(Selections.Key s, Selections.Values ss) {
-        this.selections.put(s, ss);
-        RealSkywars.getPlayerManager().savePlayer(this, PlayerData.PREFS);
     }
 
     public RSWPlayer.PlayerState getState() {
@@ -438,16 +428,8 @@ public class RSWPlayer {
         this.setup = o;
     }
 
-    public HashMap<Selections.Key, Selections.Values> getSelections() {
-        return this.selections;
-    }
-
-    public void setSelections(HashMap<Selections.Key, Selections.Values> ss) {
-        this.selections = ss;
-    }
-
-    public List<String> getBoughtItems() {
-        return this.bought != null ? this.bought : Collections.emptyList();
+    public ArrayList<String> getBoughtItems() {
+        return this.bought != null ? this.bought : new ArrayList<>();
     }
 
     public PlayerScoreboard getScoreboard() {
@@ -472,6 +454,8 @@ public class RSWPlayer {
                 return this.cageBlock;
             case BOW_PARTICLES:
                 return this.bowParticle;
+            case MAPVIEWER_PREF:
+                return this.mapViewerPref;
         }
         return null;
     }
@@ -578,8 +562,8 @@ public class RSWPlayer {
 
     public void buyItem(String s) {
         this.bought.add(ChatColor.stripColor(s));
-        RealSkywars.getPlayerManager().savePlayer(this, PlayerData.PREFS);
-        RealSkywars.getPlayerManager().savePlayer(this, PlayerData.BOUGHT);
+        RealSkywars.getPlayerManager().savePlayer(this);
+        RealSkywars.getPlayerManager().savePlayer(this);
     }
 
     public void sendActionbar(String s) {
@@ -612,7 +596,13 @@ public class RSWPlayer {
         this.sendMessage(RealSkywars.getLanguageManager().getString(this, LanguageManager.TS.PARTY_LEAVE, true).replace("%player%", this.getDisplayName()));
     }
 
-    public enum PlayerData {ALL, COINS, STATS, NAME, LANG, BOUGHT, PREFS}
+    public Selections.MapViewerPref getMapViewerPref() {
+        return this.mapViewerPref;
+    }
+
+    public void setMapViewerPref(Selections.MapViewerPref a) {
+        this.mapViewerPref = a;
+    }
 
     public enum Statistic {KILL, SOLO_WIN, TEAM_WIN, LOSE, DEATH, GAMES_PLAYED}
 
@@ -622,7 +612,7 @@ public class RSWPlayer {
         LOBBY_OR_NOGAME, CAGE, PLAYING, SPECTATOR, EXTERNAL_SPECTATOR
     }
 
-    public enum PlayerProperties {KIT, BOW_PARTICLES, CAGE_BLOCK, STATE, LANGUAGE, WIN_BLOCKS}
+    public enum PlayerProperties {KIT, BOW_PARTICLES, CAGE_BLOCK, STATE, LANGUAGE, MAPVIEWER_PREF, WIN_BLOCKS}
 
     public enum PlayerStatistics {WINS_SOLO, WINS_TEAMS, TOTAL_KILLS, DEATHS, LOSES, GAMES_PLAYED, GAME_BALANCE, GAME_KILLS}
 

@@ -97,7 +97,7 @@ public class PlayerEvents implements Listener {
                                 e.setCancelled(true);
                                 break;
                             case NETHER_STAR:
-                                MapsViewer v = new MapsViewer(gp, gp.getSelection(Selections.Key.MAPVIEWER), RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.MAPS_NAME, false));
+                                MapsViewer v = new MapsViewer(gp, gp.getMapViewerPref(), RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.MAPS_NAME, false));
                                 v.openInventory(gp);
                                 e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 e.setCancelled(true);
@@ -387,9 +387,7 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        RSWPlayer pl = RealSkywars.getPlayerManager().loadPlayer(e.getPlayer());
-        Bukkit.getOnlinePlayers().forEach(player -> pl.getTab().add(player));
-        pl.getTab().updateRoomTAB();
+        RealSkywars.getPlayerManager().loadPlayer(e.getPlayer());
 
         for (RSWPlayer player : RealSkywars.getPlayerManager().getPlayers()) {
             if (player.isInMatch()) {

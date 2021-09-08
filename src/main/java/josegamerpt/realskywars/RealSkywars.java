@@ -8,6 +8,7 @@ import josegamerpt.realskywars.configuration.*;
 import josegamerpt.realskywars.configuration.checkers.ConfigChecker;
 import josegamerpt.realskywars.configuration.checkers.LangChecker;
 import josegamerpt.realskywars.configuration.chests.*;
+import josegamerpt.realskywars.database.DatabaseManager;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.gui.*;
 import josegamerpt.realskywars.kits.KitManager;
@@ -27,6 +28,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -50,6 +52,7 @@ public class RealSkywars extends JavaPlugin {
     private static Random rand = new Random();
     private PluginManager pm = Bukkit.getPluginManager();
     private CommandManager commandManager;
+    private static DatabaseManager databaseManager;
 
     public static Plugin getPlugin() {
         return pl;
@@ -105,6 +108,10 @@ public class RealSkywars extends JavaPlugin {
         return chestManager;
     }
 
+    public static DatabaseManager getDatabaseManager() {
+        return databaseManager;
+    }
+
     public void onEnable() {
         long start = System.currentTimeMillis();
         pl = this;
@@ -156,7 +163,7 @@ public class RealSkywars extends JavaPlugin {
 
                 //config
                 Maps.setup(this);
-                Players.setup(this);
+                SQL.setup(this);
                 Shops.setup(this);
                 Kits.setup(this);
 
@@ -169,6 +176,12 @@ public class RealSkywars extends JavaPlugin {
                 OPChestMiddle.setup(this);
                 CAOSchest.setup(this);
                 CAOSchestMiddle.setup(this);
+
+                try {
+                    databaseManager = new DatabaseManager(this);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
 
                 chestManager = new ChestManager();
 
@@ -306,7 +319,6 @@ public class RealSkywars extends JavaPlugin {
 
         Config.reload();
         Maps.reload();
-        Players.reload();
         Languages.reload();
 
         //chests
