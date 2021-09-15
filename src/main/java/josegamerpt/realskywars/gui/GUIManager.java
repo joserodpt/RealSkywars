@@ -136,8 +136,11 @@ public class GUIManager {
         inventory.openInventory(p.getPlayer());
     }
 
-    public static void openPlayerMenu(RSWPlayer p, Boolean showCriticOptions) {
-        GUIBuilder inventory = new GUIBuilder(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_TITLE, false), 9, p.getUUID(),
+    public static void openPlayerMenu(RSWPlayer p) {
+        int size = 27;
+        if (!p.isInMatch()) { size = 45; }
+
+        GUIBuilder inventory = new GUIBuilder(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_TITLE, false), size, p.getUUID(),
                 Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         inventory.addItem(e -> {
@@ -145,40 +148,81 @@ public class GUIManager {
             ProfileContent v = new ProfileContent(p, ShopManager.Categories.KITS);
             v.openInventory(p);
         }, Itens.createItemLore(Material.CHEST, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.KITS, false),
-                Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 0);
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 10);
 
         inventory.addItem(e -> {
             p.getPlayer().closeInventory();
             ProfileContent v = new ProfileContent(p, ShopManager.Categories.CAGE_BLOCKS);
             v.openInventory(p);
         }, Itens.createItemLore(Material.SPAWNER, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CAGEBLOCK, false),
-                Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 1);
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 12);
 
         inventory.addItem(e -> {
             p.getPlayer().closeInventory();
             ProfileContent v = new ProfileContent(p, ShopManager.Categories.WIN_BLOCKS);
             v.openInventory(p);
         }, Itens.createItemLore(Material.FIREWORK_ROCKET, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.WINBLOCK, false),
-                Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 2);
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 14);
 
         inventory.addItem(e -> {
             p.getPlayer().closeInventory();
             ProfileContent v = new ProfileContent(p, ShopManager.Categories.BOW_PARTICLES);
             v.openInventory(p);
         }, Itens.createItemLore(Material.BOW, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.BOWPARTICLE, false),
-                Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 3);
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 13);
+
+        inventory.addItem(e -> {
+            p.getPlayer().closeInventory();
+            openAchievementGUI(p);
+        }, Itens.createItemLore(Material.BOOKSHELF, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ACHIEVEMENTS, false),
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 16);
+
 
         //settings
-        if (showCriticOptions) {
+        if (!p.isInMatch()) {
             inventory.addItem(e -> {
                 p.getPlayer().closeInventory();
                 GUIManager.openLanguage(p);
             }, Itens.createItemLore(Material.SIGN, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_LANG_TITLE, false),
-                    Collections.singletonList("&f> " + p.getLanguage())), 7);
+                    Collections.singletonList("&f> " + p.getLanguage())), 30);
 
             inventory.addItem(e -> p.resetData(), Itens.createItemLore(Material.BARRIER, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_RESET_TITLE, false),
-                    Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_RESET_ALERT, false))), 8);
+                    Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_RESET_ALERT, false))), 32);
         }
+
+        inventory.openInventory(p.getPlayer());
+    }
+
+    public static void openAchievementGUI(RSWPlayer p) {
+        GUIBuilder inventory = new GUIBuilder(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ACHIEVEMENTS, false), 27, p.getUUID(),
+                Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+
+        inventory.addItem(e -> {
+            p.getPlayer().closeInventory();
+            AchievementViewer v = new AchievementViewer(p, RSWPlayer.PlayerStatistics.KILLS);
+            v.openInventory(p);
+        }, Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&b&l" + RSWPlayer.PlayerStatistics.KILLS.name(),
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 11);
+
+        inventory.addItem(e -> {
+            p.getPlayer().closeInventory();
+            AchievementViewer v = new AchievementViewer(p, RSWPlayer.PlayerStatistics.WINS_SOLO);
+            v.openInventory(p);
+        }, Itens.createItemLore(Material.LEATHER_BOOTS, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_SOLO.name().replace("_", " "),
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 13);
+
+        inventory.addItem(e -> {
+            p.getPlayer().closeInventory();
+            AchievementViewer v = new AchievementViewer(p, RSWPlayer.PlayerStatistics.WINS_TEAMS);
+            v.openInventory(p);
+        }, Itens.createItemLore(Material.CHAINMAIL_CHESTPLATE, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_TEAMS.name().replace("_", " "),
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 15);
+
+        inventory.addItem(e -> {
+            p.getPlayer().closeInventory();
+            GUIManager.openPlayerMenu(p);
+        }, Itens.createItemLore(Material.BIRCH_DOOR, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_MENU_TITLE),
+                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_MENU_DESC))), 26);
 
         inventory.openInventory(p.getPlayer());
     }

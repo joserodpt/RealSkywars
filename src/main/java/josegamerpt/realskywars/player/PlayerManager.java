@@ -5,7 +5,6 @@ import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.misc.DisplayItem;
-import josegamerpt.realskywars.misc.Selections;
 import josegamerpt.realskywars.utils.Itens;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -116,6 +115,15 @@ public class PlayerManager {
         return null;
     }
 
+    public RSWPlayer getPlayer(UUID u) {
+        for (RSWPlayer g : this.players) {
+            if (g.getUUID() == u) {
+                return g;
+            }
+        }
+        return null;
+    }
+
     public void savePlayer(RSWPlayer p) {
         if (p.getPlayer() != null) {
             RealSkywars.getDatabaseManager().getPlayerData(p.getPlayer()).thenAccept(playerData -> {
@@ -135,8 +143,8 @@ public class PlayerManager {
                 playerData.setWinsTeams(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false), false);
                 playerData.setWinsTeams(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true), true);
 
-                playerData.setKills(p.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS, false), false);
-                playerData.setKills(p.getStatistics(RSWPlayer.PlayerStatistics.TOTAL_KILLS, true), true);
+                playerData.setKills(p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false), false);
+                playerData.setKills(p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, true), true);
 
                 playerData.setDeaths(p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false), false);
                 playerData.setDeaths(p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, true), true);

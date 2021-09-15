@@ -65,7 +65,7 @@ public class ProfileContent {
                         }
 
                         e.setCancelled(true);
-                        RSWPlayer gp = RealSkywars.getPlayerManager().getPlayer((Player) clicker);
+                        RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) clicker);
 
                         switch (e.getRawSlot()) {
                             case 49:
@@ -73,17 +73,21 @@ public class ProfileContent {
                                 if (inventories.containsKey(uuid)) {
                                     inventories.get(uuid).unregister();
                                 }
-                                GUIManager.openPlayerMenu(gp, !gp.isInMatch());
+                                GUIManager.openPlayerMenu(p);
                                 break;
                             case 26:
                             case 35:
-                                nextPage(current);
-                                gp.getPlayer().playSound(gp.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                if (!current.lastPage()) {
+                                    nextPage(current);
+                                    p.getPlayer().playSound(p.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                }
                                 break;
                             case 18:
                             case 27:
-                                backPage(current);
-                                gp.getPlayer().playSound(gp.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                if (!current.firstPage()) {
+                                    backPage(current);
+                                    p.getPlayer().playSound(p.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                }
                                 break;
                         }
 
@@ -91,37 +95,37 @@ public class ProfileContent {
                             DisplayItem a = current.display.get(e.getRawSlot());
 
                             if (!a.isInteractive()) {
-                                gp.sendMessage(RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.NOT_BUYABLE, true));
+                                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NOT_BUYABLE, true));
                                 return;
                             }
 
 
                             if (e.getClick() == ClickType.RIGHT && current.cat == ShopManager.Categories.KITS) {
-                                gp.getPlayer().closeInventory();
-                                GUIManager.openKitPreview(gp, RealSkywars.getKitManager().getKit(a.getID()), 0);
+                                p.getPlayer().closeInventory();
+                                GUIManager.openKitPreview(p, RealSkywars.getKitManager().getKit(a.getID()), 0);
                                 return;
                             }
                             switch (current.cat) {
                                 case KITS:
-                                    gp.setProperty(RSWPlayer.PlayerProperties.KIT, RealSkywars.getKitManager().getKit(a.getID()));
-                                    gp.sendMessage(RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.KITS, false)));
-                                    gp.getPlayer().closeInventory();
+                                    p.setProperty(RSWPlayer.PlayerProperties.KIT, RealSkywars.getKitManager().getKit(a.getID()));
+                                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.KITS, false)));
+                                    p.getPlayer().closeInventory();
                                     break;
                                 case BOW_PARTICLES:
-                                    gp.setProperty(RSWPlayer.PlayerProperties.BOW_PARTICLES, a.getInfo("Particle"));
-                                    gp.sendMessage(RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.BOWPARTICLE, false)));
+                                    p.setProperty(RSWPlayer.PlayerProperties.BOW_PARTICLES, a.getInfo("Particle"));
+                                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.BOWPARTICLE, false)));
                                     break;
                                 case CAGE_BLOCKS:
-                                    gp.setProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK, a.getItemStack().getType());
-                                    gp.sendMessage(RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.CAGEBLOCK, false)));
+                                    p.setProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK, a.getItemStack().getType());
+                                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CAGEBLOCK, false)));
                                     break;
                                 case WIN_BLOCKS:
                                     if (a.containsInfo("RandomBlock")) {
-                                        gp.setProperty(RSWPlayer.PlayerProperties.WIN_BLOCKS, "RandomBlock");
-                                        gp.sendMessage(RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.WINBLOCK, false)));
+                                        p.setProperty(RSWPlayer.PlayerProperties.WIN_BLOCKS, "RandomBlock");
+                                        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.WINBLOCK, false)));
                                     } else {
-                                        gp.setProperty(RSWPlayer.PlayerProperties.WIN_BLOCKS, a.getMaterial().name());
-                                        gp.sendMessage(RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.WINBLOCK, false)));
+                                        p.setProperty(RSWPlayer.PlayerProperties.WIN_BLOCKS, a.getMaterial().name());
+                                        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.WINBLOCK, false)));
                                     }
                                     break;
                             }
@@ -165,6 +169,14 @@ public class ProfileContent {
                 ;
     }
 
+    private boolean lastPage() {
+        return pageNumber == (p.totalPages() - 1);
+    }
+
+    private boolean firstPage() {
+        return pageNumber == 0;
+    }
+
     private String getTitle(RSWPlayer p, ShopManager.Categories t) {
         switch (t) {
             case KITS:
@@ -204,14 +216,26 @@ public class ProfileContent {
         inv.setItem(9, placeholder);
         inv.setItem(17, placeholder);
 
-        inv.setItem(18, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE),
-                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
-        inv.setItem(27, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE),
-                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
-        inv.setItem(26, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE),
-                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
-        inv.setItem(35, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE),
-                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
+        if (firstPage())
+        {
+            inv.setItem(18, placeholder);
+            inv.setItem(27, placeholder);
+        } else {
+            inv.setItem(18, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE),
+                    Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
+            inv.setItem(27, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE),
+                    Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
+        }
+
+        if (lastPage()) {
+            inv.setItem(26, placeholder);
+            inv.setItem(35, placeholder);
+        } else {
+            inv.setItem(26, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE),
+                    Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
+            inv.setItem(35, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE),
+                    Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
+        }
 
         inv.setItem(49, Itens.createItemLore(Material.CHEST, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_MENU_TITLE),
                 Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_MENU_DESC))));

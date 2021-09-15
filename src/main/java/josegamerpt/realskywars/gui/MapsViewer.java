@@ -67,28 +67,32 @@ public class MapsViewer {
                         }
 
                         e.setCancelled(true);
-                        RSWPlayer gp = RealSkywars.getPlayerManager().getPlayer((Player) clicker);
+                        RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) clicker);
 
                         switch (e.getRawSlot()) {
                             case 49:
-                                selectNext(gp);
+                                selectNext(p);
                                 break;
                             case 26:
                             case 35:
-                                nextPage(current);
-                                gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                if (!current.lastPage()) {
+                                    nextPage(current);
+                                    p.getPlayer().playSound(p.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                }
                                 break;
                             case 18:
                             case 27:
-                                backPage(current);
-                                gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                if (!current.firstPage()) {
+                                    backPage(current);
+                                    p.getPlayer().playSound(p.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                }
                                 break;
                         }
 
                         if (current.display.containsKey(e.getRawSlot())) {
                             SWGameMode a = current.display.get(e.getRawSlot());
                             if (!a.isPlaceHolder()) {
-                                a.addPlayer(gp);
+                                a.addPlayer(p);
                             }
                         }
                     }
@@ -164,6 +168,14 @@ public class MapsViewer {
         };
     }
 
+    private boolean lastPage() {
+        return pageNumber == (p.totalPages() - 1);
+    }
+
+    private boolean firstPage() {
+        return pageNumber == 0;
+    }
+
     private LanguageManager.TS select(Selections.MapViewerPref t) {
         switch (t) {
             case MAPV_ALL:
@@ -224,14 +236,26 @@ public class MapsViewer {
         inv.setItem(9, placeholder);
         inv.setItem(17, placeholder);
 
-        inv.setItem(18, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE),
-                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
-        inv.setItem(27, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE),
-                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
-        inv.setItem(26, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE),
-                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
-        inv.setItem(35, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE),
-                Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
+        if (firstPage())
+        {
+            inv.setItem(18, placeholder);
+            inv.setItem(27, placeholder);
+        } else {
+            inv.setItem(18, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE),
+                    Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
+            inv.setItem(27, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE),
+                    Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
+        }
+
+        if (lastPage()) {
+            inv.setItem(26, placeholder);
+            inv.setItem(35, placeholder);
+        } else {
+            inv.setItem(26, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE),
+                    Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
+            inv.setItem(35, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE),
+                    Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
+        }
 
         int slot = 0;
         for (ItemStack i : inv.getContents()) {

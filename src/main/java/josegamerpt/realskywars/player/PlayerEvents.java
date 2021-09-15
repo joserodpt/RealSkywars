@@ -92,7 +92,7 @@ public class PlayerEvents implements Listener {
 
                         switch (e.getPlayer().getInventory().getItemInMainHand().getType()) {
                             case BOOK:
-                                GUIManager.openPlayerMenu(gp, !gp.isInMatch());
+                                GUIManager.openPlayerMenu(gp);
                                 e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 e.setCancelled(true);
                                 break;

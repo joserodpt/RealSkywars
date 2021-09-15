@@ -20,6 +20,7 @@ public class CurrencyManager {
     }
 
     public CurrencyManager(RSWPlayer from, Double operation) {
+        this.toPlayer = from;
         this.fromEntity = from;
         this.opQ = operation;
         this.console = true;
@@ -30,43 +31,44 @@ public class CurrencyManager {
     }
 
     public void transferCoins() {
-        toPlayer.setCoins(toPlayer.getCoins() + opQ);
-        fromEntity.setCoins(fromEntity.getCoins() - opQ);
-        toPlayer.saveData();
-        fromEntity.saveData();
-        fromEntity.sendMessage(RealSkywars.getLanguageManager().getString(toPlayer, LanguageManager.TS.SENDER_COINS, true).replace("%coins%", "" + opQ)
-                .replace("%player%", toPlayer.getDisplayName()));
-        toPlayer.sendMessage(RealSkywars.getLanguageManager().getString(toPlayer, LanguageManager.TS.RECIEVER_COINS, true).replace("%coins%", "" + opQ)
-                .replace("%player%", fromEntity.getDisplayName()));
+        this.toPlayer.setCoins(this.toPlayer.getCoins() + this.opQ);
+        this.fromEntity.setCoins(this.fromEntity.getCoins() - this.opQ);
+        this.toPlayer.saveData();
+        this.fromEntity.saveData();
+        this.fromEntity.sendMessage(RealSkywars.getLanguageManager().getString(this.toPlayer, LanguageManager.TS.SENDER_COINS, true).replace("%coins%", "" + this.opQ)
+                .replace("%player%", this.toPlayer.getDisplayName()));
+        this.toPlayer.sendMessage(RealSkywars.getLanguageManager().getString(this.toPlayer, LanguageManager.TS.RECIEVER_COINS, true).replace("%coins%", "" + this.opQ)
+                .replace("%player%", this.fromEntity.getDisplayName()));
     }
 
     public void addCoins() {
-        if (console = true) {
-            fromEntity.setCoins(fromEntity.getCoins() + opQ);
-            fromEntity.saveData();
+        if (this.console = true) {
+            this.fromEntity.setCoins(fromEntity.getCoins() + this.opQ);
+            this.fromEntity.saveData();
+            return;
         }
-        toPlayer.setCoins(toPlayer.getCoins() + opQ);
-        toPlayer.saveData();
-        toPlayer.sendMessage(RealSkywars.getLanguageManager().getString(toPlayer, LanguageManager.TS.ADDED_COINS, true).replace("%coins%", "" + opQ));
+        this.toPlayer.setCoins(this.toPlayer.getCoins() + this.opQ);
+        this.toPlayer.saveData();
+        this.toPlayer.sendMessage(RealSkywars.getLanguageManager().getString(this.toPlayer, LanguageManager.TS.ADDED_COINS, true).replace("%coins%", "" + this.opQ));
     }
 
     public void removeCoins() {
-        if (console) {
-            fromEntity.setCoins(fromEntity.getCoins() - opQ);
-            fromEntity.saveData();
+        if (this.console) {
+            this.fromEntity.setCoins(this.fromEntity.getCoins() - this.opQ);
+            this.fromEntity.saveData();
             return;
         }
-        fromEntity.setCoins(fromEntity.getCoins() - opQ);
-        fromEntity.saveData();
-        toPlayer.sendMessage(RealSkywars.getLanguageManager().getString(toPlayer, LanguageManager.TS.REMOVED_COINS, true).replace("%coins%", "" + opQ));
+        this.fromEntity.setCoins(this.fromEntity.getCoins() - this.opQ);
+        this.fromEntity.saveData();
+        this.toPlayer.sendMessage(RealSkywars.getLanguageManager().getString(this.toPlayer, LanguageManager.TS.REMOVED_COINS, true).replace("%coins%", "" + this.opQ));
     }
 
     public void setCoins() {
-        if (console) {
-            toPlayer.setCoins(opQ);
-            toPlayer.sendMessage(RealSkywars.getLanguageManager().getString(toPlayer, LanguageManager.TS.SET_COINS, true).replace("%coins%", "" + opQ));
-            fromEntity.saveData();
-            toPlayer.saveData();
+        if (this.console) {
+            this.toPlayer.setCoins(opQ);
+            this.toPlayer.sendMessage(RealSkywars.getLanguageManager().getString(toPlayer, LanguageManager.TS.SET_COINS, true).replace("%coins%", "" + this.opQ));
+            this.fromEntity.saveData();
+            this.toPlayer.saveData();
         }
     }
 }

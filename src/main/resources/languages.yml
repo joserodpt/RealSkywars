@@ -96,6 +96,7 @@ Languages:
           Win-Blocks: "&6Blocos de Vitória"
           Kits: "&9Kits"
           Bow-Particles: "&aPartícula de Arco"
+          Achievements: "&dConquistas"
         Kits:
           Not-Found: "&eNenhum kit com esse nome."
           Delete-Done: "&fKit &aeliminado&f."
@@ -344,10 +345,10 @@ Languages:
         TAB:
           Other:
             Header:
-             - "&f"
-             - " &f&lReal&b&lSkywars"
-             - " &a&lLobby"
-             - "&f"
+              - "&f"
+              - " &f&lReal&b&lSkywars"
+              - " &a&lLobby"
+              - "&f"
             Footer:
               - "&f"
               - "&fPlayers: &b%players%"
@@ -377,6 +378,7 @@ Languages:
           Win-Blocks: "&9Win Blocks"
           Kits: "&9Kits"
           Bow-Particles: "&aBow Particles"
+          Achievements: "&dAchievements"
         Kits:
           Not-Found: "&eNo kit has been found with that name."
           Delete-Done: "&fKit &adeleted&f."

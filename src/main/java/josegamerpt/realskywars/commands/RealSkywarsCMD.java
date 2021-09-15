@@ -211,7 +211,7 @@ public class RealSkywarsCMD extends CommandBase {
                                 return;
                             }
                             if (search != null) {
-                                CurrencyManager c3 = new CurrencyManager(search, p, coins, true);
+                                CurrencyManager c3 = new CurrencyManager(search, coins);
                                 c3.addCoins();
                             } else {
                                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_PLAYER_FOUND, true));

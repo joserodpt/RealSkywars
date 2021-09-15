@@ -1,7 +1,9 @@
 package josegamerpt.realskywars.gui;
 
+import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.managers.CurrencyManager;
+import josegamerpt.realskywars.achievements.Achievement;
+import josegamerpt.realskywars.achievements.AchievementsManager;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.misc.DisplayItem;
@@ -24,30 +26,28 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class ShopViewer {
+public class AchievementViewer {
 
     static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
-    private static Map<UUID, ShopViewer> inventories = new HashMap<>();
+    private static Map<UUID, AchievementViewer> inventories = new HashMap<>();
     int pageNumber = 0;
-    Pagination<DisplayItem> p;
+    Pagination<Achievement> p;
     private Inventory inv;
     private UUID uuid;
-    private HashMap<Integer, DisplayItem> display = new HashMap<>();
-    private ShopManager.Categories cat;
+    private List<Achievement> items;
+    private HashMap<Integer, Achievement> display = new HashMap<>();
+    private RSWPlayer.PlayerStatistics at;
 
-    public ShopViewer(RSWPlayer swPl, ShopManager.Categories t) {
-        this.uuid = swPl.getUUID();
-        this.cat = t;
-        inv = Bukkit.getServer().createInventory(null, 54, getTitle(swPl, t));
+    public AchievementViewer(RSWPlayer p, RSWPlayer.PlayerStatistics at) {
+        this.uuid = p.getUUID();
+        this.at = at;
+        this.inv = Bukkit.getServer().createInventory(null, 54, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ACHIEVEMENTS, false));
 
-        List<DisplayItem> items = RealSkywars.getShopManager().getCategoryContents(swPl, t);
+        this.items = RealSkywars.getAchievementsManager().getAchievements(at);
 
-        if (items.size() > 0) {
-            p = new Pagination<>(28, items);
-            fillChest(p.getPage(pageNumber));
-        } else {
-            fillChest(Collections.emptyList());
-        }
+        this.p = new Pagination<>(28, this.items);
+        fillChest(this.p.getPage(this.pageNumber));
+
         this.register();
     }
 
@@ -62,7 +62,7 @@ public class ShopViewer {
                     }
                     UUID uuid = clicker.getUniqueId();
                     if (inventories.containsKey(uuid)) {
-                        ShopViewer current = inventories.get(uuid);
+                        AchievementViewer current = inventories.get(uuid);
                         if (e.getInventory().getHolder() != current.getInventory().getHolder()) {
                             return;
                         }
@@ -76,7 +76,7 @@ public class ShopViewer {
                                 if (inventories.containsKey(uuid)) {
                                     inventories.get(uuid).unregister();
                                 }
-                                GUIManager.openShopMenu(p);
+                                GUIManager.openAchievementGUI(p);
                                 break;
                             case 26:
                             case 35:
@@ -95,51 +95,15 @@ public class ShopViewer {
                         }
 
                         if (current.display.containsKey(e.getRawSlot())) {
-                            DisplayItem a = current.display.get(e.getRawSlot());
+                            Achievement a = current.display.get(e.getRawSlot());
 
-                            if (!a.isInteractive()) {
-                                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NOT_BUYABLE, true));
-                                return;
-                            }
 
-                            if (e.getClick() == ClickType.RIGHT && current.cat == ShopManager.Categories.KITS) {
-                                p.getPlayer().closeInventory();
-                                GUIManager.openKitPreview(p, RealSkywars.getKitManager().getKit(a.getID()), 1);
-                                return;
-                            }
-
-                            if (p.getPlayer().hasPermission(a.getPermission())) {
-                                if (a.isBought()) {
-                                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SHOP_ALREADY_BOUGHT, true)
-                                            .replace("%name%", a.getName()));
-                                } else {
-                                    CurrencyManager cm = new CurrencyManager(p, a.getPrice());
-                                    if (cm.canMakeOperation()) {
-                                        cm.removeCoins();
-
-                                        p.buyItem(a.getName() + "|" + current.cat.name());
-
-                                        a.setBought(true);
-                                        current.inv.setItem(e.getRawSlot(),
-                                                Itens.createItemLoreEnchanted(e.getCurrentItem().getType(), 1,
-                                                        e.getCurrentItem().getItemMeta().getDisplayName(),
-                                                        Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SHOP_ALREADY_BOUGHT, false).replace("%name%", a.getName()))));
-                                        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SHOP_BUY, true)
-                                                .replace("%name%", a.getName()).replace("%coins%", a.getPrice() + ""));
-                                    } else {
-                                        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.INSUFICIENT_COINS, true)
-                                                .replace("%coins%", p.getCoins() + ""));
-                                    }
-                                }
-                            } else {
-                                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SHOP_NO_PERM, true));
-                            }
                         }
                     }
                 }
             }
 
-            private void backPage(ShopViewer asd) {
+            private void backPage(AchievementViewer asd) {
                 if (asd.p.exists(asd.pageNumber - 1)) {
                     asd.pageNumber--;
                 }
@@ -147,7 +111,7 @@ public class ShopViewer {
                 asd.fillChest(asd.p.getPage(asd.pageNumber));
             }
 
-            private void nextPage(ShopViewer asd) {
+            private void nextPage(AchievementViewer asd) {
                 if (asd.p.exists(asd.pageNumber + 1)) {
                     asd.pageNumber++;
                 }
@@ -169,25 +133,21 @@ public class ShopViewer {
                     }
                 }
             }
-        };
-    }
-
-    private String getTitle(RSWPlayer p, ShopManager.Categories t) {
-        switch (t) {
-            case KITS:
-                return RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.KITS, false);
-            case BOW_PARTICLES:
-                return RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.BOWPARTICLE, false);
-            case WIN_BLOCKS:
-                return RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.WINBLOCK, false);
-            case CAGE_BLOCKS:
-                return RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CAGEBLOCK, false);
-            default:
-                return "? not found";
         }
+
+                ;
     }
 
-    public void fillChest(List<DisplayItem> items) {
+    private boolean lastPage() {
+        return pageNumber == (p.totalPages() - 1);
+    }
+
+    private boolean firstPage() {
+        return pageNumber == 0;
+    }
+
+    public void fillChest(List<Achievement> items) {
+
         inv.clear();
 
         for (int i = 0; i < 9; i++) {
@@ -215,10 +175,10 @@ public class ShopViewer {
             inv.setItem(18, placeholder);
             inv.setItem(27, placeholder);
         } else {
-                inv.setItem(18, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE),
-                        Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
-                inv.setItem(27, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE),
-                        Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
+            inv.setItem(18, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE),
+                    Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
+            inv.setItem(27, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE),
+                    Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
         }
 
         if (lastPage()) {
@@ -238,8 +198,8 @@ public class ShopViewer {
         for (ItemStack i : inv.getContents()) {
             if (i == null) {
                 if (items.size() != 0) {
-                    DisplayItem s = items.get(0);
-                    inv.setItem(slot, s.getItemStack());
+                    Achievement s = items.get(0);
+                    inv.setItem(slot, RealSkywars.getAchievementsManager().getItem(s, this.uuid));
                     display.put(slot, s);
                     items.remove(0);
                 }
@@ -248,20 +208,12 @@ public class ShopViewer {
         }
     }
 
-    private boolean lastPage() {
-        return pageNumber == (p.totalPages() - 1);
-    }
-
-    private boolean firstPage() {
-        return pageNumber == 0;
-    }
-
     public void openInventory(RSWPlayer player) {
         Inventory inv = getInventory();
         InventoryView openInv = player.getPlayer().getOpenInventory();
         if (openInv != null) {
             Inventory openTop = player.getPlayer().getOpenInventory().getTopInventory();
-            if (openTop != null && openTop.getHolder().equals(inv.getHolder())) {
+            if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
                 openTop.setContents(inv.getContents());
             } else {
                 player.getPlayer().openInventory(inv);
@@ -269,7 +221,7 @@ public class ShopViewer {
         }
     }
 
-    private Inventory getInventory() {
+    public Inventory getInventory() {
         return inv;
     }
 

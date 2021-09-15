@@ -1,5 +1,7 @@
 package josegamerpt.realskywars;
 
+import josegamerpt.realskywars.achievements.Achievement;
+import josegamerpt.realskywars.achievements.AchievementsManager;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.commands.PartyCMD;
 import josegamerpt.realskywars.commands.RealSkywarsCMD;
@@ -49,6 +51,7 @@ public class RealSkywars extends JavaPlugin {
     private static KitManager kitm = new KitManager();
     private static PartyManager partym = new PartyManager();
     private static LeaderboardManager lbm = new LeaderboardManager();
+    private static AchievementsManager am = new AchievementsManager();
 
     private static ChestManager chestManager;
     private static RSWnms nms;
@@ -119,6 +122,10 @@ public class RealSkywars extends JavaPlugin {
         return lbm;
     }
 
+    public static AchievementsManager getAchievementsManager() {
+        return am;
+    }
+
     public void onEnable() {
         long start = System.currentTimeMillis();
         pl = this;
@@ -169,10 +176,12 @@ public class RealSkywars extends JavaPlugin {
                 RealSkywars.getGameManager().loadLobby();
 
                 //config
+                Achievements.setup(this);
                 Maps.setup(this);
                 SQL.setup(this);
                 Shops.setup(this);
                 Kits.setup(this);
+                am.loadAchievements();
 
                 //chests
                 BasicChest.setup(this);
@@ -203,6 +212,7 @@ public class RealSkywars extends JavaPlugin {
                 pm.registerEvents(ProfileContent.getListener(), this);
                 pm.registerEvents(KitSettings.getListener(), this);
                 pm.registerEvents(MapsViewer.getListener(), this);
+                pm.registerEvents(AchievementViewer.getListener(), this);
 
                 //load leaderboard
                 lbm.refreshLeaderboards();
