@@ -28,9 +28,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
-public class RSWPlayer {
-
-    private final List<Trail> trails = new ArrayList<>();
+public class RSWPlayer { private final List<Trail> trails = new ArrayList<>();
     private RoomTAB rt;
     private String anonName = "?";
     private Player p;
@@ -153,17 +151,6 @@ public class RSWPlayer {
         }
     }
 
-    public void save() {
-        for (RSWPlayer gp : RealSkywars.getPlayerManager().getPlayers()) {
-            if (p != null && gp.getUUID().equals(p.getUniqueId())) {
-                return;
-            }
-        }
-        if (!this.bot) {
-            RealSkywars.getPlayerManager().addPlayer(this);
-        }
-    }
-
     public boolean isInMatch() {
         return room != null;
     }
@@ -261,7 +248,7 @@ public class RSWPlayer {
     }
 
     public void resetData() {
-        RealSkywars.getDatabaseManager().getPlayerData(this.getPlayer()).thenAccept(playerData -> RealSkywars.getDatabaseManager().deletePlayerData(playerData, true));
+        RealSkywars.getDatabaseManager().deletePlayerData(RealSkywars.getDatabaseManager().getPlayerData(this.getPlayer()), true);
         RealSkywars.getPlayerManager().removePlayer(this);
         this.p.kickPlayer(RealSkywars.getLanguageManager().getPrefix() + "§4Your data was cleared with success. \n §cPlease join the server again to complete the reset.");
     }

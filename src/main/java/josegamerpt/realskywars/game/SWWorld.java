@@ -14,7 +14,7 @@ public class SWWorld {
 
     private final SWGameMode gameRoom;
     private final WorldManager wm = RealSkywars.getWorldManager();
-    private String worldName;
+    private final String worldName;
     private World world;
 
     public SWWorld(SWGameMode gameRoom, World w) {

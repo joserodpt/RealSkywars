@@ -13,14 +13,14 @@ import static josegamerpt.realskywars.game.modes.SWGameMode.Mode.TEAMS;
 public class SetupRoom {
 
     private Boolean tpConfirm = false;
-    private String name;
-    private ArrayList<Cage> cages = new ArrayList<>();
-    private ArrayList<SWChest> chests = new ArrayList<>();
-    private int maxPlayers;
+    private final String name;
+    private final ArrayList<Cage> cages = new ArrayList<>();
+    private final ArrayList<SWChest> chests = new ArrayList<>();
+    private final int maxPlayers;
     private World worldMap;
     private Location spectatorLocation;
     private Boolean spec = true;
-    private SWGameMode.Mode mode;
+    private final SWGameMode.Mode mode;
     private boolean cagesConfirmed = false;
     private boolean speclocConfirm = false;
     private Boolean guiConfirm = false;

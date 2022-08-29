@@ -16,21 +16,20 @@ import java.util.function.Consumer;
 public class Countdown implements Runnable {
 
     // Main class for bukkit scheduling
-    private JavaPlugin plugin;
+    private final JavaPlugin plugin;
     // Seconds and shiz
-    private int seconds;
+    private final int seconds;
     // Actions to perform while counting down, before and after
-    private Consumer<Countdown> everySecond;
-    private Runnable beforeTimer;
-    private Runnable afterTimer;
+    private final Consumer<Countdown> everySecond;
+    private final Runnable beforeTimer;
+    private final Runnable afterTimer;
     // Our scheduled task's assigned id, needed for canceling
     private Integer assignedTaskId;
     private int secondsLeft;
 
     // Construct a timer, you could create multiple so for example if
     // you do not want these "actions"
-    public Countdown(JavaPlugin plugin, int seconds, Runnable beforeTimer, Runnable afterTimer,
-                     Consumer<Countdown> everySecond) {
+    public Countdown(JavaPlugin plugin, int seconds, Runnable beforeTimer, Runnable afterTimer, Consumer<Countdown> everySecond) {
         // Initializing fields
         this.plugin = plugin;
 
@@ -54,14 +53,12 @@ public class Countdown implements Runnable {
             this.afterTimer.run();
 
             // Cancel timer
-            if (this.assignedTaskId != null)
-                Bukkit.getScheduler().cancelTask(this.assignedTaskId);
+            if (this.assignedTaskId != null) Bukkit.getScheduler().cancelTask(this.assignedTaskId);
             return;
         }
 
         // Are we just starting?
-        if (this.secondsLeft == this.seconds)
-            this.beforeTimer.run();
+        if (this.secondsLeft == this.seconds) this.beforeTimer.run();
 
         // Do what's supposed to happen every second
         this.everySecond.accept(this);
@@ -76,7 +73,7 @@ public class Countdown implements Runnable {
      * @return Total seconds timer should run
      */
     public int getTotalSeconds() {
-        return seconds;
+        return this.seconds;
     }
 
     /**

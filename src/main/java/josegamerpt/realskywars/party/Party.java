@@ -9,31 +9,27 @@ import java.util.List;
 
 public class Party {
 
-    private RSWPlayer player;
-    private List<RSWPlayer> members = new ArrayList<>();
+    private final RSWPlayer player;
+    private final List<RSWPlayer> members = new ArrayList<>();
     private boolean allowJoin;
 
-    public Party(RSWPlayer player)
-    {
+    public Party(RSWPlayer player) {
         this.player = player;
     }
 
-    public void playerJoin(RSWPlayer p)
-    {
+    public void playerJoin(RSWPlayer p) {
         p.joinParty(this.player);
         this.members.add(p);
         this.player.sendMessage(RealSkywars.getLanguageManager().getString(this.player, LanguageManager.TS.PARTY_JOIN, true).replace("%player%", p.getDisplayName()));
         this.members.forEach(rswPlayer -> rswPlayer.sendMessage(RealSkywars.getLanguageManager().getString(rswPlayer, LanguageManager.TS.PARTY_JOIN, true).replace("%player%", p.getDisplayName())));
     }
 
-    public void playerLeave(RSWPlayer p)
-    {
+    public void playerLeave(RSWPlayer p) {
         this.player.sendMessage(RealSkywars.getLanguageManager().getString(this.player, LanguageManager.TS.PARTY_LEAVE, true).replace("%player%", p.getDisplayName()));
         this.members.forEach(rswPlayer -> rswPlayer.sendMessage(RealSkywars.getLanguageManager().getString(rswPlayer, LanguageManager.TS.PARTY_LEAVE, true).replace("%player%", p.getDisplayName())));
     }
 
-    public void kick(RSWPlayer p)
-    {
+    public void kick(RSWPlayer p) {
         this.members.remove(p);
         this.player.sendMessage(RealSkywars.getLanguageManager().getString(this.player, LanguageManager.TS.PARTY_KICK, true).replace("%player%", p.getDisplayName()));
         this.members.forEach(rswPlayer -> rswPlayer.sendMessage(RealSkywars.getLanguageManager().getString(rswPlayer, LanguageManager.TS.PARTY_KICK, true).replace("%player%", p.getDisplayName())));

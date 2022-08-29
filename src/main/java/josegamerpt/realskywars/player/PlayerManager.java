@@ -1,6 +1,7 @@
 package josegamerpt.realskywars.player;
 
 import josegamerpt.realskywars.RealSkywars;
+import josegamerpt.realskywars.database.PlayerData;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
@@ -20,8 +21,8 @@ import java.util.*;
 public class PlayerManager {
 
     public static ArrayList<UUID> teleporting = new ArrayList<>();
-    private HashMap<Player, Player> trackingPlayers = new HashMap<>();
-    private ArrayList<RSWPlayer> players = new ArrayList<>();
+    private final HashMap<Player, Player> trackingPlayers = new HashMap<>();
+    private final ArrayList<RSWPlayer> players = new ArrayList<>();
 
     public void giveItems(Player p, Items i) {
         if (p != null) {
@@ -85,8 +86,11 @@ public class PlayerManager {
     }
 
     public void loadPlayer(Player p) {
-        RealSkywars.getDatabaseManager().getPlayerData(p).thenAccept(playerData -> {
+        try {
+            PlayerData playerData = RealSkywars.getDatabaseManager().getPlayerData(p);
+
             RSWPlayer gp = new RSWPlayer(p, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, playerData.getKills(), playerData.getDeaths(), playerData.getStats_wins_solo(), playerData.getStats_wins_teams(), playerData.getCoins(), playerData.getLanguage(), playerData.getBought_items(), playerData.getLoses(), playerData.getGames_played(), playerData.getRanked_kills(), playerData.getRanked_deaths(), playerData.getStats_wins_ranked_solo(), playerData.getStats_wins_ranked_teams(), playerData.getLoses_ranked(), playerData.getRanked_games_played());
+
             String mapv = playerData.getMapViewerPref();
             if (mapv != null) {
                 gp.setProperty(RSWPlayer.PlayerProperties.MAPVIEWER_PREF, mapv);
@@ -95,15 +99,26 @@ public class PlayerManager {
             if (cageBlock != null) {
                 gp.setProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK, Material.getMaterial(cageBlock));
             }
-            gp.save();
             gp.heal();
+
+            RealSkywars.getPlayerManager().addPlayer(gp);
+
             if (RealSkywars.getGameManager().tpLobbyOnJoin()) {
                 RealSkywars.getGameManager().tpToLobby(gp);
             }
             Bukkit.getOnlinePlayers().forEach(player -> gp.getTab().add(player));
             gp.getTab().updateRoomTAB();
-            RealSkywars.getGameManager().tpToLobby(gp);
-        });
+
+            for (RSWPlayer player : RealSkywars.getPlayerManager().getPlayers()) {
+                if (player.isInMatch()) {
+                    RSWPlayer.RoomTAB rt = player.getTab();
+                    rt.remove(p);
+                    rt.updateRoomTAB();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public RSWPlayer getPlayer(Player p) {
@@ -126,38 +141,38 @@ public class PlayerManager {
 
     public void savePlayer(RSWPlayer p) {
         if (p.getPlayer() != null) {
-            RealSkywars.getDatabaseManager().getPlayerData(p.getPlayer()).thenAccept(playerData -> {
-                playerData.setName(p.getName());
+            PlayerData playerData = RealSkywars.getDatabaseManager().getPlayerData(p.getPlayer());
 
-                playerData.setLanguage(p.getLanguage());
+            playerData.setName(p.getName());
 
-                playerData.setCoins(p.getCoins());
+            playerData.setLanguage(p.getLanguage());
 
-                playerData.setMapViewerPref(p.getMapViewerPref().name());
+            playerData.setCoins(p.getCoins());
 
-                playerData.setCageBlock(((Material) p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK)).name());
+            playerData.setMapViewerPref(p.getMapViewerPref().name());
 
-                playerData.setWinsSolo(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false), false);
-                playerData.setWinsSolo(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true), true);
+            playerData.setCageBlock(((Material) p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK)).name());
 
-                playerData.setWinsTeams(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false), false);
-                playerData.setWinsTeams(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true), true);
+            playerData.setWinsSolo(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false), false);
+            playerData.setWinsSolo(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true), true);
 
-                playerData.setKills(p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false), false);
-                playerData.setKills(p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, true), true);
+            playerData.setWinsTeams(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false), false);
+            playerData.setWinsTeams(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true), true);
 
-                playerData.setDeaths(p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false), false);
-                playerData.setDeaths(p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, true), true);
+            playerData.setKills(p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false), false);
+            playerData.setKills(p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, true), true);
 
-                playerData.setLoses(p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false), false);
-                playerData.setLoses(p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, true), true);
+            playerData.setDeaths(p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false), false);
+            playerData.setDeaths(p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, true), true);
 
-                playerData.setGamesPlayed(p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false), false);
-                playerData.setGamesPlayed(p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true), true);
+            playerData.setLoses(p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false), false);
+            playerData.setLoses(p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, true), true);
 
-                playerData.setBoughtItems(p.getBoughtItems());
-                RealSkywars.getDatabaseManager().savePlayerData(playerData, true);
-            });
+            playerData.setGamesPlayed(p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false), false);
+            playerData.setGamesPlayed(p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true), true);
+
+            playerData.setBoughtItems(p.getBoughtItems());
+            RealSkywars.getDatabaseManager().savePlayerData(playerData, true);
         }
     }
 

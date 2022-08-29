@@ -12,9 +12,10 @@ import org.bukkit.entity.TNTPrimed;
 
 public class SWEvent {
 
-    private EventType et;
-    private SWGameMode room;
-    private int time;
+    private final EventType et;
+    private final SWGameMode room;
+    private final int time;
+
     public SWEvent(SWGameMode room, EventType et, int time) {
         this.room = room;
         this.et = et;
@@ -62,8 +63,7 @@ public class SWEvent {
                 this.room.getBossBar().setProgress(0);
                 this.room.getBossBar().setColor(BarColor.RED);
 
-                this.room.getInRoom().forEach(rswPlayer -> rswPlayer.sendTitle("", Text.color(RealSkywars.getLanguageManager().getString(rswPlayer, LanguageManager.TS.TITLE_DEATHMATCH, false)), 10, 20,
-                        5));
+                this.room.getInRoom().forEach(rswPlayer -> rswPlayer.sendTitle("", Text.color(RealSkywars.getLanguageManager().getString(rswPlayer, LanguageManager.TS.TITLE_DEATHMATCH, false)), 10, 20, 5));
                 this.room.getInRoom().forEach(rswPlayer -> rswPlayer.playSound(Sound.ENTITY_ENDER_DRAGON_GROWL, 50, 50));
 
                 this.room.getBorder().setSize(this.room.getBorderSize() / 2, 30L);

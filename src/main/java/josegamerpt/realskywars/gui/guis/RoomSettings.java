@@ -1,4 +1,4 @@
-package josegamerpt.realskywars.gui;
+package josegamerpt.realskywars.gui.guis;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.game.modes.SWGameMode;
@@ -27,37 +27,20 @@ public class RoomSettings {
     static SWGameMode game;
     static Inventory inv;
     static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
-    static ItemStack specon = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator",
-            Collections.singletonList("&7Spectator is turned &aON &7for dead players."));
-    static ItemStack specoff = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator",
-            Collections.singletonList("&7Spectator is turned &cOFF &7for dead players."));
-    static ItemStack ieon = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending",
-            Collections.singletonList("&7Instant Ending is turned &aON&7."));
-    static ItemStack ieoff = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending",
-            Collections.singletonList("&7Instant Ending is turned &cOFF&7."));
-    static ItemStack aAvailable = Itens.createItemLore(Material.GREEN_CONCRETE, 1, "&9Map Status",
-            Arrays.asList("&fCick to change the map status.", "", "&aAvailable", "&7Starting", "&7Waiting", "&7Playing",
-                    "&7Finishing", "&7Resetting"));
-    static ItemStack aStarting = Itens.createItemLore(Material.YELLOW_CONCRETE, 1, "&9Map Status",
-            Arrays.asList("&fCick to change the map status.", "", "&7Available", "&aStarting", "&7Waiting", "&7Playing",
-                    "&7Finishing", "&7Resetting"));
-    static ItemStack aWaiting = Itens.createItemLore(Material.LIGHT_BLUE_CONCRETE, 1, "&9Map Status",
-            Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&aWaiting", "&7Playing",
-                    "&7Finishing", "&7Resetting"));
-    static ItemStack aPlaying = Itens.createItemLore(Material.RED_CONCRETE, 1, "&9Map Status",
-            Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&7Waiting", "&aPlaying",
-                    "&7Finishing", "&7Resetting"));
-    static ItemStack aFinishing = Itens.createItemLore(Material.GRAY_CONCRETE, 1, "&9Map Status",
-            Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&7Waiting", "&7Playing",
-                    "&aFinishing", "&7Resetting"));
-    static ItemStack aResetting = Itens.createItemLore(Material.PURPLE_CONCRETE, 1, "&9Map Status",
-            Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&7Waiting", "&7Playing",
-                    "&7Finishing", "&aResetting"));
-    static ItemStack resetRoom = Itens.createItemLore(Material.BARRIER, 1, "&9Reset Room",
-            Arrays.asList("&cClick here to reset the room.", "&4NOTE: ALL PLAYERS WILL BE KICKED FROM THE GAME."));
-    private static Map<UUID, RoomSettings> inventories = new HashMap<>();
+    static ItemStack specon = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &aON &7for dead players."));
+    static ItemStack specoff = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &cOFF &7for dead players."));
+    static ItemStack ieon = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &aON&7."));
+    static ItemStack ieoff = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &cOFF&7."));
+    static ItemStack aAvailable = Itens.createItemLore(Material.GREEN_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&aAvailable", "&7Starting", "&7Waiting", "&7Playing", "&7Finishing", "&7Resetting"));
+    static ItemStack aStarting = Itens.createItemLore(Material.YELLOW_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&aStarting", "&7Waiting", "&7Playing", "&7Finishing", "&7Resetting"));
+    static ItemStack aWaiting = Itens.createItemLore(Material.LIGHT_BLUE_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&aWaiting", "&7Playing", "&7Finishing", "&7Resetting"));
+    static ItemStack aPlaying = Itens.createItemLore(Material.RED_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&7Waiting", "&aPlaying", "&7Finishing", "&7Resetting"));
+    static ItemStack aFinishing = Itens.createItemLore(Material.GRAY_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&7Waiting", "&7Playing", "&aFinishing", "&7Resetting"));
+    static ItemStack aResetting = Itens.createItemLore(Material.PURPLE_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&7Waiting", "&7Playing", "&7Finishing", "&aResetting"));
+    static ItemStack resetRoom = Itens.createItemLore(Material.BARRIER, 1, "&9Reset Room", Arrays.asList("&cClick here to reset the room.", "&4NOTE: ALL PLAYERS WILL BE KICKED FROM THE GAME."));
+    private static final Map<UUID, RoomSettings> inventories = new HashMap<>();
     private static int refreshTask;
-    private UUID uuid;
+    private final UUID uuid;
 
     public RoomSettings(SWGameMode g, UUID id) {
         this.uuid = id;
@@ -140,8 +123,7 @@ public class RoomSettings {
                         UUID uuid = p.getUniqueId();
                         if (inventories.containsKey(uuid)) {
                             RoomSettings current = inventories.get(uuid);
-                            if (!e.getInventory().getType().name()
-                                    .equalsIgnoreCase(current.getInventory().getType().name())) {
+                            if (!e.getInventory().getType().name().equalsIgnoreCase(current.getInventory().getType().name())) {
                                 return;
                             }
                             e.setCancelled(true);
@@ -157,8 +139,7 @@ public class RoomSettings {
 
                                     ItemStack clickedItem = e.getCurrentItem();
 
-                                    if (clickedItem == null || clickedItem.getType() == Material.AIR)
-                                        return;
+                                    if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
 
 
                                     switch (e.getRawSlot()) {
@@ -285,10 +266,7 @@ public class RoomSettings {
 
     private void refresher() {
         refreshTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.getPlugin(), () -> {
-            ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, "&9Info",
-                    Arrays.asList("&fPlayers: " + game.getPlayersCount() + "/" + game.getMaxPlayers(),
-                            "&fSpectators: " + game.getSpectatorsCount(), "&fChest Tier: &b" + game.getTierType().name(), "",
-                            "&fRunning Time: " + game.getTimePassed()));
+            ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, "&9Info", Arrays.asList("&fPlayers: " + game.getPlayersCount() + "/" + game.getMaxPlayers(), "&fSpectators: " + game.getSpectatorsCount(), "&fChest Tier: &b" + game.getTierType().name(), "", "&fRunning Time: " + game.getTimePassed()));
             // infoMap
             inv.setItem(4, infoMap);
         }, 0L, 10L);

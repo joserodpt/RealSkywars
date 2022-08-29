@@ -1,4 +1,4 @@
-package josegamerpt.realskywars.gui;
+package josegamerpt.realskywars.gui.guis;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.game.SetupRoom;
@@ -27,28 +27,20 @@ public class MapSettings {
 
     static Inventory inv;
     static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
-    static ItemStack confirm = Itens.createItemLore(Material.CHEST, 1, "&9Save Settings",
-            Collections.singletonList("&7Click here to confirm your settings."));
-    static ItemStack saved = Itens.createItemLore(Material.ENDER_CHEST, 1, "&9Save Settings",
-            Collections.singletonList("&7Settings saved. You can now exit from this menu."));
+    static ItemStack confirm = Itens.createItemLore(Material.CHEST, 1, "&9Save Settings", Collections.singletonList("&7Click here to confirm your settings."));
+    static ItemStack saved = Itens.createItemLore(Material.ENDER_CHEST, 1, "&9Save Settings", Collections.singletonList("&7Settings saved. You can now exit from this menu."));
     // settings
-    static ItemStack specon = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator",
-            Collections.singletonList("&7Spectator is turned &aON &7for dead players."));
-    static ItemStack specoff = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator",
-            Collections.singletonList("&7Spectator is turned &cOFF &7for dead players."));
-    static ItemStack ieon = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending",
-            Collections.singletonList("&7Instant Ending is turned &aON&7."));
-    static ItemStack ieoff = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending",
-            Collections.singletonList("&7Instant Ending is turned &cOFF&7."));
+    static ItemStack specon = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &aON &7for dead players."));
+    static ItemStack specoff = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &cOFF &7for dead players."));
+    static ItemStack ieon = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &aON&7."));
+    static ItemStack ieoff = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &cOFF&7."));
 
-    static ItemStack rankedon = Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&9Ranked",
-            Collections.singletonList("&7Ranked Mode is turned &aON&7."));
-    static ItemStack rankedoff = Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&9Ranked",
-            Collections.singletonList("&7Ranked Mode is turned &cOFF&7."));
+    static ItemStack rankedon = Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked Mode is turned &aON&7."));
+    static ItemStack rankedoff = Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked Mode is turned &cOFF&7."));
 
-    private static Map<UUID, MapSettings> inventories = new HashMap<>();
+    private static final Map<UUID, MapSettings> inventories = new HashMap<>();
     SetupRoom gr;
-    private UUID uuid;
+    private final UUID uuid;
 
     public MapSettings(SetupRoom g, UUID id) {
         this.uuid = id;
@@ -135,8 +127,7 @@ public class MapSettings {
 
                                     ItemStack clickedItem = e.getCurrentItem();
 
-                                    if (clickedItem == null || clickedItem.getType() == Material.AIR)
-                                        return;
+                                    if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
 
                                     switch (e.getRawSlot()) {
                                         case 22:

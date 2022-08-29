@@ -9,9 +9,9 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.IOException;
 
-public class BasicChestMiddle implements Listener {
+public class EPICChest implements Listener {
 
-    private static String name = "basicchestmiddle.yml";
+    private static final String name = "epicchest.yml";
     private static File file;
     private static FileConfiguration customFile;
 

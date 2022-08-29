@@ -14,7 +14,7 @@ public class TeamCage implements Cage {
     private final String worldName;
     private final int maxPlayers;
     private final ArrayList<RSWPlayer> p = new ArrayList<>();
-    private Location loc;
+    private final Location loc;
 
     public TeamCage(int i, int x, int y, int z, String worldName, int maxM) {
         this.id = i;

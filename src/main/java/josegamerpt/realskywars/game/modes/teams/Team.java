@@ -16,7 +16,7 @@ public class Team {
     private final int id;
     private final int maxMembers;
     private final TeamCage tc;
-    private ArrayList<RSWPlayer> members = new ArrayList<>();
+    private final ArrayList<RSWPlayer> members = new ArrayList<>();
     private Boolean eliminated = false;
     private Boolean playing = false;
 

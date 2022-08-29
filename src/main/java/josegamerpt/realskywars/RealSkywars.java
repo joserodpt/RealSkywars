@@ -1,6 +1,5 @@
 package josegamerpt.realskywars;
 
-import josegamerpt.realskywars.achievements.Achievement;
 import josegamerpt.realskywars.achievements.AchievementsManager;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.commands.PartyCMD;
@@ -9,11 +8,14 @@ import josegamerpt.realskywars.commands.SairCMD;
 import josegamerpt.realskywars.configuration.*;
 import josegamerpt.realskywars.configuration.checkers.ConfigChecker;
 import josegamerpt.realskywars.configuration.checkers.LangChecker;
-import josegamerpt.realskywars.configuration.chests.*;
+import josegamerpt.realskywars.configuration.chests.BasicChest;
+import josegamerpt.realskywars.configuration.chests.EPICChest;
+import josegamerpt.realskywars.configuration.chests.NormalChest;
 import josegamerpt.realskywars.database.DatabaseManager;
 import josegamerpt.realskywars.database.SQL;
 import josegamerpt.realskywars.game.modes.SWGameMode;
-import josegamerpt.realskywars.gui.*;
+import josegamerpt.realskywars.gui.guis.*;
+import josegamerpt.realskywars.holograms.HologramManager;
 import josegamerpt.realskywars.kits.KitManager;
 import josegamerpt.realskywars.leaderboards.LeaderboardManager;
 import josegamerpt.realskywars.managers.*;
@@ -40,25 +42,24 @@ import java.util.logging.Level;
 
 public class RealSkywars extends JavaPlugin {
 
-    public static Boolean hdInstalado;
     private static Plugin pl;
-    private static WorldManager wm = new WorldManager();
-    private static LanguageManager lm = new LanguageManager();
-    private static PlayerManager playerm = new PlayerManager();
-    private static MapManager mapm = new MapManager();
-    private static GameManager gamem = new GameManager();
-    private static ShopManager shopm = new ShopManager();
-    private static KitManager kitm = new KitManager();
-    private static PartyManager partym = new PartyManager();
-    private static LeaderboardManager lbm = new LeaderboardManager();
-    private static AchievementsManager am = new AchievementsManager();
+    private static final WorldManager wm = new WorldManager();
+    private static final LanguageManager lm = new LanguageManager();
+    private static final PlayerManager playerm = new PlayerManager();
+    private static final MapManager mapm = new MapManager();
+    private static final GameManager gamem = new GameManager();
+    private static final ShopManager shopm = new ShopManager();
+    private static final KitManager kitm = new KitManager();
+    private static final PartyManager partym = new PartyManager();
+    private static final LeaderboardManager lbm = new LeaderboardManager();
+    private static final AchievementsManager am = new AchievementsManager();
 
     private static ChestManager chestManager;
     private static RSWnms nms;
-    private static Random rand = new Random();
-    private PluginManager pm = Bukkit.getPluginManager();
-    private CommandManager commandManager;
+    private static final Random rand = new Random();
     private static DatabaseManager databaseManager;
+    private static HologramManager hologramManager;
+    private final PluginManager pm = Bukkit.getPluginManager();
 
     public static Plugin getPlugin() {
         return pl;
@@ -80,7 +81,9 @@ public class RealSkywars extends JavaPlugin {
         return lm;
     }
 
-    public static PlayerManager getPlayerManager() { return playerm; }
+    public static PlayerManager getPlayerManager() {
+        return playerm;
+    }
 
     public static MapManager getMapManager() {
         return mapm;
@@ -126,6 +129,10 @@ public class RealSkywars extends JavaPlugin {
         return am;
     }
 
+    public static HologramManager getHologramManager() {
+        return hologramManager;
+    }
+
     public void onEnable() {
         long start = System.currentTimeMillis();
         pl = this;
@@ -135,9 +142,7 @@ public class RealSkywars extends JavaPlugin {
         log(star);
 
         Debugger.print(RealSkywars.class, "DEBUG MODE ENABLED");
-        Debugger.execute();
 
-        hdInstalado = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
 
         if (setupNMS()) {
             log("Loading languages.");
@@ -181,17 +186,15 @@ public class RealSkywars extends JavaPlugin {
                 SQL.setup(this);
                 Shops.setup(this);
                 Kits.setup(this);
-                am.loadAchievements();
+                //TODO: fix achivments
+                //am.loadAchievements();
+
+                hologramManager = new HologramManager();
 
                 //chests
                 BasicChest.setup(this);
-                BasicChestMiddle.setup(this);
                 NormalChest.setup(this);
-                NormalChestMiddle.setup(this);
-                OPChest.setup(this);
-                OPChestMiddle.setup(this);
-                CAOSchest.setup(this);
-                CAOSchestMiddle.setup(this);
+                EPICChest.setup(this);
 
                 try {
                     databaseManager = new DatabaseManager(this);
@@ -224,7 +227,7 @@ public class RealSkywars extends JavaPlugin {
                 kitm.loadKits();
                 log("Loaded " + kitm.getKitCount() + " kits.");
 
-                commandManager = new CommandManager(this);
+                CommandManager commandManager = new CommandManager(this);
                 commandManager.hideTabComplete(true);
                 //command suggestions
                 commandManager.getCompletionHandler().register("#createsuggestions", input -> {
@@ -264,8 +267,7 @@ public class RealSkywars extends JavaPlugin {
                     try {
                         tt = RealSkywarsCMD.KIT.valueOf(argument.toString().toLowerCase());
                         if (tt == null) return new TypeResult(argument);
-                    } catch (IllegalArgumentException e)
-                    {
+                    } catch (IllegalArgumentException e) {
                         return new TypeResult(argument);
                     }
                     return new TypeResult(tt, argument);
@@ -310,17 +312,17 @@ public class RealSkywars extends JavaPlugin {
         getLogger().info("Your server is running version " + version);
 
         switch (version) {
+            case "v1_19_R1":
+                nms = new NMS119R1();
+                break;
+            case "v1_18_R2":
+                nms = new NMS118R2();
+                break;
             case "v1_17_R1":
                 nms = new NMS117R1();
                 break;
             case "v1_16_R3":
                 nms = new NMS116R3();
-                break;
-            case "v1_16_R2":
-                nms = new NMS116R2();
-                break;
-            case "v1_16_R1":
-                nms = new NMS116R1();
                 break;
             case "v1_15_R1":
                 nms = new NMS115R1();
@@ -346,13 +348,8 @@ public class RealSkywars extends JavaPlugin {
 
         //chests
         BasicChest.reload();
-        BasicChestMiddle.reload();
         NormalChest.reload();
-        NormalChestMiddle.reload();
-        OPChest.reload();
-        OPChestMiddle.reload();
-        CAOSchest.reload();
-        CAOSchestMiddle.reload();
+        EPICChest.reload();
 
         Debugger.debug = Config.file().getBoolean("Debug-Mode");
 

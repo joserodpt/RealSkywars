@@ -8,10 +8,10 @@ import org.bukkit.plugin.Plugin;
 
 public class Demolition {
 
-    private Location laserloc1;
-    private Cage cage;
-    private int laserTime;
-    private int delayExplosion;
+    private final Location laserloc1;
+    private final Cage cage;
+    private final int laserTime;
+    private final int delayExplosion;
 
     public Demolition(Location laserloc1, Cage cage, int laserTime, int delayExplosion) {
         this.laserloc1 = laserloc1;
@@ -28,11 +28,10 @@ public class Demolition {
             Location cage = this.cage.getLoc();
 
             cage.add(0.5, 0, 0.5);
-            Laser laser = new Laser(sploc, cage, this.laserTime, (int) sploc.distance(cage));
+            Laser laser = new Laser.GuardianLaser(sploc, cage, this.laserTime, (int) sploc.distance(cage));
             laser.start(plugin);
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> this.cage.clearCage(), this.delayExplosion * 20L);
-            Debugger.print(Demolition.class, "go go destroy!" + this.cage.getLoc().toString());
         } catch (Exception e) {
             Debugger.print(Demolition.class, "Could not show win laser for " + this.cage.getLoc().toString() + "\n" + e.getMessage());
         }

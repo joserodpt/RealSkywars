@@ -14,6 +14,7 @@ import java.util.HashMap;
 
 public class DisplayItem {
 
+    private final HashMap<String, Object> info = new HashMap<>();
     private int id;
     private Material m;
     private ItemStack i;
@@ -23,7 +24,6 @@ public class DisplayItem {
     private String permission;
     private Boolean interactive;
     private ShopManager.Categories it;
-    private HashMap<String, Object> info = new HashMap<>();
 
     public DisplayItem(int id, Material ma, String n, Double per, Boolean b, String perm, ShopManager.Categories t) {
         this.id = id;

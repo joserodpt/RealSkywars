@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 public class GameManager {
 
     public Boolean endingGames = false;
-    private ArrayList<SWGameMode> games = new ArrayList<>();
-    private Boolean lobbyScoreboard = true;
+    private final ArrayList<SWGameMode> games = new ArrayList<>();
+    private final Boolean lobbyScoreboard = true;
     private Location lobbyLOC;
     private Boolean loginTP = true;
 
@@ -127,6 +127,7 @@ public class GameManager {
         if (this.lobbyLOC != null) {
             p.teleport(this.lobbyLOC);
             p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.LOBBY_TELEPORT, true));
+            RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.LOBBY);
         } else {
             p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.LOBBYLOC_NOT_SET, true));
         }
@@ -149,8 +150,7 @@ public class GameManager {
     }
 
     public List<SWGameMode> getGames(PlayerManager.Modes pt) {
-        switch (pt)
-        {
+        switch (pt) {
             case ALL:
                 return this.games;
             case SOLO:
@@ -211,8 +211,7 @@ public class GameManager {
     }
 
     public void findGame(RSWPlayer p, SWGameMode.Mode type) {
-        if (!PlayerManager.teleporting.contains(p.getUUID()))
-        {
+        if (!PlayerManager.teleporting.contains(p.getUUID())) {
             PlayerManager.teleporting.add(p.getUUID());
             Optional<SWGameMode> o = this.games.stream().filter(c -> c.getGameMode().equals(type) && c.getState().equals(GameState.AVAILABLE) || c.getState().equals(GameState.STARTING) && !c.isFull()).findFirst();
             if (o.isPresent() && !o.get().isPlaceHolder()) {
@@ -228,8 +227,7 @@ public class GameManager {
                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_GAME_FOUND, true));
                 PlayerManager.teleporting.remove(p.getUUID());
 
-                if (this.getLobbyLocation().getWorld().equals(p.getWorld()))
-                {
+                if (this.getLobbyLocation().getWorld().equals(p.getWorld())) {
                     this.tpToLobby(p);
                 }
             }

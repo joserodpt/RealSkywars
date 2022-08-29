@@ -13,7 +13,7 @@ import java.util.logging.Level;
 
 public class KitManager {
 
-    private ArrayList<Kit> kits = new ArrayList<>();
+    private final ArrayList<Kit> kits = new ArrayList<>();
 
     public void loadKits() {
         kits.clear();

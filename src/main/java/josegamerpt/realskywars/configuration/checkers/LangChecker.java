@@ -22,16 +22,13 @@ public class LangChecker {
     public static void updateConfig() {
         while (getConfigVersion() != latest) {
             int newconfig = 0;
-            switch (getConfigVersion()) {
-                case 1:
-                    //update to 2
-                    newconfig = 2;
-                    break;
+            if (getConfigVersion() == 1) {//update to 2
+                newconfig = 2;
             }
             RealSkywars.log(Level.INFO, "Config file updated to version " + newconfig + ".");
         }
         if (getConfigVersion() == latest) {
-            RealSkywars.log(Level.INFO, "Your config file is updated to the latest version.");
+            RealSkywars.log(Level.INFO, "Your lang file is updated to the latest version.");
         }
     }
 

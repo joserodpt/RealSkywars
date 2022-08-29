@@ -1,4 +1,4 @@
-package josegamerpt.realskywars.gui;
+package josegamerpt.realskywars.gui.guis;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.kits.Kit;
@@ -29,17 +29,13 @@ public class KitSettings {
     public static Kit kt;
     static Inventory inv;
     static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
-    static ItemStack confirm = Itens.createItemLore(Material.CHEST, 1, "&9Save Settings",
-            Collections.singletonList("&7Click here to confirm your settings."));
-    static ItemStack saved = Itens.createItemLore(Material.ENDER_CHEST, 1, "&9Save Settings",
-            Collections.singletonList("&7Settings saved. You can now exit from this menu."));
+    static ItemStack confirm = Itens.createItemLore(Material.CHEST, 1, "&9Save Settings", Collections.singletonList("&7Click here to confirm your settings."));
+    static ItemStack saved = Itens.createItemLore(Material.ENDER_CHEST, 1, "&9Save Settings", Collections.singletonList("&7Settings saved. You can now exit from this menu."));
     // settings
-    static ItemStack dragon = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds",
-            Collections.singletonList("&aON"));
-    static ItemStack dragoff = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds",
-            Collections.singletonList("&cOFF"));
-    private static Map<UUID, KitSettings> inventories = new HashMap<>();
-    private UUID uuid;
+    static ItemStack dragon = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&aON"));
+    static ItemStack dragoff = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&cOFF"));
+    private static final Map<UUID, KitSettings> inventories = new HashMap<>();
+    private final UUID uuid;
 
     public KitSettings(Kit g, UUID id) {
         this.uuid = id;
@@ -103,8 +99,7 @@ public class KitSettings {
 
                                     ItemStack clickedItem = e.getCurrentItem();
 
-                                    if (clickedItem == null || clickedItem.getType() == Material.AIR)
-                                        return;
+                                    if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
 
                                     if (e.getRawSlot() == 22) {
                                         inv.setItem(22, saved);

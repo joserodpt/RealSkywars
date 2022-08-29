@@ -1,14 +1,11 @@
 package josegamerpt.realskywars.chests;
 
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.game.SWEvent;
 import josegamerpt.realskywars.game.modes.SWGameMode;
-import josegamerpt.realskywars.utils.Text;
+import josegamerpt.realskywars.holograms.SWHologram;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -32,39 +29,27 @@ public class SWChest {
     private final int z;
     private final String worldName;
     private List<SWChestItem> items = new ArrayList<>();
-    private ChestTYPE type;
+    private final ChestTYPE type;
     private Boolean opened = false;
     private int maxItemsPerChest;
-    private BlockFace bf;
-
+    private final BlockFace bf;
+    private final SWHologram hologram;
     private Countdown chestCTD;
-    private Hologram holo;
-    private TextLine linha;
 
-    public SWChest(ChestTYPE ct, String worldName, int x, int y, int z, BlockFace bf) {
+    public SWChest(ChestTYPE ct, String worldName, int x, int y, int z, BlockFace bf, boolean real) {
         this.type = ct;
         this.x = x;
         this.y = y;
         this.z = z;
         this.worldName = worldName;
         this.bf = bf;
-        this.clear();
+        this.hologram = RealSkywars.getHologramManager().getHologramInstance();
+        if (real) this.clear();
     }
 
     @Override
     public String toString() {
-        return "SWChest{" +
-                "x=" + x +
-                ", y=" + y +
-                ", z=" + z +
-                ", worldName='" + worldName + '\'' +
-                ", items=" + items +
-                ", type=" + type +
-                ", opened=" + opened +
-                ", maxItemsPerChest=" + maxItemsPerChest +
-                ", chestCTD=" + chestCTD +
-                ", holo=" + holo +
-                '}';
+        return "SWChest{" + "x=" + x + ", y=" + y + ", z=" + z + ", worldName='" + worldName + '\'' + ", items=" + items + ", type=" + type + ", opened=" + opened + ", maxItemsPerChest=" + maxItemsPerChest + ", chestCTD=" + chestCTD + '}';
     }
 
     public void setLoot(List<SWChestItem> chest, int maxItemsPerChest) {
@@ -87,9 +72,7 @@ public class SWChest {
 
     public void clear() {
         this.cancelTasks();
-        if (this.holo != null && !this.holo.isDeleted() && RealSkywars.hdInstalado) {
-            this.holo.delete();
-        }
+        this.hologram.deleteHologram();
         if (!this.isChest()) {
             this.setChest();
         }
@@ -152,7 +135,6 @@ public class SWChest {
 
     public void startTasks(SWGameMode sgm) {
         if (this.chestCTD == null && this.isChest()) {
-
             int time = Config.file().getInt("Config.Default-Refill-Time");
 
             Optional<SWEvent> e = getRefillTime(sgm);
@@ -160,28 +142,20 @@ public class SWChest {
                 time = e.get().getTimeLeft();
             }
 
-            if (this.holo == null || this.holo.isDeleted() && RealSkywars.hdInstalado) {
-                this.holo = HologramsAPI.createHologram(RealSkywars.getPlugin(), this.getLocation().add(0.5, 2, 0.5));
-            }
+            this.hologram.spawnHologram(this.getLocation());
+            this.hologram.setTime(time);
 
-            if (RealSkywars.hdInstalado) {
-                this.holo.clearLines();
-                this.holo.appendItemLine(new ItemStack(Material.CLOCK));
-                linha = this.holo.insertTextLine(1, Text.formatSeconds(time));
-            }
-            this.chestCTD = new Countdown(RealSkywars.getPlugin(RealSkywars.class), time,
-                    () -> {
-                        //
-                    }, () -> {
+            this.chestCTD = new Countdown(RealSkywars.getPlugin(RealSkywars.class), time, () -> {
+                //
+            }, () -> {
                 this.getLocation().getWorld().spawnParticle(Particle.CLOUD, this.getLocation().add(0.5, 0, 0.5), 5);
                 if (this.isChest()) {
                     RealSkywars.getNMS().chestAnimation(this.getChest(), false);
                 }
                 this.clear();
+                this.hologram.deleteHologram();
             }, (t) -> {
-                if (RealSkywars.hdInstalado) {
-                    linha.setText(Text.formatSeconds(t.getSecondsLeft()));
-                }
+                this.hologram.setTime(t.getSecondsLeft());
                 if (this.isChest()) {
                     RealSkywars.getNMS().chestAnimation(this.getChest(), true);
                 }

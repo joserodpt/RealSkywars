@@ -15,10 +15,6 @@ import java.util.logging.Level;
 
 public class ShopManager {
 
-    public enum Categories {
-        CAGE_BLOCKS, BOW_PARTICLES, KITS, WIN_BLOCKS
-    }
-
     public ArrayList<DisplayItem> getCategoryContents(RSWPlayer p, ShopManager.Categories t) {
         ArrayList<DisplayItem> items = new ArrayList<>();
         int i = 1;
@@ -36,8 +32,7 @@ public class ShopManager {
                 for (Kit a : RealSkywars.getKitManager().getKits()) {
                     Boolean bought = RealSkywars.getPlayerManager().boughtItem(p, a.getName(), ShopManager.Categories.KITS);
 
-                    items.add(new DisplayItem(a.getID(), a.getIcon(), a.getName(), a.getPrice(),
-                            bought, a.getPermission(), ShopManager.Categories.KITS));
+                    items.add(new DisplayItem(a.getID(), a.getIcon(), a.getName(), a.getPrice(), bought, a.getPermission(), ShopManager.Categories.KITS));
                 }
                 rapidReturn = true;
                 break;
@@ -68,8 +63,7 @@ public class ShopManager {
 
                 Material m;
 
-                if (material.equalsIgnoreCase("randomblock"))
-                {
+                if (material.equalsIgnoreCase("randomblock")) {
                     m = Material.COMMAND_BLOCK;
                 } else {
                     m = Material.getMaterial(material);
@@ -82,16 +76,14 @@ public class ShopManager {
                 }
 
                 DisplayItem s = new DisplayItem(i, m, name, price, bought, perm, ShopManager.Categories.CAGE_BLOCKS);
-                if (material.equalsIgnoreCase("randomblock"))
-                {
+                if (material.equalsIgnoreCase("randomblock")) {
                     s.addInfo("RandomBlock", "RandomBlock");
                 }
 
                 if (parse.length == 5) {
                     try {
                         s.addInfo("Particle", Particle.valueOf(parse[4]));
-                    } catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         RealSkywars.log(Level.WARNING, parse[4] + " isnt a valid particle! Changed to drip lava.");
                         s.addInfo("Particle", Particle.DRIP_LAVA);
                     }
@@ -114,5 +106,9 @@ public class ShopManager {
             return items;
         }
 
+    }
+
+    public enum Categories {
+        CAGE_BLOCKS, BOW_PARTICLES, KITS, WIN_BLOCKS
     }
 }

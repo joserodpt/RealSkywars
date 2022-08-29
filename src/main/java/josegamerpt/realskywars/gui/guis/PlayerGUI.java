@@ -1,4 +1,4 @@
-package josegamerpt.realskywars.gui;
+package josegamerpt.realskywars.gui.guis;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.managers.LanguageManager;
@@ -27,9 +27,9 @@ public class PlayerGUI {
 
     static Inventory inv;
     static RSWPlayer gp;
-    private static Map<UUID, PlayerGUI> inventories = new HashMap<>();
-    private static Map<UUID, Integer> refresh = new HashMap<>();
-    private UUID uuid;
+    private static final Map<UUID, PlayerGUI> inventories = new HashMap<>();
+    private static final Map<UUID, Integer> refresh = new HashMap<>();
+    private final UUID uuid;
 
     public PlayerGUI(RSWPlayer p, UUID id, RSWPlayer target) {
         this.uuid = id;
@@ -42,8 +42,7 @@ public class PlayerGUI {
         for (String s : RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.STATS_ITEM_LORE)) {
             lore.add(variables(s, target));
         }
-        ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.STATS_ITEM_NAME, false).replace("%player%", target.getDisplayName()),
-                lore);
+        ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.STATS_ITEM_NAME, false).replace("%player%", target.getDisplayName()), lore);
         inv.setItem(2, infoMap);
 
         inventories.put(id, this);
@@ -63,8 +62,7 @@ public class PlayerGUI {
                         UUID uuid = p.getUniqueId();
                         if (inventories.containsKey(uuid)) {
                             PlayerGUI current = inventories.get(uuid);
-                            if (!e.getInventory().getType().name()
-                                    .equalsIgnoreCase(current.getInventory().getType().name())) {
+                            if (!e.getInventory().getType().name().equalsIgnoreCase(current.getInventory().getType().name())) {
                                 return;
                             }
                             e.setCancelled(true);
@@ -94,8 +92,7 @@ public class PlayerGUI {
     }
 
     protected String variables(String s, RSWPlayer gp) {
-        return s.replace("%space%", Text.makeSpace()).replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false) + "")
-                .replace("%coins%", gp.getCoins() + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false) + "").replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false) + "");
+        return s.replace("%space%", Text.makeSpace()).replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false) + "").replace("%coins%", gp.getCoins() + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false) + "").replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false) + "");
     }
 
     public void openInventory(RSWPlayer player) {

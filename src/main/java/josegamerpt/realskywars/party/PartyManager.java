@@ -1,6 +1,5 @@
 package josegamerpt.realskywars.party;
 
-import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.managers.LanguageManager;
@@ -46,7 +45,7 @@ public class PartyManager {
     }
 
     public boolean checkForParties(RSWPlayer p, SWGameMode swgm) {
-        int current = 0 , max = 0, toAdd = 0;
+        int current = 0, max = 0, toAdd = 0;
 
         boolean result;
         if (p.hasParty()) {
@@ -68,12 +67,9 @@ public class PartyManager {
 
                 }
             } else {
-                if (p.getParty().allowJoin())
-                {
-                    if (p.isInMatch())
-                    {
-                        if (p.getMatch().equals(swgm))
-                        {
+                if (p.getParty().allowJoin()) {
+                    if (p.isInMatch()) {
+                        if (p.getMatch().equals(swgm)) {
                             result = false;
                         } else {
                             p.getMatch().removePlayer(p);
@@ -88,10 +84,9 @@ public class PartyManager {
                 }
             }
         } else {
-            result =  true;
+            result = true;
         }
 
-        Debugger.print(PartyManager.class, "player:" + p.getName() + "current: " + current + " max: " + max + " to add:" + toAdd + " valid: " + result);
         return result;
     }
 }

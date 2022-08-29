@@ -14,13 +14,13 @@ import java.util.List;
 
 public class Kit {
 
-    private String name;
+    private final String name;
     private Double price;
     private ItemStack[] contents;
     private int id;
     private Material icon;
     private String permission;
-    private boolean buyable;
+    private final boolean buyable;
     private boolean enderPearlGive = false;
     private int enderTask = -2;
 
@@ -84,17 +84,25 @@ public class Kit {
             desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_SELECT));
         }
 
-        desc.add("");
-
         //contents
-        desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_CONTAINS));
-        for (ItemStack s : this.contents) {
-            if (s != null) {
-                desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_ITEM).replace("%amount%", s.getAmount() + "").replace("%item%", RealSkywars.getNMS().getItemName(s)));
+        if (this.hasItems()) {
+            desc.add("");
+            desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_CONTAINS));
+            for (ItemStack s : this.contents) {
+                if (s != null) {
+                    desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_ITEM).replace("%amount%", s.getAmount() + "").replace("%item%", RealSkywars.getNMS().getItemName(s)));
+                }
             }
         }
 
         return desc;
+    }
+
+    private boolean hasItems() {
+        for (ItemStack s : this.contents) {
+            if (s != null) return true;
+        }
+        return false;
     }
 
     public String getName() {
@@ -123,12 +131,10 @@ public class Kit {
 
     public Boolean getPerk(KitManager.KitPerks i) {
         try {
-            switch (i) {
-                case ENDER_PEARl:
-                    return this.enderPearlGive;
-                default:
-                    throw new Exception(i.name() + " perk doesnt exist in the code!!!!");
+            if (i == KitManager.KitPerks.ENDER_PEARl) {
+                return this.enderPearlGive;
             }
+            throw new Exception(i.name() + " perk doesnt exist in the code!!!!");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -136,10 +142,8 @@ public class Kit {
     }
 
     public void setPerk(KitManager.KitPerks perk, boolean b) {
-        switch (perk) {
-            case ENDER_PEARl:
-                this.enderPearlGive = b;
-                break;
+        if (perk == KitManager.KitPerks.ENDER_PEARl) {
+            this.enderPearlGive = b;
         }
     }
 

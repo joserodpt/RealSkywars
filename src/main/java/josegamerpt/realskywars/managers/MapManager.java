@@ -13,7 +13,7 @@ import josegamerpt.realskywars.game.modes.SWGameMode.GameState;
 import josegamerpt.realskywars.game.modes.Solo;
 import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.game.modes.teams.Teams;
-import josegamerpt.realskywars.gui.MapSettings;
+import josegamerpt.realskywars.gui.guis.MapSettings;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Text;
@@ -30,6 +30,12 @@ import java.util.Set;
 import java.util.logging.Level;
 
 public class MapManager {
+
+    public static void saveSettings(SWGameMode game) {
+        Maps.file().set(game.getName() + ".Settings.Spectator", game.isSpectatorEnabled());
+        Maps.file().set(game.getName() + ".Settings.Instant-End", game.isInstantEndEnabled());
+        Maps.save();
+    }
 
     public ArrayList<String> getRegisteredMaps() {
         Maps.reload();
@@ -104,7 +110,7 @@ public class MapManager {
 
                 SWChest.ChestTYPE ct = SWChest.ChestTYPE.valueOf(Maps.file().getString(section + ".Chests." + i + ".Type"));
 
-                chests.add(new SWChest(ct, worldName, x, y, z, f));
+                chests.add(new SWChest(ct, worldName, x, y, z, f, true));
             }
         } else {
             Debugger.print(MapManager.class, "There are no chests in " + worldName + " (possibly a bug? Check config pls!)");
@@ -358,11 +364,5 @@ public class MapManager {
         } catch (Exception e) {
             p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_ARENA_BOUNDARIES, true));
         }
-    }
-
-    public static void saveSettings(SWGameMode game) {
-        Maps.file().set(game.getName() + ".Settings.Spectator", game.isSpectatorEnabled());
-        Maps.file().set(game.getName() + ".Settings.Instant-End", game.isInstantEndEnabled());
-        Maps.save();
     }
 }

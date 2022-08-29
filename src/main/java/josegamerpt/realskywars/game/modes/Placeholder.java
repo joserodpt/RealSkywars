@@ -87,6 +87,11 @@ public class Placeholder implements SWGameMode {
         return null;
     }
 
+    @Override
+    public void setState(GameState w) {
+
+    }
+
     public boolean isPlaceHolder() {
         return true;
     }
@@ -114,7 +119,6 @@ public class Placeholder implements SWGameMode {
     public void setTierType(ChestManager.TierType b, Boolean updateChests) {
 
     }
-
 
     public ArrayList<UUID> getVoters() {
         return null;
@@ -145,11 +149,6 @@ public class Placeholder implements SWGameMode {
     }
 
     public void resetArena() {
-    }
-
-    @Override
-    public void setState(GameState w) {
-
     }
 
     public void setSpectator(boolean b) {

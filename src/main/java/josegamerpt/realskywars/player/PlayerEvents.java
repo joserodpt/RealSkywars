@@ -9,12 +9,11 @@ import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.effects.BowTrail;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.gui.GUIManager;
-import josegamerpt.realskywars.gui.MapsViewer;
-import josegamerpt.realskywars.gui.PlayerGUI;
-import josegamerpt.realskywars.gui.ProfileContent;
+import josegamerpt.realskywars.gui.guis.MapsViewer;
+import josegamerpt.realskywars.gui.guis.PlayerGUI;
+import josegamerpt.realskywars.gui.guis.ProfileContent;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
-import josegamerpt.realskywars.misc.Selections;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -124,8 +123,7 @@ public class PlayerEvents implements Listener {
                                     }
                                 }
                             }
-                            if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand()
-                                    .getType() == Material.COMPASS) {
+                            if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().getType() == Material.COMPASS) {
                                 RealSkywars.getPlayerManager().trackPlayer(gp);
                                 e.setCancelled(true);
                             }
@@ -224,11 +222,11 @@ public class PlayerEvents implements Listener {
                     BlockFace f = ((Directional) blockData).getFacing();
                     switch (ChatColor.stripColor(name).toLowerCase()) {
                         case "common chest":
-                            pg.getSetup().addChest(new SWChest(SWChest.ChestTYPE.NORMAL, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f));
+                            pg.getSetup().addChest(new SWChest(SWChest.ChestTYPE.NORMAL, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f, false));
                             pg.sendMessage("Added Normal Chest.");
                             break;
                         case "mid chest":
-                            pg.getSetup().addChest(new SWChest(SWChest.ChestTYPE.MID, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f));
+                            pg.getSetup().addChest(new SWChest(SWChest.ChestTYPE.MID, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f, false));
                             pg.sendMessage("Added Mid Chest.");
                             break;
                     }
@@ -388,14 +386,6 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         RealSkywars.getPlayerManager().loadPlayer(e.getPlayer());
-
-        for (RSWPlayer player : RealSkywars.getPlayerManager().getPlayers()) {
-            if (player.isInMatch()) {
-                RSWPlayer.RoomTAB rt = player.getTab();
-                rt.remove(e.getPlayer());
-                rt.updateRoomTAB();
-            }
-        }
     }
 
     @EventHandler
@@ -409,9 +399,7 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onPlayerShootArrow(ProjectileLaunchEvent e) {
-        if (e.getEntity().getShooter() != null &&
-                e.getEntity().getShooter() instanceof Player &&
-                e.getEntity() instanceof Arrow) {
+        if (e.getEntity().getShooter() != null && e.getEntity().getShooter() instanceof Player && e.getEntity() instanceof Arrow) {
             Player p = (Player) e.getEntity().getShooter();
             RSWPlayer gp = RealSkywars.getPlayerManager().getPlayer(p);
             assert gp != null;

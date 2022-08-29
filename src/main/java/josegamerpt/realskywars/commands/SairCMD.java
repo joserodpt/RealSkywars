@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 public class SairCMD extends CommandBase {
 
     public RealSkywars rs;
-    private String onlyPlayer = "[RealSkywars] Only players can run this command.";
 
     public SairCMD(RealSkywars rs) {
         this.rs = rs;
@@ -31,6 +30,7 @@ public class SairCMD extends CommandBase {
                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_MATCH, true));
             }
         } else {
+            String onlyPlayer = "[RealSkywars] Only players can run this command.";
             commandSender.sendMessage(onlyPlayer);
         }
     }

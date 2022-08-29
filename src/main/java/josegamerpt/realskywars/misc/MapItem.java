@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class MapItem {
 
-    private SWGameMode g;
+    private final SWGameMode g;
     private ItemStack icon;
 
     public MapItem(SWGameMode g, RSWPlayer gp) {
@@ -29,8 +29,7 @@ public class MapItem {
                 count = this.g.getPlayersCount();
             }
 
-            this.icon = Itens.createItemLore(getStateMaterial(), count, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(this.g.isRanked()),
-                    variableList(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.ITEMS_MAP_DESCRIPTION)));
+            this.icon = Itens.createItemLore(getStateMaterial(), count, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(this.g.isRanked()), variableList(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.ITEMS_MAP_DESCRIPTION)));
         }
     }
 

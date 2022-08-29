@@ -15,12 +15,12 @@ import java.util.List;
 
 public class BlockWinTrail implements Trail {
 
-    private RSWPlayer p;
-    private int executionTime;
+    private final RSWPlayer p;
+    private final int executionTime;
     private BukkitTask task;
-    private BlockWinType bwp;
+    private final BlockWinType bwp;
     private Material single;
-    private List<Material> randBlocks = new ArrayList<>();
+    private final List<Material> randBlocks = new ArrayList<>();
 
     public BlockWinTrail(RSWPlayer gp, int seconds) {
         this.executionTime = seconds;

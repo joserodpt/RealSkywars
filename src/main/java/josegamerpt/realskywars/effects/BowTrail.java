@@ -10,9 +10,9 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class BowTrail implements Trail {
 
-    private Particle pa;
-    private Arrow a;
-    private RSWPlayer p;
+    private final Particle pa;
+    private final Arrow a;
+    private final RSWPlayer p;
     private BukkitTask task;
 
     public BowTrail(Particle bowParticle, Projectile entity, RSWPlayer gp) {

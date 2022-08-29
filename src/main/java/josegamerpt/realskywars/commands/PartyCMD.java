@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class PartyCMD extends CommandBase {
 
     public RealSkywars rs;
-    private String onlyPlayer = "[RealSkywars] Only players can run this command.";
+    private final String onlyPlayer = "[RealSkywars] Only players can run this command.";
 
     public PartyCMD(RealSkywars rs) {
         this.rs = rs;
@@ -25,13 +25,7 @@ public class PartyCMD extends CommandBase {
     @Default
     public void defaultCommand(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
-            Text.sendList(commandSender, Arrays.asList(RealSkywars.getLanguageManager().getPrefix(),
-                    " &3/party create",
-                    " &3/party disband",
-                    " &3/party invite <player>",
-                    " &3/party accept <player>",
-                    " &3/party kick <player>",
-                    " &3/party leave"));
+            Text.sendList(commandSender, Arrays.asList(RealSkywars.getLanguageManager().getPrefix(), " &3/party create", " &3/party disband", " &3/party invite <player>", " &3/party accept <player>", " &3/party kick <player>", " &3/party leave"));
         } else {
             commandSender.sendMessage(onlyPlayer);
         }

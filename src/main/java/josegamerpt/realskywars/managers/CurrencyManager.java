@@ -5,13 +5,10 @@ import josegamerpt.realskywars.player.RSWPlayer;
 
 public class CurrencyManager {
 
-    public enum Operations{ send, add, set}
-
-    private RSWPlayer fromEntity;
-    private Double opQ;
-    private RSWPlayer toPlayer;
+    private final RSWPlayer fromEntity;
+    private final Double opQ;
+    private final RSWPlayer toPlayer;
     private Boolean console;
-
     public CurrencyManager(RSWPlayer to, RSWPlayer from, Double operation, Boolean console) {
         this.toPlayer = to;
         this.fromEntity = from;
@@ -35,10 +32,8 @@ public class CurrencyManager {
         this.fromEntity.setCoins(this.fromEntity.getCoins() - this.opQ);
         this.toPlayer.saveData();
         this.fromEntity.saveData();
-        this.fromEntity.sendMessage(RealSkywars.getLanguageManager().getString(this.toPlayer, LanguageManager.TS.SENDER_COINS, true).replace("%coins%", "" + this.opQ)
-                .replace("%player%", this.toPlayer.getDisplayName()));
-        this.toPlayer.sendMessage(RealSkywars.getLanguageManager().getString(this.toPlayer, LanguageManager.TS.RECIEVER_COINS, true).replace("%coins%", "" + this.opQ)
-                .replace("%player%", this.fromEntity.getDisplayName()));
+        this.fromEntity.sendMessage(RealSkywars.getLanguageManager().getString(this.toPlayer, LanguageManager.TS.SENDER_COINS, true).replace("%coins%", "" + this.opQ).replace("%player%", this.toPlayer.getDisplayName()));
+        this.toPlayer.sendMessage(RealSkywars.getLanguageManager().getString(this.toPlayer, LanguageManager.TS.RECIEVER_COINS, true).replace("%coins%", "" + this.opQ).replace("%player%", this.fromEntity.getDisplayName()));
     }
 
     public void addCoins() {
@@ -71,4 +66,6 @@ public class CurrencyManager {
             this.toPlayer.saveData();
         }
     }
+
+    public enum Operations {send, add, set}
 }

@@ -1,17 +1,15 @@
 package josegamerpt.realskywars.commands;
 
-import com.j256.ormlite.stmt.QueryBuilder;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.configuration.Config;
-import josegamerpt.realskywars.database.PlayerData;
 import josegamerpt.realskywars.game.modes.SWGameMode;
-import josegamerpt.realskywars.gui.*;
+import josegamerpt.realskywars.gui.GUIManager;
+import josegamerpt.realskywars.gui.guis.*;
 import josegamerpt.realskywars.kits.Kit;
 import josegamerpt.realskywars.managers.CurrencyManager;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
-import josegamerpt.realskywars.misc.Selections;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
@@ -36,8 +34,7 @@ import java.util.Map;
 public class RealSkywarsCMD extends CommandBase {
 
     public RealSkywars rs;
-    private String onlyPlayer = "[RealSkywars] Only players can run this command.";
-    public enum KIT { create, delete, give }
+    private final String onlyPlayer = "[RealSkywars] Only players can run this command.";
 
     public RealSkywarsCMD(RealSkywars rs) {
         this.rs = rs;
@@ -95,16 +92,13 @@ public class RealSkywarsCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
 
-            if (action == null)
-            {
+            if (action == null) {
                 p.sendMessage(RealSkywars.getLanguageManager().getPrefix() + "Unknown kit command action.");
                 return;
             }
-            switch (action)
-            {
+            switch (action) {
                 case create:
-                    if (cost == null)
-                    {
+                    if (cost == null) {
                         p.sendMessage(RealSkywars.getLanguageManager().getPrefix() + "Cost value not accepted.");
                         return;
                     }
@@ -488,7 +482,6 @@ public class RealSkywarsCMD extends CommandBase {
         }
     }
 
-
     @SubCommand("set2chest")
     @Completion({"#enum", "#boolean"})
     @Permission("RealSkywars.Admin")
@@ -508,18 +501,6 @@ public class RealSkywarsCMD extends CommandBase {
         if (commandSender instanceof Player) {
             Player p = (Player) commandSender;
             RealSkywars.getChestManager().getChest(tt, middle).forEach(swChestItem -> p.getInventory().addItem(swChestItem.getItemStack()));
-        } else {
-            commandSender.sendMessage(onlyPlayer);
-        }
-    }
-
-    @SubCommand("add2chest")
-    @Completion({"#enum", "#boolean"})
-    @Permission("RealSkywars.Admin")
-    public void addchest(final CommandSender commandSender, ChestManager.TierType tt, Boolean middle) {
-        if (commandSender instanceof Player) {
-            RealSkywars.getChestManager().add2Chest(tt, middle, Itens.getInventory(((Player) commandSender)));
-            Text.send(commandSender, "Itens set for " + tt.name() + " (middle: " + middle + ")");
         } else {
             commandSender.sendMessage(onlyPlayer);
         }
@@ -619,4 +600,6 @@ public class RealSkywarsCMD extends CommandBase {
         RealSkywars.getLeaderboardManager().refreshLeaderboards();
         Text.send(commandSender, "Ok.");
     }
+
+    public enum KIT {create, delete, give}
 }

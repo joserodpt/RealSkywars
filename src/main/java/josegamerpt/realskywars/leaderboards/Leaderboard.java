@@ -8,12 +8,10 @@ public class Leaderboard {
 
     List<LeaderboardRow> lbr = new ArrayList<>();
 
-    public Leaderboard()
-    {
+    public Leaderboard() {
     }
 
-    public void addRow(UUID uuid, String name, Object o)
-    {
+    public void addRow(UUID uuid, String name, Object o) {
         this.lbr.add(new LeaderboardRow(uuid, name, o));
     }
 

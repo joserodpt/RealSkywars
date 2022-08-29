@@ -119,8 +119,7 @@ public class WorldManager {
             List<String> ignore = Lists.newArrayList("uid.dat", "session.dat", "session.lock");
             if (!ignore.contains(source.getName())) {
                 if (source.isDirectory()) {
-                    if ((!target.exists()) &&
-                            (target.mkdirs())) {
+                    if ((!target.exists()) && (target.mkdirs())) {
                         String[] files = source.list();
                         if (files != null) {
                             for (String file : files) {
@@ -135,8 +134,7 @@ public class WorldManager {
                     OutputStream out = new java.io.FileOutputStream(target);
                     byte[] buffer = new byte['Ѐ'];
                     int length;
-                    while ((length = in.read(buffer)) > 0)
-                        out.write(buffer, 0, length);
+                    while ((length = in.read(buffer)) > 0) out.write(buffer, 0, length);
                     in.close();
                     out.close();
                 }
@@ -210,10 +208,11 @@ public class WorldManager {
     }
 
 
+    public enum CopyTo {ROOT, RSW_FOLDER}
+
     public class VoidWorld extends ChunkGenerator {
         @Override
-        public ChunkData generateChunkData(World world, Random random, int x, int z,
-                                           BiomeGrid biome) {
+        public ChunkData generateChunkData(World world, Random random, int x, int z, BiomeGrid biome) {
             return createChunkData(world);
         }
 
@@ -221,6 +220,4 @@ public class WorldManager {
             return new Location(world, 0.0D, 128.0D, 0.0D);
         }
     }
-
-    public enum CopyTo {ROOT, RSW_FOLDER}
 }
