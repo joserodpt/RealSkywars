@@ -26,9 +26,12 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
-public class RSWPlayer { private final List<Trail> trails = new ArrayList<>();
+public class RSWPlayer {
+    private final List<Trail> trails = new ArrayList<>();
     private RoomTAB rt;
     private String anonName = "?";
     private Player p;
@@ -152,7 +155,7 @@ public class RSWPlayer { private final List<Trail> trails = new ArrayList<>();
     }
 
     public boolean isInMatch() {
-        return room != null;
+        return this.room != null;
     }
 
     public void addStatistic(RSWPlayer.Statistic t, int i, Boolean ranked) {
@@ -423,8 +426,8 @@ public class RSWPlayer { private final List<Trail> trails = new ArrayList<>();
         return this.room;
     }
 
-    public void setRoom(Object o) {
-        this.room = (SWGameMode) o;
+    public void setRoom(SWGameMode o) {
+        this.room = o;
     }
 
     public SetupRoom getSetup() {
@@ -628,7 +631,7 @@ public class RSWPlayer { private final List<Trail> trails = new ArrayList<>();
     public class RoomTAB {
 
         private final RSWPlayer player;
-        private ArrayList<Player> show = new ArrayList<>();
+        private final ArrayList<Player> show = new ArrayList<>();
 
         public RoomTAB(RSWPlayer player) {
             this.player = player;
@@ -690,8 +693,8 @@ public class RSWPlayer { private final List<Trail> trails = new ArrayList<>();
 
     public class PlayerScoreboard {
 
-        private FastBoard fb;
-        private RSWPlayer linked;
+        private final FastBoard fb;
+        private final RSWPlayer linked;
         private BukkitTask task;
 
         public PlayerScoreboard(RSWPlayer r) {

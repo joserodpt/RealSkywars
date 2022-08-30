@@ -3,6 +3,7 @@ package josegamerpt.realskywars.game.modes;
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.chests.SWChest;
+import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.game.SWEvent;
 import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.player.RSWPlayer;
@@ -18,7 +19,9 @@ import java.util.UUID;
 
 public interface SWGameMode {
 
-    enum GameState {
+	Countdown getStartRoomTimer();
+
+	enum GameState {
 		AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING
 	}
 
@@ -71,8 +74,6 @@ public interface SWGameMode {
 	void setTierType(ChestManager.TierType b, Boolean updateChests);
 
 	ArrayList<UUID> getVoters();
-
-	ArrayList<Integer> getVoteList();
 
 	void addPlayer(RSWPlayer gp);
 

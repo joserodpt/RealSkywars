@@ -85,7 +85,7 @@ public class ChestManager {
         return ret;
     }
 
-    public int getMaxItems(ChestManager.TierType tierType, Boolean middle) {
+    public int getMaxItems(ChestManager.TierType tierType) {
         String itens = "Max-Itens-Per-Chest";
         switch (tierType) {
             case BASIC:

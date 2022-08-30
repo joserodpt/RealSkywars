@@ -110,13 +110,12 @@ public class SWChest {
             }
 
             Collections.shuffle(tmp);
-            if (tmp.size() > 5) {
+            if (tmp.size() > this.maxItemsPerChest) {
                 tmp = tmp.subList(0, this.maxItemsPerChest);
             }
 
             if (Config.file().getBoolean("Config.Shuffle-Items-In-Chest")) {
                 boolean[] chosen = new boolean[inv.getSize()];
-
                 for (ItemStack itemStack : tmp) {
                     int slot;
 

@@ -63,8 +63,8 @@ public class GUIManager {
         inventory.openInventory(p.getPlayer());
     }
 
-    public static void openVote(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_CHESTVOTE_TITLE, false), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+    public static void openChestVote(RSWPlayer p) {
+        GUIBuilder inventory = new GUIBuilder(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_VOTE_TITLE, false), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         inventory.addItem(e -> {
             if (!p.isBot() && p.getMatch().getVoters().contains(p.getUUID())) {
@@ -98,12 +98,59 @@ public class GUIManager {
             } else {
                 if (p.getPlayer().hasPermission("RealSkywars.EPIC")) {
                     p.getMatch().addVote(p.getUUID(), 3);
-                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_VOTE, true).replace("%chest%", RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_OP, false)));
+                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_VOTE, true).replace("%chest%", RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_EPIC, false)));
+
                 } else {
                     p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_NOPERM, true));
                 }
             }
-        }, Itens.createItemLore(Material.ENDER_CHEST, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_OP, false), Collections.emptyList()), 16);
+        }, Itens.createItemLore(Material.ENDER_CHEST, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_EPIC, false), Collections.emptyList()), 16);
+
+        inventory.openInventory(p.getPlayer());
+    }
+
+    public static void openVote(RSWPlayer p) {
+        GUIBuilder inventory = new GUIBuilder(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_VOTE_TITLE, false), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+
+        inventory.addItem(e -> {
+            if (!p.isBot() && p.getMatch().getVoters().contains(p.getUUID())) {
+                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_ALREADY_VOTED, true));
+            } else {
+                if (p.getPlayer().hasPermission("RealSkywars.Basic")) {
+                    p.getMatch().addVote(p.getUUID(), 1);
+                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_VOTE, true).replace("%chest%", RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_BASIC, false)));
+                } else {
+                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_NOPERM, true));
+                }
+            }
+        }, Itens.createItemLore(Material.WOODEN_SWORD, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_BASIC, false), Collections.emptyList()), 10);
+
+        inventory.addItem(e -> {
+            if (!p.isBot() && p.getMatch().getVoters().contains(p.getUUID())) {
+                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_ALREADY_VOTED, true));
+            } else {
+                if (p.getPlayer().hasPermission("RealSkywars.Normal")) {
+                    p.getMatch().addVote(p.getUUID(), 2);
+                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_VOTE, true).replace("%chest%", RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_NORMAL, false)));
+                } else {
+                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_NOPERM, true));
+                }
+            }
+        }, Itens.createItemLore(Material.CHEST, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_NORMAL, false), Collections.emptyList()), 13);
+
+        inventory.addItem(e -> {
+            if (!p.isBot() && p.getMatch().getVoters().contains(p.getUUID())) {
+                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_ALREADY_VOTED, true));
+            } else {
+                if (p.getPlayer().hasPermission("RealSkywars.EPIC")) {
+                    p.getMatch().addVote(p.getUUID(), 3);
+                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_VOTE, true).replace("%chest%", RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_EPIC, false)));
+
+                } else {
+                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_NOPERM, true));
+                }
+            }
+        }, Itens.createItemLore(Material.ENDER_CHEST, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_EPIC, false), Collections.emptyList()), 16);
 
         inventory.openInventory(p.getPlayer());
     }

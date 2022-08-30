@@ -58,6 +58,17 @@ public class RealSkywarsCMD extends CommandBase {
         }
     }
 
+    @SubCommand("debug")
+    @Permission("RealSkywars.Admin")
+    public void debugcmd(final CommandSender commandSender) {
+        if (commandSender instanceof Player) {
+            RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
+            GUIManager.openVote(p);
+        } else {
+            commandSender.sendMessage(onlyPlayer);
+        }
+    }
+
     @SubCommand("list")
     public void listcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {

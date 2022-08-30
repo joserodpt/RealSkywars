@@ -7,20 +7,14 @@ import org.bukkit.Location;
 public class NoHologram implements SWHologram {
 
     @Override
-    public void spawnHologram(Location loc) { }
+    public void spawnHologram(Location loc) {}
 
     @Override
-    public void setTime(int seconds) {
-
-    }
+    public void setTime(int seconds) {}
 
     @Override
-    public void deleteHologram() {
-
-    }
+    public void deleteHologram() {}
 
     @Override
-    public HologramType getType() {
-        return HologramType.NONE;
-    }
+    public HologramType getType() {return HologramType.NONE;}
 }

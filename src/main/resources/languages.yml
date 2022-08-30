@@ -171,8 +171,7 @@ Languages:
       Chests:
         Basic: "&bBásico"
         Normal: "&fNormal"
-        OP: "&aOP"
-        CAOS: "&4CAOS"
+        Epic: "&aEPIC"
         Vote: "&fVotaste para &b%chest%"
         Already-Voted: "&cJá &fvotaste&f."
       Arena:
@@ -453,8 +452,7 @@ Languages:
       Chests:
         Basic: "&bBasic"
         Normal: "&fNormal"
-        OP: "&aOP"
-        CAOS: "&4Caos"
+        Epic: "&aEpic"
         Vote: "&fYou voted for &b%chest%"
         Already-Voted: "&fYou &calready voted&f."
       Arena:

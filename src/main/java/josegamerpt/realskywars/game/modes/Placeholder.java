@@ -3,6 +3,7 @@ package josegamerpt.realskywars.game.modes;
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.chests.SWChest;
+import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.game.SWEvent;
 import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.player.RSWPlayer;
@@ -22,6 +23,11 @@ public class Placeholder implements SWGameMode {
 
     public Placeholder(String name) {
         this.n = name;
+    }
+
+    @Override
+    public Countdown getStartRoomTimer() {
+        return null;
     }
 
     @Override
@@ -121,10 +127,6 @@ public class Placeholder implements SWGameMode {
     }
 
     public ArrayList<UUID> getVoters() {
-        return null;
-    }
-
-    public ArrayList<Integer> getVoteList() {
         return null;
     }
 

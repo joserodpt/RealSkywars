@@ -124,25 +124,35 @@ public class PlayerEvents implements Listener {
                                 }
                             }
                             if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().getType() == Material.COMPASS) {
-                                RealSkywars.getPlayerManager().trackPlayer(gp);
                                 e.setCancelled(true);
+                                RealSkywars.getPlayerManager().trackPlayer(gp);
                             }
                             break;
                         case CAGE:
                             switch (e.getPlayer().getInventory().getItemInMainHand().getType()) {
                                 case BOW:
+                                    e.setCancelled(true);
                                     ProfileContent v = new ProfileContent(gp, ShopManager.Categories.KITS);
                                     v.openInventory(gp);
                                     e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-                                    e.setCancelled(true);
                                     break;
                                 case MINECART:
-                                    gp.getMatch().removePlayer(gp);
                                     e.setCancelled(true);
+                                    gp.getMatch().removePlayer(gp);
                                     break;
                                 case ENDER_CHEST:
-                                    GUIManager.openVote(gp);
                                     e.setCancelled(true);
+
+                                    if (gp.getMatch().getStartRoomTimer() != null) {
+                                        if (gp.getMatch().getStartRoomTimer().getSecondsLeft() > Config.file().getInt("Config.Vote-Before-Seconds")) {
+                                            GUIManager.openVote(gp);
+                                        } else {
+                                            gp.sendMessage(RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.CANT_VOTE, true));
+                                        }
+                                    } else {
+                                        GUIManager.openVote(gp);
+                                    }
+
                                     break;
                             }
                             break;
@@ -150,16 +160,17 @@ public class PlayerEvents implements Listener {
                         case EXTERNAL_SPECTATOR:
                             switch (e.getPlayer().getInventory().getItemInMainHand().getType()) {
                                 case TOTEM_OF_UNDYING:
-                                    e.getPlayer().performCommand("rsw play " + gp.getMatch().getGameMode().name());
                                     e.setCancelled(true);
+                                    e.getPlayer().performCommand("rsw play " + gp.getMatch().getGameMode().name());
                                     break;
                                 case MAP:
-                                    e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                     e.setCancelled(true);
+                                    e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                    GUIManager.openSpectate(gp);
                                     break;
                                 case MINECART:
-                                    gp.getMatch().removePlayer(gp);
                                     e.setCancelled(true);
+                                    gp.getMatch().removePlayer(gp);
                                     break;
                                 default:
                                     e.setCancelled(true);

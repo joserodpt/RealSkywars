@@ -87,6 +87,11 @@ public class Teams implements SWGameMode {
     }
 
     @Override
+    public Countdown getStartRoomTimer() {
+        return this.startRoomTimer;
+    }
+
+    @Override
     public Boolean isRanked() {
         return this.ranked;
     }
@@ -396,10 +401,6 @@ public class Teams implements SWGameMode {
         return this.voters;
     }
 
-    public ArrayList<Integer> getVoteList() {
-        return this.votes;
-    }
-
     public void addPlayer(RSWPlayer p) {
         if (RealSkywars.getPartyManager().checkForParties(p, this)) {
             switch (this.state) {
@@ -513,7 +514,7 @@ public class Teams implements SWGameMode {
     public void setTierType(ChestManager.TierType b, Boolean updateChests) {
         this.tierType = b;
         if (updateChests) {
-            this.chests.forEach(swChest -> swChest.setLoot(RealSkywars.getChestManager().getChest(this.tierType, swChest.isMiddle()), RealSkywars.getChestManager().getMaxItems(this.tierType, swChest.isMiddle())));
+            this.chests.forEach(swChest -> swChest.setLoot(RealSkywars.getChestManager().getChest(this.tierType, swChest.isMiddle()), RealSkywars.getChestManager().getMaxItems(this.tierType)));
         }
     }
 
@@ -635,7 +636,7 @@ public class Teams implements SWGameMode {
     private void sendLog(RSWPlayer p) {
         if (p.getPlayer() != null) {
             for (String s : Text.color(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.END_LOG))) {
-                p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE, this.isRanked()) + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, this.isRanked()) + ""));
+                p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE, this.isRanked()) + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, this.isRanked()) + "").replace("%time%", this.startTimer.getTotalSeconds() + ""));
             }
             p.saveData();
         }
