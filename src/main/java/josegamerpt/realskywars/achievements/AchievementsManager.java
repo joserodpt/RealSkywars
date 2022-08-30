@@ -9,54 +9,47 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
-import java.util.logging.Level;
 
 public class AchievementsManager {
 
     public HashMap<RSWPlayer.PlayerStatistics, List<Achievement>> achievements = new HashMap<>();
 
     public void loadAchievements() {
-        for (RSWPlayer.PlayerStatistics value : RSWPlayer.PlayerStatistics.values()) {
-            try {
-                loadAchievement(value);
-            } catch (Exception e) {
-                RealSkywars.log(Level.SEVERE, "Error while loading achievements for " + value.name());
-                e.printStackTrace();
+        int cats = 0, achi = 0;
+        this.achievements.clear();
+        //load coin achievements
+        for (String dir : Achievements.file().getConfigurationSection("Coins").getKeys(false)) {
+            ++cats;
+            RSWPlayer.PlayerStatistics t = null;
+
+            switch (dir) {
+                case "Kills":
+                    t = RSWPlayer.PlayerStatistics.KILLS;
+                    break;
+                case "Wins-Solo":
+                    t = RSWPlayer.PlayerStatistics.WINS_SOLO;
+                    break;
+                case "Wins-Teams":
+                    t = RSWPlayer.PlayerStatistics.WINS_TEAMS;
+                    break;
+                case "Games-Played":
+                    t = RSWPlayer.PlayerStatistics.GAMES_PLAYED;
+                    break;
             }
-        }
-    }
 
-    public void loadAchievement(RSWPlayer.PlayerStatistics t) {
-        for (String dir : Achievements.file().getConfigurationSection("").getKeys(false)) {
-            String path;
-            if ("Coins".equals(dir)) {
-                path = "Coins.";
-                switch (t) {
-                    case KILLS:
-                        path += "Kills";
-                        break;
-                    case WINS_SOLO:
-                        path += "WinsSolo";
-                        break;
-                    case WINS_TEAMS:
-                        path += "WinsTeams";
-                        break;
-                    default:
-                        path += "skip";
-                }
+            List<Achievement> achiv = new ArrayList<>();
 
-                if (path != "skip") {
-                    List<Achievement> achiv = new ArrayList<>();
-                    for (String meta : Achievements.file().getConfigurationSection(path).getKeys(false)) {
-                        Double value = Achievements.file().getDouble(path + "." + meta);
-                        achiv.add(new AchievementRCoin(t, Integer.parseInt(meta), value));
-                    }
-
-                    this.achievements.put(t, achiv);
-
-                }
+            String path = "Coins." + dir;
+            for (String meta : Achievements.file().getConfigurationSection(path).getKeys(false)) {
+                ++achi;
+                Double value = Achievements.file().getDouble(path + "." + meta);
+                achiv.add(new AchievementRCoin(t, Integer.parseInt(meta), value));
             }
+
+            this.achievements.put(t, achiv);
         }
+
+        RealSkywars.log("Loaded " + achi + " rewards for " + cats + " coin categories.");
     }
 
     public List<Achievement> getAchievements(RSWPlayer.PlayerStatistics ds) {
@@ -66,7 +59,7 @@ public class AchievementsManager {
     public Achievement getAchievement(RSWPlayer.PlayerStatistics ps, int meta) {
         List<Achievement> list = this.achievements.get(ps);
         if (list != null) {
-            Optional<Achievement> o = list.stream().filter(c -> c.getMeta() == meta).findFirst();
+            Optional<Achievement> o = list.stream().filter(c -> c.getGoal() == meta).findFirst();
             if (o.isPresent()) {
                 return o.get();
             }
@@ -77,10 +70,10 @@ public class AchievementsManager {
     public ItemStack getItem(Achievement s, UUID uuid) {
         RSWPlayer p = RealSkywars.getPlayerManager().getPlayer(uuid);
 
-        return Itens.createItemLore(getColor(s, p), 1, "&b&l" + s.getMeta(), Collections.singletonList("&aReward: &e" + s.getReward() + " coins"));
+        return Itens.createItemLore(getColor(s, p), 1, "&b&l" + s.getGoal(), Collections.singletonList("&aReward: &e" + s.getReward() + " coins"));
     }
 
     private Material getColor(Achievement s, RSWPlayer p) {
-        return ((int) p.getStatistics(s.getType(), false)) > s.getMeta() ? Material.GREEN_CONCRETE : Material.RED_CONCRETE;
+        return ((int) p.getStatistics(s.getType(), false)) >= s.getGoal() ? Material.GREEN_CONCRETE : Material.RED_CONCRETE;
     }
 }

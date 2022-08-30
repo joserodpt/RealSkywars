@@ -137,8 +137,7 @@ public class GameManager {
     }
 
     public boolean scoreboardInLobby() {
-        Boolean lobbyScoreboard = true;
-        return lobbyScoreboard;
+        return Config.file().getBoolean("Config.Scoreboard-In-Lobby");
     }
 
     public void removeRoom(SWGameMode gr) {
@@ -213,7 +212,7 @@ public class GameManager {
     public void findGame(RSWPlayer p, SWGameMode.Mode type) {
         if (!PlayerManager.teleporting.contains(p.getUUID())) {
             PlayerManager.teleporting.add(p.getUUID());
-            Optional<SWGameMode> o = this.games.stream().filter(c -> c.getGameMode().equals(type) && c.getState().equals(GameState.AVAILABLE) || c.getState().equals(GameState.STARTING) && !c.isFull()).findFirst();
+            Optional<SWGameMode> o = this.games.stream().filter(c -> c.getGameMode().equals(type) && c.getState().equals(GameState.AVAILABLE) || c.getState().equals(GameState.STARTING) || c.getState().equals(GameState.WAITING) && !c.isFull()).findFirst();
             if (o.isPresent() && !o.get().isPlaceHolder()) {
                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.GAME_FOUND, true));
                 if (p.isInMatch()) {

@@ -59,4 +59,9 @@ public class Party {
     public boolean allowJoin() {
         return this.allowJoin;
     }
+
+    public void sendMessage(RSWPlayer p, String s) {
+        this.owner.sendMessage("&3[PARTY] " + p.getDisplayName() + " - " + s);
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage("&3[PARTY] " + p.getDisplayName() + " - " + s));
+    }
 }

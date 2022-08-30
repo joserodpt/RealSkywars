@@ -295,19 +295,25 @@ public class GUIManager {
             p.closeInventory();
             AchievementViewer v = new AchievementViewer(p, RSWPlayer.PlayerStatistics.KILLS);
             v.openInventory(p);
-        }, Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&b&l" + RSWPlayer.PlayerStatistics.KILLS.name(), Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 11);
+        }, Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&b&l" + RSWPlayer.PlayerStatistics.KILLS.name(), Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 10);
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewer v = new AchievementViewer(p, RSWPlayer.PlayerStatistics.WINS_SOLO);
             v.openInventory(p);
-        }, Itens.createItemLore(Material.LEATHER_BOOTS, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_SOLO.name().replace("_", " "), Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 13);
+        }, Itens.createItemLore(Material.LEATHER_BOOTS, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_SOLO.name().replace("_", " "), Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 12);
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewer v = new AchievementViewer(p, RSWPlayer.PlayerStatistics.WINS_TEAMS);
             v.openInventory(p);
-        }, Itens.createItemLore(Material.CHAINMAIL_CHESTPLATE, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_TEAMS.name().replace("_", " "), Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 15);
+        }, Itens.createItemLore(Material.CHAINMAIL_CHESTPLATE, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_TEAMS.name().replace("_", " "), Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 14);
+
+        inventory.addItem(e -> {
+            p.closeInventory();
+            AchievementViewer v = new AchievementViewer(p, RSWPlayer.PlayerStatistics.GAMES_PLAYED);
+            v.openInventory(p);
+        }, Itens.createItemLore(Material.FILLED_MAP, 1, "&b&l" + RSWPlayer.PlayerStatistics.GAMES_PLAYED.name().replace("_", " "), Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 16);
 
         inventory.addItem(e -> {
             p.closeInventory();

@@ -7,6 +7,7 @@ import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Pagination;
+import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -37,7 +38,7 @@ public class AchievementViewer {
     public AchievementViewer(RSWPlayer p, RSWPlayer.PlayerStatistics at) {
         this.uuid = p.getUUID();
         this.at = at;
-        this.inv = Bukkit.getServer().createInventory(null, 54, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ACHIEVEMENTS, false));
+        this.inv = Bukkit.getServer().createInventory(null, 54, Text.color("&b&l" + at.name().replace("_", " ")));
 
         this.items = RealSkywars.getAchievementsManager().getAchievements(at);
 

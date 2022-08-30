@@ -185,8 +185,6 @@ public class RealSkywars extends JavaPlugin {
                 SQL.setup(this);
                 Shops.setup(this);
                 Kits.setup(this);
-                //TODO: fix achivments
-                //am.loadAchievements();
 
                 hologramManager = new HologramManager();
 
@@ -225,6 +223,7 @@ public class RealSkywars extends JavaPlugin {
                 playerm.loadPlayers();
                 kitm.loadKits();
                 log("Loaded " + kitm.getKitCount() + " kits.");
+                am.loadAchievements();
 
                 CommandManager commandManager = new CommandManager(this);
                 commandManager.hideTabComplete(true);
@@ -360,6 +359,7 @@ public class RealSkywars extends JavaPlugin {
         Kits.reload();
         kitm.loadKits();
 
+        am.loadAchievements();
         lbm.refreshLeaderboards();
 
         mapm.loadMaps();

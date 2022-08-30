@@ -199,6 +199,7 @@ public class RSWPlayer {
                 this.gamekills += i;
                 this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Kill"));
                 this.sendMessage("&e+ &6" + Config.file().getDouble("Config.Coins.Per-Kill") + "&e coins");
+
                 break;
             case LOSE:
                 if (ranked) {
@@ -223,6 +224,11 @@ public class RSWPlayer {
                     this.rankedGamesPlayed += i;
                 } else {
                     this.gamesPlayed += i;
+                    //achievement
+                    Achievement a = RealSkywars.getAchievementsManager().getAchievement(PlayerStatistics.GAMES_PLAYED, this.gamesPlayed);
+                    if (a != null) {
+                        a.giveAchievement(this);
+                    }
                 }
                 break;
         }

@@ -16,7 +16,7 @@ public interface Achievement {
 
     Achievement.RewardType getRewardType();
 
-    int getMeta();
+    int getGoal();
 
     Object getReward();
 }

@@ -10,14 +10,14 @@ import java.util.Locale;
 
 public class AchievementRCoin implements Achievement {
 
-    private RSWPlayer.PlayerStatistics at;
-    private int meta;
-    private Double reward;
+    private final RSWPlayer.PlayerStatistics at;
+    private final int goal;
+    private final Double reward;
 
-    public AchievementRCoin(RSWPlayer.PlayerStatistics at, int meta, Double reward)
+    public AchievementRCoin(RSWPlayer.PlayerStatistics at, int goal, Double reward)
     {
         this.at = at;
-        this.meta = meta;
+        this.goal = goal;
         this.reward = reward;
     }
 
@@ -33,7 +33,7 @@ public class AchievementRCoin implements Achievement {
 
     @Override
     public void giveAchievement(RSWPlayer p) {
-        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ACHIEVEMENT_GET, true).replace("%achievement%", this.getAchievementName()).replace("%reward%", this.getRewardName()));
+        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ACHIEVEMENT_GET, true).replace("%achievement%", this.goal + " - " + this.getAchievementName()).replace("%reward%", this.getRewardName()));
         CurrencyManager cm = new CurrencyManager(p, (Double) this.getReward());
         cm.addCoins();
     }
@@ -49,8 +49,8 @@ public class AchievementRCoin implements Achievement {
     }
 
     @Override
-    public int getMeta() {
-        return this.meta;
+    public int getGoal() {
+        return this.goal;
     }
 
     @Override
