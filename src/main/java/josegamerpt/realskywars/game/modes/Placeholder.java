@@ -5,11 +5,11 @@ import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.game.SWEvent;
+import josegamerpt.realskywars.game.SWWorld;
 import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.ArenaCuboid;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.boss.BossBar;
 
@@ -28,6 +28,11 @@ public class Placeholder implements SWGameMode {
     @Override
     public Countdown getStartRoomTimer() {
         return null;
+    }
+
+    @Override
+    public ProjectileType getProjectile() {
+        return ProjectileType.NORMAL;
     }
 
     @Override
@@ -82,7 +87,7 @@ public class Placeholder implements SWGameMode {
         return null;
     }
 
-    public World getWorld() {
+    public SWWorld getSWWorld() {
         return null;
     }
 
@@ -122,13 +127,20 @@ public class Placeholder implements SWGameMode {
     }
 
     @Override
-    public void setTierType(ChestManager.TierType b, Boolean updateChests) {
+    public void setTierType(ChestManager.ChestTier b, Boolean updateChests) {
 
     }
 
-    public ArrayList<UUID> getVoters() {
-        return null;
+    @Override
+    public void setTime(TimeType tt) {
+
     }
+
+    @Override
+    public void setProjectiles(ProjectileType pt) {
+
+    }
+
 
     public void addPlayer(RSWPlayer gp) {
     }
@@ -142,7 +154,7 @@ public class Placeholder implements SWGameMode {
     }
 
     @Override
-    public ChestManager.TierType getTierType() {
+    public ChestManager.ChestTier getChestTier() {
         return null;
     }
 
@@ -204,8 +216,13 @@ public class Placeholder implements SWGameMode {
     }
 
     @Override
-    public void addVote(UUID u, int i) {
+    public void addVote(UUID u, VoteType vt, int i) {
 
+    }
+
+    @Override
+    public boolean hasVotedFor(VoteType vt, UUID uuid) {
+        return false;
     }
 
     @Override

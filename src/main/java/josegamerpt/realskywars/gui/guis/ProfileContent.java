@@ -102,7 +102,7 @@ public class ProfileContent {
 
 
                             if (e.getClick() == ClickType.RIGHT && current.cat == ShopManager.Categories.KITS) {
-                                p.getPlayer().closeInventory();
+                                p.closeInventory();
                                 GUIManager.openKitPreview(p, RealSkywars.getKitManager().getKit(a.getID()), 0);
                                 return;
                             }
@@ -110,7 +110,7 @@ public class ProfileContent {
                                 case KITS:
                                     p.setProperty(RSWPlayer.PlayerProperties.KIT, RealSkywars.getKitManager().getKit(a.getID()));
                                     p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.KITS, false)));
-                                    p.getPlayer().closeInventory();
+                                    p.closeInventory();
                                     break;
                                 case BOW_PARTICLES:
                                     p.setProperty(RSWPlayer.PlayerProperties.BOW_PARTICLES, a.getInfo("Particle"));
@@ -194,7 +194,6 @@ public class ProfileContent {
     }
 
     public void fillChest(List<DisplayItem> items) {
-
         inv.clear();
 
         for (int i = 0; i < 9; i++) {

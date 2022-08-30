@@ -614,6 +614,12 @@ public class RSWPlayer {
         this.mapViewerPref = a;
     }
 
+    public void closeInventory() {
+        if (this.p != null) {
+            this.p.closeInventory();
+        }
+    }
+
     //ENUMs
 
     public enum PlayerState {

@@ -469,7 +469,7 @@ public class RealSkywarsCMD extends CommandBase {
     public void maptp(final CommandSender commandSender, String name) {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
-            p.teleport(RealSkywars.getGameManager().getGame(name).getWorld().getSpawnLocation());
+            p.teleport(RealSkywars.getGameManager().getGame(name).getSWWorld().getWorld().getSpawnLocation());
         } else {
             commandSender.sendMessage(onlyPlayer);
         }
@@ -478,7 +478,7 @@ public class RealSkywarsCMD extends CommandBase {
     @SubCommand("settier")
     @Completion("#enum")
     @Permission("RealSkywars.Admin")
-    public void settier(final CommandSender commandSender, ChestManager.TierType tt) {
+    public void settier(final CommandSender commandSender, ChestManager.ChestTier tt) {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
             if (p.isInMatch()) {
@@ -496,7 +496,7 @@ public class RealSkywarsCMD extends CommandBase {
     @SubCommand("set2chest")
     @Completion({"#enum", "#boolean"})
     @Permission("RealSkywars.Admin")
-    public void setchest(final CommandSender commandSender, ChestManager.TierType tt, Boolean middle) {
+    public void setchest(final CommandSender commandSender, ChestManager.ChestTier tt, Boolean middle) {
         if (commandSender instanceof Player) {
             RealSkywars.getChestManager().set2Chest(tt, middle, Itens.getInventory(((Player) commandSender)));
             Text.send(commandSender, "Itens set for " + tt.name() + " (middle: " + middle + ")");
@@ -508,7 +508,7 @@ public class RealSkywarsCMD extends CommandBase {
     @SubCommand("gettier")
     @Completion({"#enum", "#boolean"})
     @Permission("RealSkywars.Admin")
-    public void gettier(final CommandSender commandSender, ChestManager.TierType tt, Boolean middle) {
+    public void gettier(final CommandSender commandSender, ChestManager.ChestTier tt, Boolean middle) {
         if (commandSender instanceof Player) {
             Player p = (Player) commandSender;
             RealSkywars.getChestManager().getChest(tt, middle).forEach(swChestItem -> p.getInventory().addItem(swChestItem.getItemStack()));

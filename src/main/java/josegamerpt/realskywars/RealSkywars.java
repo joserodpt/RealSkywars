@@ -21,7 +21,6 @@ import josegamerpt.realskywars.leaderboards.LeaderboardManager;
 import josegamerpt.realskywars.managers.*;
 import josegamerpt.realskywars.nms.*;
 import josegamerpt.realskywars.party.PartyManager;
-import josegamerpt.realskywars.player.EntityEvents;
 import josegamerpt.realskywars.player.PlayerEvents;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.utils.GUIBuilder;
@@ -243,8 +242,8 @@ public class RealSkywars extends JavaPlugin {
                 commandManager.getCompletionHandler().register("#boolean", input -> Arrays.asList("false", "true"));
                 commandManager.getCompletionHandler().register("#kits", input -> kitm.getKitNames());
 
-                commandManager.getParameterHandler().register(ChestManager.TierType.class, argument -> {
-                    ChestManager.TierType tt = ChestManager.TierType.valueOf(argument.toString().toUpperCase());
+                commandManager.getParameterHandler().register(ChestManager.ChestTier.class, argument -> {
+                    ChestManager.ChestTier tt = ChestManager.ChestTier.valueOf(argument.toString().toUpperCase());
                     if (tt == null) return new TypeResult(argument);
                     return new TypeResult(tt, argument);
                 });

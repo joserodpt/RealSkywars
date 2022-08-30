@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ChestManager {
 
-    public void set2Chest(ChestManager.TierType t, Boolean mid, List<ItemStack> itens) {
+    public void set2Chest(ChestTier t, Boolean mid, List<ItemStack> itens) {
         String header = "Itens.";
 
         int i = 0;
@@ -50,7 +50,7 @@ public class ChestManager {
         }
     }
 
-    public List<SWChestItem> getChest(ChestManager.TierType t, Boolean mid) {
+    public List<SWChestItem> getChest(ChestTier t, Boolean mid) {
         ArrayList<SWChestItem> ret = new ArrayList<>();
         String header = "Itens.";
         if (mid) {
@@ -85,9 +85,9 @@ public class ChestManager {
         return ret;
     }
 
-    public int getMaxItems(ChestManager.TierType tierType) {
+    public int getMaxItems(ChestTier chestTier) {
         String itens = "Max-Itens-Per-Chest";
-        switch (tierType) {
+        switch (chestTier) {
             case BASIC:
                 return BasicChest.file().getInt(itens);
             case NORMAL:
@@ -98,7 +98,7 @@ public class ChestManager {
         return 0;
     }
 
-    public enum TierType {
+    public enum ChestTier {
         BASIC, NORMAL, EPIC
     }
 }

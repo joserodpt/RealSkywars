@@ -104,7 +104,7 @@ public class ShopViewer {
                             }
 
                             if (e.getClick() == ClickType.RIGHT && current.cat == ShopManager.Categories.KITS) {
-                                p.getPlayer().closeInventory();
+                                p.closeInventory();
                                 GUIManager.openKitPreview(p, RealSkywars.getKitManager().getKit(a.getID()), 1);
                                 return;
                             }

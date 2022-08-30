@@ -58,4 +58,12 @@ public class SWWorld {
     public void clear() {
         this.wm.deleteWorld(this.getWorld().getName(), true);
     }
+
+    public void setTime(long l) {
+        this.world.setTime(l);
+    }
+
+    public String getName() {
+        return this.world != null ? this.world.getName() : this.worldName;
+    }
 }

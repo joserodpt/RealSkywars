@@ -183,8 +183,7 @@ public class MapManager {
         String s = g.getName();
 
         // World
-        Maps.file().set(s + ".world", g.getWorld().getName());
-
+        Maps.file().set(s + ".world", g.getSWWorld().getName());
 
         // Map Name
         Maps.file().set(s + ".name", s);
@@ -220,7 +219,7 @@ public class MapManager {
             Maps.file().set(s + ".Chests." + chestID + ".LocationX", chest.getLocation().getBlockX());
             Maps.file().set(s + ".Chests." + chestID + ".LocationY", chest.getLocation().getBlockY());
             Maps.file().set(s + ".Chests." + chestID + ".LocationZ", chest.getLocation().getBlockZ());
-            BlockFace f = ((Directional) chest.getChest().getBlockData()).getFacing();
+            BlockFace f = ((Directional) chest.getChestBlock().getBlockData()).getFacing();
             Maps.file().set(s + ".Chests." + chestID + ".Face", f.name());
             Maps.file().set(s + ".Chests." + chestID + ".Type", chest.getType().name());
             chestID++;

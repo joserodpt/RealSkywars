@@ -76,7 +76,7 @@ public class SWChest {
         if (!this.isChest()) {
             this.setChest();
         }
-        this.getChest().getInventory().clear();
+        ((Chest) this.getChestBlock().getState()).getInventory().clear();
         this.opened = false;
     }
 
@@ -88,8 +88,8 @@ public class SWChest {
         b.setBlockData(blockData);
     }
 
-    public Chest getChest() {
-        return (Chest) this.getLocation().getBlock().getState();
+    public Block getChestBlock() {
+        return this.getLocation().getBlock();
     }
 
     public Boolean isChest() {
@@ -99,7 +99,7 @@ public class SWChest {
     public void populate() {
         if (!isOpened() && isChest()) {
             this.opened = true;
-            Inventory inv = getChest().getInventory();
+            Inventory inv = ((Chest) getChestBlock().getState()).getInventory();
 
             List<ItemStack> tmp = new ArrayList<>();
             for (SWChestItem item : this.items) {
@@ -149,14 +149,14 @@ public class SWChest {
             }, () -> {
                 this.getLocation().getWorld().spawnParticle(Particle.CLOUD, this.getLocation().add(0.5, 0, 0.5), 5);
                 if (this.isChest()) {
-                    RealSkywars.getNMS().chestAnimation(this.getChest(), false);
+                    RealSkywars.getNMS().playChestAnimation(this.getChestBlock(), false);
                 }
                 this.clear();
                 this.hologram.deleteHologram();
             }, (t) -> {
                 this.hologram.setTime(t.getSecondsLeft());
                 if (this.isChest()) {
-                    RealSkywars.getNMS().chestAnimation(this.getChest(), true);
+                    RealSkywars.getNMS().playChestAnimation(this.getChestBlock(), true);
                 }
             });
 

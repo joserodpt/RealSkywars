@@ -13,6 +13,7 @@ import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.*;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -22,6 +23,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -33,8 +35,10 @@ public class Solo implements SWGameMode {
     private final int maxPlayers;
     private final int borderSize;
     private final ArrayList<RSWPlayer> inRoom = new ArrayList<>();
-    private final ArrayList<Integer> votes = new ArrayList<>();
-    private final ArrayList<UUID> voters = new ArrayList<>();
+    //votes
+    private final HashMap<UUID, Integer> chestVotes = new HashMap<>();
+    private final HashMap<UUID, Integer> projectileVotes = new HashMap<>();
+    private final HashMap<UUID, Integer> timeVotes = new HashMap<>();
     private final Location spectatorLocation;
     private final ArrayList<Cage> cages;
     private final Boolean ranked;
@@ -43,7 +47,7 @@ public class Solo implements SWGameMode {
     private final WorldBorder border;
     private BossBar bossBar;
     private SWGameMode.GameState state;
-    private ChestManager.TierType tierType = ChestManager.TierType.NORMAL;
+    private ChestManager.ChestTier chestTier = ChestManager.ChestTier.NORMAL;
     private int timePassed = 0;
     private Boolean specEnabled;
     private Boolean instantEnding;
@@ -52,6 +56,8 @@ public class Solo implements SWGameMode {
     private Countdown startRoomTimer;
     private Countdown winTimer;
     private BukkitTask timeCouterTask;
+    private ProjectileType projectileType = ProjectileType.NORMAL;
+    private TimeType timeType = TimeType.DAY;
 
     private ArrayList<SWEvent> events;
 
@@ -75,7 +81,9 @@ public class Solo implements SWGameMode {
         this.chests = chests;
         this.ranked = rankd;
 
-        this.votes.add(2);
+        this.chestVotes.put(UUID.randomUUID(), 2);
+        this.projectileVotes.put(UUID.randomUUID(), 1);
+        this.timeVotes.put(UUID.randomUUID(), 1);
 
         this.events = RealSkywars.getGameManager().parseEvents(this);
 
@@ -95,6 +103,11 @@ public class Solo implements SWGameMode {
     @Override
     public Countdown getStartRoomTimer() {
         return this.startRoomTimer;
+    }
+
+    @Override
+    public ProjectileType getProjectile() {
+        return this.projectileType;
     }
 
     @Override
@@ -151,8 +164,8 @@ public class Solo implements SWGameMode {
     }
 
     @Override
-    public World getWorld() {
-        return this.world.getWorld();
+    public SWWorld getSWWorld() {
+        return this.world;
     }
 
     public void kickPlayers(String msg) {
@@ -191,7 +204,7 @@ public class Solo implements SWGameMode {
                 case FINISHING:
                     return RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ALREADY_STARTED, true);
                 default:
-                    startGameFunction();
+                    this.startGameFunction();
                     return RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_MATCH_FORCESTART, true);
             }
         }
@@ -236,9 +249,32 @@ public class Solo implements SWGameMode {
     }
 
     @Override
-    public void addVote(UUID u, int i) {
-        this.voters.add(u);
-        this.votes.add(i);
+    public void addVote(UUID u, VoteType vt, int i) {
+        switch (vt) {
+            case CHESTS:
+                this.chestVotes.put(u, i);
+                break;
+            case PROJECTILES:
+                this.projectileVotes.put(u, i);
+                break;
+            case TIME:
+                this.timeVotes.put(u, i);
+                break;
+        }
+    }
+
+    @Override
+    public boolean hasVotedFor(VoteType vt, UUID uuid) {
+        switch (vt)
+        {
+            case CHESTS:
+                return this.chestVotes.containsKey(uuid);
+            case TIME:
+                return this.timeVotes.containsKey(uuid);
+            case PROJECTILES:
+                return this.projectileVotes.containsKey(uuid);
+        }
+        return false;
     }
 
     @Override
@@ -271,16 +307,39 @@ public class Solo implements SWGameMode {
 
         this.startRoomTimer.killTask();
 
-        int bigger = MathUtils.bigger(votes.stream().mapToInt(i -> i).toArray());
+        //chest calculate
+        int bigger = MathUtils.mostFrequentElement(this.chestVotes.values());
         switch (bigger) {
             case 1:
-                this.setTierType(ChestManager.TierType.BASIC, true);
+                this.setTierType(ChestManager.ChestTier.BASIC, true);
                 break;
             case 3:
-                this.setTierType(ChestManager.TierType.EPIC, true);
+                this.setTierType(ChestManager.ChestTier.EPIC, true);
                 break;
             default:
-                this.setTierType(ChestManager.TierType.NORMAL, true);
+                this.setTierType(ChestManager.ChestTier.NORMAL, true);
+                break;
+        }
+
+        //projectile calculate
+        bigger = MathUtils.mostFrequentElement(this.projectileVotes.values());
+        if (bigger == 2) {
+            this.setProjectiles(ProjectileType.BREAK_BLOCKS);
+        } else {
+            this.setProjectiles(ProjectileType.NORMAL);
+        }
+
+        //time calculate
+        bigger = MathUtils.mostFrequentElement(this.timeVotes.values());
+        switch (bigger) {
+            case 2:
+                this.setTime(TimeType.SUNSET);
+                break;
+            case 3:
+                this.setTime(TimeType.NIGHT);
+                break;
+            default:
+                this.setTime(TimeType.DAY);
                 break;
         }
 
@@ -292,7 +351,7 @@ public class Solo implements SWGameMode {
 
                 //start msg
                 for (String s : Text.color(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.ARENA_START))) {
-                    p.sendCenterMessage(s.replace("%chests%", this.tierType.name()).replace("%kit%", p.getKit().getName()));
+                    p.sendCenterMessage(s.replace("%chests%", WordUtils.capitalizeFully(this.chestTier.name())).replace("%kit%", p.getKit().getName()).replace("%project%", WordUtils.capitalizeFully(this.projectileType.name().replace("_", " "))).replace("%time%", WordUtils.capitalizeFully(this.timeType.name())));
                 }
 
                 if (p.hasKit()) {
@@ -379,7 +438,7 @@ public class Solo implements SWGameMode {
 
     @Override
     public Location getSpectatorLocation() {
-        return new Location(this.world.getWorld(), this.spectatorLocation.getBlockX(), this.spectatorLocation.getBlockY(), this.spectatorLocation.getBlockZ());
+        return new Location(this.getSWWorld().getWorld(), this.spectatorLocation.getBlockX(), this.spectatorLocation.getBlockY(), this.spectatorLocation.getBlockZ());
     }
 
     @Override
@@ -390,11 +449,6 @@ public class Solo implements SWGameMode {
     @Override
     public Location getPOS2() {
         return this.arenaCuboid.getPOS2();
-    }
-
-    @Override
-    public ArrayList<UUID> getVoters() {
-        return this.voters;
     }
 
     public void addPlayer(RSWPlayer p) {
@@ -502,17 +556,37 @@ public class Solo implements SWGameMode {
         return this.instantEnding;
     }
 
-    public ChestManager.TierType getTierType() {
-        return this.tierType;
+    public ChestManager.ChestTier getChestTier() {
+        return this.chestTier;
     }
 
-    public void setTierType(ChestManager.TierType b, Boolean updateChests) {
-        this.tierType = b;
+    public void setTierType(ChestManager.ChestTier b, Boolean updateChests) {
+        this.chestTier = b;
         if (updateChests) {
-            this.chests.forEach(swChest -> swChest.setLoot(RealSkywars.getChestManager().getChest(this.tierType, swChest.isMiddle()), RealSkywars.getChestManager().getMaxItems(this.tierType)));
+            this.chests.forEach(swChest -> swChest.setLoot(RealSkywars.getChestManager().getChest(this.chestTier, swChest.isMiddle()), RealSkywars.getChestManager().getMaxItems(this.chestTier)));
         }
     }
 
+    @Override
+    public void setTime(TimeType tt) {
+        this.timeType = tt;
+        switch (this.timeType) {
+            case DAY:
+                this.world.setTime(1000);
+                break;
+            case NIGHT:
+                this.world.setTime(13000);
+                break;
+            case SUNSET:
+                this.world.setTime(12000);
+                break;
+        }
+    }
+
+    @Override
+    public void setProjectiles(ProjectileType pt) {
+        this.projectileType = pt;
+    }
     public int getTimePassed() {
         return this.timePassed;
     }
@@ -531,14 +605,21 @@ public class Solo implements SWGameMode {
         }
         if (this.startRoomTimer != null) {
             this.startRoomTimer.killTask();
+            this.startRoomTimer = null;
         }
 
         this.world.resetWorld();
 
         this.inRoom.clear();
-        this.voters.clear();
-        this.votes.clear();
-        this.votes.add(2);
+
+        this.chestVotes.clear();
+        this.projectileVotes.clear();
+        this.timeVotes.clear();
+
+        this.chestVotes.put(UUID.randomUUID(), 2);
+        this.projectileVotes.put(UUID.randomUUID(), 1);
+        this.timeVotes.put(UUID.randomUUID(), 1);
+
         this.bossBar = Bukkit.createBossBar(Text.color(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_WAIT)), BarColor.WHITE, BarStyle.SOLID);
 
         this.events = RealSkywars.getGameManager().parseEvents(this);
@@ -584,11 +665,11 @@ public class Solo implements SWGameMode {
                 //laser to cage
                 new Demolition(this.getSpectatorLocation(), p.getCage(), 5, 3).start(RealSkywars.getPlugin());
 
-                sendLog(p);
+                this.sendLog(p);
 
                 RealSkywars.getPlayerManager().sendClick(p, this.getGameMode());
 
-                checkWin();
+                this.checkWin();
                 break;
             case EXTERNAL:
                 this.inRoom.add(p);
@@ -624,8 +705,8 @@ public class Solo implements SWGameMode {
 
     private void sendLog(RSWPlayer p) {
         if (p.getPlayer() != null) {
-            for (String s : Text.color(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.END_LOG))) {
-                p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE, this.isRanked()) + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, this.isRanked()) + "").replace("%time%", this.startTimer.getTotalSeconds() + ""));
+            for (String s : Text.color(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.ARENA_END))) {
+                p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE, this.isRanked()) + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, this.isRanked()) + "").replace("%time%", this.startTimer.getPassedSeconds()+ "s"));
             }
             p.saveData();
         }

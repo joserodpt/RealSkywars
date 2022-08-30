@@ -36,7 +36,7 @@ public class PlayerManager {
                     break;
                 case CAGE:
                     p.getInventory().setItem(1, getItem(pg, Items.KIT));
-                    p.getInventory().setItem(4, getItem(pg, Items.CHESTS));
+                    p.getInventory().setItem(4, getItem(pg, Items.VOTE));
                     p.getInventory().setItem(7, getItem(pg, Items.LEAVE));
                     break;
                 case SPECTATOR:
@@ -71,8 +71,8 @@ public class PlayerManager {
                 return Itens.createItem(Material.EMERALD, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_SHOP_NAME, false));
             case LEAVE:
                 return Itens.createItem(Material.MINECART, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_LEAVE_NAME, false));
-            case CHESTS:
-                return Itens.createItem(Material.ENDER_CHEST, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_CHESTS_NAME, false));
+            case VOTE:
+                return Itens.createItem(Material.HOPPER, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_VOTE_NAME, false));
             case SPECTATE:
                 return Itens.createItem(Material.MAP, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_SPECTATE_NAME, false));
             case PLAYAGAIN:
@@ -270,5 +270,5 @@ public class PlayerManager {
 
     public enum Modes {SOLO, SOLO_RANKED, TEAMS, TEAMS_RANKED, RANKED, ALL}
 
-    public enum Items {LOBBY, CAGE, SETUP, SPECTATOR, PROFILE, CAGESET, MAPS, SHOP, LEAVE, CHESTS, SPECTATE, KIT, PLAYAGAIN, CHEST1, CHEST2}
+    public enum Items {LOBBY, CAGE, SETUP, SPECTATOR, PROFILE, CAGESET, MAPS, SHOP, LEAVE, VOTE, SPECTATE, KIT, PLAYAGAIN, CHEST1, CHEST2}
 }

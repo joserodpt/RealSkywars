@@ -75,6 +75,9 @@ public class Countdown implements Runnable {
     public int getTotalSeconds() {
         return this.seconds;
     }
+    public int getPassedSeconds() {
+        return this.getTotalSeconds() - this.secondsLeft;
+    }
 
     /**
      * Gets the seconds left this timer should run

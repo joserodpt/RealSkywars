@@ -24,7 +24,6 @@ public class GameManager {
 
     public Boolean endingGames = false;
     private final ArrayList<SWGameMode> games = new ArrayList<>();
-    private final Boolean lobbyScoreboard = true;
     private Location lobbyLOC;
     private Boolean loginTP = true;
 
@@ -138,6 +137,7 @@ public class GameManager {
     }
 
     public boolean scoreboardInLobby() {
+        Boolean lobbyScoreboard = true;
         return lobbyScoreboard;
     }
 
@@ -232,5 +232,23 @@ public class GameManager {
                 }
             }
         }
+    }
+
+    public boolean isInGame(World world) {
+        for (SWGameMode sw : this.games) {
+            if (sw.getSWWorld().getWorld().equals(world)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public SWGameMode getMatch(World world) {
+        for (SWGameMode sw : this.games) {
+            if (sw.getSWWorld().getWorld().equals(world)) {
+                return sw;
+            }
+        }
+        return null;
     }
 }

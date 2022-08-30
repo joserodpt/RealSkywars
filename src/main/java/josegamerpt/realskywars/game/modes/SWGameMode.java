@@ -5,11 +5,11 @@ import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.game.SWEvent;
+import josegamerpt.realskywars.game.SWWorld;
 import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.ArenaCuboid;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.boss.BossBar;
 
@@ -21,12 +21,24 @@ public interface SWGameMode {
 
 	Countdown getStartRoomTimer();
 
+	ProjectileType getProjectile();
+
 	enum GameState {
 		AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING
 	}
 
 	enum Mode {
 		SOLO, TEAMS
+	}
+
+	enum VoteType {
+		CHESTS, PROJECTILES, TIME
+	}
+	enum ProjectileType {
+		NORMAL, BREAK_BLOCKS
+	}
+	enum TimeType {
+		DAY, NIGHT, SUNSET
 	}
 
 	Boolean isRanked();
@@ -53,7 +65,7 @@ public interface SWGameMode {
 
 	List<RSWPlayer> getSpectators();
 
-	World getWorld();
+	SWWorld getSWWorld();
 
 	void kickPlayers(String msg);
 
@@ -71,9 +83,9 @@ public interface SWGameMode {
 
 	Location getPOS2();
 
-	void setTierType(ChestManager.TierType b, Boolean updateChests);
-
-	ArrayList<UUID> getVoters();
+	void setTierType(ChestManager.ChestTier b, Boolean updateChests);
+	void setTime(TimeType tt);
+	void setProjectiles(ProjectileType pt);
 
 	void addPlayer(RSWPlayer gp);
 
@@ -81,7 +93,7 @@ public interface SWGameMode {
 
 	boolean isInstantEndEnabled();
 
-	ChestManager.TierType getTierType();
+	ChestManager.ChestTier getChestTier();
 
 	int getTimePassed();
 
@@ -113,9 +125,10 @@ public interface SWGameMode {
 
 	int getBorderSize();
 
-	void addVote(UUID u, int i);
+	void addVote(UUID u, VoteType vt, int i);
+	boolean hasVotedFor(VoteType vt, UUID uuid);
 
-    ArrayList<SWChest> getChests();
+	ArrayList<SWChest> getChests();
 
 	ArrayList<SWEvent> getEvents();
 	int getMaxTime();

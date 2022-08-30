@@ -140,7 +140,7 @@ public class PlayerEvents implements Listener {
                                     e.setCancelled(true);
                                     gp.getMatch().removePlayer(gp);
                                     break;
-                                case ENDER_CHEST:
+                                case HOPPER:
                                     e.setCancelled(true);
 
                                     if (gp.getMatch().getStartRoomTimer() != null) {
@@ -196,6 +196,9 @@ public class PlayerEvents implements Listener {
                     event.setCancelled(true);
                     break;
             }
+        }
+        if (RealSkywars.getGameManager().isInLobby(event.getBlock().getWorld())) {
+            event.setCancelled(true);
         }
     }
 
@@ -308,6 +311,7 @@ public class PlayerEvents implements Listener {
                     }
 
                 } else {
+                    e.setCancelled(true);
                     damaged.heal();
                     RealSkywars.getGameManager().tpToLobby(damaged);
                 }
@@ -402,7 +406,6 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
         RSWPlayer p = RealSkywars.getPlayerManager().getPlayer(e.getPlayer());
-
         if (p != null) {
             p.leave();
         }
@@ -429,7 +432,7 @@ public class PlayerEvents implements Listener {
                 Chest c = (Chest) event.getInventory().getHolder();
                 SWChest swc = p.getMatch().getChest(c.getLocation());
                 if (swc != null && swc.isOpened()) {
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> RealSkywars.getNMS().chestAnimation(swc.getChest(), true), 2);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> RealSkywars.getNMS().playChestAnimation(swc.getChestBlock(), true), 2);
                 }
             }
         }

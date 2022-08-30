@@ -130,7 +130,7 @@ public class MapsViewer {
                         break;
                 }
 
-                gp.getPlayer().closeInventory();
+                gp.closeInventory();
                 MapsViewer v = new MapsViewer(gp, gp.getMapViewerPref(), RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.MAPS_NAME, false));
                 v.openInventory(gp);
                 gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
