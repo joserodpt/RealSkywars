@@ -206,7 +206,7 @@ public class PlayerManager {
     }
 
     public int getPlayingPlayers(Modes pt) {
-        return RealSkywars.getGameManager().getGames(pt).stream().mapToInt(SWGameMode::getPlayersCount).sum();
+        return RealSkywars.getGameManager().getGames(pt).stream().mapToInt(SWGameMode::getPlayerCount).sum();
     }
 
     public void stopScoreboards() {

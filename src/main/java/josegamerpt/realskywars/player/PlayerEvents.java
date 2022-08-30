@@ -197,7 +197,7 @@ public class PlayerEvents implements Listener {
                     break;
             }
         }
-        if (RealSkywars.getGameManager().isInLobby(event.getBlock().getWorld())) {
+        if (RealSkywars.getGameManager().isInLobby(event.getBlock().getWorld()) && !p.getPlayer().isOp()) {
             event.setCancelled(true);
         }
     }

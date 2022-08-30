@@ -45,12 +45,12 @@ public class PartyManager {
     }
 
     public boolean checkForParties(RSWPlayer p, SWGameMode swgm) {
-        int current = 0, max = 0, toAdd = 0;
+        int current, max, toAdd;
 
         boolean result;
         if (p.hasParty()) {
             if (p.getParty().isOwner(p)) {
-                current = swgm.getPlayersCount();
+                current = swgm.getPlayerCount();
                 max = swgm.getMaxPlayers();
 
                 toAdd = current + p.getParty().getMembers().size() + 1; //1 = owner of the party

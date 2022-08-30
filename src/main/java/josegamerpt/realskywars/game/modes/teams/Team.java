@@ -39,7 +39,7 @@ public class Team {
         p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.TEAM_JOIN, true).replace("%team%", getName()));
     }
 
-    public void removePlayer(RSWPlayer p) {
+    public void removeMember(RSWPlayer p) {
         this.members.remove(p);
 
         this.members.forEach(rswPlayer -> rswPlayer.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.TEAM_BROADCAST_LEAVE, true).replace("%player%", p.getName())));

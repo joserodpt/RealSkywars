@@ -149,8 +149,10 @@ public class RSWPlayer {
 
     public void spawnAbovePlayer(Class c) {
         if (this.p != null) {
-            Entity tnt = this.getWorld().spawn(this.getLocation().add(0, 3, 0), c);
-            ((TNTPrimed) tnt).setFuseTicks(60);
+            Entity ent = this.getWorld().spawn(this.getLocation().add(0, 3, 0), c);
+            if (ent instanceof TNTPrimed) {
+                ((TNTPrimed) ent).setFuseTicks(60);
+            }
         }
     }
 
@@ -620,6 +622,19 @@ public class RSWPlayer {
         }
     }
 
+    public void setBarNumber(int xp) {
+        p.setLevel(xp);
+        p.setExp(xp);
+    }
+
+    public void setBarNumber(int xp, int max) {
+        if (xp != 0 && max != 0) {
+            p.setLevel(xp);
+            float div = (float) xp / (float) max;
+            p.setExp(div);
+        }
+    }
+
     //ENUMs
 
     public enum PlayerState {
@@ -680,8 +695,8 @@ public class RSWPlayer {
                 this.show.forEach(rswPlayer -> this.player.showPlayer(RealSkywars.getPlugin(), rswPlayer));
 
                 if (this.player.isInMatch()) {
-                    String header = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", RealSkywars.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL) + "");
-                    String footer = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", RealSkywars.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL) + "");
+                    String header = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", this.player.getMatch().getPlayerCount() + "");
+                    String footer = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", this.player.getMatch().getPlayerCount() + "");
 
                     this.setHeaderFooter(header, footer);
                 } else {
@@ -713,7 +728,7 @@ public class RSWPlayer {
         protected String variables(String s, RSWPlayer gp) {
             if (gp.isInMatch()) {
                 return s.replace("%space%", Text.makeSpace())
-                        .replace("%players%", gp.getMatch().getPlayersCount() + "")
+                        .replace("%players%", gp.getMatch().getPlayerCount() + "")
                         .replace("%nextevent%", nextEvent(gp.getMatch()))
                         .replace("%spectators%", gp.getMatch().getSpectatorsCount() + "")
                         .replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, gp.getMatch().isRanked()) + "")

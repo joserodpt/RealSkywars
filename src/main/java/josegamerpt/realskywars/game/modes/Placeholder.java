@@ -66,7 +66,7 @@ public class Placeholder implements SWGameMode {
         return null;
     }
 
-    public int getPlayersCount() {
+    public int getPlayerCount() {
         return 0;
     }
 

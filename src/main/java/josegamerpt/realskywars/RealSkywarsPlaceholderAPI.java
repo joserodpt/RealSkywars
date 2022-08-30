@@ -13,7 +13,7 @@ import java.util.Locale;
  */
 public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
 
-    private RealSkywars plugin;
+    private final RealSkywars plugin;
 
     /**
      * Since we register the expansion inside our own plugin, we
@@ -90,8 +90,6 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, String identifier){
-
-
         switch (identifier.toLowerCase(Locale.ROOT))
         {
             case "playing":

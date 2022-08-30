@@ -282,11 +282,12 @@ public class RealSkywars extends JavaPlugin {
 
                 //placeholderAPI support
                 if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+                    RealSkywars.log("Hooked on PlaceholderAPI!");
                     new RealSkywarsPlaceholderAPI(this).register();
                 }
 
                 //refresh leaderboards
-                Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> lbm.refreshLeaderboards(), Config.file().getInt("Config.Refresh-Leaderboards"), Config.file().getInt("Config.Refresh-Leaderboards"));
+                Bukkit.getScheduler().scheduleSyncRepeatingTask(this, lbm::refreshLeaderboards, Config.file().getInt("Config.Refresh-Leaderboards"), Config.file().getInt("Config.Refresh-Leaderboards"));
 
                 long elapsedTimeMillis = System.currentTimeMillis() - start;
 
@@ -358,6 +359,8 @@ public class RealSkywars extends JavaPlugin {
         Shops.reload();
         Kits.reload();
         kitm.loadKits();
+
+        lbm.refreshLeaderboards();
 
         mapm.loadMaps();
         gamem.loadLobby();

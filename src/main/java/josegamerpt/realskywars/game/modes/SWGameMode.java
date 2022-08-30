@@ -55,7 +55,7 @@ public interface SWGameMode {
 
 	WorldBorder getBorder();
 
-	int getPlayersCount();
+	int getPlayerCount();
 
 	ArrayList<RSWPlayer> getPlayers();
 

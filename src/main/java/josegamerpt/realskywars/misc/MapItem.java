@@ -25,8 +25,8 @@ public class MapItem {
         if (this.g.isPlaceHolder()) {
             this.icon = Itens.createItem(Material.BUCKET, count, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_NOTFOUND_TITLE, false));
         } else {
-            if (this.g.getPlayersCount() > 0) {
-                count = this.g.getPlayersCount();
+            if (this.g.getPlayerCount() > 0) {
+                count = this.g.getPlayerCount();
             }
 
             this.icon = Itens.createItemLore(getStateMaterial(), count, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(this.g.isRanked()), variableList(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.ITEMS_MAP_DESCRIPTION)));
@@ -40,7 +40,7 @@ public class MapItem {
     private ArrayList<String> variableList(ArrayList<String> list) {
         ArrayList<String> a = new ArrayList<>();
         for (String s : list) {
-            a.add(s.replace("%players%", this.g.getPlayersCount() + "").replace("%maxplayers%", this.g.getMaxPlayers() + ""));
+            a.add(s.replace("%players%", this.g.getPlayerCount() + "").replace("%maxplayers%", this.g.getMaxPlayers() + ""));
         }
         return a;
     }
