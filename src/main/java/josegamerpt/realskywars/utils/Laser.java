@@ -900,7 +900,7 @@ public abstract class Laser {
             Object[] packets;
             if (version == 17 && versionMinor == 0) {
                 packets = new Object[entitiesId.length];
-                for (int i = 0; i < entitiesId.length; i++) {
+                for (int i = 0; i < entitiesId.length; ++i) {
                     packets[i] = packetRemove.newInstance(entitiesId[i]);
                 }
             } else {

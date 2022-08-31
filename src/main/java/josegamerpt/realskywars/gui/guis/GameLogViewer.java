@@ -1,14 +1,12 @@
 package josegamerpt.realskywars.gui.guis;
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.game.modes.SWGameMode;
+import josegamerpt.realskywars.gui.GUIManager;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.misc.MapItem;
-import josegamerpt.realskywars.misc.Selections;
+import josegamerpt.realskywars.player.RSWGameLog;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Pagination;
-import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -24,28 +22,28 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class MapsViewer {
+public class GameLogViewer {
 
-    private static final Map<UUID, MapsViewer> inventories = new HashMap<>();
-    int pageNumber = 0;
-    Pagination<SWGameMode> p;
-    private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
+    static final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
+    private static final Map<UUID, GameLogViewer> inventories = new HashMap<>();
     private final Inventory inv;
     private final UUID uuid;
-    private final RSWPlayer gp;
-    private final HashMap<Integer, SWGameMode> display = new HashMap<>();
-    private final Selections.MapViewerPref selMap;
+    private final HashMap<Integer, RSWGameLog> display = new HashMap<>();
+    int pageNumber = 0;
+    Pagination<RSWGameLog> p;
 
-    public MapsViewer(RSWPlayer as, Selections.MapViewerPref t, String invName) {
-        this.uuid = as.getUUID();
-        inv = Bukkit.getServer().createInventory(null, 54, Text.color(invName) + ": " + RealSkywars.getLanguageManager().getString(as, select(t), false));
+    public GameLogViewer(RSWPlayer p) {
+        this.uuid = p.getUUID();
+        this.inv = Bukkit.getServer().createInventory(null, 54, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_GAME_HISTORY, false));
 
-        gp = as;
-        this.selMap = t;
-        List<SWGameMode> items = RealSkywars.getGameManager().getRoomsWithSelection(t);
+        ArrayList<RSWGameLog> items = p.getGamesList();
 
-        p = new Pagination<>(28, items);
-        fillChest(p.getPage(pageNumber), as);
+        if (items.size() == 0) {
+            items.add(new RSWGameLog());
+        }
+
+        this.p = new Pagination<>(28, items);
+        fillChest(this.p.getPage(this.pageNumber));
 
         this.register();
     }
@@ -61,7 +59,7 @@ public class MapsViewer {
                     }
                     UUID uuid = clicker.getUniqueId();
                     if (inventories.containsKey(uuid)) {
-                        MapsViewer current = inventories.get(uuid);
+                        GameLogViewer current = inventories.get(uuid);
                         if (e.getInventory().getHolder() != current.getInventory().getHolder()) {
                             return;
                         }
@@ -71,7 +69,11 @@ public class MapsViewer {
 
                         switch (e.getRawSlot()) {
                             case 49:
-                                selectNext(p);
+                                clicker.closeInventory();
+                                if (inventories.containsKey(uuid)) {
+                                    inventories.get(uuid).unregister();
+                                }
+                                GUIManager.openPlayerMenu(p);
                                 break;
                             case 26:
                             case 35:
@@ -90,66 +92,27 @@ public class MapsViewer {
                         }
 
                         if (current.display.containsKey(e.getRawSlot())) {
-                            SWGameMode a = current.display.get(e.getRawSlot());
-                            if (!a.isPlaceHolder()) {
-                                a.addPlayer(p);
-                            }
+                            RSWGameLog a = current.display.get(e.getRawSlot());
+
                         }
                     }
                 }
             }
 
-            private void selectNext(RSWPlayer gp) {
-                switch (gp.getMapViewerPref()) {
-                    case MAPV_ALL:
-                        gp.setMapViewerPref(Selections.MapViewerPref.MAPV_AVAILABLE);
-                        break;
-                    case MAPV_AVAILABLE:
-                        gp.setMapViewerPref(Selections.MapViewerPref.MAPV_WAITING);
-                        break;
-                    case MAPV_WAITING:
-                        gp.setMapViewerPref(Selections.MapViewerPref.MAPV_STARTING);
-                        break;
-                    case MAPV_STARTING:
-                        gp.setMapViewerPref(Selections.MapViewerPref.MAPV_SPECTATE);
-                        break;
-                    case MAPV_SPECTATE:
-                        gp.setMapViewerPref(Selections.MapViewerPref.SOLO);
-                        break;
-                    case SOLO:
-                        gp.setMapViewerPref(Selections.MapViewerPref.SOLO_RANKED);
-                        break;
-                    case SOLO_RANKED:
-                        gp.setMapViewerPref(Selections.MapViewerPref.TEAMS);
-                        break;
-                    case TEAMS:
-                        gp.setMapViewerPref(Selections.MapViewerPref.TEAMS_RANKED);
-                        break;
-                    case TEAMS_RANKED:
-                        gp.setMapViewerPref(Selections.MapViewerPref.MAPV_ALL);
-                        break;
-                }
-
-                gp.closeInventory();
-                MapsViewer v = new MapsViewer(gp, gp.getMapViewerPref(), RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.MAPS_NAME, false));
-                v.openInventory(gp);
-                gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-            }
-
-            private void backPage(MapsViewer asd) {
+            private void backPage(GameLogViewer asd) {
                 if (asd.p.exists(asd.pageNumber - 1)) {
                     asd.pageNumber--;
                 }
 
-                asd.fillChest(asd.p.getPage(asd.pageNumber), asd.gp);
+                asd.fillChest(asd.p.getPage(asd.pageNumber));
             }
 
-            private void nextPage(MapsViewer asd) {
+            private void nextPage(GameLogViewer asd) {
                 if (asd.p.exists(asd.pageNumber + 1)) {
                     asd.pageNumber++;
                 }
 
-                asd.fillChest(asd.p.getPage(asd.pageNumber), asd.gp);
+                asd.fillChest(asd.p.getPage(asd.pageNumber));
             }
 
             @EventHandler
@@ -162,6 +125,7 @@ public class MapsViewer {
                     UUID uuid = p.getUniqueId();
                     if (inventories.containsKey(uuid)) {
                         inventories.get(uuid).unregister();
+
                     }
                 }
             }
@@ -176,50 +140,15 @@ public class MapsViewer {
         return pageNumber == 0;
     }
 
-    private LanguageManager.TS select(Selections.MapViewerPref t) {
-        switch (t) {
-            case MAPV_ALL:
-                return LanguageManager.TS.MAP_ALL;
-            case MAPV_WAITING:
-                return LanguageManager.TS.MAP_WAITING;
-            case MAPV_SPECTATE:
-                return LanguageManager.TS.MAP_SPECTATE;
-            case MAPV_STARTING:
-                return LanguageManager.TS.MAP_STARTING;
-            case MAPV_AVAILABLE:
-                return LanguageManager.TS.MAP_AVAILABLE;
-            case SOLO:
-                return LanguageManager.TS.SOLO;
-            case SOLO_RANKED:
-                return LanguageManager.TS.SOLO_RANKED;
-            case TEAMS_RANKED:
-                return LanguageManager.TS.TEAMS_RANKED;
-            case TEAMS:
-                return LanguageManager.TS.TEAMS;
-        }
-        return null;
-    }
+    public void fillChest(List<RSWGameLog> items) {
 
-    public void openInventory(RSWPlayer player) {
-        Inventory inv = getInventory();
-        InventoryView openInv = player.getPlayer().getOpenInventory();
-        if (openInv != null) {
-            Inventory openTop = player.getPlayer().getOpenInventory().getTopInventory();
-            if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
-                openTop.setContents(inv.getContents());
-            } else {
-                player.getPlayer().openInventory(inv);
-            }
-        }
-    }
-
-    public void fillChest(List<SWGameMode> items, RSWPlayer p) {
         inv.clear();
-        display.clear();
 
         for (int i = 0; i < 9; ++i) {
             inv.setItem(i, placeholder);
         }
+
+        display.clear();
 
         inv.setItem(45, placeholder);
         inv.setItem(46, placeholder);
@@ -251,21 +180,33 @@ public class MapsViewer {
             inv.setItem(35, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
         }
 
+        inv.setItem(49, Itens.createItemLore(Material.CHEST, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_MENU_TITLE), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_MENU_DESC))));
+
         int slot = 0;
         for (ItemStack i : inv.getContents()) {
             if (i == null) {
                 if (items.size() != 0) {
-                    SWGameMode s = items.get(0);
-                    MapItem a = new MapItem(s, p);
-                    inv.setItem(slot, a.geIcon());
+                    RSWGameLog s = items.get(0);
+                    inv.setItem(slot, s.getItem());
                     display.put(slot, s);
                     items.remove(0);
                 }
             }
             slot++;
         }
+    }
 
-        inv.setItem(49, Itens.createItemLore(Material.COMPARATOR, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_FILTER_TITLE), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_FILTER_DESC))));
+    public void openInventory(RSWPlayer player) {
+        Inventory inv = getInventory();
+        InventoryView openInv = player.getPlayer().getOpenInventory();
+        if (openInv != null) {
+            Inventory openTop = player.getPlayer().getOpenInventory().getTopInventory();
+            if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
+                openTop.setContents(inv.getContents());
+            } else {
+                player.getPlayer().openInventory(inv);
+            }
+        }
     }
 
     public Inventory getInventory() {

@@ -147,7 +147,7 @@ public class AchievementViewer {
 
         inv.clear();
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; ++i) {
             inv.setItem(i, placeholder);
         }
 

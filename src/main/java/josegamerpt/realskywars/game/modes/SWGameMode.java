@@ -23,6 +23,8 @@ public interface SWGameMode {
 
 	ProjectileType getProjectile();
 
+	void setRanked(Boolean ranked);
+
 	enum GameState {
 		AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING
 	}

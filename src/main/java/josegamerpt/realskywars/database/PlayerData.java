@@ -69,6 +69,17 @@ public class PlayerData {
     @DatabaseField(columnName = "bought_items")
     private String bought_items;
 
+    @DatabaseField(columnName = "games_list")
+    private String games_list;
+
+    public String getGames_list() {
+        return this.games_list;
+    }
+
+    public void setGames_list(String games_list) {
+        this.games_list = games_list;
+    }
+
     public String getName()
     {
         return this.name;

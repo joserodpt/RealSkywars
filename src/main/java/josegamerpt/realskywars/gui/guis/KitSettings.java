@@ -43,7 +43,7 @@ public class KitSettings {
 
         inv = Bukkit.getServer().createInventory(null, 27, Text.color(g.getName() + " Settings"));
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; ++i) {
             inv.setItem(i, placeholder);
         }
 

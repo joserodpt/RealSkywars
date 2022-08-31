@@ -3,6 +3,7 @@ package josegamerpt.realskywars.gui;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.gui.guis.AchievementViewer;
+import josegamerpt.realskywars.gui.guis.GameLogViewer;
 import josegamerpt.realskywars.gui.guis.ProfileContent;
 import josegamerpt.realskywars.gui.guis.ShopViewer;
 import josegamerpt.realskywars.kits.Kit;
@@ -58,7 +59,7 @@ public class GUIManager {
                     p.teleport(s.getPlayer().getLocation());
                     p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.COMPASS_TELEPORT, true).replace("%name%", s.getDisplayName()));
                 }, Itens.addLore(Itens.getHead(s.getPlayer(), 1, "&b" + s.getDisplayName()), Collections.singletonList("&c" + String.format("%.2f", s.getPlayer().getHealth()))), i);
-                i++;
+                ++i;
             }
         }
         inventory.openInventory(p.getPlayer());
@@ -85,7 +86,7 @@ public class GUIManager {
                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ALREADY_VOTED, true));
             } else {
                 if (p.getPlayer().hasPermission("RealSkywars.Normal")) {
-                    p.getMatch().addVote(p.getUUID(), SWGameMode.VoteType.CHESTS,2);
+                    p.getMatch().addVote(p.getUUID(), SWGameMode.VoteType.CHESTS, 2);
                     p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.VOTE, true).replace("%thing%", RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CHEST_NORMAL, false)));
                 } else {
                     p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_NOPERM, true));
@@ -230,7 +231,7 @@ public class GUIManager {
         int i = 0;
         for (String s : RealSkywars.getLanguageManager().getLanguages()) {
             inventory.addItem(e -> RealSkywars.getPlayerManager().setLanguage(p, s), Itens.createItemLore(Material.BOOK, 1, "&b" + s, Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_LANG_SELECT, false))), i);
-            i++;
+            ++i;
 
         }
 
@@ -282,7 +283,14 @@ public class GUIManager {
                 GUIManager.openLanguage(p);
             }, Itens.createItemLore(Material.BOOK, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_LANG_TITLE, false), Collections.singletonList("&f> " + p.getLanguage())), 30);
 
-            inventory.addItem(e -> p.resetData(), Itens.createItemLore(Material.BARRIER, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_RESET_TITLE, false), Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_RESET_ALERT, false))), 32);
+            inventory.addItem(e -> p.resetData(), Itens.createItemLore(Material.BARRIER, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_RESET_TITLE, false), Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_RESET_ALERT, false))), 44);
+
+            inventory.addItem(e -> {
+                p.closeInventory();
+                GameLogViewer v = new GameLogViewer(p);
+                v.openInventory(p);
+            }, Itens.createItemLore(Material.FILLED_MAP, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_GAME_HISTORY, false), Collections.singletonList(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 32);
+
         }
 
         inventory.openInventory(p.getPlayer());
@@ -331,7 +339,7 @@ public class GUIManager {
             if (content != null) {
                 inventory.addItem(event -> {
                 }, content, i);
-                i++;
+                ++i;
             }
         }
 

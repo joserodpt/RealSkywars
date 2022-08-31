@@ -265,7 +265,7 @@ public class FastBoard {
             List<String> newLines = new ArrayList<>(this.lines);
 
             if (line > size()) {
-                for (int i = size(); i < line; i++) {
+                for (int i = size(); i < line; ++i) {
                     newLines.add("");
                 }
             }
@@ -345,7 +345,7 @@ public class FastBoard {
                         oldLines.remove(0);
                     }
                 } else {
-                    for (int i = oldLinesCopy.size(); i < linesSize; i++) {
+                    for (int i = oldLinesCopy.size(); i < linesSize; ++i) {
                         sendScorePacket(i, ScoreboardAction.CHANGE);
                         sendTeamPacket(i, TeamMode.CREATE);
 
@@ -354,7 +354,7 @@ public class FastBoard {
                 }
             }
 
-            for (int i = 0; i < linesSize; i++) {
+            for (int i = 0; i < linesSize; ++i) {
                 if (!Objects.equals(getLineByScore(oldLines, i), getLineByScore(i))) {
                     sendTeamPacket(i, TeamMode.UPDATE);
                 }
@@ -408,7 +408,7 @@ public class FastBoard {
      */
     public void delete() {
         try {
-            for (int i = 0; i < this.lines.size(); i++) {
+            for (int i = 0; i < this.lines.size(); ++i) {
                 sendTeamPacket(i, TeamMode.REMOVE);
             }
 

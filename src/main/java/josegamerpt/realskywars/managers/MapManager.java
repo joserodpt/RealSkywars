@@ -34,6 +34,7 @@ public class MapManager {
     public static void saveSettings(SWGameMode game) {
         Maps.file().set(game.getName() + ".Settings.Spectator", game.isSpectatorEnabled());
         Maps.file().set(game.getName() + ".Settings.Instant-End", game.isInstantEndEnabled());
+        Maps.file().set(game.getName() + ".ranked", game.isRanked());
         Maps.save();
     }
 
@@ -123,7 +124,7 @@ public class MapManager {
     }
 
     private Boolean isInstantEndingEnabled(String s) {
-        return Maps.file().getBoolean(s + ".Settings.Dragon-Ride");
+        return Maps.file().getBoolean(s + ".Settings.Instant-End");
     }
 
     private Location getPOS1(World w, String s) {
@@ -234,7 +235,7 @@ public class MapManager {
 
         // Settings
         Maps.file().set(s + ".Settings.Spectator", g.isSpectatorEnabled());
-        Maps.file().set(s + ".Settings.Instant-Ending", g.isInstantEndEnabled());
+        Maps.file().set(s + ".Settings.Instant-End", g.isInstantEndEnabled());
         Maps.file().set(s + ".Settings.GameType", g.getGameMode().name());
 
         // Border
@@ -335,7 +336,7 @@ public class MapManager {
                         case SOLO:
                             Solo gs = new Solo(p.getSetup().getName(), p.getSetup().getWorld(), GameState.AVAILABLE, p.getSetup().getCages(), p.getSetup().getMaxPlayers(), p.getSetup().getSpectatorLocation(), p.getSetup().isSpectatingON(), p.getSetup().isInstantEnding(), pos1, pos2, p.getSetup().getChests(), p.getSetup().isRanked());
                             gs.saveRoom();
-                            saveMap(gs);
+                            this.saveMap(gs);
                             break;
                         case TEAMS:
                             ArrayList<Team> ts = new ArrayList<>();
@@ -346,7 +347,7 @@ public class MapManager {
                             }
                             Teams t = new Teams(p.getSetup().getName(), p.getSetup().getWorld(), GameState.AVAILABLE, ts, p.getSetup().getMaxPlayers(), p.getSetup().getSpectatorLocation(), p.getSetup().isSpectatingON(), p.getSetup().isInstantEnding(), pos1, pos2, p.getSetup().getChests(), p.getSetup().isRanked());
                             t.saveRoom();
-                            saveMap(t);
+                            this.saveMap(t);
                             break;
                         default:
                             throw new IllegalStateException("Forbiden Mode !! " + gt.name());

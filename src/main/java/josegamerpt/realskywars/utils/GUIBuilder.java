@@ -46,7 +46,7 @@ public class GUIBuilder {
         }
         this.inv = Bukkit.createInventory(null, size, Text.color(name));
         if (placeholder != null) {
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < size; ++i) {
                 inv.setItem(i, placeholder);
             }
         }
@@ -57,7 +57,7 @@ public class GUIBuilder {
         this.uuid = uuid;
         this.inv = Bukkit.createInventory(null, t, Text.color(name));
         if (placeholder != null) {
-            for (int i = 0; i < t.getDefaultSize(); i++) {
+            for (int i = 0; i < t.getDefaultSize(); ++i) {
                 inv.setItem(i, placeholder);
             }
         }

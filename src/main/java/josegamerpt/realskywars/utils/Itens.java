@@ -19,7 +19,7 @@ public class Itens {
         int size = list.size();
         if (newSize >= size)
             return;
-        for (int i = newSize; i < size; i++) {
+        for (int i = newSize; i < size; ++i) {
             list.remove(list.size() - 1);
         }
     }

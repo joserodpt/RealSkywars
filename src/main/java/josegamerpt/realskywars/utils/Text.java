@@ -6,9 +6,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Text {
 
@@ -52,6 +52,15 @@ public class Text {
     public static String anonName() {
         List<String> nicks = Config.file().getStringList("Config.Random-Nicknames");
         return nicks.get(RealSkywars.getRandom().nextInt(nicks.size())) + " #" + RealSkywars.getRandom().nextInt(99);
+    }
+
+    public static String getDayAndTime() {
+        DateFormat dateFormat = new SimpleDateFormat(Config.file().getString("Config.Time.Formatting"));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.HOUR_OF_DAY, Config.file().getInt("Config.Time.Offset"));
+        cal.getTime();
+        return dateFormat.format(cal.getTime());
     }
 
     public enum DefaultFontInfo {

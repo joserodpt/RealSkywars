@@ -59,7 +59,7 @@ public class LeaderboardManager {
         qb.orderBy(select, false);
         List<PlayerData> expansions = RealSkywars.getDatabaseManager().getQueryDao().query(qb.prepare());
         josegamerpt.realskywars.leaderboards.Leaderboard lb = new josegamerpt.realskywars.leaderboards.Leaderboard();
-        for (int i = 1; i < 11; i++) {
+        for (int i = 1; i < 11; ++i) {
             PlayerData p = null;
             try {
                 p = expansions.get(i - 1);

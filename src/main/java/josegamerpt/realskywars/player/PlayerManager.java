@@ -9,6 +9,7 @@ import josegamerpt.realskywars.misc.DisplayItem;
 import josegamerpt.realskywars.utils.Itens;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.logging.log4j.util.Strings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -89,7 +90,7 @@ public class PlayerManager {
         try {
             PlayerData playerData = RealSkywars.getDatabaseManager().getPlayerData(p);
 
-            RSWPlayer gp = new RSWPlayer(p, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, playerData.getKills(), playerData.getDeaths(), playerData.getStats_wins_solo(), playerData.getStats_wins_teams(), playerData.getCoins(), playerData.getLanguage(), playerData.getBought_items(), playerData.getLoses(), playerData.getGames_played(), playerData.getRanked_kills(), playerData.getRanked_deaths(), playerData.getStats_wins_ranked_solo(), playerData.getStats_wins_ranked_teams(), playerData.getLoses_ranked(), playerData.getRanked_games_played());
+            RSWPlayer gp = new RSWPlayer(p, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, playerData.getKills(), playerData.getDeaths(), playerData.getStats_wins_solo(), playerData.getStats_wins_teams(), playerData.getCoins(), playerData.getLanguage(), playerData.getBought_items(), playerData.getLoses(), playerData.getGames_played(), playerData.getRanked_kills(), playerData.getRanked_deaths(), playerData.getStats_wins_ranked_solo(), playerData.getStats_wins_ranked_teams(), playerData.getLoses_ranked(), playerData.getRanked_games_played(), this.processGamesList(playerData.getGames_list()));
 
             String mapv = playerData.getMapViewerPref();
             if (mapv != null) {
@@ -119,6 +120,37 @@ public class PlayerManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private ArrayList<RSWGameLog> processGamesList(String s) {
+        ArrayList<RSWGameLog> tmp = new ArrayList<>();
+        if (s != null) {
+            String[] split = s.split("/");
+            int max = Math.min(split.length, 25);
+            for (int i = 0; i < max; ++i) {
+                String obj = split[i];
+                //mapa-modo-ranked-jogadores-ganhou-tempo-dia
+                String[] data = obj.split(";");
+                if (data.length == 7) {
+                    String mapa = data[0];
+                    SWGameMode.Mode mode = SWGameMode.Mode.valueOf(data[1]);
+                    boolean ranked = Boolean.parseBoolean(data[2]);
+                    int jogadores = Integer.parseInt(data[3]);
+                    boolean win = Boolean.parseBoolean(data[4]);
+                    int seconds = Integer.parseInt(data[5]);
+                    String dayandtime = data[6];
+                    tmp.add(0, new RSWGameLog(mapa, mode, ranked, jogadores, win, seconds, dayandtime));
+
+                }
+            }
+        }
+        return tmp;
+    }
+
+    private String processGamesListSave(ArrayList<RSWGameLog> gamesList) {
+        ArrayList<String> join = new ArrayList<>();
+        gamesList.forEach(rswGameLog -> join.add(0, rswGameLog.getSerializedData()));
+        return Strings.join(join, '/');
     }
 
     public RSWPlayer getPlayer(Player p) {
@@ -172,6 +204,9 @@ public class PlayerManager {
             playerData.setGamesPlayed(p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true), true);
 
             playerData.setBoughtItems(p.getBoughtItems());
+
+            playerData.setGames_list(processGamesListSave(p.getGamesList()));
+
             RealSkywars.getDatabaseManager().savePlayerData(playerData, true);
         }
     }

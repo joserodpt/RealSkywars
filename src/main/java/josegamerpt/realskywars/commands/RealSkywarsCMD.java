@@ -323,7 +323,7 @@ public class RealSkywarsCMD extends CommandBase {
             if (p.isInMatch()) {
                 p.getMatch().addPlayer(new RSWPlayer(true));
                 p.sendMessage(Text.color(
-                        "&4EXPERIMENTAL FEATURE. CAN RESULT IN SERVER & CLIENT CRASHES. &cAdded Null Player"));
+                        "&4&lEXPERIMENTAL FEATURE. CAN RESULT IN SERVER & CLIENT CRASHES. &c&lAdded Null Player"));
             } else {
                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_MATCH, true));
             }

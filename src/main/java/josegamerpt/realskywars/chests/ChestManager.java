@@ -25,7 +25,7 @@ public class ChestManager {
                 for (ItemStack item : itens) {
                     BasicChest.file().set(header + i + ".ItemStack", item);
                     BasicChest.file().set(header + i + ".Chance", defaultChance);
-                    i++;
+                    ++i;
                 }
                 BasicChest.save();
                 break;
@@ -34,7 +34,7 @@ public class ChestManager {
                 for (ItemStack item : itens) {
                     NormalChest.file().set(header + i + ".ItemStack", item);
                     NormalChest.file().set(header + i + ".Chance", defaultChance);
-                    i++;
+                    ++i;
                 }
                 NormalChest.save();
                 break;
@@ -43,7 +43,7 @@ public class ChestManager {
                 for (ItemStack item : itens) {
                     EPICChest.file().set(header + i + ".ItemStack", item);
                     EPICChest.file().set(header + i + ".Chance", defaultChance);
-                    i++;
+                    ++i;
                 }
                 EPICChest.save();
                 break;

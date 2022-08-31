@@ -48,7 +48,7 @@ public class MapSettings {
 
         inv = Bukkit.getServer().createInventory(null, 27, Text.color(g.getName() + " Settings"));
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; ++i) {
             inv.setItem(i, placeholder);
         }
 
@@ -64,27 +64,9 @@ public class MapSettings {
         inv.setItem(9, placeholder);
         inv.setItem(17, placeholder);
 
-        // ITEMS
-        //spectating
-        if (g.isSpectatingON()) {
-            inv.setItem(10, specon);
-        } else {
-            inv.setItem(10, specoff);
-        }
-
-        //ranked
-        if (g.isRanked()) {
-            inv.setItem(13, rankedon);
-        } else {
-            inv.setItem(13, rankedoff);
-        }
-
-        //instantending
-        if (g.isInstantEnding()) {
-            inv.setItem(16, ieon);
-        } else {
-            inv.setItem(16, ieoff);
-        }
+        inv.setItem(10, g.isSpectatingON() ? specon : specoff);
+        inv.setItem(13, g.isRanked() ? rankedon : rankedoff);
+        inv.setItem(16, g.isInstantEnding() ? ieon : ieoff);
 
 
         inv.setItem(22, confirm);

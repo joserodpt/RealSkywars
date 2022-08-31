@@ -28,6 +28,9 @@ public class RoomSettings {
     static Inventory inv;
     static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     static ItemStack specon = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &aON &7for dead players."));
+    static ItemStack rankedon = Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked is turned &aON&7."));
+    static ItemStack rankedoff = Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked is turned &cOFF&7."));
+
     static ItemStack specoff = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &cOFF &7for dead players."));
     static ItemStack ieon = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &aON&7."));
     static ItemStack ieoff = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &cOFF&7."));
@@ -48,7 +51,7 @@ public class RoomSettings {
 
         inv = Bukkit.getServer().createInventory(null, 27, Text.color(g.getName() + " Settings"));
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; ++i) {
             inv.setItem(i, placeholder);
         }
 
@@ -88,18 +91,9 @@ public class RoomSettings {
                 break;
         }
 
-        // DETAILS
-
-        if (game.isSpectatorEnabled()) {
-            inv.setItem(15, specon);
-        } else {
-            inv.setItem(15, specoff);
-        }
-        if (game.isInstantEndEnabled()) {
-            inv.setItem(16, ieon);
-        } else {
-            inv.setItem(16, ieoff);
-        }
+        inv.setItem(14, game.isRanked() ? rankedon : rankedoff);
+        inv.setItem(15, game.isSpectatorEnabled() ? specon : specoff);
+        inv.setItem(16, game.isInstantEndEnabled() ? ieon : ieoff);
 
         // resetbutton
         inv.setItem(22, resetRoom);
@@ -205,22 +199,32 @@ public class RoomSettings {
 
                                             p.sendMessage(RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.GAME_STATUS_SET, true).replace("%status%", game.getState().name()));
                                             break;
-                                        case 15:
+                                        case 14:
                                             // settings
-                                            game.setSpectator(game.isSpectatorEnabled());
-                                            if (game.isSpectatorEnabled()) {
-                                                current.getInventory().setItem(15, specoff);
+                                            game.setRanked(!game.isRanked());
+                                            if (game.isRanked()) {
+                                                current.getInventory().setItem(14, rankedon);
                                             } else {
-                                                current.getInventory().setItem(15, specon);
+                                                current.getInventory().setItem(14, rankedoff);
                                             }
                                             MapManager.saveSettings(game);
-                                        case 16:
-                                            if (game.isInstantEndEnabled()) {
-                                                game.setInstantEnd(false);
-                                                current.getInventory().setItem(16, ieoff);
+                                            break;
+                                        case 15:
+                                            // settings
+                                            game.setSpectator(!game.isSpectatorEnabled());
+                                            if (game.isSpectatorEnabled()) {
+                                                current.getInventory().setItem(15, specon);
                                             } else {
-                                                game.setInstantEnd(true);
+                                                current.getInventory().setItem(15, specoff);
+                                            }
+                                            MapManager.saveSettings(game);
+                                            break;
+                                        case 16:
+                                            game.setInstantEnd(!game.isInstantEndEnabled());
+                                            if (game.isInstantEndEnabled()) {
                                                 current.getInventory().setItem(16, ieon);
+                                            } else {
+                                                current.getInventory().setItem(16, ieoff);
                                             }
                                             MapManager.saveSettings(game);
                                             break;

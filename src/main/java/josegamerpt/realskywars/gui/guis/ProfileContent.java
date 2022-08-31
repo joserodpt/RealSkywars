@@ -196,7 +196,7 @@ public class ProfileContent {
     public void fillChest(List<DisplayItem> items) {
         inv.clear();
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; ++i) {
             inv.setItem(i, placeholder);
         }
 

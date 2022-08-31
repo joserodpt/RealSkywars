@@ -32,6 +32,7 @@ import java.util.UUID;
 
 public class RSWPlayer {
     private final List<Trail> trails = new ArrayList<>();
+    private ArrayList<RSWGameLog> gamesList = new ArrayList<>();
     private RoomTAB rt;
     private String anonName = "?";
     private Player p;
@@ -74,7 +75,7 @@ public class RSWPlayer {
     private Boolean invincible = false;
 
     public RSWPlayer(Player jog, RSWPlayer.PlayerState estado, int kills, int d, int solowin, int teamwin, Double coi, String lang,
-                     ArrayList<String> bgh, int l, int gp, int rankedTotalkills, int rankedDeaths, int rankedWinsSolo, int rankedWinsTEAMS, int rankedLoses, int rankedGamesPlayed) {
+                     ArrayList<String> bgh, int l, int gp, int rankedTotalkills, int rankedDeaths, int rankedWinsSolo, int rankedWinsTEAMS, int rankedLoses, int rankedGamesPlayed, ArrayList<RSWGameLog> gamesList) {
         anonName = Text.anonName();
 
         this.p = jog;
@@ -89,6 +90,8 @@ public class RSWPlayer {
         this.loses = l;
         this.gamesPlayed = gp;
         this.playerscoreboard = new PlayerScoreboard(this);
+
+        this.gamesList = gamesList;
 
         this.rankedTotalkills = rankedTotalkills;
         this.rankedDeaths = rankedDeaths;
@@ -629,16 +632,26 @@ public class RSWPlayer {
     }
 
     public void setBarNumber(int xp) {
-        p.setLevel(xp);
-        p.setExp(xp);
+        if (this.p != null) {
+            p.setLevel(xp);
+            p.setExp(xp);
+        }
     }
 
     public void setBarNumber(int xp, int max) {
-        if (xp != 0 && max != 0) {
-            p.setLevel(xp);
+        if (this.p != null && xp != 0 && max != 0) {
+            this.p.setLevel(xp);
             float div = (float) xp / (float) max;
-            p.setExp(div);
+            this.p.setExp(div);
         }
+    }
+
+    public ArrayList<RSWGameLog> getGamesList() {
+        return this.gamesList;
+    }
+
+    public void addGameLog(RSWGameLog rswGameLog) {
+        this.gamesList.add(0, rswGameLog);
     }
 
     //ENUMs
@@ -701,8 +714,8 @@ public class RSWPlayer {
                 this.show.forEach(rswPlayer -> this.player.showPlayer(RealSkywars.getPlugin(), rswPlayer));
 
                 if (this.player.isInMatch()) {
-                    String header = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", this.player.getMatch().getPlayerCount() + "");
-                    String footer = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", this.player.getMatch().getPlayerCount() + "");
+                    String header = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", this.player.getMatch().getPlayers().size() + "");
+                    String footer = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", this.player.getMatch().getPlayers().size() + "");
 
                     this.setHeaderFooter(header, footer);
                 } else {

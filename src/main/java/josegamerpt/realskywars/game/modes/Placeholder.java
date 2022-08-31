@@ -36,6 +36,10 @@ public class Placeholder implements SWGameMode {
     }
 
     @Override
+    public void setRanked(Boolean ranked) {
+    }
+
+    @Override
     public Boolean isRanked() {
         return false;
     }

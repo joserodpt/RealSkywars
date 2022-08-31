@@ -11,6 +11,7 @@ import josegamerpt.realskywars.game.SWWorld;
 import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.PlayerManager;
+import josegamerpt.realskywars.player.RSWGameLog;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.*;
 import org.apache.commons.lang.WordUtils;
@@ -41,7 +42,7 @@ public class Solo implements SWGameMode {
     private final HashMap<UUID, Integer> timeVotes = new HashMap<>();
     private final Location spectatorLocation;
     private final ArrayList<Cage> cages;
-    private final Boolean ranked;
+    private Boolean ranked;
     private final SWWorld world;
     private final ArrayList<SWChest> chests;
     private final WorldBorder border;
@@ -108,6 +109,11 @@ public class Solo implements SWGameMode {
     @Override
     public ProjectileType getProjectile() {
         return this.projectileType;
+    }
+
+    @Override
+    public void setRanked(Boolean ranked) {
+        this.ranked = ranked;
     }
 
     @Override
@@ -485,6 +491,15 @@ public class Solo implements SWGameMode {
                         return;
                     }
 
+                    //cage
+
+                    for (Cage c : this.cages) {
+                        if (c.isEmpty() && p.getPlayer() != null) {
+                            c.addPlayer(p);
+                            break;
+                        }
+                    }
+
                     p.setRoom(this);
                     p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.CAGE);
 
@@ -495,15 +510,6 @@ public class Solo implements SWGameMode {
                         p.heal();
                         ArrayList<String> up = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.TITLE_ROOMJOIN);
                         p.getPlayer().sendTitle(up.get(0), up.get(1), 10, 120, 10);
-                    }
-
-                    //cage
-
-                    for (Cage c : this.cages) {
-                        if (c.isEmpty() && p.getPlayer() != null) {
-                            c.addPlayer(p);
-                            break;
-                        }
                     }
 
                     for (RSWPlayer ws : this.inRoom) {
@@ -683,7 +689,7 @@ public class Solo implements SWGameMode {
                 //laser to cage
                 new Demolition(this.getSpectatorLocation(), p.getCage(), 5, 3).start(RealSkywars.getPlugin());
 
-                this.sendLog(p);
+                this.sendLog(p, false);
 
                 RealSkywars.getPlayerManager().sendClick(p, this.getGameMode());
 
@@ -721,11 +727,14 @@ public class Solo implements SWGameMode {
         RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.SPECTATOR);
     }
 
-    private void sendLog(RSWPlayer p) {
+    private void sendLog(RSWPlayer p, boolean winner) {
         if (p.getPlayer() != null) {
             for (String s : Text.color(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.ARENA_END))) {
-                p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE, this.isRanked()) + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, this.isRanked()) + "").replace("%time%", this.startTimer.getPassedSeconds()+ "s"));
+                p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE, this.isRanked()) + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, this.isRanked()) + "").replace("%time%", Text.formatSeconds(this.startTimer.getPassedSeconds())));
             }
+
+            p.addGameLog(new RSWGameLog(this.getName(), this.getGameMode(), this.isRanked(), this.getMaxPlayers(), winner, this.getTimePassed(), Text.getDayAndTime()));
+
             p.saveData();
         }
     }
@@ -733,7 +742,7 @@ public class Solo implements SWGameMode {
     //LISTENER
 
     public void checkWin() {
-        if (getPlayerCount() == 1 && this.state != SWGameMode.GameState.FINISHING) {
+        if (this.getPlayerCount() == 1 && this.state != SWGameMode.GameState.FINISHING) {
             this.state = SWGameMode.GameState.FINISHING;
             RSWPlayer p = getPlayers().get(0);
             p.setInvincible(true);
@@ -747,36 +756,43 @@ public class Solo implements SWGameMode {
 
             RealSkywars.getPlayerManager().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(RealSkywars.getLanguageManager().getString(gamePlayer, LanguageManager.TS.WINNER_BROADCAST, true).replace("%winner%", p.getDisplayName()).replace("%map%", this.name)));
 
-            this.winTimer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), Config.file().getInt("Config.Time-EndGame"), () -> {
-                if (p.getPlayer() != null) {
-                    p.setInvincible(true);
-                    p.addStatistic(RSWPlayer.Statistic.SOLO_WIN, 1, this.isRanked());
-                    p.executeWinBlock(Config.file().getInt("Config.Time-EndGame") - 2);
-                }
-
-                for (RSWPlayer g : this.inRoom) {
-                    g.delCage();
-                    g.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MATCH_END, true).replace("%time%", "" + Text.formatSeconds(Config.file().getInt("Config.Time-EndGame"))));
-                }
-            }, () -> {
+            if (this.isInstantEndEnabled()) {
                 this.bossBar.removeAll();
-                this.sendLog(p);
+                this.sendLog(p, true);
                 this.kickPlayers(null);
                 this.resetArena();
-            }, (t) -> {
-                double div = (double) t.getSecondsLeft() / (double) Config.file().getInt("Config.Time-EndGame");
-                if (div <= 1 && div >= 0) {
-                    bossBar.setProgress(div);
-                }
+            } else {
+                this.winTimer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), Config.file().getInt("Config.Time-EndGame"), () -> {
+                    if (p.getPlayer() != null) {
+                        p.setInvincible(true);
+                        p.addStatistic(RSWPlayer.Statistic.SOLO_WIN, 1, this.isRanked());
+                        p.executeWinBlock(Config.file().getInt("Config.Time-EndGame") - 2);
+                    }
 
-                this.inRoom.forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), Config.file().getInt("Config.Time-EndGame")));
+                    for (RSWPlayer g : this.inRoom) {
+                        g.delCage();
+                        g.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MATCH_END, true).replace("%time%", "" + Text.formatSeconds(Config.file().getInt("Config.Time-EndGame"))));
+                    }
+                }, () -> {
+                    this.bossBar.removeAll();
+                    this.sendLog(p, true);
+                    this.kickPlayers(null);
+                    this.resetArena();
+                }, (t) -> {
+                    double div = (double) t.getSecondsLeft() / (double) Config.file().getInt("Config.Time-EndGame");
+                    if (div <= 1 && div >= 0) {
+                        bossBar.setProgress(div);
+                    }
 
-                if (p.getPlayer() != null) {
-                    FireworkUtils.spawnRandomFirework(p.getLocation());
-                }
-            });
+                    this.inRoom.forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), Config.file().getInt("Config.Time-EndGame")));
 
-            this.winTimer.scheduleTimer();
+                    if (p.getPlayer() != null) {
+                        FireworkUtils.spawnRandomFirework(p.getLocation());
+                    }
+                });
+
+                this.winTimer.scheduleTimer();
+            }
         }
     }
 }

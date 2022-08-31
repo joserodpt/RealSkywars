@@ -121,7 +121,7 @@ public class TeamCage implements Cage {
 
     public void addPlayer(RSWPlayer p) {
         this.p.add(p);
-        setCage();
+        this.setCage();
     }
 
     public void removePlayer(RSWPlayer p) {

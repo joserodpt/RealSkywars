@@ -96,7 +96,7 @@ public class ShopManager {
                 }
 
                 items.add(s);
-                i++;
+                ++i;
             }
 
             if (items.size() == 0) {

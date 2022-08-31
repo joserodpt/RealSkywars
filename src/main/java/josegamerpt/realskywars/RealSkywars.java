@@ -205,6 +205,7 @@ public class RealSkywars extends JavaPlugin {
                 pm.registerEvents(new PlayerEvents(), this);
                 pm.registerEvents(new EntityEvents(), this);
                 pm.registerEvents(GUIBuilder.getListener(), this);
+                pm.registerEvents(GameLogViewer.getListener(), this);
                 pm.registerEvents(MapSettings.getListener(), this);
                 pm.registerEvents(RoomSettings.getListener(), this);
                 pm.registerEvents(PlayerGUI.getListener(), this);
@@ -213,6 +214,7 @@ public class RealSkywars extends JavaPlugin {
                 pm.registerEvents(KitSettings.getListener(), this);
                 pm.registerEvents(MapsViewer.getListener(), this);
                 pm.registerEvents(AchievementViewer.getListener(), this);
+                pm.registerEvents(GameLogViewer.getListener(), this);
 
                 //load leaderboard
                 lbm.refreshLeaderboards();
@@ -230,7 +232,7 @@ public class RealSkywars extends JavaPlugin {
                 //command suggestions
                 commandManager.getCompletionHandler().register("#createsuggestions", input -> {
                     ArrayList<String> sugests = new ArrayList<>();
-                    for (int i = 0; i < 200; i++) {
+                    for (int i = 0; i < 200; ++i) {
                         sugests.add("Room" + i);
                     }
 
