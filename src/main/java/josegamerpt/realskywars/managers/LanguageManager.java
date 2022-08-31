@@ -126,7 +126,7 @@ public class LanguageManager {
                     tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.System.Achievements.Get"));
                     break;
                 case CANT_VOTE:
-                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.Vote.Chests.Cant-Vote"));
+                    tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.Vote.Cant-Vote"));
                     break;
                 case CMD_CANT_FORCESTART:
                     tr = Text.color(Languages.file().getString("Languages." + lang + ".Messages.Commands.Match-Force-Start-Denial"));

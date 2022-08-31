@@ -25,7 +25,7 @@ public class Debugger {
 
     public static void execute() {
         if (false) {
-            Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.getPlugin(), () -> RealSkywars.getPlayerManager().getPlayers().forEach(rswPlayer -> print(PlayerManager.class, rswPlayer.getName())), 20, 20);
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.getPlugin(), () -> RealSkywars.getPlayerManager().getPlayers().forEach(rswPlayer -> print(PlayerManager.class, rswPlayer.getState().name())), 20, 20);
         }
     }
 }

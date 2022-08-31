@@ -1,10 +1,10 @@
-package josegamerpt.realskywars.game;
+package josegamerpt.realskywars.world;
 
 import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.game.modes.Solo;
-import josegamerpt.realskywars.managers.WorldManager;
+import josegamerpt.realskywars.world.WorldManager;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 

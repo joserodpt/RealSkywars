@@ -133,7 +133,7 @@ public class GameManager {
     }
 
     public Location getLobbyLocation() {
-        return lobbyLOC;
+        return this.lobbyLOC;
     }
 
     public boolean scoreboardInLobby() {

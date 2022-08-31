@@ -17,6 +17,7 @@ import josegamerpt.realskywars.gui.guis.MapSettings;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Text;
+import josegamerpt.realskywars.world.WorldManager;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;

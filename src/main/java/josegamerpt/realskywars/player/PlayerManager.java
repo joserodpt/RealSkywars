@@ -222,7 +222,7 @@ public class PlayerManager {
 
     public void loadPlayers() {
         this.players.clear();
-        Bukkit.getOnlinePlayers().forEach(player -> RealSkywars.getPlayerManager().loadPlayer(player));
+        Bukkit.getOnlinePlayers().forEach(this::loadPlayer);
     }
 
     public List<DisplayItem> getBoughtItems(RSWPlayer player, ShopManager.Categories t) {

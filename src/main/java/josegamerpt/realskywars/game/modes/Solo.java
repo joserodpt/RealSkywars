@@ -7,7 +7,7 @@ import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.game.SWEvent;
-import josegamerpt.realskywars.game.SWWorld;
+import josegamerpt.realskywars.world.SWWorld;
 import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.PlayerManager;

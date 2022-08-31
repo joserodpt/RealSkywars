@@ -734,14 +734,16 @@ public class RSWPlayer {
     public class PlayerScoreboard {
 
         private final FastBoard fb;
-        private final RSWPlayer linked;
+        private final RSWPlayer p;
         private BukkitTask task;
 
         public PlayerScoreboard(RSWPlayer r) {
-            this.linked = r;
+            this.p = r;
             this.fb = new FastBoard(r.getPlayer());
-            if (RealSkywars.getGameManager().getLobbyLocation() != null)
-                run();
+            if (RealSkywars.getGameManager().getLobbyLocation() != null) {
+                this.run();
+            }
+
         }
 
         protected String variables(String s, RSWPlayer gp) {
@@ -798,38 +800,38 @@ public class RSWPlayer {
                 public void run() {
                     ArrayList<String> lista;
                     String tit;
-                    if (linked.getState() != null) {
-                        switch (linked.getState()) {
+                    if (p.getState() != null) {
+                        switch (p.getState()) {
                             case LOBBY_OR_NOGAME:
                                 if (!RealSkywars.getGameManager().scoreboardInLobby()) {
                                     return;
                                 }
-                                if (RealSkywars.getGameManager().getLobbyLocation().getWorld() != linked.getWorld()) {
+                                if (!RealSkywars.getGameManager().isInLobby(p.getWorld())) {
                                     return;
                                 }
-                                lista = RealSkywars.getLanguageManager().getList(linked, LanguageManager.TL.SCOREBOARD_LOBBY_LINES);
-                                tit = RealSkywars.getLanguageManager().getString(linked, LanguageManager.TS.SCOREBOARD_LOBBY_TITLE, false);
+                                lista = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.SCOREBOARD_LOBBY_LINES);
+                                tit = RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SCOREBOARD_LOBBY_TITLE, false);
                                 break;
                             case CAGE:
-                                lista = RealSkywars.getLanguageManager().getList(linked, LanguageManager.TL.SCOREBOARD_CAGE_LINES);
-                                tit = RealSkywars.getLanguageManager().getString(linked, LanguageManager.TS.SCOREBOARD_CAGE_TITLE, false).replace("%map%", linked.getMatch().getName()).replace("%mode%", linked.getMatch().getGameMode().name());
+                                lista = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.SCOREBOARD_CAGE_LINES);
+                                tit = RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SCOREBOARD_CAGE_TITLE, false).replace("%map%", p.getMatch().getName()).replace("%mode%", p.getMatch().getGameMode().name());
                                 break;
                             case SPECTATOR:
                             case EXTERNAL_SPECTATOR:
-                                lista = RealSkywars.getLanguageManager().getList(linked, LanguageManager.TL.SCOREBOARD_SPECTATOR_LINES);
-                                tit = RealSkywars.getLanguageManager().getString(linked, LanguageManager.TS.SCOREBOARD_SPECTATOR_TITLE, false).replace("%map%", linked.getMatch().getName()).replace("%mode%", linked.getMatch().getGameMode().name());
+                                lista = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.SCOREBOARD_SPECTATOR_LINES);
+                                tit = RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SCOREBOARD_SPECTATOR_TITLE, false).replace("%map%", p.getMatch().getName()).replace("%mode%", p.getMatch().getGameMode().name());
                                 break;
                             case PLAYING:
-                                lista = RealSkywars.getLanguageManager().getList(linked, LanguageManager.TL.SCOREBOARD_PLAYING_LINES);
-                                tit = RealSkywars.getLanguageManager().getString(linked, LanguageManager.TS.SCOREBOARD_PLAYING_TITLE, false).replace("%map%", linked.getMatch().getName()).replace("%mode%", linked.getMatch().getGameMode().name());
+                                lista = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.SCOREBOARD_PLAYING_LINES);
+                                tit = RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SCOREBOARD_PLAYING_TITLE, false).replace("%map%", p.getMatch().getName()).replace("%mode%", p.getMatch().getGameMode().name());
                                 break;
                             default:
-                                throw new IllegalStateException("Unexpected value SCOREBOARD!!! : " + linked.getState());
+                                throw new IllegalStateException("Unexpected value SCOREBOARD!!! : " + p.getState());
                         }
 
                         ArrayList<String> send = new ArrayList<>();
                         for (String s : lista) {
-                            send.add(variables(s, linked));
+                            send.add(variables(s, p));
                         }
                         displayScoreboard(tit, send);
                     }

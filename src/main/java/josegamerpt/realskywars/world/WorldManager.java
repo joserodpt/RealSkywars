@@ -1,7 +1,8 @@
-package josegamerpt.realskywars.managers;
+package josegamerpt.realskywars.world;
 
 import com.google.common.collect.Lists;
 import josegamerpt.realskywars.RealSkywars;
+import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
