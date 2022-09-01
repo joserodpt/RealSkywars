@@ -22,9 +22,9 @@ import josegamerpt.realskywars.world.SWWorld;
 import josegamerpt.realskywars.world.WorldManager;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Level;
@@ -51,7 +51,6 @@ public class MapManager {
 
     public void loadMaps() {
         RealSkywars.getGameManager().clearRooms();
-        String root = RealSkywars.getPlugin().getServer().getWorldContainer().getAbsolutePath();
 
         for (String s : getRegisteredMaps()) {
             if (getGameType(s) == null) {
@@ -60,10 +59,7 @@ public class MapManager {
 
             String worldName = Maps.file().getString(s + ".world");
 
-            File source = new File(root, worldName);
-            if (!source.exists()) {
-                RealSkywars.getWorldManager().copyWorld(worldName, WorldManager.CopyTo.ROOT);
-            }
+            SWWorld.WorldType wt = getWorldType(Maps.file().getString(s + ".type"));
 
             boolean loaded = RealSkywars.getWorldManager().loadWorld(worldName, World.Environment.NORMAL);
             if (loaded) {
@@ -73,7 +69,8 @@ public class MapManager {
                 SWGameMode.Mode t = getGameType(s);
                 switch (t) {
                     case SOLO:
-                        Solo gs = new Solo(s, w, getWorldType(Maps.file().getString(s + ".type")), GameState.AVAILABLE, getCages(s, specLoc), Maps.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s));
+                        Solo gs = new Solo(s, w, Maps.file().getString(s + ".schematic"), wt, GameState.AVAILABLE, getCages(s, specLoc), Maps.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s));
+                        gs.resetArena(SWGameMode.OperationReason.LOAD);
                         gs.saveRoom();
                         break;
                     case TEAMS:
@@ -84,7 +81,8 @@ public class MapManager {
                             ts.add(new Team(tc, (Maps.file().getInt(s + ".number-of-players") / cgs.size()), c.getLoc(), worldName));
                             tc++;
                         }
-                        Teams teas = new Teams(s, w, getWorldType(s + ".type"), GameState.AVAILABLE, ts, Maps.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s));
+                        Teams teas = new Teams(s, w,Maps.file().getString(s + ".schematic"), wt, GameState.AVAILABLE, ts, Maps.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s));
+                        teas.resetArena(SWGameMode.OperationReason.LOAD);
                         teas.saveRoom();
                         break;
                     default:
@@ -114,8 +112,11 @@ public class MapManager {
                 BlockFace f = BlockFace.valueOf(Maps.file().getString(section + ".Chests." + i + ".Face"));
 
                 SWChest.ChestTYPE ct = SWChest.ChestTYPE.valueOf(Maps.file().getString(section + ".Chests." + i + ".Type"));
+                if (ct == null) {
+                    Debugger.print(MapManager.class, "CHEST FACE INVALID WHILE LOADING " + worldName + "!! >> " + Maps.file().getString(section + ".Chests." + i + ".Type"));
+                }
 
-                chests.add(new SWChest(ct, worldName, x, y, z, f, true));
+                chests.add(new SWChest(ct, worldName, x, y, z, f));
             }
         } else {
             Debugger.print(MapManager.class, "There are no chests in " + worldName + " (possibly a bug? Check config pls!)");
@@ -193,6 +194,11 @@ public class MapManager {
         // Map Name
         Maps.file().set(s + ".name", s);
         Maps.file().set(s + ".type", g.getSWWorld().getType().name());
+        if (g.getSWWorld().getType() == SWWorld.WorldType.SCHEMATIC) {
+            Maps.file().set(s + ".schematic", g.getShematicName());
+        } else {
+            Maps.file().set(s + ".schematic", "none");
+        }
         //Ranked
         Maps.file().set(s + ".ranked", g.isRanked());
         // Number Players
@@ -224,8 +230,12 @@ public class MapManager {
             Maps.file().set(s + ".Chests." + chestID + ".LocationX", chest.getLocation().getBlockX());
             Maps.file().set(s + ".Chests." + chestID + ".LocationY", chest.getLocation().getBlockY());
             Maps.file().set(s + ".Chests." + chestID + ".LocationZ", chest.getLocation().getBlockZ());
-            BlockFace f = chest.getChestBlock().getState().getBlock().getFace(chest.getChestBlock());
-            Maps.file().set(s + ".Chests." + chestID + ".Face", f.name());
+            String face = "NORTH";
+            try {
+                BlockFace f = ((Directional) chest.getChestBlock().getBlockData()).getFacing();
+                face = f.name();
+            } catch (Exception ignored) {}
+            Maps.file().set(s + ".Chests." + chestID + ".Face", face);
             Maps.file().set(s + ".Chests." + chestID + ".Type", chest.getType().name());
             chestID++;
         }
@@ -275,13 +285,10 @@ public class MapManager {
 
             p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.GENERATING_WORLD, true));
 
-            World w = RealSkywars.getWorldManager().createEmptyWorld(p.getSetup().getName(), World.Environment.NORMAL);
+            World w = RealSkywars.getWorldManager().createEmptyWorld(p.getSetup().getName().replace(".schematic", "").replace(".schem", ""), World.Environment.NORMAL);
             if (w != null) {
-                p.getSetup().setWorld(w);
-
                 w.getBlockAt(0, 64, 0).setType(Material.BEDROCK);
                 Location loc = new Location(w, 0, 66, 0);
-                p.teleport(loc);
 
                 Text.sendList(p.getPlayer(), Text.replaceVarInList(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.INITSETUP_ARENA), "%cages%", p.getSetup().getMaxPlayers() + ""), p.getSetup().getMaxPlayers());
 
@@ -290,10 +297,16 @@ public class MapManager {
 
                 if (p.getSetup().getWorldType() == SWWorld.WorldType.SCHEMATIC) {
                     w.setAutoSave(false);
-                    WorldEditUtils.pasteSchematic(p.getSetup().getName(), new Location(p.getWorld(), 0, 64, 0));
+
+                    p.teleport(loc);
+
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> WorldEditUtils.pasteSchematic(p.getSetup().getSchematic(), new Location(p.getWorld(), 0, 64, 0)), 3 * 20);
                 } else {
                     w.setAutoSave(true);
+                    p.teleport(loc);
                 }
+
+                p.getSetup().setWorld(w);
             } else {
                 RealSkywars.log(Level.WARNING, "Could not create setup world for " + p.getSetup().getName());
             }
@@ -302,6 +315,7 @@ public class MapManager {
 
     public void setupSolo(RSWPlayer p, String mapname, SWWorld.WorldType wt, int maxP) {
         SetupRoom s = new SetupRoom(mapname, null, wt, maxP);
+        s.setSchematic(mapname);
         p.setSetup(s);
 
         MapSettings m = new MapSettings(s, p.getUUID());
@@ -309,13 +323,14 @@ public class MapManager {
     }
 
     public void finishSetup(RSWPlayer p) {
+        RealSkywars.getGameManager().tpToLobby(p);
         WorldEditPlugin w = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
         try {
             com.sk89q.worldedit.regions.Region r = w.getSession(p.getPlayer()).getSelection(w.getSession(p.getPlayer()).getSelectionWorld());
 
             if (r != null) {
-                Location pos2 = new Location(p.getWorld(), r.getMinimumPoint().getBlockX(), r.getMinimumPoint().getBlockY(), r.getMinimumPoint().getBlockZ());
-                Location pos1 = new Location(p.getWorld(), r.getMaximumPoint().getBlockX(), r.getMaximumPoint().getBlockY(), r.getMaximumPoint().getBlockZ());
+                Location pos2 = new Location(p.getSetup().getWorld(), r.getMinimumPoint().getBlockX(), r.getMinimumPoint().getBlockY(), r.getMinimumPoint().getBlockZ());
+                Location pos1 = new Location(p.getSetup().getWorld(), r.getMaximumPoint().getBlockX(), r.getMaximumPoint().getBlockY(), r.getMaximumPoint().getBlockZ());
 
                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SAVING_ARENA, true));
 
@@ -326,9 +341,8 @@ public class MapManager {
                 RealSkywars.getWorldManager().clearItems(p.getSetup().getWorld());
 
                 //worldType
-                if (p.getSetup().getWorldType() == SWWorld.WorldType.SCHEMATIC) {//Unload world
-                    RealSkywars.getWorldManager().unloadWorld(p.getSetup().getWorld().getName(), false);
-                } else {//Unload world
+                if (p.getSetup().getWorldType() == SWWorld.WorldType.DEFAULT) {
+                    //Unload world
                     RealSkywars.getWorldManager().unloadWorld(p.getSetup().getWorld().getName(), true);
 
                     //Copy world
@@ -343,9 +357,19 @@ public class MapManager {
                     SWGameMode.Mode gt = p.getSetup().getGameType();
                     switch (gt) {
                         case SOLO:
-                            Solo gs = new Solo(p.getSetup().getName(), p.getSetup().getWorld(), p.getSetup().getWorldType(), GameState.AVAILABLE, p.getSetup().getCages(), p.getSetup().getMaxPlayers(), p.getSetup().getSpectatorLocation(), p.getSetup().isSpectatingON(), p.getSetup().isInstantEnding(), pos1, pos2, p.getSetup().getChests(), p.getSetup().isRanked());
+                            Solo gs = new Solo(p.getSetup().getName(), p.getSetup().getWorld(), p.getSetup().getSchematic(), p.getSetup().getWorldType(), GameState.AVAILABLE, p.getSetup().getCages(), p.getSetup().getMaxPlayers(), p.getSetup().getSpectatorLocation(), p.getSetup().isSpectatingON(), p.getSetup().isInstantEnding(), pos1, pos2, p.getSetup().getChests(), p.getSetup().isRanked());
+
+                            if (p.getSetup().getWorldType() == SWWorld.WorldType.DEFAULT) {
+                                gs.getSWWorld().resetWorld(SWGameMode.OperationReason.LOAD);
+                            } else {
+                                gs.getSWWorld().resetWorld(SWGameMode.OperationReason.RESET);
+                            }
+
                             gs.saveRoom();
                             this.saveMap(gs);
+
+                            //set chests
+                            gs.getChests().forEach(swChest -> swChest.setChest());
                             break;
                         case TEAMS:
                             ArrayList<Team> ts = new ArrayList<>();
@@ -354,22 +378,26 @@ public class MapManager {
                                 ts.add(new Team(tc, p.getSetup().getPlayersPerTeam(), c.getLoc(), p.getSetup().getWorld().getName()));
                                 tc++;
                             }
-                            Teams t = new Teams(p.getSetup().getName(), p.getSetup().getWorld(), p.getSetup().getWorldType(), GameState.AVAILABLE, ts, p.getSetup().getMaxPlayers(), p.getSetup().getSpectatorLocation(), p.getSetup().isSpectatingON(), p.getSetup().isInstantEnding(), pos1, pos2, p.getSetup().getChests(), p.getSetup().isRanked());
+                            Teams t = new Teams(p.getSetup().getName(), p.getSetup().getWorld(), p.getSetup().getSchematic(),p.getSetup().getWorldType(), GameState.AVAILABLE, ts, p.getSetup().getMaxPlayers(), p.getSetup().getSpectatorLocation(), p.getSetup().isSpectatingON(), p.getSetup().isInstantEnding(), pos1, pos2, p.getSetup().getChests(), p.getSetup().isRanked());
+
+                            if (p.getSetup().getWorldType() == SWWorld.WorldType.DEFAULT) {
+                                t.getSWWorld().resetWorld(SWGameMode.OperationReason.LOAD);
+                            } else {
+                                t.getSWWorld().resetWorld(SWGameMode.OperationReason.RESET);
+                            }
+
                             t.saveRoom();
                             this.saveMap(t);
+
+                            //set chests
+                            t.getChests().forEach(swChest -> swChest.setChest());
                             break;
                         default:
                             throw new IllegalStateException("Forbiden Mode !! " + gt.name());
                     }
 
-                    if (p.getSetup().getWorldType().equals(SWWorld.WorldType.DEFAULT)) {
-                        p.getSetup().getWorld().save();
-                    }
-
                     p.setSetup(null);
                     p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ARENA_REGISTERED, true));
-
-                    RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.LOBBY);
                 }
             }
         } catch (Exception e) {

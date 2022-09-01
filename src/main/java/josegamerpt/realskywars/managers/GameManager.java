@@ -44,7 +44,7 @@ public class GameManager {
         this.endingGames = true;
         for (SWGameMode g : this.games) {
             g.kickPlayers(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.ADMIN_SHUTDOWN));
-            g.resetArena(SWGameMode.ResetReason.SHUTDOWN);
+            g.resetArena(SWGameMode.OperationReason.SHUTDOWN);
         }
     }
 
@@ -144,7 +144,7 @@ public class GameManager {
     }
 
     public void clearRooms() {
-        games.clear();
+        this.games.clear();
     }
 
     public List<SWGameMode> getGames(PlayerManager.Modes pt) {

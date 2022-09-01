@@ -64,11 +64,17 @@ public class Teams implements SWGameMode {
     private ProjectileType projectileType = ProjectileType.NORMAL;
     private TimeType timeType = TimeType.DAY;
     private ArrayList<SWEvent> events;
+    private String schematicName;
 
-    public Teams(String nome, World w, SWWorld.WorldType wt, SWGameMode.GameState estado, ArrayList<Team> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd) {
+    public Teams(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, ArrayList<Team> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd) {
         this.name = nome;
+        this.schematicName = schematicName;
 
         this.arenaCuboid = new ArenaCuboid(pos1, pos2);
+        this.border = w.getWorldBorder();
+        this.border.setCenter(this.arenaCuboid.getCenter());
+        this.borderSize = this.arenaCuboid.getSizeX();
+        this.border.setSize(this.borderSize);
         this.world = new SWWorld(this, w, wt);
 
         this.state = estado;
@@ -78,10 +84,6 @@ public class Teams implements SWGameMode {
         this.spectatorLocation = spectatorLocation;
         this.specEnabled = specEnabled;
         this.instantEnding = instantEnding;
-        this.border = w.getWorldBorder();
-        this.border.setCenter(this.arenaCuboid.getCenter());
-        this.borderSize = this.arenaCuboid.getSizeX();
-        this.border.setSize(this.borderSize);
         this.chests = chests;
         this.ranked = rankd;
 
@@ -233,7 +235,11 @@ public class Teams implements SWGameMode {
 
     @Override
     public void clear() {
-        this.world.deleteWorld();
+        this.world.deleteWorld(OperationReason.RESET);
+    }
+    @Override
+    public void deleteShutdown() {
+        this.world.deleteWorld(OperationReason.SHUTDOWN);
     }
 
     @Override
@@ -241,7 +247,7 @@ public class Teams implements SWGameMode {
         this.state = SWGameMode.GameState.RESETTING;
 
         this.kickPlayers(RealSkywars.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.ARENA_RESET, true));
-        this.resetArena(ResetReason.NORMAL);
+        this.resetArena(OperationReason.RESET);
     }
 
     @Override
@@ -300,6 +306,11 @@ public class Teams implements SWGameMode {
             }
         }
         return null;
+    }
+
+    @Override
+    public String getShematicName() {
+        return this.schematicName;
     }
 
     @Override
@@ -619,7 +630,7 @@ public class Teams implements SWGameMode {
         return this.timePassed;
     }
 
-    public void resetArena(ResetReason rr) {
+    public void resetArena(OperationReason rr) {
         this.state = SWGameMode.GameState.RESETTING;
 
         if (this.timeCouterTask != null) {
@@ -636,6 +647,7 @@ public class Teams implements SWGameMode {
             this.startRoomTimer = null;
         }
 
+        this.chests.forEach(SWChest::clear);
         this.world.resetWorld(rr);
 
         this.inRoom.clear();
@@ -653,9 +665,11 @@ public class Teams implements SWGameMode {
 
         this.events = RealSkywars.getGameManager().parseEvents(this);
 
-        this.chests.forEach(SWChest::clear);
-
         this.timePassed = 0;
+
+        if (rr != OperationReason.SHUTDOWN) {
+            this.chests.forEach(SWChest::setChest);
+        }
     }
 
     public void setSpectator(boolean b) {
@@ -767,7 +781,7 @@ public class Teams implements SWGameMode {
                 this.bossBar.removeAll();
                 winTeam.getMembers().forEach(rswPlayer -> this.sendLog(rswPlayer, true));
                 this.kickPlayers(null);
-                this.resetArena(ResetReason.NORMAL);
+                this.resetArena(OperationReason.RESET);
             } else {
                 this.winTimer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), Config.file().getInt("Config.Time-EndGame"), () -> {
                     for (RSWPlayer p : winTeam.getMembers()) {
@@ -787,9 +801,10 @@ public class Teams implements SWGameMode {
                     }
                 }, () -> {
                     this.bossBar.removeAll();
+                    this.chests.forEach(SWChest::clearHologram);
                     winTeam.getMembers().forEach(rswPlayer -> this.sendLog(rswPlayer, true));
                     this.kickPlayers(null);
-                    this.resetArena(ResetReason.NORMAL);
+                    this.resetArena(OperationReason.RESET);
                 }, (t) -> {
                     // if (Players.get(0).p != null) {
                     //     firework(Players.get(0));

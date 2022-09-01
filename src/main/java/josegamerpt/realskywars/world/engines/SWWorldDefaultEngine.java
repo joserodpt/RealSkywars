@@ -4,7 +4,6 @@ import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.game.modes.Solo;
-import josegamerpt.realskywars.utils.WorldEditUtils;
 import josegamerpt.realskywars.world.SWWorld;
 import josegamerpt.realskywars.world.SWWorldEngine;
 import josegamerpt.realskywars.world.WorldManager;
@@ -25,8 +24,6 @@ public class SWWorldDefaultEngine implements SWWorldEngine {
         this.world = w;
         this.world.setAutoSave(false);
         this.gameRoom = gameMode;
-
-        this.resetWorld(SWGameMode.ResetReason.ADMIN);
     }
 
     @Override
@@ -35,38 +32,46 @@ public class SWWorldDefaultEngine implements SWWorldEngine {
     }
 
     @Override
-    public void resetWorld(SWGameMode.ResetReason rr) {
-        Debugger.print(WorldEditUtils.class, "Resetting " + this.getName() + " - type: " + this.getType().name());
+    public void resetWorld(SWGameMode.OperationReason rr) {
+        Debugger.print(SWWorldDefaultEngine.class, "Resetting " + this.getName() + " - type: " + this.getType().name());
 
-        if (rr == SWGameMode.ResetReason.SHUTDOWN) {
-        } else {//replace world
-            this.deleteContent();
-            //Copy world
-            this.wm.copyWorld(this.getName(), WorldManager.CopyTo.ROOT);
+        switch (rr) {
+            case SHUTDOWN:
+                //delete world
+                this.deleteWorld(SWGameMode.OperationReason.SHUTDOWN);
+                break;
+            default:
+                this.deleteWorld(SWGameMode.OperationReason.RESET);
+                //Copy world
+                this.wm.copyWorld(this.getName(), WorldManager.CopyTo.ROOT);
 
-            //Load world
-            this.world = this.wm.createEmptyWorld(this.getName(), World.Environment.NORMAL);
-            if (this.world != null) {
-                WorldBorder wb = this.world.getWorldBorder();
+                //Load world
+                this.world = this.wm.createEmptyWorld(this.getName(), World.Environment.NORMAL);
+                if (this.world != null) {
+                    WorldBorder wb = this.world.getWorldBorder();
 
-                wb.setCenter(this.gameRoom.getArena().getCenter());
-                wb.setSize(this.gameRoom.getBorderSize());
+                    wb.setCenter(this.gameRoom.getArena().getCenter());
+                    wb.setSize(this.gameRoom.getBorderSize());
 
-                this.gameRoom.setState(SWGameMode.GameState.AVAILABLE);
-                Debugger.print(Solo.class, "[ROOM " + this.gameRoom.getName() + "] sucessfully resetted.");
-            } else {
-                RealSkywars.log(Level.SEVERE, "ERROR! Could not load " + this.getName());
-            }
+                    this.gameRoom.setState(SWGameMode.GameState.AVAILABLE);
+                    Debugger.print(Solo.class, "[ROOM " + this.gameRoom.getName() + "] sucessfully resetted.");
+                } else {
+                    RealSkywars.log(Level.SEVERE, "ERROR! Could not load " + this.getName());
+                }
+                break;
         }
     }
 
-    private void deleteContent() {
-        this.wm.deleteWorld(this.getName(), true);
-    }
-
     @Override
-    public void deleteWorld() {
-        this.deleteContent();
+    public void deleteWorld(SWGameMode.OperationReason rr) {
+        switch (rr) {
+            case LOAD:
+                break;
+            case SHUTDOWN:
+            case RESET:
+                this.wm.deleteWorld(this.getName(), true);
+                break;
+        }
     }
 
     @Override

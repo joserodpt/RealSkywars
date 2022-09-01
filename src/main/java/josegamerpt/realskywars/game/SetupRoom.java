@@ -31,9 +31,10 @@ public class SetupRoom {
     private int playersPerTeam;
     private Boolean ranked = false;
     private final SWWorld.WorldType worldType;
+    private String schematic = "none";
 
     public SetupRoom(String nome, World w, SWWorld.WorldType wt, int players) {
-        this.name = nome;
+        this.name = nome.replace(".schematic", "").replace(".schem", "");
         this.worldMap = w;
         this.worldType = wt;
         this.maxPlayers = players;
@@ -41,7 +42,7 @@ public class SetupRoom {
     }
 
     public SetupRoom(String nome, World w, SWWorld.WorldType wt, int teams, int ppert) {
-        this.name = nome;
+        this.name = nome.replace(".schematic", "").replace(".schem", "");
         this.worldMap = w;
         this.worldType = wt;
         this.teams = teams;
@@ -161,5 +162,13 @@ public class SetupRoom {
 
     public SWWorld.WorldType getWorldType() {
         return this.worldType;
+    }
+
+    public String getSchematic() {
+        return this.schematic;
+    }
+
+    public void setSchematic(String name) {
+        this.schematic = name;
     }
 }

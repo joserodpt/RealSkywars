@@ -7,9 +7,9 @@ public interface SWWorldEngine {
 
     World getWorld();
 
-    void resetWorld(SWGameMode.ResetReason rr);
+    void resetWorld(SWGameMode.OperationReason rr);
 
-    void deleteWorld();
+    void deleteWorld(SWGameMode.OperationReason rr);
 
     void setTime(long l);
 

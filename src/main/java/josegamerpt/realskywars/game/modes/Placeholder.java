@@ -167,7 +167,7 @@ public class Placeholder implements SWGameMode {
     }
 
     @Override
-    public void resetArena(ResetReason rr) {
+    public void resetArena(OperationReason rr) {
 
     }
 
@@ -203,6 +203,11 @@ public class Placeholder implements SWGameMode {
     }
 
     public void clear() {
+
+    }
+
+    @Override
+    public void deleteShutdown() {
 
     }
 
@@ -249,6 +254,11 @@ public class Placeholder implements SWGameMode {
     @Override
     public SWChest getChest(Location location) {
         return null;
+    }
+
+    @Override
+    public String getShematicName() {
+        return "none";
     }
 
 }

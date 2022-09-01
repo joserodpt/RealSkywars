@@ -61,13 +61,17 @@ public class Solo implements SWGameMode {
     private TimeType timeType = TimeType.DAY;
 
     private ArrayList<SWEvent> events;
+    private String schematicName;
 
-    // b-1, n-2, o-3, c-4
-
-    public Solo(String nome, World w, SWWorld.WorldType wt, SWGameMode.GameState estado, ArrayList<Cage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd) {
+    public Solo(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, ArrayList<Cage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd) {
         this.name = nome;
+        this.schematicName = schematicName;
 
         this.arenaCuboid = new ArenaCuboid(pos1, pos2);
+        this.borderSize = this.arenaCuboid.getSizeX();
+        this.border = w.getWorldBorder();
+        this.border.setCenter(this.arenaCuboid.getCenter());
+        this.border.setSize(this.borderSize);
         this.world = new SWWorld(this, w, wt);
 
         this.cages = cages;
@@ -76,10 +80,7 @@ public class Solo implements SWGameMode {
         this.spectatorLocation = spectatorLocation;
         this.specEnabled = specEnabled;
         this.instantEnding = instantEnding;
-        this.borderSize = this.arenaCuboid.getSizeX();
-        this.border = w.getWorldBorder();
-        this.border.setCenter(this.arenaCuboid.getCenter());
-        this.border.setSize(this.borderSize);
+
         this.chests = chests;
         this.ranked = rankd;
 
@@ -234,7 +235,11 @@ public class Solo implements SWGameMode {
 
     @Override
     public void clear() {
-        this.world.deleteWorld();
+        this.world.deleteWorld(OperationReason.RESET);
+    }
+    @Override
+    public void deleteShutdown() {
+        this.world.deleteWorld(OperationReason.SHUTDOWN);
     }
 
     @Override
@@ -242,7 +247,7 @@ public class Solo implements SWGameMode {
         this.state = GameState.RESETTING;
 
         this.kickPlayers(RealSkywars.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.ARENA_RESET, true));
-        this.resetArena(ResetReason.ADMIN);
+        this.resetArena(OperationReason.RESET);
     }
 
     @Override
@@ -306,6 +311,11 @@ public class Solo implements SWGameMode {
             }
         }
         return null;
+    }
+
+    @Override
+    public String getShematicName() {
+        return this.schematicName;
     }
 
     private void startGameFunction() {
@@ -616,7 +626,7 @@ public class Solo implements SWGameMode {
         return this.timePassed;
     }
 
-    public void resetArena(ResetReason rr) {
+    public void resetArena(OperationReason rr) {
         this.state = SWGameMode.GameState.RESETTING;
 
         if (this.timeCouterTask != null) {
@@ -633,6 +643,7 @@ public class Solo implements SWGameMode {
             this.startRoomTimer = null;
         }
 
+        this.chests.forEach(SWChest::clear);
         this.world.resetWorld(rr);
 
         this.inRoom.clear();
@@ -649,7 +660,9 @@ public class Solo implements SWGameMode {
 
         this.events = RealSkywars.getGameManager().parseEvents(this);
 
-        this.chests.forEach(SWChest::clear);
+        if (rr != OperationReason.SHUTDOWN) {
+            this.chests.forEach(SWChest::setChest);
+        }
 
         this.timePassed = 0;
     }
@@ -761,7 +774,7 @@ public class Solo implements SWGameMode {
                 this.bossBar.removeAll();
                 this.sendLog(p, true);
                 this.kickPlayers(null);
-                this.resetArena(ResetReason.NORMAL);
+                this.resetArena(OperationReason.RESET);
             } else {
                 this.winTimer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), Config.file().getInt("Config.Time-EndGame"), () -> {
                     if (p.getPlayer() != null) {
@@ -776,9 +789,10 @@ public class Solo implements SWGameMode {
                     }
                 }, () -> {
                     this.bossBar.removeAll();
+                    this.chests.forEach(SWChest::clearHologram);
                     this.sendLog(p, true);
                     this.kickPlayers(null);
-                    this.resetArena(ResetReason.NORMAL);
+                    this.resetArena(OperationReason.RESET);
                 }, (t) -> {
                     double div = (double) t.getSecondsLeft() / (double) Config.file().getInt("Config.Time-EndGame");
                     if (div <= 1 && div >= 0) {

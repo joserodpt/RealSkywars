@@ -64,9 +64,6 @@ public class RealSkywarsCMD extends CommandBase {
     @Permission("RealSkywars.Admin")
     public void debugcmd(final CommandSender commandSender, String nome) {
         if (commandSender instanceof Player) {
-
-            WorldEditUtils.pasteSchematic(nome, ((Player) commandSender).getLocation());
-
             commandSender.sendMessage("done");
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -523,7 +520,7 @@ public class RealSkywarsCMD extends CommandBase {
     @Permission("RealSkywars.Admin")
     @Completion({"#range:50", "#worldtype", "#range:20", "#range:20"})
     @WrongUsage("&c/rsw create <name> <type> <players> or /rsw create <name> <type> <number of teams> <players per team>")
-    public void create(final CommandSender commandSender, String mapname, SWWorld.WorldType wt, Integer maxPlayersandTeams, @Optional Integer teamPlayers) {
+    public void createcmd(final CommandSender commandSender, String mapname, SWWorld.WorldType wt, Integer maxPlayersandTeams, @Optional Integer teamPlayers) {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
 
@@ -532,8 +529,8 @@ public class RealSkywarsCMD extends CommandBase {
                 return;
             }
 
-            if (wt.equals(SWWorld.WorldType.SCHEMATIC) && !WorldEditUtils.schemFileExists(mapname + ".schem")) {
-                p.sendMessage("&cNo " + mapname + "&c.schem found in the maps folder of RealSkywars.");
+            if (wt.equals(SWWorld.WorldType.SCHEMATIC) && !WorldEditUtils.schemFileExists(mapname)) {
+                p.sendMessage("&cNo " + mapname + "&c found in the maps folder of RealSkywars.");
                 return;
             }
 

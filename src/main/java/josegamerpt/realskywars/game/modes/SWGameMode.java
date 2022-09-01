@@ -85,7 +85,7 @@ public interface SWGameMode {
 
     int getTimePassed();
 
-    void resetArena(ResetReason rr);
+    void resetArena(OperationReason rr);
 
     void setSpectator(boolean b);
 
@@ -104,6 +104,8 @@ public interface SWGameMode {
     int maxMembersTeam();
 
     void clear();
+    void deleteShutdown();
+
 
     void reset();
 
@@ -123,11 +125,13 @@ public interface SWGameMode {
 
     SWChest getChest(Location location);
 
+    String getShematicName();
+
     enum GameState {
         AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING
     }
 
-    enum ResetReason {SHUTDOWN, NORMAL, ADMIN}
+    enum OperationReason {SHUTDOWN, RESET, LOAD}
 
     enum Mode {
         SOLO, TEAMS

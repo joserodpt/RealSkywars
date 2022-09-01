@@ -10,19 +10,19 @@ public class SWWorld {
     private final SWWorldEngine engine;
 
     public SWWorld(SWGameMode gameRoom, World w, WorldType wt) {
-        this.engine = (wt == WorldType.DEFAULT ? new SWWorldDefaultEngine(w, gameRoom) : new SWWorldSchematicEngine(w, gameRoom));
+        this.engine = (wt == WorldType.DEFAULT ? new SWWorldDefaultEngine(w, gameRoom) : new SWWorldSchematicEngine(w, gameRoom.getShematicName(), gameRoom));
     }
 
     public World getWorld() {
         return this.engine.getWorld();
     }
 
-    public void resetWorld(SWGameMode.ResetReason rr) {
+    public void resetWorld(SWGameMode.OperationReason rr) {
         this.engine.resetWorld(rr);
     }
 
-    public void deleteWorld() {
-        this.engine.deleteWorld();
+    public void deleteWorld(SWGameMode.OperationReason rr) {
+        this.engine.deleteWorld(rr);
     }
 
     public void setTime(long l) {

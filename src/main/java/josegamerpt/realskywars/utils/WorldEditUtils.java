@@ -23,7 +23,6 @@ import org.bukkit.Location;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 
 public class WorldEditUtils {
 
@@ -58,7 +57,6 @@ public class WorldEditUtils {
     }
 
     public static void pasteSchematic(String name, Location location) {
-        name += ".schem";
         Debugger.print(WorldEditUtils.class, "Pasting schematic named " + name);
         File folder = new File(RealSkywars.getPlugin().getDataFolder(), "maps");
         File file = new File(folder, name);
@@ -87,10 +85,12 @@ public class WorldEditUtils {
                     editSession.close();
 
                     Debugger.print(WorldEditUtils.class, "Pasted!");
-                } catch (WorldEditException e) {
+                } catch (Exception e) {
+                    Debugger.print(WorldEditUtils.class, "Error pasting schematic!");
                     e.printStackTrace();
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
+                Debugger.print(WorldEditUtils.class, "Error pasting schematic!");
                 e.printStackTrace();
             }
         }

@@ -12,8 +12,9 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -35,7 +36,7 @@ public class SWChest {
     private int maxItemsPerChest;
     private Countdown chestCTD;
 
-    public SWChest(ChestTYPE ct, String worldName, int x, int y, int z, BlockFace bf, boolean real) {
+    public SWChest(ChestTYPE ct, String worldName, int x, int y, int z, BlockFace bf) {
         this.type = ct;
         this.x = x;
         this.y = y;
@@ -43,7 +44,7 @@ public class SWChest {
         this.worldName = worldName;
         this.bf = bf;
         this.hologram = RealSkywars.getHologramManager().getHologramInstance();
-        if (real) this.clear();
+        this.clear();
     }
 
     @Override
@@ -71,21 +72,20 @@ public class SWChest {
 
     public void clear() {
         this.cancelTasks();
-        this.hologram.deleteHologram();
-        if (!this.isChest()) {
-            this.setChest();
+        if (this.hologram != null) {
+            this.hologram.deleteHologram();
         }
+        this.setChest();
         ((Chest) this.getChestBlock().getState()).getInventory().clear();
         this.opened = false;
     }
 
-    private void setChest() {
+    public void setChest() {
         this.getLocation().getWorld().getBlockAt(this.getLocation()).setType(Material.CHEST);
         Block b = this.getLocation().getWorld().getBlockAt(this.getLocation());
-
-        BlockState chestState = b.getState();
-        chestState.setData(new org.bukkit.material.Chest(this.bf));
-        chestState.update();
+        BlockData blockData = b.getBlockData();
+        ((Directional) blockData).setFacing(this.bf);
+        b.setBlockData(blockData);
     }
 
     public Block getChestBlock() {
@@ -177,6 +177,10 @@ public class SWChest {
 
     public boolean isOpened() {
         return this.opened;
+    }
+
+    public void clearHologram() {
+        this.hologram.deleteHologram();
     }
 
     public enum ChestTYPE {NORMAL, MID}

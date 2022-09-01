@@ -8,6 +8,7 @@ import josegamerpt.realskywars.game.modes.Solo;
 import josegamerpt.realskywars.utils.WorldEditUtils;
 import josegamerpt.realskywars.world.SWWorld;
 import josegamerpt.realskywars.world.SWWorldEngine;
+import josegamerpt.realskywars.world.WorldManager;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
@@ -18,15 +19,18 @@ public class SWWorldSchematicEngine implements SWWorldEngine {
 
     private final World world;
     private final SWGameMode gameRoom;
-    private final String schematicName;
+    private final String worldName;
 
-    public SWWorldSchematicEngine(World w, SWGameMode gameMode) {
-        this.schematicName = w.getName();
+    private final String schematicName;
+    private final WorldManager wm = RealSkywars.getWorldManager();
+
+
+    public SWWorldSchematicEngine(World w, String sname, SWGameMode gameMode) {
+        this.worldName = w.getName();
+        this.schematicName = sname;
         this.world = w;
         this.world.setAutoSave(false);
         this.gameRoom = gameMode;
-
-        this.resetWorld(SWGameMode.ResetReason.NORMAL);
     }
 
 
@@ -36,38 +40,46 @@ public class SWWorldSchematicEngine implements SWWorldEngine {
     }
 
     @Override
-    public void resetWorld(SWGameMode.ResetReason rr) {
-        Debugger.print(WorldEditUtils.class, "Resetting " + this.getName() + " - type: " + this.getType().name());
+    public void resetWorld(SWGameMode.OperationReason rr) {
+        Debugger.print(SWWorldSchematicEngine.class, "Resetting " + this.getName() + " - type: " + this.getType().name());
 
-        if (rr == SWGameMode.ResetReason.SHUTDOWN) {
-        } else {//delete content
-            this.deleteContent();
-            //place schematic
-            WorldEditUtils.pasteSchematic(this.schematicName, new Location(this.world, 0, 64, 0));
+        switch (rr) {
+            case SHUTDOWN:
+                //no need
+                break;
+            case RESET:
+                this.deleteWorld(SWGameMode.OperationReason.RESET);
+            case LOAD:
+                if (this.world != null) {
+                    //place schematic
+                    WorldEditUtils.pasteSchematic(this.schematicName, new Location(this.world, 0, 64, 0));
 
-            if (this.world != null) {
-                WorldBorder wb = this.world.getWorldBorder();
+                    WorldBorder wb = this.world.getWorldBorder();
 
-                wb.setCenter(this.gameRoom.getArena().getCenter());
-                wb.setSize(this.gameRoom.getBorderSize());
+                    wb.setCenter(this.gameRoom.getArena().getCenter());
+                    wb.setSize(this.gameRoom.getBorderSize());
 
-                this.gameRoom.setState(SWGameMode.GameState.AVAILABLE);
-                Debugger.print(Solo.class, "[ROOM " + this.gameRoom.getName() + "] sucessfully resetted.");
-            } else {
-                RealSkywars.log(Level.SEVERE, "ERROR! Could not load " + this.getName());
-            }
+                    this.gameRoom.setState(SWGameMode.GameState.AVAILABLE);
+                    Debugger.print(Solo.class, "[ROOM " + this.gameRoom.getName() + "] sucessfully resetted.");
+                } else {
+                    RealSkywars.log(Level.SEVERE, "ERROR! Could not load " + this.getName());
+                }
+                break;
         }
     }
 
     @Override
-    public void deleteWorld() {
-        this.deleteContent();
-    }
-
-    private void deleteContent() {
-        //delete content
+    public void deleteWorld(SWGameMode.OperationReason rr) {
         RealSkywars.getWorldManager().clearItems(world);
-        WorldEditUtils.setBlocks(this.gameRoom.getPOS1(), this.gameRoom.getPOS2(), BlockTypes.AIR);
+        switch (rr) {
+            case LOAD:
+            case SHUTDOWN:
+                this.wm.deleteWorld(this.getName(), true);
+                break;
+            case RESET:
+                WorldEditUtils.setBlocks(this.gameRoom.getPOS1(), this.gameRoom.getPOS2(), BlockTypes.AIR);
+                break;
+        }
     }
 
     @Override
