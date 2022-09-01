@@ -126,7 +126,8 @@ public class PlayerManager {
         ArrayList<RSWGameLog> tmp = new ArrayList<>();
         if (s != null) {
             String[] split = s.split("/");
-            int max = Math.min(split.length, 25);
+            //max size is 140 (5 pages)
+            int max = Math.min(split.length, 140);
             for (int i = 0; i < max; ++i) {
                 String obj = split[i];
                 //mapa-modo-ranked-jogadores-ganhou-tempo-dia
