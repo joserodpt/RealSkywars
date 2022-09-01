@@ -1,5 +1,6 @@
-package josegamerpt.realskywars;
+package josegamerpt.realskywars.listeners;
 
+import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EnderPearl;

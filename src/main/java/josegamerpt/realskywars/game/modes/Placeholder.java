@@ -103,9 +103,7 @@ public class Placeholder implements SWGameMode {
     }
 
     @Override
-    public void setState(GameState w) {
-
-    }
+    public void setState(GameState w) { }
 
     public boolean isPlaceHolder() {
         return true;

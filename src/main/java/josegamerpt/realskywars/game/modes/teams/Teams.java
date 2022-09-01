@@ -1,6 +1,7 @@
 package josegamerpt.realskywars.game.modes.teams;
 
 import josegamerpt.realskywars.RealSkywars;
+import josegamerpt.realskywars.api.events.RSWAPIEvents;
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.chests.SWChest;
@@ -64,7 +65,7 @@ public class Teams implements SWGameMode {
     private ProjectileType projectileType = ProjectileType.NORMAL;
     private TimeType timeType = TimeType.DAY;
     private ArrayList<SWEvent> events;
-    private String schematicName;
+    private final String schematicName;
 
     public Teams(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, ArrayList<Team> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd) {
         this.name = nome;
@@ -197,6 +198,7 @@ public class Teams implements SWGameMode {
 
     public void setState(SWGameMode.GameState w) {
         this.state = w;
+        RSWAPIEvents.callRoomStateChange(this);
     }
 
     public boolean isPlaceHolder() {
@@ -244,7 +246,7 @@ public class Teams implements SWGameMode {
 
     @Override
     public void reset() {
-        this.state = SWGameMode.GameState.RESETTING;
+        this.setState(GameState.RESETTING);
 
         this.kickPlayers(RealSkywars.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.ARENA_RESET, true));
         this.resetArena(OperationReason.RESET);
@@ -328,9 +330,9 @@ public class Teams implements SWGameMode {
             }
             this.bossBar.setTitle(Text.color(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_WAIT)));
             this.bossBar.setProgress(0D);
-            this.state = SWGameMode.GameState.WAITING;
+            this.setState(GameState.WAITING);
         } else {
-            this.state = SWGameMode.GameState.PLAYING;
+            this.setState(GameState.PLAYING);
 
             this.startRoomTimer.killTask();
 
@@ -464,7 +466,7 @@ public class Teams implements SWGameMode {
             }
         }
 
-        if (this.state == SWGameMode.GameState.PLAYING || this.state == SWGameMode.GameState.FINISHING) {
+        if (this.getState() == SWGameMode.GameState.PLAYING || this.getState() == SWGameMode.GameState.FINISHING) {
             this.checkWin();
         }
     }
@@ -570,7 +572,7 @@ public class Teams implements SWGameMode {
                 }
                 this.bossBar.setTitle(Text.color(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_WAIT)));
                 this.bossBar.setProgress(0D);
-                this.state = SWGameMode.GameState.WAITING;
+                this.setState(GameState.WAITING);
             } else {
                 for (RSWPlayer p : this.getPlayers()) {
                     p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ARENA_START_COUNTDOWN, true).replace("%time%", Text.formatSeconds(t.getSecondsLeft()) + ""));
@@ -631,7 +633,7 @@ public class Teams implements SWGameMode {
     }
 
     public void resetArena(OperationReason rr) {
-        this.state = SWGameMode.GameState.RESETTING;
+        this.setState(GameState.RESETTING);
 
         if (this.timeCouterTask != null) {
             this.timeCouterTask.cancel();
@@ -764,8 +766,9 @@ public class Teams implements SWGameMode {
     }
 
     public void checkWin() {
-        if (this.getAliveTeams() == 1 && this.state != SWGameMode.GameState.FINISHING) {
-            this.state = SWGameMode.GameState.FINISHING;
+        if (this.getAliveTeams() == 1 && this.getState() != SWGameMode.GameState.FINISHING) {
+            this.setState(GameState.FINISHING);
+
             Team winTeam = getPlayers().get(0).getTeam();
 
             this.startTimer.killTask();

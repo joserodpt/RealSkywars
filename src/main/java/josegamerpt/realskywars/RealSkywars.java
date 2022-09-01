@@ -18,6 +18,8 @@ import josegamerpt.realskywars.gui.guis.*;
 import josegamerpt.realskywars.holograms.HologramManager;
 import josegamerpt.realskywars.kits.KitManager;
 import josegamerpt.realskywars.leaderboards.LeaderboardManager;
+import josegamerpt.realskywars.listeners.EntityEvents;
+import josegamerpt.realskywars.listeners.GameRoomListeners;
 import josegamerpt.realskywars.managers.*;
 import josegamerpt.realskywars.nms.*;
 import josegamerpt.realskywars.party.PartyManager;
@@ -204,6 +206,7 @@ public class RealSkywars extends JavaPlugin {
                 log("Setting up events.");
                 pm.registerEvents(new PlayerEvents(), this);
                 pm.registerEvents(new EntityEvents(), this);
+                pm.registerEvents(new GameRoomListeners(), this);
                 pm.registerEvents(GUIBuilder.getListener(), this);
                 pm.registerEvents(GameLogViewer.getListener(), this);
                 pm.registerEvents(MapSettings.getListener(), this);
