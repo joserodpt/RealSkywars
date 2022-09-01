@@ -7,7 +7,6 @@ import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.game.SWEvent;
-import josegamerpt.realskywars.world.SWWorld;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.PlayerManager;
@@ -17,6 +16,7 @@ import josegamerpt.realskywars.utils.ArenaCuboid;
 import josegamerpt.realskywars.utils.Demolition;
 import josegamerpt.realskywars.utils.MathUtils;
 import josegamerpt.realskywars.utils.Text;
+import josegamerpt.realskywars.world.SWWorld;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
@@ -41,19 +41,19 @@ public class Teams implements SWGameMode {
     private final String name;
     private final int maxPlayers;
     private final int maxMembersTeam;
-    private Boolean ranked;
-    private SWGameMode.GameState state;
     private final WorldBorder border;
-    private BossBar bossBar;
     private final int borderSize;
     private final ArrayList<Team> teams;
     private final ArrayList<RSWPlayer> inRoom = new ArrayList<>();
     private final HashMap<UUID, Integer> chestVotes = new HashMap<>();
     private final HashMap<UUID, Integer> projectileVotes = new HashMap<>();
     private final HashMap<UUID, Integer> timeVotes = new HashMap<>();
+    private final Location spectatorLocation;
+    private Boolean ranked;
+    private SWGameMode.GameState state;
+    private BossBar bossBar;
     private ChestManager.ChestTier chestTier = ChestManager.ChestTier.NORMAL;
     private int timePassed = 0;
-    private final Location spectatorLocation;
     private Boolean specEnabled;
     private Boolean instantEnding;
 
@@ -63,12 +63,13 @@ public class Teams implements SWGameMode {
     private BukkitTask timeCouterTask;
     private ProjectileType projectileType = ProjectileType.NORMAL;
     private TimeType timeType = TimeType.DAY;
-
     private ArrayList<SWEvent> events;
 
-    public Teams(String nome, World w, SWGameMode.GameState estado, ArrayList<Team> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd) {
+    public Teams(String nome, World w, SWWorld.WorldType wt, SWGameMode.GameState estado, ArrayList<Team> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd) {
         this.name = nome;
-        this.world = new SWWorld(this, w);
+
+        this.arenaCuboid = new ArenaCuboid(pos1, pos2);
+        this.world = new SWWorld(this, w, wt);
 
         this.state = estado;
         this.teams = teams;
@@ -77,7 +78,6 @@ public class Teams implements SWGameMode {
         this.spectatorLocation = spectatorLocation;
         this.specEnabled = specEnabled;
         this.instantEnding = instantEnding;
-        this.arenaCuboid = new ArenaCuboid(pos1, pos2);
         this.border = w.getWorldBorder();
         this.border.setCenter(this.arenaCuboid.getCenter());
         this.borderSize = this.arenaCuboid.getSizeX();
@@ -233,7 +233,7 @@ public class Teams implements SWGameMode {
 
     @Override
     public void clear() {
-        this.world.clear();
+        this.world.deleteWorld();
     }
 
     @Override
@@ -241,7 +241,7 @@ public class Teams implements SWGameMode {
         this.state = SWGameMode.GameState.RESETTING;
 
         this.kickPlayers(RealSkywars.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.ARENA_RESET, true));
-        this.resetArena();
+        this.resetArena(ResetReason.NORMAL);
     }
 
     @Override
@@ -271,8 +271,7 @@ public class Teams implements SWGameMode {
 
     @Override
     public boolean hasVotedFor(VoteType vt, UUID uuid) {
-        switch (vt)
-        {
+        switch (vt) {
             case CHESTS:
                 return this.chestVotes.containsKey(uuid);
             case TIME:
@@ -620,7 +619,7 @@ public class Teams implements SWGameMode {
         return this.timePassed;
     }
 
-    public void resetArena() {
+    public void resetArena(ResetReason rr) {
         this.state = SWGameMode.GameState.RESETTING;
 
         if (this.timeCouterTask != null) {
@@ -637,7 +636,7 @@ public class Teams implements SWGameMode {
             this.startRoomTimer = null;
         }
 
-        this.world.resetWorld();
+        this.world.resetWorld(rr);
 
         this.inRoom.clear();
         this.teams.forEach(Team::reset);
@@ -768,7 +767,7 @@ public class Teams implements SWGameMode {
                 this.bossBar.removeAll();
                 winTeam.getMembers().forEach(rswPlayer -> this.sendLog(rswPlayer, true));
                 this.kickPlayers(null);
-                this.resetArena();
+                this.resetArena(ResetReason.NORMAL);
             } else {
                 this.winTimer = new Countdown(RealSkywars.getPlugin(RealSkywars.class), Config.file().getInt("Config.Time-EndGame"), () -> {
                     for (RSWPlayer p : winTeam.getMembers()) {
@@ -790,7 +789,7 @@ public class Teams implements SWGameMode {
                     this.bossBar.removeAll();
                     winTeam.getMembers().forEach(rswPlayer -> this.sendLog(rswPlayer, true));
                     this.kickPlayers(null);
-                    this.resetArena();
+                    this.resetArena(ResetReason.NORMAL);
                 }, (t) -> {
                     // if (Players.get(0).p != null) {
                     //     firework(Players.get(0));

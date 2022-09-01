@@ -3,6 +3,7 @@ package josegamerpt.realskywars.game;
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.game.modes.SWGameMode;
+import josegamerpt.realskywars.world.SWWorld;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -12,15 +13,15 @@ import static josegamerpt.realskywars.game.modes.SWGameMode.Mode.TEAMS;
 
 public class SetupRoom {
 
-    private Boolean tpConfirm = false;
     private final String name;
     private final ArrayList<Cage> cages = new ArrayList<>();
     private final ArrayList<SWChest> chests = new ArrayList<>();
     private final int maxPlayers;
+    private final SWGameMode.Mode mode;
+    private Boolean tpConfirm = false;
     private World worldMap;
     private Location spectatorLocation;
     private Boolean spec = true;
-    private final SWGameMode.Mode mode;
     private boolean cagesConfirmed = false;
     private boolean speclocConfirm = false;
     private Boolean guiConfirm = false;
@@ -29,17 +30,20 @@ public class SetupRoom {
     private int teams;
     private int playersPerTeam;
     private Boolean ranked = false;
+    private final SWWorld.WorldType worldType;
 
-    public SetupRoom(String nome, World w, int players) {
+    public SetupRoom(String nome, World w, SWWorld.WorldType wt, int players) {
         this.name = nome;
         this.worldMap = w;
+        this.worldType = wt;
         this.maxPlayers = players;
         this.mode = SWGameMode.Mode.SOLO;
     }
 
-    public SetupRoom(String nome, World w, int teams, int ppert) {
+    public SetupRoom(String nome, World w, SWWorld.WorldType wt, int teams, int ppert) {
         this.name = nome;
         this.worldMap = w;
+        this.worldType = wt;
         this.teams = teams;
         this.playersPerTeam = ppert;
         this.mode = TEAMS;
@@ -153,5 +157,9 @@ public class SetupRoom {
 
     public void setRanked(boolean b) {
         this.ranked = b;
+    }
+
+    public SWWorld.WorldType getWorldType() {
+        return this.worldType;
     }
 }

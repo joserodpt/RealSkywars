@@ -6,6 +6,8 @@ import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 
@@ -19,6 +21,14 @@ import java.util.Random;
 import java.util.logging.Level;
 
 public class WorldManager {
+
+    public void clearItems(World w) {
+        for (Entity entity : w.getEntities()) {
+            if (entity.getType() == EntityType.DROPPED_ITEM) {
+                entity.remove();
+            }
+        }
+    }
 
     //CREDIT to open source
 

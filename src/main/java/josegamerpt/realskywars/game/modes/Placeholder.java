@@ -5,10 +5,10 @@ import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.game.SWEvent;
-import josegamerpt.realskywars.world.SWWorld;
 import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.ArenaCuboid;
+import josegamerpt.realskywars.world.SWWorld;
 import org.bukkit.Location;
 import org.bukkit.WorldBorder;
 import org.bukkit.boss.BossBar;
@@ -166,7 +166,9 @@ public class Placeholder implements SWGameMode {
         return 0;
     }
 
-    public void resetArena() {
+    @Override
+    public void resetArena(ResetReason rr) {
+
     }
 
     public void setSpectator(boolean b) {

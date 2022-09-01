@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 
 public class GameManager {
 
-    public Boolean endingGames = false;
     private final ArrayList<SWGameMode> games = new ArrayList<>();
+    public Boolean endingGames = false;
     private Location lobbyLOC;
     private Boolean loginTP = true;
 
@@ -43,9 +43,8 @@ public class GameManager {
     public void endGames() {
         this.endingGames = true;
         for (SWGameMode g : this.games) {
-            g.setState(GameState.RESETTING);
             g.kickPlayers(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.ADMIN_SHUTDOWN));
-            g.resetArena();
+            g.resetArena(SWGameMode.ResetReason.SHUTDOWN);
         }
     }
 
@@ -167,7 +166,7 @@ public class GameManager {
     }
 
     public void addRoom(SWGameMode s) {
-        games.add(s);
+        this.games.add(s);
     }
 
     public void setLobbyLoc(Location location) {

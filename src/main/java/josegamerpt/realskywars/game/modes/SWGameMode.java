@@ -5,10 +5,10 @@ import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.game.SWEvent;
-import josegamerpt.realskywars.world.SWWorld;
 import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.ArenaCuboid;
+import josegamerpt.realskywars.world.SWWorld;
 import org.bukkit.Location;
 import org.bukkit.WorldBorder;
 import org.bukkit.boss.BossBar;
@@ -19,124 +19,132 @@ import java.util.UUID;
 
 public interface SWGameMode {
 
-	Countdown getStartRoomTimer();
+    Countdown getStartRoomTimer();
 
-	ProjectileType getProjectile();
+    ProjectileType getProjectile();
 
-	void setRanked(Boolean ranked);
+    void setRanked(Boolean ranked);
 
-	enum GameState {
-		AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING
-	}
+    Boolean isRanked();
 
-	enum Mode {
-		SOLO, TEAMS
-	}
+    boolean isFull();
 
-	enum VoteType {
-		CHESTS, PROJECTILES, TIME
-	}
-	enum ProjectileType {
-		NORMAL, BREAK_BLOCKS
-	}
-	enum TimeType {
-		DAY, NIGHT, SUNSET
-	}
+    void saveRoom();
 
-	Boolean isRanked();
+    String getName();
 
-	boolean isFull();
+    int getMaxPlayers();
 
-	void saveRoom();
+    BossBar getBossBar();
 
-	String getName();
+    WorldBorder getBorder();
 
-	int getMaxPlayers();
+    int getPlayerCount();
 
-	BossBar getBossBar();
+    ArrayList<RSWPlayer> getPlayers();
 
-	WorldBorder getBorder();
+    ArrayList<RSWPlayer> getInRoom();
 
-	int getPlayerCount();
+    int getSpectatorsCount();
 
-	ArrayList<RSWPlayer> getPlayers();
+    List<RSWPlayer> getSpectators();
 
-	ArrayList<RSWPlayer> getInRoom();
+    SWWorld getSWWorld();
 
-	int getSpectatorsCount();
+    void kickPlayers(String msg);
 
-	List<RSWPlayer> getSpectators();
+    SWGameMode.GameState getState();
 
-	SWWorld getSWWorld();
+    void setState(SWGameMode.GameState w);
 
-	void kickPlayers(String msg);
+    boolean isPlaceHolder();
 
-	SWGameMode.GameState getState();
+    String forceStart(RSWPlayer p);
 
-	boolean isPlaceHolder();
+    void removePlayer(RSWPlayer p);
 
-	String forceStart(RSWPlayer p);
+    Location getSpectatorLocation();
 
-	void removePlayer(RSWPlayer p);
+    Location getPOS1();
 
-	Location getSpectatorLocation();
+    Location getPOS2();
 
-	Location getPOS1();
+    void setTierType(ChestManager.ChestTier b, Boolean updateChests);
 
-	Location getPOS2();
+    void setTime(TimeType tt);
 
-	void setTierType(ChestManager.ChestTier b, Boolean updateChests);
-	void setTime(TimeType tt);
-	void setProjectiles(ProjectileType pt);
+    void setProjectiles(ProjectileType pt);
 
-	void addPlayer(RSWPlayer gp);
+    void addPlayer(RSWPlayer gp);
 
-	boolean isSpectatorEnabled();
+    boolean isSpectatorEnabled();
 
-	boolean isInstantEndEnabled();
+    boolean isInstantEndEnabled();
 
-	ChestManager.ChestTier getChestTier();
+    ChestManager.ChestTier getChestTier();
 
-	int getTimePassed();
+    int getTimePassed();
 
-	void resetArena();
+    void resetArena(ResetReason rr);
 
-	void setState(SWGameMode.GameState w);
+    void setSpectator(boolean b);
 
-	void setSpectator(boolean b);
+    void setInstantEnd(boolean b);
 
-	void setInstantEnd(boolean b);
+    void spectate(RSWPlayer p, SpectateType st, Location killLoc);
 
-	void spectate(RSWPlayer p, SpectateType st, Location killLoc);
+    void checkWin();
 
-	void checkWin();
+    Mode getGameMode();
 
-	Mode getGameMode();
+    ArrayList<Cage> getCages();
 
-	ArrayList<Cage> getCages();
+    ArrayList<Team> getTeams();
 
-	ArrayList<Team> getTeams();
-
-	int maxMembersTeam();
+    int maxMembersTeam();
 
     void clear();
 
     void reset();
 
-	ArenaCuboid getArena();
+    ArenaCuboid getArena();
 
-	int getBorderSize();
+    int getBorderSize();
 
-	void addVote(UUID u, VoteType vt, int i);
-	boolean hasVotedFor(VoteType vt, UUID uuid);
+    void addVote(UUID u, VoteType vt, int i);
 
-	ArrayList<SWChest> getChests();
+    boolean hasVotedFor(VoteType vt, UUID uuid);
 
-	ArrayList<SWEvent> getEvents();
-	int getMaxTime();
+    ArrayList<SWChest> getChests();
 
-	SWChest getChest(Location location);
+    ArrayList<SWEvent> getEvents();
 
-    enum SpectateType { GAME, EXTERNAL }
+    int getMaxTime();
+
+    SWChest getChest(Location location);
+
+    enum GameState {
+        AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING
+    }
+
+    enum ResetReason {SHUTDOWN, NORMAL, ADMIN}
+
+    enum Mode {
+        SOLO, TEAMS
+    }
+
+    enum VoteType {
+        CHESTS, PROJECTILES, TIME
+    }
+
+    enum ProjectileType {
+        NORMAL, BREAK_BLOCKS
+    }
+
+    enum TimeType {
+        DAY, NIGHT, SUNSET
+    }
+
+    enum SpectateType {GAME, EXTERNAL}
 
 }

@@ -25,6 +25,7 @@ import josegamerpt.realskywars.player.PlayerEvents;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.utils.GUIBuilder;
 import josegamerpt.realskywars.utils.Text;
+import josegamerpt.realskywars.world.SWWorld;
 import josegamerpt.realskywars.world.WorldManager;
 import me.mattstudios.mf.base.CommandManager;
 import me.mattstudios.mf.base.components.TypeResult;
@@ -42,7 +43,6 @@ import java.util.logging.Level;
 
 public class RealSkywars extends JavaPlugin {
 
-    private static Plugin pl;
     private static final WorldManager wm = new WorldManager();
     private static final LanguageManager lm = new LanguageManager();
     private static final PlayerManager playerm = new PlayerManager();
@@ -53,10 +53,10 @@ public class RealSkywars extends JavaPlugin {
     private static final PartyManager partym = new PartyManager();
     private static final LeaderboardManager lbm = new LeaderboardManager();
     private static final AchievementsManager am = new AchievementsManager();
-
+    private static final Random rand = new Random();
+    private static Plugin pl;
     private static ChestManager chestManager;
     private static RSWnms nms;
-    private static final Random rand = new Random();
     private static DatabaseManager databaseManager;
     private static HologramManager hologramManager;
     private final PluginManager pm = Bukkit.getPluginManager();
@@ -137,8 +137,7 @@ public class RealSkywars extends JavaPlugin {
         long start = System.currentTimeMillis();
         pl = this;
 
-        String star = "<------------- RealSkywars PT ------------->".replace("PT", "| " +
-                this.getDescription().getVersion());
+        String star = "<------------- RealSkywars PT ------------->".replace("PT", "| " + this.getDescription().getVersion());
         log(star);
 
         Debugger.print(RealSkywars.class, "DEBUG MODE ENABLED");
@@ -242,6 +241,7 @@ public class RealSkywars extends JavaPlugin {
 
                 commandManager.getCompletionHandler().register("#maps", input -> RealSkywars.getGameManager().getRoomNames());
                 commandManager.getCompletionHandler().register("#boolean", input -> Arrays.asList("false", "true"));
+                commandManager.getCompletionHandler().register("#worldtype", input -> Arrays.asList("DEFAULT", "SCHEMATIC"));
                 commandManager.getCompletionHandler().register("#kits", input -> kitm.getKitNames());
 
                 commandManager.getParameterHandler().register(ChestManager.ChestTier.class, argument -> {
@@ -252,6 +252,15 @@ public class RealSkywars extends JavaPlugin {
                 commandManager.getParameterHandler().register(SWGameMode.Mode.class, argument -> {
                     try {
                         SWGameMode.Mode tt = SWGameMode.Mode.valueOf(argument.toString().toUpperCase());
+                        if (tt == null) return new TypeResult(argument);
+                        return new TypeResult(tt, argument);
+                    } catch (Exception e) {
+                        return new TypeResult(argument);
+                    }
+                });
+                commandManager.getParameterHandler().register(SWWorld.WorldType.class, argument -> {
+                    try {
+                        SWWorld.WorldType tt = SWWorld.WorldType.valueOf(argument.toString().toUpperCase());
                         if (tt == null) return new TypeResult(argument);
                         return new TypeResult(tt, argument);
                     } catch (Exception e) {

@@ -15,6 +15,7 @@ import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
 import josegamerpt.realskywars.utils.WorldEditUtils;
+import josegamerpt.realskywars.world.SWWorld;
 import me.mattstudios.mf.annotations.*;
 import me.mattstudios.mf.base.CommandBase;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -34,8 +35,8 @@ import java.util.Map;
 @Alias({"sw", "rsw"})
 public class RealSkywarsCMD extends CommandBase {
 
-    public RealSkywars rs;
     private final String onlyPlayer = "[RealSkywars] Only players can run this command.";
+    public RealSkywars rs;
 
     public RealSkywarsCMD(RealSkywars rs) {
         this.rs = rs;
@@ -77,8 +78,7 @@ public class RealSkywarsCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
             if (p.getMatch() == null) {
-                MapsViewer v = new MapsViewer(p, p.getMapViewerPref(),
-                        RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MAPS_NAME, false));
+                MapsViewer v = new MapsViewer(p, p.getMapViewerPref(), RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MAPS_NAME, false));
                 v.openInventory(p);
             } else {
                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ALREADY_IN_MATCH, true));
@@ -116,8 +116,7 @@ public class RealSkywarsCMD extends CommandBase {
                         p.sendMessage(RealSkywars.getLanguageManager().getPrefix() + "Cost value not accepted.");
                         return;
                     }
-                    Kit k = new Kit(RealSkywars.getKitManager().getNewID(), name, cost,
-                            p.getInventory().getContents());
+                    Kit k = new Kit(RealSkywars.getKitManager().getNewID(), name, cost, p.getInventory().getContents());
                     KitSettings m = new KitSettings(k, p.getUUID());
                     m.openInventory(p);
                     break;
@@ -181,24 +180,21 @@ public class RealSkywarsCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
             if (o == null) {
-                p.sendMessage(
-                        RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_COINS, true).replace("%coins%", p.getCoins() + ""));
+                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_COINS, true).replace("%coins%", p.getCoins() + ""));
             } else {
                 RSWPlayer search = RealSkywars.getPlayerManager().getPlayer(target);
                 if (search != null) {
                     switch (o) {
                         case send:
                             if (coins == null) {
-                                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.INSUFICIENT_COINS, true)
-                                        .replace("%coins%", p.getCoins() + ""));
+                                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.INSUFICIENT_COINS, true).replace("%coins%", p.getCoins() + ""));
                                 return;
                             }
                             CurrencyManager c = new CurrencyManager(search, p, coins, false);
                             if (c.canMakeOperation()) {
                                 c.transferCoins();
                             } else {
-                                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.INSUFICIENT_COINS, true)
-                                        .replace("%coins%", p.getCoins() + ""));
+                                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.INSUFICIENT_COINS, true).replace("%coins%", p.getCoins() + ""));
                             }
                             break;
                         case set:
@@ -258,13 +254,10 @@ public class RealSkywarsCMD extends CommandBase {
                         LanguageManager.TS t = e.getKey();
                         Object s = e.getValue();
 
-                        p.sendMessage(Text
-                                .color("&7<&4!&7> &b" + t.name() + " &4returned: &7" + s));
+                        p.sendMessage(Text.color("&7<&4!&7> &b" + t.name() + " &4returned: &7" + s));
                     }
 
-                    Text.sendList(p.getPlayer(), Arrays.asList("",
-                            "&fFound &b" + value.size() + " &ferrors for the Language &b" + key + ".",
-                            sep));
+                    Text.sendList(p.getPlayer(), Arrays.asList("", "&fFound &b" + value.size() + " &ferrors for the Language &b" + key + ".", sep));
                 }
             }
         } else {
@@ -325,8 +318,7 @@ public class RealSkywarsCMD extends CommandBase {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
             if (p.isInMatch()) {
                 p.getMatch().addPlayer(new RSWPlayer(true));
-                p.sendMessage(Text.color(
-                        "&4&lEXPERIMENTAL FEATURE. CAN RESULT IN SERVER & CLIENT CRASHES. &c&lAdded Null Player"));
+                p.sendMessage(Text.color("&4&lEXPERIMENTAL FEATURE. CAN RESULT IN SERVER & CLIENT CRASHES. &c&lAdded Null Player"));
             } else {
                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_MATCH, true));
             }
@@ -407,16 +399,11 @@ public class RealSkywarsCMD extends CommandBase {
     public void maps(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
-            p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_MAPS, true).replace("%rooms%",
-                    "" + RealSkywars.getGameManager().getGames(PlayerManager.Modes.ALL).size()));
+            p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_MAPS, true).replace("%rooms%", "" + RealSkywars.getGameManager().getGames(PlayerManager.Modes.ALL).size()));
             for (SWGameMode s : RealSkywars.getGameManager().getGames(PlayerManager.Modes.ALL)) {
                 TextComponent a = new TextComponent(Text.color("&7- &f" + s.getName()));
-                a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                        "/rsw map " + s.getName()));
-                a.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new ComponentBuilder(
-                                Text.color("&fClick to open &b" + s.getName() + "&f settings!"))
-                                .create()));
+                a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw map " + s.getName()));
+                a.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Text.color("&fClick to open &b" + s.getName() + "&f settings!")).create()));
                 p.getPlayer().spigot().sendMessage(a);
             }
         } else {
@@ -429,17 +416,12 @@ public class RealSkywarsCMD extends CommandBase {
     public void players(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
-            p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_PLAYERS, true).replace("%players%",
-                    RealSkywars.getPlayerManager().getPlayers().size() + ""));
+            p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_PLAYERS, true).replace("%players%", RealSkywars.getPlayerManager().getPlayers().size() + ""));
             for (RSWPlayer pair : RealSkywars.getPlayerManager().getPlayers()) {
                 if (pair.getPlayer() != null) {
                     TextComponent a = new TextComponent(Text.color("&7- &f" + pair.getName()));
-                    a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                            "/rsw player " + pair.getName()));
-                    a.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                            new ComponentBuilder(
-                                    Text.color("&fClick here to inspect &b" + pair.getName()))
-                                    .create()));
+                    a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw player " + pair.getName()));
+                    a.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Text.color("&fClick here to inspect &b" + pair.getName())).create()));
                     p.getPlayer().spigot().sendMessage(a);
                 }
             }
@@ -486,8 +468,7 @@ public class RealSkywarsCMD extends CommandBase {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
             if (p.isInMatch()) {
                 p.getMatch().setTierType(tt, true);
-                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.TIER_SET, true).replace("%chest%",
-                        tt.name()));
+                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.TIER_SET, true).replace("%chest%", tt.name()));
             } else {
                 p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_MATCH, true));
             }
@@ -540,13 +521,21 @@ public class RealSkywarsCMD extends CommandBase {
 
     @SubCommand("create")
     @Permission("RealSkywars.Admin")
-    @Completion({"#range:50", "#range:20", "#range"})
-    @WrongUsage("&c/rsw create <name> <players> or /rsw create <name> <number of teams> <players per team>")
-    public void create(final CommandSender commandSender, String mapname, Integer
-            maxPlayersandTeams, @Optional Integer teamPlayers) {
+    @Completion({"#range:50", "#worldtype", "#range:20", "#range:20"})
+    @WrongUsage("&c/rsw create <name> <type> <players> or /rsw create <name> <type> <number of teams> <players per team>")
+    public void create(final CommandSender commandSender, String mapname, SWWorld.WorldType wt, Integer maxPlayersandTeams, @Optional Integer teamPlayers) {
         if (commandSender instanceof Player) {
-
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
+
+            if (wt == null) {
+                p.sendMessage("&cInvalid game generation type.");
+                return;
+            }
+
+            if (wt.equals(SWWorld.WorldType.SCHEMATIC) && !WorldEditUtils.schemFileExists(mapname + ".schem")) {
+                p.sendMessage("&cNo " + mapname + "&c.schem found in the maps folder of RealSkywars.");
+                return;
+            }
 
             if (Config.file().isConfigurationSection("Config.Lobby")) {
                 if (teamPlayers == null) {
@@ -557,7 +546,7 @@ public class RealSkywarsCMD extends CommandBase {
                         if (p.getSetup() != null) {
                             p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SETUP_NOT_FINISHED, true));
                         } else {
-                            RealSkywars.getMapManager().setupSolo(p, mapname, maxPlayersandTeams);
+                            RealSkywars.getMapManager().setupSolo(p, mapname, wt, maxPlayersandTeams);
                         }
                     }
                 } else {
@@ -566,7 +555,7 @@ public class RealSkywarsCMD extends CommandBase {
                         if (p.getSetup() != null) {
                             p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SETUP_NOT_FINISHED, true));
                         } else {
-                            RealSkywars.getMapManager().setupTeams(p, mapname, maxPlayersandTeams, teamPlayers);
+                            RealSkywars.getMapManager().setupTeams(p, mapname, wt, maxPlayersandTeams, teamPlayers);
                         }
                     } else {
                         p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MAP_EXISTS, true));
