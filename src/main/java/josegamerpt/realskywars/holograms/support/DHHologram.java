@@ -1,8 +1,7 @@
-package josegamerpt.realskywars.holograms.classes;
+package josegamerpt.realskywars.holograms.support;
 
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
-import josegamerpt.realskywars.holograms.HologramType;
 import josegamerpt.realskywars.holograms.SWHologram;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Location;
@@ -37,7 +36,7 @@ public class DHHologram implements SWHologram {
 
 
     @Override
-    public HologramType getType() {
-        return HologramType.DECENT_HOLOGRAMS;
+    public HType getType() {
+        return HType.DECENT_HOLOGRAMS;
     }
 }

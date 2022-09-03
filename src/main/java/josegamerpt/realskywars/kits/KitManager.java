@@ -68,11 +68,11 @@ public class KitManager {
     }
 
     public ArrayList<Kit> getKits() {
-        return kits;
+        return this.kits;
     }
 
     public Kit getKit(int id) {
-        for (Kit k : kits) {
+        for (Kit k : this.kits) {
             if (k.getID() == id) {
                 return k;
             }
@@ -86,7 +86,7 @@ public class KitManager {
     }
 
     public Kit getKit(String string) {
-        for (Kit k : kits) {
+        for (Kit k : this.kits) {
             if (k.getName().equalsIgnoreCase(string)) {
                 return k;
             }
@@ -95,12 +95,12 @@ public class KitManager {
     }
 
     public int getKitCount() {
-        return kits.size();
+        return this.kits.size();
     }
 
     public List<String> getKitNames() {
         List<String> sugests = new ArrayList<>();
-        kits.forEach(kit -> sugests.add(Text.strip(kit.getName())));
+        this.kits.forEach(kit -> sugests.add(Text.strip(kit.getName())));
         return sugests;
 
     }

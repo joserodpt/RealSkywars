@@ -74,8 +74,7 @@ public class RSWPlayer {
     private Material winblockMaterial;
     private Boolean invincible = false;
 
-    public RSWPlayer(Player jog, RSWPlayer.PlayerState estado, int kills, int d, int solowin, int teamwin, Double coi, String lang,
-                     ArrayList<String> bgh, int l, int gp, int rankedTotalkills, int rankedDeaths, int rankedWinsSolo, int rankedWinsTEAMS, int rankedLoses, int rankedGamesPlayed, ArrayList<RSWGameLog> gamesList) {
+    public RSWPlayer(Player jog, RSWPlayer.PlayerState estado, int kills, int d, int solowin, int teamwin, Double coi, String lang, ArrayList<String> bgh, int l, int gp, int rankedTotalkills, int rankedDeaths, int rankedWinsSolo, int rankedWinsTEAMS, int rankedLoses, int rankedGamesPlayed, ArrayList<RSWGameLog> gamesList) {
         anonName = Text.anonName();
 
         this.p = jog;
@@ -108,46 +107,6 @@ public class RSWPlayer {
             this.anonName = Text.anonName();
         }
         this.bot = true;
-    }
-
-    @Override
-    public String toString() {
-        return "RSWPlayer{" +
-                "trails=" + trails +
-                ", rt=" + rt +
-                ", anonName='" + anonName + '\'' +
-                ", p=" + p +
-                ", state=" + state +
-                ", language='" + language + '\'' +
-                ", room=" + room +
-                ", setup=" + setup +
-                ", team=" + team +
-                ", cage=" + cage +
-                ", gamekills=" + gamekills +
-                ", totalkills=" + kills +
-                ", deaths=" + deaths +
-                ", winsSolo=" + winsSolo +
-                ", winsTEAMS=" + winsTEAMS +
-                ", loses=" + loses +
-                ", gamesPlayed=" + gamesPlayed +
-                ", rankedTotalkills=" + rankedTotalkills +
-                ", rankedDeaths=" + rankedDeaths +
-                ", rankedWinsSolo=" + rankedWinsSolo +
-                ", rankedWinsTEAMS=" + rankedWinsTEAMS +
-                ", rankedLoses=" + rankedLoses +
-                ", rankedGamesPlayed=" + rankedGamesPlayed +
-                ", coins=" + coins +
-                ", balanceGame=" + balanceGame +
-                ", playerscoreboard=" + playerscoreboard +
-                ", cageBlock=" + cageBlock +
-                ", bought=" + bought +
-                ", bot=" + bot +
-                ", kit=" + kit +
-                ", bowParticle=" + bowParticle +
-                ", winblockRandom=" + winblockRandom +
-                ", winblockMaterial=" + winblockMaterial +
-                ", invincible=" + invincible +
-                '}';
     }
 
     public void spawnAbovePlayer(Class c) {
@@ -271,18 +230,18 @@ public class RSWPlayer {
         if (this.p != null) {
             return this.p.getName();
         } else {
-            return anonName;
+            return this.anonName;
         }
     }
 
     public void teleport(Location l) {
-        if (p != null) {
-            p.teleport(l);
+        if (this.p != null) {
+            this.p.teleport(l);
         }
     }
 
     public void stopTrails() {
-        trails.forEach(Trail::cancelTask);
+        this.trails.forEach(Trail::cancelTask);
     }
 
     public void addTrail(Trail t) {
@@ -633,8 +592,8 @@ public class RSWPlayer {
 
     public void setBarNumber(int xp) {
         if (this.p != null) {
-            p.setLevel(xp);
-            p.setExp(xp);
+            this.p.setLevel(xp);
+            this.p.setExp(xp);
         }
     }
 
@@ -680,17 +639,17 @@ public class RSWPlayer {
         }
 
         public void add(Player p) {
-            if (p.getUniqueId() != this.player.getUUID() && !show.contains(p)) {
-                show.add(p);
+            if (p.getUniqueId() != this.player.getUUID() && !this.show.contains(p)) {
+                this.show.add(p);
             }
         }
 
         public void add(List<Player> p) {
-            show.addAll(p);
+            this.show.addAll(p);
         }
 
         public void remove(Player p) {
-            show.remove(p);
+            this.show.remove(p);
         }
 
         public void reset() {
@@ -748,36 +707,9 @@ public class RSWPlayer {
 
         protected String variables(String s, RSWPlayer gp) {
             if (gp.isInMatch()) {
-                return s.replace("%space%", Text.makeSpace())
-                        .replace("%players%", gp.getMatch().getPlayerCount() + "")
-                        .replace("%nextevent%", nextEvent(gp.getMatch()))
-                        .replace("%spectators%", gp.getMatch().getSpectatorsCount() + "")
-                        .replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, gp.getMatch().isRanked()) + "")
-                        .replace("%map%", gp.getMatch().getName())
-                        .replace("%runtime%", Text.formatSeconds(gp.getMatch().getTimePassed()) + "")
-                        .replace("%state%", RealSkywars.getGameManager().getStateString(gp, gp.getMatch().getState()))
-                        .replace("%mode%", gp.getMatch().getGameMode().name())
-                        .replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, gp.getMatch().isRanked()) + "")
-                        .replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, gp.getMatch().isRanked()) + "")
-                        .replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, gp.getMatch().isRanked()) + "")
-                        .replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, gp.getMatch().isRanked()) + "");
+                return s.replace("%space%", Text.makeSpace()).replace("%players%", gp.getMatch().getPlayerCount() + "").replace("%nextevent%", nextEvent(gp.getMatch())).replace("%spectators%", gp.getMatch().getSpectatorsCount() + "").replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, gp.getMatch().isRanked()) + "").replace("%map%", gp.getMatch().getName()).replace("%runtime%", Text.formatSeconds(gp.getMatch().getTimePassed()) + "").replace("%state%", RealSkywars.getGameManager().getStateString(gp, gp.getMatch().getState())).replace("%mode%", gp.getMatch().getGameMode().name()).replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, gp.getMatch().isRanked()) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, gp.getMatch().isRanked()) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, gp.getMatch().isRanked()) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, gp.getMatch().isRanked()) + "");
             } else {
-                return s.replace("%space%", Text.makeSpace())
-                        .replace("%coins%", gp.getCoins() + "")
-                        .replace("%playing%", "" + RealSkywars.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL))
-                        .replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false) + "")
-                        .replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false) + "")
-                        .replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false) + "")
-                        .replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false) + "")
-                        .replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false) + "")
-                        .replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false) + "")
-                        .replace("%playing%", "" + RealSkywars.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL))
-                        .replace("%rankedkills%", gp.getStatistics(RSWPlayer.PlayerStatistics.KILLS, true) + "")
-                        .replace("%rankeddeaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, true) + "")
-                        .replace("%rankedsolowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true) + "")
-                        .replace("%rankedteamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true) + "")
-                        .replace("%rankedloses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, true) + "")
-                        .replace("%rankedgamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true) + "");
+                return s.replace("%space%", Text.makeSpace()).replace("%coins%", gp.getCoins() + "").replace("%playing%", "" + RealSkywars.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL)).replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false) + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false) + "").replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false) + "").replace("%playing%", "" + RealSkywars.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL)).replace("%rankedkills%", gp.getStatistics(RSWPlayer.PlayerStatistics.KILLS, true) + "").replace("%rankeddeaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, true) + "").replace("%rankedsolowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true) + "").replace("%rankedteamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true) + "").replace("%rankedloses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, true) + "").replace("%rankedgamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true) + "");
             }
         }
 

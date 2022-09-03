@@ -1,10 +1,8 @@
-package josegamerpt.realskywars.holograms.classes;
+package josegamerpt.realskywars.holograms.support;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.holograms.HologramType;
 import josegamerpt.realskywars.holograms.SWHologram;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Location;
@@ -40,7 +38,7 @@ public class HDHologram implements SWHologram {
     }
 
     @Override
-    public HologramType getType() {
-        return HologramType.HOLOGRAPHIC_DISPLAYS;
+    public HType getType() {
+        return HType.HOLOGRAPHIC_DISPLAYS;
     }
 }

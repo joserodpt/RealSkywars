@@ -17,7 +17,7 @@ public class LeaderboardManager {
     public void refreshLeaderboards() {
         for (Leaderboard value : Leaderboard.values()) {
             try {
-                refreshLeaderboard(value);
+                this.refreshLeaderboard(value);
             } catch (Exception e) {
                 RealSkywars.log(Level.SEVERE, "Error while loading Leaderboard for " + value.name());
                 e.printStackTrace();

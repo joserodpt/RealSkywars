@@ -90,8 +90,8 @@ public class SWSign {
 
     public void delete() {
         Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
-            if (b.getType().name().contains("SIGN")) {
-                Sign s = (Sign) b.getState();
+            if (this.b.getType().name().contains("SIGN")) {
+                Sign s = (Sign) this.b.getState();
 
                 s.setLine(0, "");
                 s.setLine(1, "");

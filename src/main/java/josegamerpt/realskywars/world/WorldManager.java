@@ -160,7 +160,7 @@ public class WorldManager {
     }
 
     public void deleteWorld(String name, boolean removeFile) {
-        unloadWorld(name, false);
+        this.unloadWorld(name, false);
         if (removeFile) {
             File target = new File(RealSkywars.getPlugin().getServer().getWorldContainer().getAbsolutePath(), name);
             try {

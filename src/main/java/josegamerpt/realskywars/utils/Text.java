@@ -106,10 +106,6 @@ public class Text {
         list.forEach(s -> p.sendMessage(color(s)));
     }
 
-    public static void sendList(CommandSender p, ArrayList<String> list) {
-        list.forEach(s -> p.sendMessage(color(s)));
-    }
-
     public static void send(CommandSender p, String s) {
         p.sendMessage(color(s));
     }

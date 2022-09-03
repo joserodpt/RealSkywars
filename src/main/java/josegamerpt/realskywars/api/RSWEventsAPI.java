@@ -1,5 +1,6 @@
-package josegamerpt.realskywars.api.events;
+package josegamerpt.realskywars.api;
 
+import josegamerpt.realskywars.api.events.RSWAPIRoomStateChange;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import org.bukkit.Bukkit;
 

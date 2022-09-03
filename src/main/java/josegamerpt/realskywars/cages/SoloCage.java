@@ -125,7 +125,7 @@ public class SoloCage implements Cage {
     }
 
     public void tpPlayer(RSWPlayer p) {
-        Location lookat = new Location(Bukkit.getWorld(this.worldName), locx, locy, locz);
+        Location lookat = new Location(Bukkit.getWorld(this.worldName), this.locx, this.locy, this.locz);
         p.teleport(lookAt(getLoc(), lookat));
     }
 

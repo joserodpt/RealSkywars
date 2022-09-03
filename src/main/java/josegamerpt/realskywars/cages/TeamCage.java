@@ -36,7 +36,7 @@ public class TeamCage implements Cage {
     }
 
     public void setCage(Material m) {
-        World w = Bukkit.getWorld(worldName);
+        World w = Bukkit.getWorld(this.worldName);
 
         int x = this.loc.getBlockX();
         int y = this.loc.getBlockY();

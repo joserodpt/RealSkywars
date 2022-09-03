@@ -43,7 +43,7 @@ public class BlockWinTrail implements Trail {
     }
 
     private void stop() {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), this::cancelTask, executionTime * 20L);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), this::cancelTask, this.executionTime * 20L);
     }
 
     @Override
@@ -57,15 +57,15 @@ public class BlockWinTrail implements Trail {
 
             switch (bwp) {
                 case SINGLE:
-                    FallingBlock fbs = p.getWorld().spawnFallingBlock(p.getLocation().add(0, 3, 0), single.createBlockData());
+                    FallingBlock fbs = this.p.getWorld().spawnFallingBlock(p.getLocation().add(0, 3, 0), this.single.createBlockData());
                     fbs.setDropItem(false);
                     fbs.setVelocity(v);
                     fbs.setHurtEntities(false);
                     fbs.setMetadata("trailBlock", new FixedMetadataValue(RealSkywars.getPlugin(), 1));
                     break;
                 case RANDOM:
-                    Material mr = randBlocks.get(RealSkywars.getRandom().nextInt(randBlocks.size()));
-                    FallingBlock fbr = p.getWorld().spawnFallingBlock(p.getLocation().add(0, 3, 0), mr.createBlockData());
+                    Material mr = this.randBlocks.get(RealSkywars.getRandom().nextInt(this.randBlocks.size()));
+                    FallingBlock fbr = this.p.getWorld().spawnFallingBlock(p.getLocation().add(0, 3, 0), mr.createBlockData());
                     fbr.setDropItem(false);
                     fbr.setVelocity(v);
                     fbr.setHurtEntities(false);

@@ -1,7 +1,7 @@
 package josegamerpt.realskywars;
 
 import josegamerpt.realskywars.achievements.AchievementsManager;
-import josegamerpt.realskywars.api.events.RSWEventsAPI;
+import josegamerpt.realskywars.api.RSWEventsAPI;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.commands.PartyCMD;
 import josegamerpt.realskywars.commands.RealSkywarsCMD;
@@ -152,9 +152,6 @@ public class RealSkywars extends JavaPlugin {
         String star = "<------------- RealSkywars PT ------------->".replace("PT", "| " + this.getDescription().getVersion());
         log(star);
 
-        Debugger.print(RealSkywars.class, "DEBUG MODE ENABLED");
-
-
         if (setupNMS()) {
             log("Loading languages.");
             Languages.setup(this);
@@ -188,6 +185,7 @@ public class RealSkywars extends JavaPlugin {
                 Bukkit.getPluginManager().disablePlugin(this);
             } else {
                 Debugger.debug = Config.file().getBoolean("Debug-Mode");
+                Debugger.print(RealSkywars.class, "DEBUG MODE ENABLED");
                 Debugger.execute();
                 RealSkywars.getGameManager().loadLobby();
 
@@ -208,8 +206,8 @@ public class RealSkywars extends JavaPlugin {
 
                 try {
                     databaseManager = new DatabaseManager(this);
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
+                } catch (SQLException a) {
+                    a.printStackTrace();
                 }
 
                 chestManager = new ChestManager();

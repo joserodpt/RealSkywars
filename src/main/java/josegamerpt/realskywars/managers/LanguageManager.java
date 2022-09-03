@@ -13,12 +13,12 @@ public class LanguageManager {
     private final ArrayList<String> langList = new ArrayList<>();
 
     public void loadLanguages() {
-        langList.clear();
-        langList.addAll(Languages.file().getConfigurationSection("Languages").getKeys(false));
+        this.langList.clear();
+        this.langList.addAll(Languages.file().getConfigurationSection("Languages").getKeys(false));
     }
 
     public String getDefaultLanguage() {
-        return langList.contains(Config.file().getString("Config.Default-Language")) ? Config.file().getString("Config.Default-Language") : langList.get(0);
+        return this.langList.contains(Config.file().getString("Config.Default-Language")) ? Config.file().getString("Config.Default-Language") : langList.get(0);
     }
 
     public ArrayList<String> getList(RSWPlayer p, TL tl) {

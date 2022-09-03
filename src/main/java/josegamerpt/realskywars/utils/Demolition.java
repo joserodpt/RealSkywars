@@ -31,7 +31,7 @@ public class Demolition {
             Laser laser = new Laser.GuardianLaser(sploc, cage, this.laserTime, (int) sploc.distance(cage));
             laser.start(plugin);
 
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> this.cage.clearCage(), this.delayExplosion * 20L);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this.cage::clearCage, this.delayExplosion * 20L);
         } catch (Exception e) {
             Debugger.print(Demolition.class, "Could not show win laser for " + this.cage.getLoc().toString() + "\n" + e.getMessage());
         }

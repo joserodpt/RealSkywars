@@ -47,18 +47,6 @@ public class RSWGameLog {
         return this.win ? "&a&l✔" : "&c&l❌";
     }
 
-    @Override
-    public String toString() {
-        return "RSWGameLog{" +
-                "map='" + map + '\'' +
-                ", players=" + players +
-                ", win=" + win +
-                ", seconds=" + seconds +
-                ", dayandtime='" + dayandtime + '\'' +
-                ", dummy=" + dummy +
-                '}';
-    }
-
     public String getSerializedData() {
         //mapa-modo-ranked-jogadores-ganhou-tempo-dia
         return this.map + ";" + this.mode.name() + ";" + this.ranked + ";" + this.players + ";" + this.win + ";" + this.seconds + ";" + this.dayandtime;

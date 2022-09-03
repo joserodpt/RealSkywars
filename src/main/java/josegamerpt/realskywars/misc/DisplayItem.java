@@ -53,17 +53,10 @@ public class DisplayItem {
     private void makeItemStack(Material m) {
         if (this.it == ShopManager.Categories.KITS) {
             Kit k = RealSkywars.getKitManager().getKit(name);
-            if (!this.bought) {
-                i = Itens.createItemLore(m, 1, "&r&f" + k.getName(), k.getDescription(true));
-            } else {
-                i = Itens.createItemLoreEnchanted(m, 1, "&r&f" + k.getName(), k.getDescription(false));
-            }
+
+            this.i = this.bought ? Itens.createItemLoreEnchanted(m, 1, "&r&f" + k.getName(), k.getDescription(false)) : Itens.createItemLore(m, 1, "&r&f" + k.getName(), k.getDescription(true));
         } else {
-            if (this.bought) {
-                i = Itens.createItemLoreEnchanted(m, 1, formatName(name), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BOUGHT)));
-            } else {
-                i = Itens.createItemLore(m, 1, formatName(name), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BUY).replace("%price%", this.getPrice().toString())));
-            }
+            this.i = this.bought ? Itens.createItemLoreEnchanted(m, 1, formatName(name), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BOUGHT))) : Itens.createItemLore(m, 1, formatName(name), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BUY).replace("%price%", this.getPrice().toString())));
         }
     }
 
