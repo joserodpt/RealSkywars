@@ -7,10 +7,12 @@ import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.game.SWEvent;
 import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.player.RSWPlayer;
+import josegamerpt.realskywars.sign.SWSign;
 import josegamerpt.realskywars.utils.ArenaCuboid;
 import josegamerpt.realskywars.world.SWWorld;
 import org.bukkit.Location;
 import org.bukkit.WorldBorder;
+import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
 
 import java.util.ArrayList;
@@ -205,11 +207,6 @@ public class Placeholder implements SWGameMode {
     }
 
     @Override
-    public void deleteShutdown() {
-
-    }
-
-    @Override
     public void reset() {
 
     }
@@ -257,6 +254,26 @@ public class Placeholder implements SWGameMode {
     @Override
     public String getShematicName() {
         return "none";
+    }
+
+    @Override
+    public void addSign(SWSign swSign) {
+
+    }
+
+    @Override
+    public void updateSigns() {
+
+    }
+
+    @Override
+    public void removeSign(Block b) {
+
+    }
+
+    @Override
+    public ArrayList<SWSign> getSigns() {
+        return null;
     }
 
 }

@@ -9,8 +9,8 @@ import josegamerpt.realskywars.game.modes.SWGameMode.GameState;
 import josegamerpt.realskywars.misc.Selections;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
+import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -175,7 +175,7 @@ public class GameManager {
 
     public List<String> getRoomNames() {
         List<String> sugests = new ArrayList<>();
-        this.games.forEach(gameRoom -> sugests.add(ChatColor.stripColor(gameRoom.getName())));
+        this.games.forEach(gameRoom -> sugests.add(Text.strip(gameRoom.getName())));
         return sugests;
     }
 

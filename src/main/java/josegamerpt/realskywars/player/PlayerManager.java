@@ -7,11 +7,11 @@ import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.misc.DisplayItem;
 import josegamerpt.realskywars.utils.Itens;
+import josegamerpt.realskywars.utils.Text;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.logging.log4j.util.Strings;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -218,7 +218,7 @@ public class PlayerManager {
     }
 
     public Boolean boughtItem(RSWPlayer p, String string, ShopManager.Categories c) {
-        return p.getBoughtItems().contains(ChatColor.stripColor(string + "|" + c.name()));
+        return p.getBoughtItems().contains(Text.strip(string + "|" + c.name()));
     }
 
     public void loadPlayers() {

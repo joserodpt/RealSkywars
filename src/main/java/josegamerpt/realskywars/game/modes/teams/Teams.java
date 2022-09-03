@@ -1,7 +1,6 @@
 package josegamerpt.realskywars.game.modes.teams;
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.api.events.RSWAPIEvents;
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.chests.SWChest;
@@ -13,6 +12,7 @@ import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWGameLog;
 import josegamerpt.realskywars.player.RSWPlayer;
+import josegamerpt.realskywars.sign.SWSign;
 import josegamerpt.realskywars.utils.ArenaCuboid;
 import josegamerpt.realskywars.utils.Demolition;
 import josegamerpt.realskywars.utils.MathUtils;
@@ -20,6 +20,7 @@ import josegamerpt.realskywars.utils.Text;
 import josegamerpt.realskywars.world.SWWorld;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -50,6 +51,7 @@ public class Teams implements SWGameMode {
     private final HashMap<UUID, Integer> projectileVotes = new HashMap<>();
     private final HashMap<UUID, Integer> timeVotes = new HashMap<>();
     private final Location spectatorLocation;
+    private final String schematicName;
     private Boolean ranked;
     private SWGameMode.GameState state;
     private BossBar bossBar;
@@ -57,7 +59,6 @@ public class Teams implements SWGameMode {
     private int timePassed = 0;
     private Boolean specEnabled;
     private Boolean instantEnding;
-
     private Countdown startTimer;
     private Countdown startRoomTimer;
     private Countdown winTimer;
@@ -65,7 +66,7 @@ public class Teams implements SWGameMode {
     private ProjectileType projectileType = ProjectileType.NORMAL;
     private TimeType timeType = TimeType.DAY;
     private ArrayList<SWEvent> events;
-    private final String schematicName;
+    private final ArrayList<SWSign> signs = new ArrayList<>();
 
     public Teams(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, ArrayList<Team> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd) {
         this.name = nome;
@@ -198,7 +199,7 @@ public class Teams implements SWGameMode {
 
     public void setState(SWGameMode.GameState w) {
         this.state = w;
-        RSWAPIEvents.callRoomStateChange(this);
+        RealSkywars.getEventsAPI().callRoomStateChange(this);
     }
 
     public boolean isPlaceHolder() {
@@ -238,10 +239,6 @@ public class Teams implements SWGameMode {
     @Override
     public void clear() {
         this.world.deleteWorld(OperationReason.RESET);
-    }
-    @Override
-    public void deleteShutdown() {
-        this.world.deleteWorld(OperationReason.SHUTDOWN);
     }
 
     @Override
@@ -313,6 +310,37 @@ public class Teams implements SWGameMode {
     @Override
     public String getShematicName() {
         return this.schematicName;
+    }
+
+    @Override
+    public void addSign(SWSign swSign) {
+        this.signs.add(swSign);
+        RealSkywars.getSignManager().saveSigns();
+    }
+
+    @Override
+    public void updateSigns() {
+        this.signs.forEach(SWSign::update);
+    }
+
+    @Override
+    public void removeSign(Block b) {
+        SWSign tmp = null;
+        for (SWSign sign : this.signs) {
+            if (sign.getBlock().equals(b)) {
+                tmp = sign;
+                sign.delete();
+            }
+        }
+        if (tmp != null) {
+            this.signs.remove(tmp);
+        }
+        RealSkywars.getSignManager().saveSigns();
+    }
+
+    @Override
+    public ArrayList<SWSign> getSigns() {
+        return this.signs;
     }
 
     @Override
@@ -469,6 +497,9 @@ public class Teams implements SWGameMode {
         if (this.getState() == SWGameMode.GameState.PLAYING || this.getState() == SWGameMode.GameState.FINISHING) {
             this.checkWin();
         }
+
+        //call api
+        RealSkywars.getEventsAPI().callRoomStateChange(this);
     }
 
     @Override
@@ -553,6 +584,9 @@ public class Teams implements SWGameMode {
                     }
                     break;
             }
+
+            //call api
+            RealSkywars.getEventsAPI().callRoomStateChange(this);
 
             //signal that is ranked
             if (this.ranked) p.sendActionbar("&b&lRANKED");

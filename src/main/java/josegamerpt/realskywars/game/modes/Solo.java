@@ -1,7 +1,6 @@
 package josegamerpt.realskywars.game.modes;
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.api.events.RSWAPIEvents;
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.chests.SWChest;
@@ -13,10 +12,12 @@ import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWGameLog;
 import josegamerpt.realskywars.player.RSWPlayer;
+import josegamerpt.realskywars.sign.SWSign;
 import josegamerpt.realskywars.utils.*;
 import josegamerpt.realskywars.world.SWWorld;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -46,6 +47,7 @@ public class Solo implements SWGameMode {
     private final SWWorld world;
     private final ArrayList<SWChest> chests;
     private final WorldBorder border;
+    private final String schematicName;
     private Boolean ranked;
     private BossBar bossBar;
     private SWGameMode.GameState state;
@@ -53,16 +55,14 @@ public class Solo implements SWGameMode {
     private int timePassed = 0;
     private Boolean specEnabled;
     private Boolean instantEnding;
-
     private Countdown startTimer;
     private Countdown startRoomTimer;
     private Countdown winTimer;
     private BukkitTask timeCouterTask;
     private ProjectileType projectileType = ProjectileType.NORMAL;
     private TimeType timeType = TimeType.DAY;
-
     private ArrayList<SWEvent> events;
-    private final String schematicName;
+    private final ArrayList<SWSign> signs = new ArrayList<>();
 
     public Solo(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, ArrayList<Cage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd) {
         this.name = nome;
@@ -198,7 +198,7 @@ public class Solo implements SWGameMode {
 
     public void setState(SWGameMode.GameState w) {
         this.state = w;
-        RSWAPIEvents.callRoomStateChange(this);
+        RealSkywars.getEventsAPI().callRoomStateChange(this);
     }
 
     public boolean isPlaceHolder() {
@@ -238,10 +238,6 @@ public class Solo implements SWGameMode {
     @Override
     public void clear() {
         this.world.deleteWorld(OperationReason.RESET);
-    }
-    @Override
-    public void deleteShutdown() {
-        this.world.deleteWorld(OperationReason.SHUTDOWN);
     }
 
     @Override
@@ -318,6 +314,37 @@ public class Solo implements SWGameMode {
     @Override
     public String getShematicName() {
         return this.schematicName;
+    }
+
+    @Override
+    public void addSign(SWSign swSign) {
+        this.signs.add(swSign);
+        RealSkywars.getSignManager().saveSigns();
+    }
+
+    @Override
+    public void updateSigns() {
+        this.signs.forEach(SWSign::update);
+    }
+
+    @Override
+    public void removeSign(Block b) {
+        SWSign tmp = null;
+        for (SWSign sign : this.signs) {
+            if (sign.getBlock().equals(b)) {
+                tmp = sign;
+                sign.delete();
+            }
+        }
+        if (tmp != null) {
+            this.signs.remove(tmp);
+        }
+        RealSkywars.getSignManager().saveSigns();
+    }
+
+    @Override
+    public ArrayList<SWSign> getSigns() {
+        return this.signs;
     }
 
     private void startGameFunction() {
@@ -466,6 +493,8 @@ public class Solo implements SWGameMode {
             checkWin();
         }
 
+        //call api
+        RealSkywars.getEventsAPI().callRoomStateChange(this);
     }
 
     @Override
@@ -548,6 +577,9 @@ public class Solo implements SWGameMode {
                     }
                     break;
             }
+
+            //call api
+            RealSkywars.getEventsAPI().callRoomStateChange(this);
 
             //signal that is ranked
             if (this.ranked) p.sendActionbar("&b&lRANKED");

@@ -7,10 +7,12 @@ import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.game.SWEvent;
 import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.player.RSWPlayer;
+import josegamerpt.realskywars.sign.SWSign;
 import josegamerpt.realskywars.utils.ArenaCuboid;
 import josegamerpt.realskywars.world.SWWorld;
 import org.bukkit.Location;
 import org.bukkit.WorldBorder;
+import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
 
 import java.util.ArrayList;
@@ -104,8 +106,6 @@ public interface SWGameMode {
     int maxMembersTeam();
 
     void clear();
-    void deleteShutdown();
-
 
     void reset();
 
@@ -126,6 +126,14 @@ public interface SWGameMode {
     SWChest getChest(Location location);
 
     String getShematicName();
+
+    void addSign(SWSign swSign);
+
+    void updateSigns();
+
+    void removeSign(Block b);
+
+    ArrayList<SWSign> getSigns();
 
     enum GameState {
         AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING

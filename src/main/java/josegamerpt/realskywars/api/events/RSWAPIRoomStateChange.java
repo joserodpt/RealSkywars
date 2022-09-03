@@ -5,12 +5,12 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class RSWAPIArenaStateChange extends Event implements Cancellable {
+public class RSWAPIRoomStateChange extends Event implements Cancellable {
     private final SWGameMode room;
     private static final HandlerList HANDLERS_LIST = new HandlerList();
     private boolean isCancelled;
 
-    public RSWAPIArenaStateChange(SWGameMode gm){
+    public RSWAPIRoomStateChange(SWGameMode gm){
         this.room = gm;
     }
 

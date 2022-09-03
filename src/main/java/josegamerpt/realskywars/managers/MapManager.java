@@ -81,7 +81,7 @@ public class MapManager {
                             ts.add(new Team(tc, (Maps.file().getInt(s + ".number-of-players") / cgs.size()), c.getLoc(), worldName));
                             tc++;
                         }
-                        Teams teas = new Teams(s, w,Maps.file().getString(s + ".schematic"), wt, GameState.AVAILABLE, ts, Maps.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s));
+                        Teams teas = new Teams(s, w, Maps.file().getString(s + ".schematic"), wt, GameState.AVAILABLE, ts, Maps.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s));
                         teas.resetArena(SWGameMode.OperationReason.LOAD);
                         teas.saveRoom();
                         break;
@@ -234,7 +234,8 @@ public class MapManager {
             try {
                 BlockFace f = ((Directional) chest.getChestBlock().getBlockData()).getFacing();
                 face = f.name();
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             Maps.file().set(s + ".Chests." + chestID + ".Face", face);
             Maps.file().set(s + ".Chests." + chestID + ".Type", chest.getType().name());
             chestID++;
@@ -369,7 +370,7 @@ public class MapManager {
                             this.saveMap(gs);
 
                             //set chests
-                            gs.getChests().forEach(swChest -> swChest.setChest());
+                            gs.getChests().forEach(SWChest::setChest);
                             break;
                         case TEAMS:
                             ArrayList<Team> ts = new ArrayList<>();
@@ -378,7 +379,7 @@ public class MapManager {
                                 ts.add(new Team(tc, p.getSetup().getPlayersPerTeam(), c.getLoc(), p.getSetup().getWorld().getName()));
                                 tc++;
                             }
-                            Teams t = new Teams(p.getSetup().getName(), p.getSetup().getWorld(), p.getSetup().getSchematic(),p.getSetup().getWorldType(), GameState.AVAILABLE, ts, p.getSetup().getMaxPlayers(), p.getSetup().getSpectatorLocation(), p.getSetup().isSpectatingON(), p.getSetup().isInstantEnding(), pos1, pos2, p.getSetup().getChests(), p.getSetup().isRanked());
+                            Teams t = new Teams(p.getSetup().getName(), p.getSetup().getWorld(), p.getSetup().getSchematic(), p.getSetup().getWorldType(), GameState.AVAILABLE, ts, p.getSetup().getMaxPlayers(), p.getSetup().getSpectatorLocation(), p.getSetup().isSpectatingON(), p.getSetup().isInstantEnding(), pos1, pos2, p.getSetup().getChests(), p.getSetup().isRanked());
 
                             if (p.getSetup().getWorldType() == SWWorld.WorldType.DEFAULT) {
                                 t.getSWWorld().resetWorld(SWGameMode.OperationReason.LOAD);
@@ -390,7 +391,7 @@ public class MapManager {
                             this.saveMap(t);
 
                             //set chests
-                            t.getChests().forEach(swChest -> swChest.setChest());
+                            t.getChests().forEach(SWChest::setChest);
                             break;
                         default:
                             throw new IllegalStateException("Forbiden Mode !! " + gt.name());

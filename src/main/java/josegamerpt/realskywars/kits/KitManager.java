@@ -3,7 +3,6 @@ package josegamerpt.realskywars.kits;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Kits;
 import josegamerpt.realskywars.utils.Text;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -101,7 +100,7 @@ public class KitManager {
 
     public List<String> getKitNames() {
         List<String> sugests = new ArrayList<>();
-        kits.forEach(kit -> sugests.add(ChatColor.stripColor(kit.getName())));
+        kits.forEach(kit -> sugests.add(Text.strip(kit.getName())));
         return sugests;
 
     }

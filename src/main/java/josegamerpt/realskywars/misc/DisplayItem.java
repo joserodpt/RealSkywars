@@ -5,7 +5,7 @@ import josegamerpt.realskywars.kits.Kit;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.utils.Itens;
-import org.bukkit.ChatColor;
+import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -70,7 +70,7 @@ public class DisplayItem {
     private String formatName(String name) {
         String ret;
         try {
-            Material m = Material.getMaterial(ChatColor.stripColor(name));
+            Material m = Material.getMaterial(Text.strip(name));
             ret = "&b" + RealSkywars.getNMS().getItemName(new ItemStack(m));
         } catch (Exception e) {
             ret = name;

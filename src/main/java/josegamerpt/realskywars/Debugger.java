@@ -1,5 +1,6 @@
 package josegamerpt.realskywars;
 
+import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.player.PlayerManager;
 import org.bukkit.Bukkit;
 
@@ -25,7 +26,10 @@ public class Debugger {
 
     public static void execute() {
         if (false) {
-            Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.getPlugin(), () -> RealSkywars.getPlayerManager().getPlayers().forEach(rswPlayer -> print(PlayerManager.class, rswPlayer.getState().name())), 20, 20);
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.getPlugin(), () -> {
+                RealSkywars.getGameManager().getGames(PlayerManager.Modes.ALL).forEach(SWGameMode::updateSigns);
+                Debugger.print(Debugger.class, "a");
+            }, 20, 20);
         }
     }
 }

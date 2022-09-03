@@ -445,10 +445,10 @@ public class RealSkywarsCMD extends CommandBase {
         }
     }
 
-    @SubCommand("maptp")
+    @SubCommand("tp")
     @Completion("#maps")
     @Permission("RealSkywars.Admin")
-    public void maptp(final CommandSender commandSender, String name) {
+    public void tpcmd(final CommandSender commandSender, String name) {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
             p.teleport(RealSkywars.getGameManager().getGame(name).getSWWorld().getWorld().getSpawnLocation());
@@ -575,18 +575,6 @@ public class RealSkywarsCMD extends CommandBase {
         if (RealSkywars.getMapManager().getRegisteredMaps().contains(map)) {
             RealSkywars.getMapManager().unregisterMap(RealSkywars.getMapManager().getMap(map));
             commandSender.sendMessage(RealSkywars.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.MAP_UNREGISTERED, true));
-        } else {
-            commandSender.sendMessage(RealSkywars.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.NO_GAME_FOUND, true));
-        }
-    }
-
-    @SubCommand("tp")
-    @Completion("#maps")
-    @Permission("RealSkywars.Admin")
-    @WrongUsage("&c/rsw tp <map>")
-    public void tp(final CommandSender commandSender, String map) {
-        if (RealSkywars.getMapManager().getRegisteredMaps().contains(map)) {
-            ((Player) commandSender).teleport(RealSkywars.getMapManager().getMap(map).getArena().getCenter());
         } else {
             commandSender.sendMessage(RealSkywars.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.NO_GAME_FOUND, true));
         }

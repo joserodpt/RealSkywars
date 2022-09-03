@@ -1,6 +1,7 @@
 package josegamerpt.realskywars;
 
 import josegamerpt.realskywars.achievements.AchievementsManager;
+import josegamerpt.realskywars.api.events.RSWEventsAPI;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.commands.PartyCMD;
 import josegamerpt.realskywars.commands.RealSkywarsCMD;
@@ -18,13 +19,14 @@ import josegamerpt.realskywars.gui.guis.*;
 import josegamerpt.realskywars.holograms.HologramManager;
 import josegamerpt.realskywars.kits.KitManager;
 import josegamerpt.realskywars.leaderboards.LeaderboardManager;
-import josegamerpt.realskywars.listeners.EntityEvents;
+import josegamerpt.realskywars.listeners.EventListener;
 import josegamerpt.realskywars.listeners.GameRoomListeners;
 import josegamerpt.realskywars.managers.*;
 import josegamerpt.realskywars.nms.*;
 import josegamerpt.realskywars.party.PartyManager;
 import josegamerpt.realskywars.player.PlayerEvents;
 import josegamerpt.realskywars.player.PlayerManager;
+import josegamerpt.realskywars.sign.SignManager;
 import josegamerpt.realskywars.utils.GUIBuilder;
 import josegamerpt.realskywars.utils.Text;
 import josegamerpt.realskywars.world.SWWorld;
@@ -55,6 +57,9 @@ public class RealSkywars extends JavaPlugin {
     private static final PartyManager partym = new PartyManager();
     private static final LeaderboardManager lbm = new LeaderboardManager();
     private static final AchievementsManager am = new AchievementsManager();
+    private static final SignManager sm = new SignManager();
+    public static final RSWEventsAPI rswapie = new RSWEventsAPI();
+
     private static final Random rand = new Random();
     private static Plugin pl;
     private static ChestManager chestManager;
@@ -78,6 +83,7 @@ public class RealSkywars extends JavaPlugin {
     public static WorldManager getWorldManager() {
         return wm;
     }
+    public static RSWEventsAPI getEventsAPI() { return rswapie; }
 
     public static LanguageManager getLanguageManager() {
         return lm;
@@ -135,6 +141,10 @@ public class RealSkywars extends JavaPlugin {
         return hologramManager;
     }
 
+    public static SignManager getSignManager() {
+        return sm;
+    }
+
     public void onEnable() {
         long start = System.currentTimeMillis();
         pl = this;
@@ -187,6 +197,7 @@ public class RealSkywars extends JavaPlugin {
                 SQL.setup(this);
                 Shops.setup(this);
                 Kits.setup(this);
+                Signs.setup(this);
 
                 hologramManager = new HologramManager();
 
@@ -205,7 +216,7 @@ public class RealSkywars extends JavaPlugin {
 
                 log("Setting up events.");
                 pm.registerEvents(new PlayerEvents(), this);
-                pm.registerEvents(new EntityEvents(), this);
+                pm.registerEvents(new EventListener(), this);
                 pm.registerEvents(new GameRoomListeners(), this);
                 pm.registerEvents(GUIBuilder.getListener(), this);
                 pm.registerEvents(GameLogViewer.getListener(), this);
@@ -300,6 +311,9 @@ public class RealSkywars extends JavaPlugin {
                     new RealSkywarsPlaceholderAPI(this).register();
                 }
 
+                //load signs
+                sm.loadSigns();
+
                 //refresh leaderboards
                 Bukkit.getScheduler().scheduleSyncRepeatingTask(this, lbm::refreshLeaderboards, Config.file().getInt("Config.Refresh-Leaderboards"), Config.file().getInt("Config.Refresh-Leaderboards"));
 
@@ -372,6 +386,7 @@ public class RealSkywars extends JavaPlugin {
         playerm.loadPlayers();
         Shops.reload();
         Kits.reload();
+        Signs.reload();
         kitm.loadKits();
 
         am.loadAchievements();

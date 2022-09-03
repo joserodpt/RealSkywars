@@ -582,7 +582,7 @@ public class RSWPlayer {
     }
 
     public void buyItem(String s) {
-        this.bought.add(ChatColor.stripColor(s));
+        this.bought.add(Text.strip(s));
         RealSkywars.getPlayerManager().savePlayer(this);
         RealSkywars.getPlayerManager().savePlayer(this);
     }
