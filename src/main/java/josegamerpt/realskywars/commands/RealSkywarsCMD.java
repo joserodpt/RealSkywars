@@ -62,6 +62,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("list")
+    @Permission("RealSkywars.list")
     public void listcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
@@ -77,6 +78,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("kits")
+    @Permission("RealSkywars.kits")
     public void kitscmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
@@ -133,6 +135,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("shop")
+    @Permission("RealSkywars.shop")
     public void shopcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             GUIManager.openShopMenu(RealSkywars.getPlayerManager().getPlayer((Player) commandSender));
@@ -161,7 +164,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("coins")
-    @Permission("RealSkywars.Coins")
+    @Permission("RealSkywars.coins")
     @Completion({"#enum", "#players", "#range:100"})
     @WrongUsage("&c/rsw coins <send;add;set> <name> <coins>")
     public void coinscmd(final CommandSender commandSender, CurrencyManager.Operations o, Player target, Double coins) {
@@ -271,6 +274,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("lobby")
+    @Permission("RealSkywars.lobby")
     public void lobbycmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
@@ -285,7 +289,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("forcestart")
-    @Permission("RealSkywars.ForceStart")
+    @Permission("RealSkywars.forcestart")
     public void forcestartcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer(Bukkit.getPlayer(commandSender.getName()));
@@ -316,6 +320,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("leave")
+    @Permission("RealSkywars.leave")
     public void leave(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);

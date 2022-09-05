@@ -6,6 +6,7 @@ import josegamerpt.realskywars.player.RSWPlayer;
 import me.mattstudios.mf.annotations.Alias;
 import me.mattstudios.mf.annotations.Command;
 import me.mattstudios.mf.annotations.Default;
+import me.mattstudios.mf.annotations.Permission;
 import me.mattstudios.mf.base.CommandBase;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -21,6 +22,7 @@ public class SairCMD extends CommandBase {
     }
 
     @Default
+    @Permission("RealSkywars.leave")
     public void defaultCommand(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
