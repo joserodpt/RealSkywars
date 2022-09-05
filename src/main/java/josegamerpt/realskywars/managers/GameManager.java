@@ -9,6 +9,7 @@ import josegamerpt.realskywars.game.modes.SWGameMode.GameState;
 import josegamerpt.realskywars.misc.Selections;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
+import josegamerpt.realskywars.sign.SWSign;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -140,7 +141,8 @@ public class GameManager {
     }
 
     public void removeRoom(SWGameMode gr) {
-        games.remove(gr);
+        gr.getSigns().forEach(SWSign::delete);
+        this.games.remove(gr);
     }
 
     public void clearRooms() {

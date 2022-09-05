@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 
 @Command("party")
-@Alias({"p", "festa", "f"})
+@Alias({"p", "festa", "f", "swp", "rswparty"})
 public class PartyCMD extends CommandBase {
 
     public RealSkywars rs;

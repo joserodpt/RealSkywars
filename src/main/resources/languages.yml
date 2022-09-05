@@ -37,7 +37,7 @@ Strings:
     Buy: "&fClica para o comprar! Botão direito dar preview."
     Select: "&fClica para o selecionares. Botão direito dar preview."
     Ender-Perk: "&fEste kit tem a habilidade &5Ender&f! Dá-te ender-pearls a cada x segundos."
-Default-Language: PT
+Default-Language: ENGLISH
 Languages:
   PT:
     Messages:
@@ -77,13 +77,13 @@ Languages:
             Header:
               - "&f"
               - " &f&lReal&b&lSkywars"
-              - " &fYou are playing on"
+              - " &fEstás a jogar em: "
               - " &b%map%"
               - "&f"
             Footer:
-              - "%space%"
-              - "&fPlayers: &b%players%"
-              - "%space%"
+              - "&f"
+              - "&fJogadores: &b%players%"
+              - "&f"
         States:
           All: "&2Tudo"
           Available: "&aDisponível"
@@ -125,7 +125,7 @@ Languages:
         Titles:
           Join-Room:
             - "&fSeleciona o teu KIT"
-            - "&fe vota nos baús!"
+            - "&fe vota!"
         Shop:
           Buy: "&fCompraste &b%name% &fpor &a%coins% &fcoins."
           Already-Bought: "&fJá compraste &b%name%&f."
@@ -145,7 +145,7 @@ Languages:
           Init-Setup:
             - "&f&nEstás no modo SETUP. Podes copiar uma Schematic ou fazer um novo mapa."
             - "&9> &aUsa o beacon para colocar %cages% jaulas para jogadores. "
-            - "&9> &bIMPORTANTE &cDefine os limites com //pos1 e //pos2 ou com um machado do WorldEdit.."
+            - "&9> &bIMPORTANTE &cDefine os limites com //pos1 e //pos2 ou com um machado do WorldEdit e depois faz //expand vert para cobrir toda a altura da arena!"
       Commands:
         No-Permission: "&cNão tens permissão para executar esse comando."
         Config-Reload: "&aConfiguração re-carregada."
@@ -233,6 +233,7 @@ Languages:
       Chests-Vote-Title: "&7&lChests"
       Projectiles-Vote-Title: "&7&lProjéteis"
       Time-Vote-Title: "&7&lTempo"
+      Game-History-Title: "&e&lHistórico de Jogos"
       Language:
         Title: "&9&lLinguagem"
         Select: "&fClica aqui para selecionar esta linguagem."
@@ -282,7 +283,7 @@ Languages:
           - "%space%"
       Map:
         Not-Found: "&9Nenhuma partida encontrada"
-        Title: "&9%map% &7| &f%mode%"
+        Title: "&9&l%map% &7| &f&l%mode%"
         Description:
           - ""
           - "&fJogadores: &b%players%&f/&b%maxplayers%"
@@ -336,7 +337,7 @@ Languages:
           - "%space%"
           - " &fTempo decorrido: &b%runtime%"
           - "%space%"
-        Title: " &fMapa: &b%map% "
+        Title: "&fMapa: &b%map%"
   ENGLISH:
     Messages:
       Maps: "Maps"
@@ -423,7 +424,7 @@ Languages:
         Titles:
           Join-Room:
             - "&fSelect your kit"
-            - "&fand vote for the Chest Tier"
+            - "&fand vote!"
         Shop:
           Buy: "&fYou bought &b%name% &ffor &a%coins% &fcoins."
           Already-Bought: "&fYou already bought &b%name%&f."
@@ -443,7 +444,7 @@ Languages:
           Init-Setup:
             - "&f&nYou are now in setup mode. You can paste your shematic or make a new map."
             - "&9> &aUse the beacon to place %cages% cages. "
-            - "&9> &bIMPORTANT &cSet the boundaries with //pos1 and //pos2 or an WorldEdit axe.."
+            - "&9> &bIMPORTANT &cSet the boundaries with //pos1 and //pos2 or an WorldEdit axe, and then do //expand vert to covert the entire height of the arena!"
       Commands:
         No-Permission: "&cYou don't have permission to execute this command."
         Config-Reload: "&aConfiguration reloaded."
@@ -528,9 +529,10 @@ Languages:
     Menus:
       Spectate-Title: "&9Players"
       Vote-Title: "&b&lVote"
-      Chest-Vote-Title: "&7&lChests"
+      Chests-Vote-Title: "&7&lChests"
       Projectiles-Vote-Title: "&7&lProjectiles"
       Time-Vote-Title: "&7&lTime"
+      Game-History-Title: "&e&lGame History"
       Language:
         Title: "&9&lLanguage"
         Select: "&fClick here to select this language."
@@ -545,7 +547,7 @@ Languages:
       Profile:
         Name: "&9Your Profile &7(Right Click)"
       CageSet:
-        Name: "&bPlace me 2 add a Cage"
+        Name: "&bPlace me to add a Cage"
       Maps:
         Name: "&bMaps &7(Right Click)"
       Shop:
@@ -580,7 +582,7 @@ Languages:
           - "%space%"
       Map:
         Not-Found: "&9No Maps Found"
-        Title: "&9%map% &7| &f%mode%"
+        Title: "&9&l%map% &7| &f&l%mode%"
         Description:
           - ""
           - "&fPlayers: &b%players%&f/&b%maxplayers%"
@@ -589,29 +591,29 @@ Languages:
     Scoreboards:
       Lobby:
         Lines:
-          - "%space%"
           - " &fCoins: &e%coins%"
           - "%space%"
-          - " &fSolo Wins: &a%solowins%"
-          - " &fTeam Wins: &a%teamwins%"
+          - " &fSOLO Victories: &a%solowins%"
+          - " &fTEAM Victories: &a%teamwins%"
           - " &fKills: &a%kills%"
           - " &fDeaths: &a%deaths%"
           - "%space%"
-          - " &fGames Played: &b%gamesplayed%"
-          - " &fLoses: &b%loses%"
-          - " &fPlaying: &b%playing% &fplayers"
+          - " &bR &fSOLO Vict.: &b%rankedsolowins%"
+          - " &bR &fTEAM Vict.: &b%rankedteamwins%"
+          - " &bR &fKills: &b%rankedkills%"
+          - " &bR &fDeaths: &b%rankeddeaths%"
           - "%space%"
+          - " &fGames: &a%gamesplayed% &7/ &b%rankedgamesplayed%"
+          - " &fLoses: &a%loses% &7/ &b%rankedloses%"
+          - " &b%playing% &fplaying"
         Title: "&aRealSkywars &fLobby"
       Cage:
         Lines:
           - "%space%"
           - " &fPlayers: &b%players%"
-          - " &fMode: &b%mode%"
           - " &fState: &b%state%"
           - "%space%"
-          - " &fWaiting for players..."
-          - "%space%"
-        Title: "&fMap: &b%map%"
+        Title: "&fMapa: &b%map% &7- &b%mode%"
       Game:
         Lines:
           - "%space%"
@@ -623,7 +625,7 @@ Languages:
           - "%space%"
           - " &fTime passed: &b%runtime%"
           - "%space%"
-        Title: "&fMap: &b%map%"
+        Title: "&fMapa: &b%map% &7- &b%mode%"
       Spectate:
         Lines:
           - "%space%"

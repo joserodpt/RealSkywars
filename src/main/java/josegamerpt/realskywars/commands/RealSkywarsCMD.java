@@ -1,7 +1,7 @@
 package josegamerpt.realskywars.commands;
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.chests.ChestManager;
+import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.gui.GUIManager;
@@ -56,17 +56,8 @@ public class RealSkywarsCMD extends CommandBase {
             this.rs.reload();
             commandSender.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CONFIG_RELOAD, true));
         } else {
-            commandSender.sendMessage(onlyPlayer);
-        }
-    }
-
-    @SubCommand("debug")
-    @Permission("RealSkywars.Admin")
-    public void debugcmd(final CommandSender commandSender, String nome) {
-        if (commandSender instanceof Player) {
-            commandSender.sendMessage("done");
-        } else {
-            commandSender.sendMessage(onlyPlayer);
+            this.rs.reload();
+            commandSender.sendMessage("Reloaded RealSkywars!");
         }
     }
 
@@ -457,27 +448,10 @@ public class RealSkywarsCMD extends CommandBase {
         }
     }
 
-    @SubCommand("settier")
-    @Completion("#enum")
-    @Permission("RealSkywars.Admin")
-    public void settier(final CommandSender commandSender, ChestManager.ChestTier tt) {
-        if (commandSender instanceof Player) {
-            RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
-            if (p.isInMatch()) {
-                p.getMatch().setTierType(tt, true);
-                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.TIER_SET, true).replace("%chest%", tt.name()));
-            } else {
-                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_MATCH, true));
-            }
-        } else {
-            commandSender.sendMessage(onlyPlayer);
-        }
-    }
-
     @SubCommand("set2chest")
     @Completion({"#enum", "#boolean"})
     @Permission("RealSkywars.Admin")
-    public void setchest(final CommandSender commandSender, ChestManager.ChestTier tt, Boolean middle) {
+    public void setchest(final CommandSender commandSender, SWChest.Tier tt, Boolean middle) {
         if (commandSender instanceof Player) {
             RealSkywars.getChestManager().set2Chest(tt, middle, Itens.getInventory(((Player) commandSender)));
             Text.send(commandSender, "Itens set for " + tt.name() + " (middle: " + middle + ")");
@@ -486,13 +460,14 @@ public class RealSkywarsCMD extends CommandBase {
         }
     }
 
-    @SubCommand("gettier")
+    @SubCommand("seetier")
     @Completion({"#enum", "#boolean"})
     @Permission("RealSkywars.Admin")
-    public void gettier(final CommandSender commandSender, ChestManager.ChestTier tt, Boolean middle) {
+    public void seetier(final CommandSender commandSender, SWChest.Tier tt, Boolean middle) {
         if (commandSender instanceof Player) {
             Player p = (Player) commandSender;
-            RealSkywars.getChestManager().getChest(tt, middle).forEach(swChestItem -> p.getInventory().addItem(swChestItem.getItemStack()));
+            TierViewer tv = new TierViewer(p, tt, middle ? SWChest.Type.MID : SWChest.Type.NORMAL);
+            tv.openInventory(p);
         } else {
             commandSender.sendMessage(onlyPlayer);
         }

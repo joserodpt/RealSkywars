@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ChestManager {
 
-    public void set2Chest(ChestTier t, Boolean mid, List<ItemStack> itens) {
+    public void set2Chest(SWChest.Tier t, Boolean mid, List<ItemStack> itens) {
         String header = "Itens.";
 
         int i = 0;
@@ -50,7 +50,7 @@ public class ChestManager {
         }
     }
 
-    public List<SWChestItem> getChest(ChestTier t, Boolean mid) {
+    public List<SWChestItem> getChest(SWChest.Tier t, Boolean mid) {
         ArrayList<SWChestItem> ret = new ArrayList<>();
         String header = "Itens.";
         if (mid) {
@@ -62,7 +62,7 @@ public class ChestManager {
                     ItemStack item = BasicChest.file().getItemStack(header + string + ".ItemStack");
                     int f = BasicChest.file().getInt(header + string + ".Chance");
 
-                    ret.add(new SWChestItem(item, f));
+                    ret.add(new SWChestItem(item, f, string));
                 }
                 break;
             case NORMAL:
@@ -70,7 +70,7 @@ public class ChestManager {
                     ItemStack item = NormalChest.file().getItemStack(header + string + ".ItemStack");
                     int f = NormalChest.file().getInt(header + string + ".Chance");
 
-                    ret.add(new SWChestItem(item, f));
+                    ret.add(new SWChestItem(item, f, string));
                 }
                 break;
             case EPIC:
@@ -78,14 +78,14 @@ public class ChestManager {
                     ItemStack item = EPICChest.file().getItemStack(header + string + ".ItemStack");
                     int f = EPICChest.file().getInt(header + string + ".Chance");
 
-                    ret.add(new SWChestItem(item, f));
+                    ret.add(new SWChestItem(item, f, string));
                 }
                 break;
         }
         return ret;
     }
 
-    public int getMaxItems(ChestTier chestTier) {
+    public int getMaxItems(SWChest.Tier chestTier) {
         String itens = "Max-Itens-Per-Chest";
         switch (chestTier) {
             case BASIC:
@@ -98,7 +98,24 @@ public class ChestManager {
         return 0;
     }
 
-    public enum ChestTier {
-        BASIC, NORMAL, EPIC
+    public void setChance(SWChest.Tier ct, SWChest.Type cte, String key, int val) {
+        String header = "Itens.";
+        if (cte == SWChest.Type.MID) {
+            header = "Mid." + header;
+        }
+        switch (ct) {
+            case BASIC:
+                BasicChest.file().set(header + key + ".Chance", val);
+                BasicChest.save();
+                break;
+            case NORMAL:
+                NormalChest.file().set(header + key + ".Chance", val);
+                NormalChest.save();
+                break;
+            case EPIC:
+                EPICChest.file().set(header + key + ".Chance", val);
+                EPICChest.save();
+                break;
+        }
     }
 }

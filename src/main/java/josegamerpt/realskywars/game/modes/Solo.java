@@ -2,7 +2,7 @@ package josegamerpt.realskywars.game.modes;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
-import josegamerpt.realskywars.chests.ChestManager;
+
 import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.Countdown;
@@ -51,7 +51,7 @@ public class Solo implements SWGameMode {
     private Boolean ranked;
     private BossBar bossBar;
     private SWGameMode.GameState state;
-    private ChestManager.ChestTier chestTier = ChestManager.ChestTier.NORMAL;
+    private SWChest.Tier chestTier = SWChest.Tier.NORMAL;
     private int timePassed = 0;
     private Boolean specEnabled;
     private Boolean instantEnding;
@@ -367,13 +367,13 @@ public class Solo implements SWGameMode {
             int bigger = MathUtils.mostFrequentElement(this.chestVotes.values());
             switch (bigger) {
                 case 1:
-                    this.setTierType(ChestManager.ChestTier.BASIC, true);
+                    this.setTierType(SWChest.Tier.BASIC, true);
                     break;
                 case 3:
-                    this.setTierType(ChestManager.ChestTier.EPIC, true);
+                    this.setTierType(SWChest.Tier.EPIC, true);
                     break;
                 default:
-                    this.setTierType(ChestManager.ChestTier.NORMAL, true);
+                    this.setTierType(SWChest.Tier.NORMAL, true);
                     break;
             }
 
@@ -624,11 +624,11 @@ public class Solo implements SWGameMode {
         return this.instantEnding;
     }
 
-    public ChestManager.ChestTier getChestTier() {
+    public SWChest.Tier getTier() {
         return this.chestTier;
     }
 
-    public void setTierType(ChestManager.ChestTier b, Boolean updateChests) {
+    public void setTierType(SWChest.Tier b, Boolean updateChests) {
         this.chestTier = b;
         if (updateChests) {
             this.chests.forEach(swChest -> swChest.setLoot(RealSkywars.getChestManager().getChest(this.chestTier, swChest.isMiddle()), RealSkywars.getChestManager().getMaxItems(this.chestTier)));
@@ -824,7 +824,6 @@ public class Solo implements SWGameMode {
                     }
                 }, () -> {
                     this.bossBar.removeAll();
-                    this.chests.forEach(SWChest::clearHologram);
                     this.sendLog(p, true);
                     this.kickPlayers(null);
                     this.resetArena(OperationReason.RESET);
@@ -843,6 +842,9 @@ public class Solo implements SWGameMode {
 
                 this.winTimer.scheduleTimer();
             }
+
+            this.chests.forEach(SWChest::cancelTasks);
+            this.chests.forEach(SWChest::clearHologram);
         }
     }
 }

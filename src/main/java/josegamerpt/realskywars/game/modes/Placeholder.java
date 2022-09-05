@@ -1,7 +1,6 @@
 package josegamerpt.realskywars.game.modes;
 
 import josegamerpt.realskywars.cages.Cage;
-import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.game.SWEvent;
@@ -131,7 +130,7 @@ public class Placeholder implements SWGameMode {
     }
 
     @Override
-    public void setTierType(ChestManager.ChestTier b, Boolean updateChests) {
+    public void setTierType(SWChest.Tier b, Boolean updateChests) {
 
     }
 
@@ -158,7 +157,7 @@ public class Placeholder implements SWGameMode {
     }
 
     @Override
-    public ChestManager.ChestTier getChestTier() {
+    public SWChest.Tier getTier() {
         return null;
     }
 

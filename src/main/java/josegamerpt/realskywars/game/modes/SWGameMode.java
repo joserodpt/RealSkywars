@@ -1,7 +1,6 @@
 package josegamerpt.realskywars.game.modes;
 
 import josegamerpt.realskywars.cages.Cage;
-import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.game.SWEvent;
@@ -71,7 +70,7 @@ public interface SWGameMode {
 
     Location getPOS2();
 
-    void setTierType(ChestManager.ChestTier b, Boolean updateChests);
+    void setTierType(SWChest.Tier b, Boolean updateChests);
 
     void setTime(TimeType tt);
 
@@ -83,7 +82,7 @@ public interface SWGameMode {
 
     boolean isInstantEndEnabled();
 
-    ChestManager.ChestTier getChestTier();
+    SWChest.Tier getTier();
 
     int getTimePassed();
 

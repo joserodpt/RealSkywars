@@ -3,6 +3,7 @@ package josegamerpt.realskywars;
 import josegamerpt.realskywars.achievements.AchievementsManager;
 import josegamerpt.realskywars.api.RSWEventsAPI;
 import josegamerpt.realskywars.chests.ChestManager;
+import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.commands.PartyCMD;
 import josegamerpt.realskywars.commands.RealSkywarsCMD;
 import josegamerpt.realskywars.commands.SairCMD;
@@ -28,6 +29,7 @@ import josegamerpt.realskywars.player.PlayerEvents;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.sign.SignManager;
 import josegamerpt.realskywars.utils.GUIBuilder;
+import josegamerpt.realskywars.utils.PlayerInput;
 import josegamerpt.realskywars.utils.Text;
 import josegamerpt.realskywars.world.SWWorld;
 import josegamerpt.realskywars.world.WorldManager;
@@ -216,6 +218,7 @@ public class RealSkywars extends JavaPlugin {
                 pm.registerEvents(new PlayerEvents(), this);
                 pm.registerEvents(new EventListener(), this);
                 pm.registerEvents(new GameRoomListeners(), this);
+                pm.registerEvents(PlayerInput.getListener(), this);
                 pm.registerEvents(GUIBuilder.getListener(), this);
                 pm.registerEvents(GameLogViewer.getListener(), this);
                 pm.registerEvents(MapSettings.getListener(), this);
@@ -225,6 +228,7 @@ public class RealSkywars extends JavaPlugin {
                 pm.registerEvents(ProfileContent.getListener(), this);
                 pm.registerEvents(KitSettings.getListener(), this);
                 pm.registerEvents(MapsViewer.getListener(), this);
+                pm.registerEvents(TierViewer.getListener(), this);
                 pm.registerEvents(AchievementViewer.getListener(), this);
                 pm.registerEvents(GameLogViewer.getListener(), this);
 
@@ -256,8 +260,8 @@ public class RealSkywars extends JavaPlugin {
                 commandManager.getCompletionHandler().register("#worldtype", input -> Arrays.asList("DEFAULT", "SCHEMATIC"));
                 commandManager.getCompletionHandler().register("#kits", input -> kitm.getKitNames());
 
-                commandManager.getParameterHandler().register(ChestManager.ChestTier.class, argument -> {
-                    ChestManager.ChestTier tt = ChestManager.ChestTier.valueOf(argument.toString().toUpperCase());
+                commandManager.getParameterHandler().register(SWChest.Tier.class, argument -> {
+                    SWChest.Tier tt = SWChest.Tier.valueOf(argument.toString().toUpperCase());
                     if (tt == null) return new TypeResult(argument);
                     return new TypeResult(tt, argument);
                 });

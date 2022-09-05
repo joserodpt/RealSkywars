@@ -630,7 +630,7 @@ public class RSWPlayer {
     public class RoomTAB {
 
         private final RSWPlayer player;
-        private final ArrayList<Player> show = new ArrayList<>();
+        private ArrayList<Player> show = new ArrayList<>();
 
         public RoomTAB(RSWPlayer player) {
             this.player = player;

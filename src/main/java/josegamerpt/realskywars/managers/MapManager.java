@@ -44,9 +44,9 @@ public class MapManager {
     }
 
     public void unregisterMap(SWGameMode map) {
+        RealSkywars.getGameManager().removeRoom(map);
         Maps.file().set(map.getName(), null);
         Maps.save();
-        RealSkywars.getGameManager().removeRoom(map);
     }
 
     public void loadMaps() {
@@ -111,7 +111,7 @@ public class MapManager {
                 int z = Maps.file().getInt(section + ".Chests." + i + ".LocationZ");
                 BlockFace f = BlockFace.valueOf(Maps.file().getString(section + ".Chests." + i + ".Face"));
 
-                SWChest.ChestTYPE ct = SWChest.ChestTYPE.valueOf(Maps.file().getString(section + ".Chests." + i + ".Type"));
+                SWChest.Type ct = SWChest.Type.valueOf(Maps.file().getString(section + ".Chests." + i + ".Type"));
                 if (ct == null) {
                     Debugger.print(MapManager.class, "CHEST FACE INVALID WHILE LOADING " + worldName + "!! >> " + Maps.file().getString(section + ".Chests." + i + ".Type"));
                 }
@@ -272,14 +272,6 @@ public class MapManager {
         p.setSetup(null);
     }
 
-    public void setupTeams(RSWPlayer p, String mapname, SWWorld.WorldType wt, int teams, int pperteam) {
-        SetupRoom s = new SetupRoom(mapname, null, wt, teams, pperteam);
-        p.setSetup(s);
-
-        MapSettings m = new MapSettings(s, p.getUUID());
-        m.openInventory(p);
-    }
-
     public void continueSetup(RSWPlayer p) {
         if (!p.getSetup().isTPConfirmed()) {
             p.getSetup().setTPConfirm(true);
@@ -316,6 +308,15 @@ public class MapManager {
 
     public void setupSolo(RSWPlayer p, String mapname, SWWorld.WorldType wt, int maxP) {
         SetupRoom s = new SetupRoom(mapname, null, wt, maxP);
+        s.setSchematic(mapname);
+        p.setSetup(s);
+
+        MapSettings m = new MapSettings(s, p.getUUID());
+        m.openInventory(p);
+    }
+
+    public void setupTeams(RSWPlayer p, String mapname, SWWorld.WorldType wt, int teams, int pperteam) {
+        SetupRoom s = new SetupRoom(mapname, null, wt, teams, pperteam);
         s.setSchematic(mapname);
         p.setSetup(s);
 

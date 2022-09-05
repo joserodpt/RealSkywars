@@ -261,11 +261,11 @@ public class PlayerEvents implements Listener {
                     BlockFace f = ((Directional) blockData).getFacing();
                     switch (Text.strip(name).toLowerCase()) {
                         case "common chest":
-                            pg.getSetup().addChest(new SWChest(SWChest.ChestTYPE.NORMAL, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f));
+                            pg.getSetup().addChest(new SWChest(SWChest.Type.NORMAL, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f));
                             pg.sendMessage("Added Normal Chest.");
                             break;
                         case "mid chest":
-                            pg.getSetup().addChest(new SWChest(SWChest.ChestTYPE.MID, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f));
+                            pg.getSetup().addChest(new SWChest(SWChest.Type.MID, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f));
                             pg.sendMessage("Added Mid Chest.");
                             break;
                     }

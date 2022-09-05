@@ -28,7 +28,7 @@ public class SWChest {
     private final int y;
     private final int z;
     private final String worldName;
-    private final ChestTYPE type;
+    private final Type type;
     private final BlockFace bf;
     private final SWHologram hologram;
     private List<SWChestItem> items = new ArrayList<>();
@@ -36,7 +36,7 @@ public class SWChest {
     private int maxItemsPerChest;
     private Countdown chestCTD;
 
-    public SWChest(ChestTYPE ct, String worldName, int x, int y, int z, BlockFace bf) {
+    public SWChest(Type ct, String worldName, int x, int y, int z, BlockFace bf) {
         this.type = ct;
         this.x = x;
         this.y = y;
@@ -58,12 +58,12 @@ public class SWChest {
         this.maxItemsPerChest = maxItemsPerChest;
     }
 
-    public ChestTYPE getType() {
+    public Type getType() {
         return this.type;
     }
 
     public Boolean isMiddle() {
-        return this.type == ChestTYPE.MID;
+        return this.type == Type.MID;
     }
 
     public Location getLocation() {
@@ -182,7 +182,8 @@ public class SWChest {
     public void clearHologram() {
         this.hologram.deleteHologram();
     }
+    public enum Tier { BASIC, NORMAL, EPIC }
 
-    public enum ChestTYPE {NORMAL, MID}
+    public enum Type {NORMAL, MID}
 
 }
