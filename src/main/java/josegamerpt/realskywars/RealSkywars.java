@@ -154,6 +154,9 @@ public class RealSkywars extends JavaPlugin {
         String star = "<------------- RealSkywars PT ------------->".replace("PT", "| " + this.getDescription().getVersion());
         log(star);
 
+        //setup metrics
+        new Metrics(this, 16365);
+
         if (setupNMS()) {
             log("Loading languages.");
             Languages.setup(this);
