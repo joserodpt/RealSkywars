@@ -44,24 +44,24 @@ Languages:
       Maps: "Maps"
       System:
         Achievements:
-          Get: "&fParabéns! Obtiveste &b%achievement% &fe ganhaste &a%reward%"
+          Get: "&fCongratulations! You have achieved &b%achievement% &fand won &a%reward%"
         Party:
           Already-In: "&fYou are already in a party."
           Kick: "&f%player% &chas been kicked from the party."
           Join: "&f%player% &ajoined the party."
-          Leave: "&f%player% &ceft the party."
+          Leave: "&f%player% &left the party."
           Not-In-Party: "&cYou are not in a party."
-          Already-Created: "&cYou have a party created."
-          Created: "&aParty created! Invite others with /party invite <name>"
-          Insufficient-Room-Space: "&cYou cant teleport the party to that room because there is not enough available slots."
+          Already-Created: "&cYou have already created a party."
+          Created: "&aPYou've created a party! Invite others with /party invite <name>"
+          Insufficient-Room-Space: "&cYou can't teleport the party to that room because there aren't enough available slots."
           Disband: "&cYou disbanded the party."
           Invite:
             Not-Found: "&cThe invite for that player &ccould not be found."
-            Sent: "&bInvite sent for &f%player%"
+            Sent: "&bInvite sent to &f%player%"
             Recieved: "&b%player% &finvited you to join their party! Accept it with &a/party accept"
-            Accepted: "&aYou joined &b%player% &aparty"
-            Cant-Invite-Yourself: "&cYou cant invite yourself."
-          Not-Owner: "&cYou cant do that because you are not the owner of the party."
+            Accepted: "&aYou joined &b%player%'s &aparty"
+            Cant-Invite-Yourself: "&cYou can't invite yourself."
+          Not-Owner: "&cYou can't execute this action because you are not the owner of the party."
         TAB:
           Other:
             Header:
@@ -77,7 +77,7 @@ Languages:
             Header:
               - "&f"
               - " &f&lReal&b&lSkywars"
-              - " &fYou are playing on"
+              - " &fYou are playing on:"
               - " &b%map%"
               - "&f"
             Footer:
@@ -103,8 +103,8 @@ Languages:
           Not-Found: "&eNo kit has been found with that name."
           Delete-Done: "&fKit &adeleted&f."
         Coins:
-          Add: "&b%coins% &fwere added to your balance."
-          Remove: "&b%coins% &fwere removed from your balance."
+          Add: "&b%coins% &have been added to your balance."
+          Remove: "&b%coins% &have been removed from your balance."
           Set: "&fYou now have &b%coins% &fcoins."
           Sender: "&fYou sent &b%coins% coins &fto %player%."
           Reciever: "&fYou recieved &b%coins% coins &ffrom %player%."
@@ -133,7 +133,7 @@ Languages:
           Not-Buyable: "&fThis item &cisn't &abuyable&f."
         Arena:
           Play-Again: "&eWant to play again? &lClick here!"
-          Cant-Join: "&fYou &ccant &fjoin this room right now."
+          Cant-Join: "&fYou &ccan't &fjoin this room right now."
           Blocked-Command: "&fThis command is &cblocked &fwhile you are in a match."
           Spectating-Disabled: "&bSpectating &fis &cdisabled &fin this room."
           Room-Full: "&fThis room is &cfull&f."
@@ -141,17 +141,17 @@ Languages:
           No-Tracker-Found: "&fThere is no player to track."
           Winner-Broadcast: "&b%winner% &fwon on the map &a%map%"
           Leave: "&eYou left the match."
-          Already-Started: "&fThis match &calready &fstarted."
+          Already-Started: "&fThis match has &calready &fstarted."
           Init-Setup:
             - "&f&nYou are now in setup mode. You can paste your shematic or make a new map."
             - "&9> &aUse the beacon to place %cages% cages. "
-            - "&9> &bIMPORTANT &cSet the boundaries with //pos1 and //pos2 or an WorldEdit axe, and then do //expand vert to covert the entire height of the arena!"
+            - "&9> &bIMPORTANT &cSet the boundaries with //pos1 and //pos2 or an WorldEdit axe, and then do //expand vert to cover the entire height of the arena!"
       Commands:
         No-Permission: "&cYou don't have permission to execute this command."
         Config-Reload: "&aConfiguration reloaded."
         Coins: "&fYou have &b%coins% &fcoins."
         Match-Force-Start: "&fThe match has been &aforcefully &fstarted."
-        Match-Force-Start-Denial: "&fYou &ccant &fforce start this match because there are insufficient players."
+        Match-Force-Start-Denial: "&fYou &ccan't &fforce start this match because there aren't enough players."
         No-Match: "&cYou aren't in a match."
         Lobby-Set: "&fThe lobby &ahas been set&f."
         Setup-Not-Finished: "&cThe setup isn't finished."
@@ -169,11 +169,11 @@ Languages:
         Command-Not-Found: "&fNo command has been found with that syntax."
         Add-Tier: "&fThe items have been added to the tier."
         Set-Tier: "&fThe tier has been set."
-        Reset-Done: "&aSucessfully executed an reset."
+        Reset-Done: "&Reset has been successfully executed."
       Vote:
         Cant-Vote: "&cYou can't vote right now."
         Vote: "&fYou voted for &b%thing%"
-        Already-Voted: "&fYou &calready voted&f."
+        Already-Voted: "&fYou have &calready voted&f."
         Time:
           Day: "&e&LDay"
           Night: "&7&lNight"
@@ -189,7 +189,7 @@ Languages:
       Arena:
         Saving: "&aSaving arena.."
         Reset: "&cThe arena is being reset by an admin."
-        Reset-Done: "&aThe arena has been resetted."
+        Reset-Done: "&aThe arena has been reset."
         Registered: "&fThe arena has been &aregistered&f."
         Suggest-Match-Cancel: "&cYou can't do that now. &fYou can do /rsw leave to leave this match."
         No-Boundaries: "&fThe boundaries &care not set."
@@ -199,14 +199,14 @@ Languages:
         Player-Leave: "&b%player% &fleft the match. (&9%players%&7/&9%maxplayers%&f)"
         Match-Cancelled: "&cMatch cancelled, not enough players."
         Start-Countdown: "&fSkywars will start in &9%time% &fsecond(s)"
-        Match-End: "&fThe match ended. &aYou will be teleported to the lobby in &b%time% &aseconds."
+        Match-End: "&fThe match has ended. &aYou will be teleported to the lobby in &b%time% &aseconds."
         Events:
           Refill:
             - "&9&LCHEST REFILL"
             - "&6Chests are being refilled!"
           TNTRain:
             - "&c&lTNT RAIN"
-            - "&cWatch out for the TNT!"
+            - "&cWatch out for TNT!"
         Title:
           Win: "&b%player% &awon!"
           DeathMatch: "&cThe world is shrinking..."
@@ -279,7 +279,7 @@ Languages:
           - " &fDeaths: &a%deaths%"
           - "%space%"
           - " &fGames Played: &b%gamesplayed%"
-          - " &fLoses: &b%loses%"
+          - " &fDefeats: &b%loses%"
           - "%space%"
       Map:
         Not-Found: "&9No Maps Found"
@@ -305,7 +305,7 @@ Languages:
           - " &bR &fDeaths: &b%rankeddeaths%"
           - "%space%"
           - " &fGames: &a%gamesplayed% &7/ &b%rankedgamesplayed%"
-          - " &fLoses: &a%loses% &7/ &b%rankedloses%"
+          - " &Defeats: &a%loses% &7/ &b%rankedloses%"
           - " &b%playing% &fplaying"
         Title: "&aRealSkywars &fLobby"
       Cage:
@@ -324,7 +324,7 @@ Languages:
           - " &fMode: &b%mode%"
           - " &fKills: &b%kills%"
           - "%space%"
-          - " &fTime passed: &b%runtime%"
+          - " &fRuntime: &b%runtime%"
           - "%space%"
         Title: "&fMapa: &b%map% &7- &b%mode%"
       Spectate:
@@ -335,7 +335,7 @@ Languages:
           - " &fNext Event: &b%nextevent%"
           - " &fMode: &b%mode%"
           - "%space%"
-          - " &fTime passed: &b%runtime%"
+          - " &fRuntime: &b%runtime%"
           - "%space%"
         Title: "&fMap: &b%map%"
   ES:
