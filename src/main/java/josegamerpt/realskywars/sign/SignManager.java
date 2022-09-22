@@ -35,17 +35,19 @@ public class SignManager {
     }
 
     public void loadSigns() {
-        for (String loc : Signs.file().getConfigurationSection("Signs").getKeys(false)) {
-            String map = Signs.file().getString("Signs." + loc);
-            SWGameMode sgm = RealSkywars.getGameManager().getGame(map);
-            if (sgm != null) {
-                String[] data = loc.split("<");
-                World w = Bukkit.getWorld(data[0]);
-                int x = Integer.parseInt(data[1]);
-                int y = Integer.parseInt(data[2]);
-                int z = Integer.parseInt(data[3]);
+        if (Signs.file().getConfigurationSection("Signs") != null) {
+            for (String loc : Signs.file().getConfigurationSection("Signs").getKeys(false)) {
+                String map = Signs.file().getString("Signs." + loc);
+                SWGameMode sgm = RealSkywars.getGameManager().getGame(map);
+                if (sgm != null) {
+                    String[] data = loc.split("<");
+                    World w = Bukkit.getWorld(data[0]);
+                    int x = Integer.parseInt(data[1]);
+                    int y = Integer.parseInt(data[2]);
+                    int z = Integer.parseInt(data[3]);
 
-                this.addSign(sgm, w.getBlockAt(x, y, z));
+                    this.addSign(sgm, w.getBlockAt(x, y, z));
+                }
             }
         }
     }
