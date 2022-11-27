@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Placeholder extends SWGameMode {
 
     public Placeholder(String nome) {
-        super(nome, null, null, null, null, -1, null, null, null, null, null, null, null);
+        super(nome);
     }
 
 

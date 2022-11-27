@@ -42,12 +42,12 @@ public abstract class SWGameMode {
     private final int maxPlayers;
     private final WorldBorder border;
     private final int borderSize;
+    private final Location spectatorLocation;
+    private final String schematicName;
     private final ArrayList<RSWPlayer> inRoom = new ArrayList<>();
     private final HashMap<UUID, Integer> chestVotes = new HashMap<>();
     private final HashMap<UUID, Integer> projectileVotes = new HashMap<>();
     private final HashMap<UUID, Integer> timeVotes = new HashMap<>();
-    private final Location spectatorLocation;
-    private final String schematicName;
     private Boolean ranked;
     private SWGameMode.GameState state;
     private BossBar bossBar;
@@ -66,6 +66,7 @@ public abstract class SWGameMode {
 
     public SWGameMode(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd) {
         this.name = nome;
+
         this.schematicName = schematicName;
 
         this.arenaCuboid = new ArenaCuboid(pos1, pos2);
@@ -91,6 +92,18 @@ public abstract class SWGameMode {
         this.events = RealSkywars.getGameManager().parseEvents(this);
 
         this.bossBar = Bukkit.createBossBar(Text.color(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_WAIT)), BarColor.WHITE, BarStyle.SOLID);
+    }
+
+    public SWGameMode(String nome) {
+        this.name = nome;
+        this.world = null;
+        this.arenaCuboid = null;
+        this.chests = null;
+        this.maxPlayers = -1;
+        this.border = null;
+        this.borderSize = -1;
+        this.spectatorLocation = null;
+        this.schematicName = "";
     }
 
     public void startTimers() {
