@@ -31,7 +31,7 @@ public class EventListener implements Listener {
 
         if (RealSkywars.getGameManager().isInGame(ent.getWorld())) {
             SWGameMode match = RealSkywars.getGameManager().getMatch(ent.getWorld());
-            if (match.getProjectile() == SWGameMode.ProjectileType.BREAK_BLOCKS) {
+            if (match.getProjectileTier() == SWGameMode.ProjectileType.BREAK_BLOCKS) {
                 Projectile projectile = e.getEntity();
                 if (projectile instanceof EnderPearl) {
                     return;

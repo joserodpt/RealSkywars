@@ -7,7 +7,7 @@
 
     <groupId>pt.josegamerpt</groupId>
     <artifactId>RealSkywars</artifactId>
-    <version>8-9-2022 Build 1</version>
+    <version>27-11-2022 Build 1</version>
     <packaging>jar</packaging>
 
     <name>RealSkywars</name>
@@ -157,6 +157,12 @@
             <groupId>com.j256.ormlite</groupId>
             <artifactId>ormlite-jdbc</artifactId>
             <version>6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-bukkit</artifactId>
+            <version>7.2.10</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

@@ -23,6 +23,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -447,7 +448,10 @@ public class RealSkywarsCMD extends CommandBase {
     public void tpcmd(final CommandSender commandSender, String name) {
         if (commandSender instanceof Player) {
             RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
-            p.teleport(RealSkywars.getGameManager().getGame(name).getSWWorld().getWorld().getSpawnLocation());
+            if (p != null) {
+                p.getPlayer().setGameMode(GameMode.CREATIVE);
+                p.teleport(RealSkywars.getGameManager().getGame(name).getSWWorld().getWorld().getSpawnLocation());
+            }
         } else {
             commandSender.sendMessage(onlyPlayer);
         }

@@ -88,10 +88,6 @@ public class Countdown implements Runnable {
         return this.secondsLeft;
     }
 
-    public Integer getTaskId() {
-        return this.assignedTaskId;
-    }
-
     public void killTask() {
         Bukkit.getScheduler().cancelTask(this.assignedTaskId);
     }

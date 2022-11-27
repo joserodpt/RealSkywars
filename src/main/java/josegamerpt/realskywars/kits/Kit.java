@@ -148,7 +148,7 @@ public class Kit {
     }
 
     public void give(RSWPlayer p) {
-        if (!p.isBot()) {
+        if (!p.isBot() && p.hasKit()) {
             p.getPlayer().getInventory().setContents(this.contents);
             this.startTasks(p);
         }

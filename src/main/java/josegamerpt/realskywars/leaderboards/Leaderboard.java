@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class Leaderboard {
 
-    List<LeaderboardRow> lbr = new ArrayList<>();
+    private List<LeaderboardRow> lbr = new ArrayList<>();
 
     public Leaderboard() {}
 

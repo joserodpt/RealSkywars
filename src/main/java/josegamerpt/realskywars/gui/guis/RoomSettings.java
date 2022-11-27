@@ -270,7 +270,7 @@ public class RoomSettings {
 
     private void refresher() {
         refreshTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.getPlugin(), () -> {
-            ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, "&9Info", Arrays.asList("&fPlayers: " + game.getPlayerCount() + "/" + game.getMaxPlayers(), "&fSpectators: " + game.getSpectatorsCount(), "&fChest Tier: &b" + game.getTier().name(), "", "&fRunning Time: " + game.getTimePassed()));
+            ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, "&9Info", Arrays.asList("&fPlayers: " + game.getPlayerCount() + "/" + game.getMaxPlayers(), "&fSpectators: " + game.getSpectatorsCount(), "&fChest Tier: &b" + game.getChestTier().name(), "", "&fRunning Time: " + game.getTimePassed(), "Map type:" + game.getSWWorld().getType().name()));
             // infoMap
             inv.setItem(4, infoMap);
         }, 0L, 10L);

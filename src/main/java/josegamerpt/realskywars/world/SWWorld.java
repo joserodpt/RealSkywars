@@ -4,6 +4,7 @@ import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.world.engines.SWWorldDefaultEngine;
 import josegamerpt.realskywars.world.engines.SWWorldSchematicEngine;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 
 public class SWWorld {
 
@@ -18,6 +19,7 @@ public class SWWorld {
     }
 
     public void resetWorld(SWGameMode.OperationReason rr) {
+        this.engine.getWorld().getEntities().forEach(Entity::remove);
         this.engine.resetWorld(rr);
     }
 
