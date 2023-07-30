@@ -39,8 +39,7 @@ public class LangChecker {
     public static boolean checkForErrors() {
         ArrayList<String> errs = new ArrayList<>();
 
-
         errors = String.join(", ", errs);
-        return errs.size() > 0;
+        return !errs.isEmpty();
     }
 }

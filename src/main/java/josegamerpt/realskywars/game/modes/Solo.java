@@ -26,8 +26,8 @@ public class Solo extends SWGameMode {
 
     private final ArrayList<Cage> cages;
 
-    public Solo(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, ArrayList<Cage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd) {
-        super(nome, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, pos1, pos2, chests, rankd);
+    public Solo(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, ArrayList<Cage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd, RealSkywars rs) {
+        super(nome, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, pos1, pos2, chests, rankd, rs);
         this.cages = cages;
     }
 
@@ -39,15 +39,15 @@ public class Solo extends SWGameMode {
     @Override
     public String forceStart(RSWPlayer p) {
         if (canStartGame()) {
-            return RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_CANT_FORCESTART, true);
+            return super.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.CMD_CANT_FORCESTART, true);
         } else {
             switch (super.getState()) {
                 case PLAYING:
                 case FINISHING:
-                    return RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ALREADY_STARTED, true);
+                    return super.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.ALREADY_STARTED, true);
                 default:
                     this.startGameFunction();
-                    return RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CMD_MATCH_FORCESTART, true);
+                    return super.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.CMD_MATCH_FORCESTART, true);
             }
         }
     }
@@ -71,7 +71,7 @@ public class Solo extends SWGameMode {
                     super.getBossBar().addPlayer(p.getPlayer());
 
                     //start msg
-                    for (String s : Text.color(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.ARENA_START))) {
+                    for (String s : Text.color(super.getRealSkywars().getLanguageManager().getList(p, LanguageManager.TL.ARENA_START))) {
                         p.sendCenterMessage(s.replace("%chests%", WordUtils.capitalizeFully(super.getChestTier().name())).replace("%kit%", p.getKit().getName()).replace("%project%", WordUtils.capitalizeFully(super.getProjectileTier().name().replace("_", " "))).replace("%time%", WordUtils.capitalizeFully(super.getTimeType().name())));
                     }
 
@@ -102,22 +102,22 @@ public class Solo extends SWGameMode {
 
     @Override
     public void addPlayer(RSWPlayer p) {
-        if (RealSkywars.getPartyManager().checkForParties(p, this)) {
+        if (super.getRealSkywars().getPartyManager().checkForParties(p, this)) {
             switch (this.getState()) {
                 case RESETTING:
-                    p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.CANT_JOIN, true));
+                    p.sendMessage(super.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.CANT_JOIN, true));
                     break;
                 case FINISHING:
                 case PLAYING:
                     if (this.isSpectatorEnabled()) {
                         spectate(p, SpectateType.EXTERNAL, null);
                     } else {
-                        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SPECTATING_DISABLED, true));
+                        p.sendMessage(super.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.SPECTATING_DISABLED, true));
                     }
                     break;
                 default:
                     if (this.getPlayerCount() == this.getMaxPlayers()) {
-                        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ROOM_FULL, true));
+                        p.sendMessage(super.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.ROOM_FULL, true));
                         return;
                     }
 
@@ -138,15 +138,15 @@ public class Solo extends SWGameMode {
                     if (p.getPlayer() != null) {
                         super.getBossBar().addPlayer(p.getPlayer());
                         p.heal();
-                        ArrayList<String> up = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.TITLE_ROOMJOIN);
+                        ArrayList<String> up = super.getRealSkywars().getLanguageManager().getList(p, LanguageManager.TL.TITLE_ROOMJOIN);
                         p.getPlayer().sendTitle(up.get(0), up.get(1), 10, 120, 10);
                     }
 
                     for (RSWPlayer ws : this.getInRoom()) {
-                        ws.sendMessage(RealSkywars.getLanguageManager().getString(ws, LanguageManager.TS.PLAYER_JOIN_ARENA, true).replace("%player%", p.getDisplayName()).replace("%players%", getPlayerCount() + "").replace("%maxplayers%", getMaxPlayers() + ""));
+                        ws.sendMessage(super.getRealSkywars().getLanguageManager().getString(ws, LanguageManager.TS.PLAYER_JOIN_ARENA, true).replace("%player%", p.getDisplayName()).replace("%players%", getPlayerCount() + "").replace("%maxplayers%", getMaxPlayers() + ""));
                     }
 
-                    RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.CAGE);
+                    super.getRealSkywars().getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.CAGE);
 
                     //update tab
                     if (!p.isBot()) {
@@ -168,7 +168,7 @@ public class Solo extends SWGameMode {
             }
 
             //call api
-            RealSkywars.getEventsAPI().callRoomStateChange(this);
+            super.getRealSkywars().getEventsAPI().callRoomStateChange(this);
 
             //signal that is ranked
             if (super.isRanked()) p.sendActionbar("&b&lRANKED");
@@ -191,11 +191,11 @@ public class Solo extends SWGameMode {
             super.getStartTimer().killTask();
             super.getTimeCounterTask().cancel();
 
-            super.getBossBar().setTitle(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_END));
+            super.getBossBar().setTitle(super.getRealSkywars().getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_END));
             super.getBossBar().setProgress(0);
             super.getBossBar().setColor(BarColor.BLUE);
 
-            RealSkywars.getPlayerManager().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(RealSkywars.getLanguageManager().getString(gamePlayer, LanguageManager.TS.WINNER_BROADCAST, true).replace("%winner%", p.getDisplayName()).replace("%map%", super.getName())));
+            super.getRealSkywars().getPlayerManager().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(super.getRealSkywars().getLanguageManager().getString(gamePlayer, LanguageManager.TS.WINNER_BROADCAST, true).replace("%winner%", p.getDisplayName()).replace("%map%", super.getName())));
 
             if (this.isInstantEndEnabled()) {
                 super.getBossBar().removeAll();
@@ -212,7 +212,7 @@ public class Solo extends SWGameMode {
 
                     for (RSWPlayer g : super.getInRoom()) {
                         g.delCage();
-                        g.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.MATCH_END, true).replace("%time%", "" + Text.formatSeconds(Config.file().getInt("Config.Time-EndGame"))));
+                        g.sendMessage(super.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.MATCH_END, true).replace("%time%", Text.formatSeconds(Config.file().getInt("Config.Time-EndGame"))));
                     }
                 }, () -> {
                     super.getBossBar().removeAll();

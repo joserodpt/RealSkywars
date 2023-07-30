@@ -21,6 +21,11 @@ import java.util.Random;
 import java.util.logging.Level;
 
 public class WorldManager {
+    
+    private RealSkywars rs;
+    public WorldManager(RealSkywars rs) {
+        this.rs = rs;
+    }
 
     public void clearItems(World w) {
         for (Entity entity : w.getEntities()) {
@@ -58,8 +63,8 @@ public class WorldManager {
     }
 
     public void copyWorld(String name, CopyTo t) {
-        File maps = new File(RealSkywars.getPlugin().getDataFolder(), "maps");
-        String root = RealSkywars.getPlugin().getServer().getWorldContainer().getAbsolutePath();
+        File maps = new File(rs.getDataFolder(), "maps");
+        String root = rs.getServer().getWorldContainer().getAbsolutePath();
         File source = new File(root, name);
         File target = new File(maps, name);
         switch (t) {
@@ -99,7 +104,7 @@ public class WorldManager {
         world.setAutoSave(false);
 
         boolean loaded = false;
-        for (World w : RealSkywars.getPlugin().getServer().getWorlds()) {
+        for (World w : rs.getServer().getWorlds()) {
             if (w.getName().equals(world.getName())) {
                 loaded = true;
                 break;
@@ -109,19 +114,19 @@ public class WorldManager {
     }
 
     public void unloadWorld(String w, boolean save) {
-        World world = RealSkywars.getPlugin().getServer().getWorld(w);
+        World world = rs.getServer().getWorld(w);
         if (world != null) {
             world.getPlayers().forEach(this::tpToLobby);
         }
-        RealSkywars.getPlugin().getServer().unloadWorld(world, save);
+        rs.getServer().unloadWorld(world, save);
     }
 
     private void tpToLobby(Player p) {
-        if (RealSkywars.getGameManager().getLobbyLocation() != null) {
-            p.teleport(RealSkywars.getGameManager().getLobbyLocation());
-            p.sendMessage(RealSkywars.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.LOBBY_TELEPORT, true));
+        if (rs.getGameManager().getLobbyLocation() != null) {
+            p.teleport(rs.getGameManager().getLobbyLocation());
+            p.sendMessage(rs.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.LOBBY_TELEPORT, true));
         } else {
-            p.sendMessage(RealSkywars.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.LOBBYLOC_NOT_SET, true));
+            p.sendMessage(rs.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.LOBBYLOC_NOT_SET, true));
         }
     }
 
@@ -162,7 +167,7 @@ public class WorldManager {
     public void deleteWorld(String name, boolean removeFile) {
         this.unloadWorld(name, false);
         if (removeFile) {
-            File target = new File(RealSkywars.getPlugin().getServer().getWorldContainer().getAbsolutePath(), name);
+            File target = new File(rs.getServer().getWorldContainer().getAbsolutePath(), name);
             try {
                 deleteDirectory(target);
             } catch (IOException e) {
@@ -181,8 +186,7 @@ public class WorldManager {
         }
 
         if (!directory.delete()) {
-            final String message = "Unable to delete directory " + directory;
-            throw new IOException(message);
+            RealSkywars.log(Level.WARNING, "Unable to delete directory " + directory);
         }
     }
 
@@ -217,7 +221,6 @@ public class WorldManager {
             }
         }
     }
-
 
     public enum CopyTo {ROOT, RSW_FOLDER}
 

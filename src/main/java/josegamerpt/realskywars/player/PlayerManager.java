@@ -8,8 +8,6 @@ import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.misc.DisplayItem;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.logging.log4j.util.Strings;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,6 +18,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.*;
 
 public class PlayerManager {
+    private RealSkywars rs;
+    public PlayerManager(RealSkywars rs) {
+        this.rs = rs;
+    }
 
     public static ArrayList<UUID> teleporting = new ArrayList<>();
     private final HashMap<Player, Player> trackingPlayers = new HashMap<>();
@@ -28,7 +30,7 @@ public class PlayerManager {
     public void giveItems(Player p, Items i) {
         if (p != null) {
             p.getInventory().clear();
-            RSWPlayer pg = RealSkywars.getPlayerManager().getPlayer(p);
+            RSWPlayer pg = this.getPlayer(p);
             switch (i) {
                 case LOBBY:
                     p.getInventory().setItem(0, getItem(pg, Items.PROFILE));
@@ -61,34 +63,34 @@ public class PlayerManager {
     public ItemStack getItem(RSWPlayer p, Items i) {
         switch (i) {
             case KIT:
-                return Itens.createItem(Material.BOW, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_KIT_NAME, false));
+                return Itens.createItem(Material.BOW, 1, rs.getLanguageManager().getString(p, LanguageManager.TS.ITEM_KIT_NAME, false));
             case PROFILE:
-                return Itens.createItem(Material.BOOK, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_PROFILE_NAME, false));
+                return Itens.createItem(Material.BOOK, 1, rs.getLanguageManager().getString(p, LanguageManager.TS.ITEM_PROFILE_NAME, false));
             case CAGESET:
-                return Itens.createItem(Material.BEACON, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_CAGESET_NAME, false));
+                return Itens.createItem(Material.BEACON, 1, rs.getLanguageManager().getString(p, LanguageManager.TS.ITEM_CAGESET_NAME, false));
             case MAPS:
-                return Itens.createItem(Material.NETHER_STAR, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_MAPS_NAME, false));
+                return Itens.createItem(Material.NETHER_STAR, 1, rs.getLanguageManager().getString(p, LanguageManager.TS.ITEM_MAPS_NAME, false));
             case SHOP:
-                return Itens.createItem(Material.EMERALD, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_SHOP_NAME, false));
+                return Itens.createItem(Material.EMERALD, 1, rs.getLanguageManager().getString(p, LanguageManager.TS.ITEM_SHOP_NAME, false));
             case LEAVE:
-                return Itens.createItem(Material.MINECART, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_LEAVE_NAME, false));
+                return Itens.createItem(Material.MINECART, 1, rs.getLanguageManager().getString(p, LanguageManager.TS.ITEM_LEAVE_NAME, false));
             case VOTE:
-                return Itens.createItem(Material.HOPPER, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_VOTE_NAME, false));
+                return Itens.createItem(Material.HOPPER, 1, rs.getLanguageManager().getString(p, LanguageManager.TS.ITEM_VOTE_NAME, false));
             case SPECTATE:
-                return Itens.createItem(Material.MAP, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_SPECTATE_NAME, false));
+                return Itens.createItem(Material.MAP, 1, rs.getLanguageManager().getString(p, LanguageManager.TS.ITEM_SPECTATE_NAME, false));
             case PLAYAGAIN:
-                return Itens.createItem(Material.TOTEM_OF_UNDYING, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_PLAYAGAIN_NAME, false));
+                return Itens.createItem(Material.TOTEM_OF_UNDYING, 1, rs.getLanguageManager().getString(p, LanguageManager.TS.ITEM_PLAYAGAIN_NAME, false));
             case CHEST1:
-                return Itens.createItem(Material.CHEST, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_CHEST1_NAME, false));
+                return Itens.createItem(Material.CHEST, 1, rs.getLanguageManager().getString(p, LanguageManager.TS.ITEM_CHEST1_NAME, false));
             case CHEST2:
-                return Itens.createItem(Material.CHEST, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEM_CHEST2_NAME, false));
+                return Itens.createItem(Material.CHEST, 1, rs.getLanguageManager().getString(p, LanguageManager.TS.ITEM_CHEST2_NAME, false));
         }
         return new ItemStack(Material.STICK);
     }
 
     public void loadPlayer(Player p) {
         try {
-            PlayerData playerData = RealSkywars.getDatabaseManager().getPlayerData(p);
+            PlayerData playerData = rs.getDatabaseManager().getPlayerData(p);
 
             RSWPlayer gp = new RSWPlayer(p, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, playerData.getKills(), playerData.getDeaths(), playerData.getStats_wins_solo(), playerData.getStats_wins_teams(), playerData.getCoins(), playerData.getLanguage(), playerData.getBought_items(), playerData.getLoses(), playerData.getGames_played(), playerData.getRanked_kills(), playerData.getRanked_deaths(), playerData.getStats_wins_ranked_solo(), playerData.getStats_wins_ranked_teams(), playerData.getLoses_ranked(), playerData.getRanked_games_played(), this.processGamesList(playerData.getGames_list()));
 
@@ -102,15 +104,15 @@ public class PlayerManager {
             }
             gp.heal();
 
-            RealSkywars.getPlayerManager().addPlayer(gp);
+            rs.getPlayerManager().addPlayer(gp);
 
-            if (RealSkywars.getGameManager().tpLobbyOnJoin()) {
-                RealSkywars.getGameManager().tpToLobby(gp);
+            if (rs.getGameManager().tpLobbyOnJoin()) {
+                rs.getGameManager().tpToLobby(gp);
             }
             Bukkit.getOnlinePlayers().forEach(player -> gp.getTab().add(player));
             gp.getTab().updateRoomTAB();
 
-            for (RSWPlayer player : RealSkywars.getPlayerManager().getPlayers()) {
+            for (RSWPlayer player : rs.getPlayerManager().getPlayers()) {
                 if (player.isInMatch()) {
                     RSWPlayer.RoomTAB rt = player.getTab();
                     rt.remove(p);
@@ -174,7 +176,7 @@ public class PlayerManager {
 
     public void savePlayer(RSWPlayer p) {
         if (p.getPlayer() != null) {
-            PlayerData playerData = RealSkywars.getDatabaseManager().getPlayerData(p.getPlayer());
+            PlayerData playerData = rs.getDatabaseManager().getPlayerData(p.getPlayer());
 
             playerData.setName(p.getName());
 
@@ -208,13 +210,13 @@ public class PlayerManager {
 
             playerData.setGames_list(processGamesListSave(p.getGamesList()));
 
-            RealSkywars.getDatabaseManager().savePlayerData(playerData, true);
+            rs.getDatabaseManager().savePlayerData(playerData, true);
         }
     }
 
     public void setLanguage(RSWPlayer player, String s) {
         player.setProperty(RSWPlayer.PlayerProperties.LANGUAGE, s);
-        player.sendMessage(RealSkywars.getLanguageManager().getString(player, LanguageManager.TS.LANGUAGE_SET, true).replace("%language%", "" + s));
+        player.sendMessage(rs.getLanguageManager().getString(player, LanguageManager.TS.LANGUAGE_SET, true).replace("%language%", "" + s));
     }
 
     public Boolean boughtItem(RSWPlayer p, String string, ShopManager.Categories c) {
@@ -229,20 +231,20 @@ public class PlayerManager {
     public List<DisplayItem> getBoughtItems(RSWPlayer player, ShopManager.Categories t) {
         List<DisplayItem> bought = new ArrayList<>();
 
-        for (DisplayItem a : RealSkywars.getShopManager().getCategoryContents(player, t)) {
+        for (DisplayItem a : rs.getShopManager().getCategoryContents(player, t)) {
             if (a != null && a.isBought()) {
                 bought.add(a);
             }
         }
 
-        if (bought.size() == 0) {
+        if (bought.isEmpty()) {
             bought.add(new DisplayItem());
         }
         return bought;
     }
 
     public int getPlayingPlayers(Modes pt) {
-        return RealSkywars.getGameManager().getGames(pt).stream().mapToInt(SWGameMode::getPlayerCount).sum();
+        return rs.getGameManager().getGames(pt).stream().mapToInt(SWGameMode::getPlayerCount).sum();
     }
 
     public void stopScoreboards() {
@@ -267,7 +269,7 @@ public class PlayerManager {
 
         Optional<RSWPlayer> search = tmp.stream().filter(c -> c.getState().equals(RSWPlayer.PlayerState.PLAYING)).findAny();
         if (!search.isPresent() || search.get().isBot()) {
-            gp.sendMessage(RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.NO_TRACKER, true));
+            gp.sendMessage(rs.getLanguageManager().getString(gp, LanguageManager.TS.NO_TRACKER, true));
             return;
         }
 
@@ -275,9 +277,8 @@ public class PlayerManager {
         Player target = search.get().getPlayer();
 
         //Credit GITHUB PlayerCompass
-
         trackingPlayers.put(player, target);
-        gp.sendMessage(RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.TRACK_FOUND, true).replace("%player%", target.getDisplayName()));
+        gp.sendMessage(rs.getLanguageManager().getString(gp, LanguageManager.TS.TRACK_FOUND, true).replace("%player%", target.getDisplayName()));
 
         new BukkitRunnable() {
             public void run() {
@@ -296,12 +297,6 @@ public class PlayerManager {
                 player.setCompassTarget(target.getLocation());
             }
         }.runTaskTimerAsynchronously(RealSkywars.getPlugin(), 5L, 30L);
-    }
-
-    public void sendClick(RSWPlayer p, SWGameMode.Mode gameMode) {
-        TextComponent component = new TextComponent(TextComponent.fromLegacyText(" > " + RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.PLAY_AGAIN, false)));
-        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw play " + gameMode.name().toLowerCase()));
-        p.getPlayer().spigot().sendMessage(component);
     }
 
     public enum Modes {SOLO, SOLO_RANKED, TEAMS, TEAMS_RANKED, RANKED, ALL}

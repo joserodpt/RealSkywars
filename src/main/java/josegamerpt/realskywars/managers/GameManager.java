@@ -2,7 +2,6 @@ package josegamerpt.realskywars.managers;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Config;
-import josegamerpt.realskywars.game.SWEvent;
 import josegamerpt.realskywars.game.modes.Placeholder;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.game.modes.SWGameMode.GameState;
@@ -22,6 +21,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class GameManager {
+    private RealSkywars rs;
+    public GameManager(RealSkywars rs) {
+        this.rs = rs;
+    }
 
     private final ArrayList<SWGameMode> games = new ArrayList<>();
     public Boolean endingGames = false;
@@ -44,7 +47,7 @@ public class GameManager {
     public void endGames() {
         this.endingGames = true;
         for (SWGameMode g : this.games) {
-            g.kickPlayers(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.ADMIN_SHUTDOWN));
+            g.kickPlayers(rs.getLanguageManager().getString(LanguageManager.TSsingle.ADMIN_SHUTDOWN));
             g.resetArena(SWGameMode.OperationReason.SHUTDOWN);
         }
     }
@@ -82,7 +85,7 @@ public class GameManager {
             default:
                 break;
         }
-        if (f.size() == 0) {
+        if (f.isEmpty()) {
             Placeholder g = new Placeholder("No Maps Found");
             f.add(g);
         }
@@ -92,17 +95,17 @@ public class GameManager {
     public String getStateString(RSWPlayer gp, GameState t) {
         switch (t) {
             case WAITING:
-                return RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.MAP_WAITING, false);
+                return rs.getLanguageManager().getString(gp, LanguageManager.TS.MAP_WAITING, false);
             case AVAILABLE:
-                return RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.MAP_AVAILABLE, false);
+                return rs.getLanguageManager().getString(gp, LanguageManager.TS.MAP_AVAILABLE, false);
             case STARTING:
-                return RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.MAP_STARTING, false);
+                return rs.getLanguageManager().getString(gp, LanguageManager.TS.MAP_STARTING, false);
             case PLAYING:
-                return RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.MAP_PLAYING, false);
+                return rs.getLanguageManager().getString(gp, LanguageManager.TS.MAP_PLAYING, false);
             case FINISHING:
-                return RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.MAP_FINISHING, false);
+                return rs.getLanguageManager().getString(gp, LanguageManager.TS.MAP_FINISHING, false);
             case RESETTING:
-                return RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.MAP_RESETTING, false);
+                return rs.getLanguageManager().getString(gp, LanguageManager.TS.MAP_RESETTING, false);
             default:
                 return "NaN";
         }
@@ -111,7 +114,6 @@ public class GameManager {
     public void loadLobby() {
         this.loginTP = Config.file().getBoolean("Config.Auto-Teleport-To-Lobby");
         if (Config.file().isConfigurationSection("Config.Lobby")) {
-
             double x = Config.file().getDouble("Config.Lobby.X");
             double y = Config.file().getDouble("Config.Lobby.Y");
             double z = Config.file().getDouble("Config.Lobby.Z");
@@ -125,10 +127,10 @@ public class GameManager {
     public void tpToLobby(RSWPlayer p) {
         if (this.lobbyLOC != null) {
             p.teleport(this.lobbyLOC);
-            p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.LOBBY_TELEPORT, true));
-            RealSkywars.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.LOBBY);
+            p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.LOBBY_TELEPORT, true));
+            rs.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.LOBBY);
         } else {
-            p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.LOBBYLOC_NOT_SET, true));
+            p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.LOBBYLOC_NOT_SET, true));
         }
     }
 
@@ -189,42 +191,21 @@ public class GameManager {
         return this.lobbyLOC != null && this.lobbyLOC.getWorld().equals(w);
     }
 
-    public ArrayList<SWEvent> parseEvents(SWGameMode sgm) {
-        ArrayList<SWEvent> ret = new ArrayList<>();
-        String search = "Teams";
-        switch (sgm.getGameMode()) {
-            case SOLO:
-                search = "Solo";
-                break;
-            case TEAMS:
-                search = "Teams";
-                break;
-        }
-        for (String s1 : Config.file().getStringList("Config.Events." + search)) {
-            String[] parse = s1.split("&");
-            SWEvent.EventType et = SWEvent.EventType.valueOf(parse[0]);
-            int time = Integer.parseInt(parse[1]);
-            ret.add(new SWEvent(sgm, et, time));
-        }
-        ret.add(new SWEvent(sgm, SWEvent.EventType.BORDERSHRINK, Config.file().getInt("Config.Maximum-Game-Time." + search)));
-        return ret;
-    }
-
     public void findGame(RSWPlayer p, SWGameMode.Mode type) {
         if (!PlayerManager.teleporting.contains(p.getUUID())) {
             PlayerManager.teleporting.add(p.getUUID());
             Optional<SWGameMode> o = this.games.stream().filter(c -> c.getGameMode().equals(type) && c.getState().equals(GameState.AVAILABLE) || c.getState().equals(GameState.STARTING) || c.getState().equals(GameState.WAITING) && !c.isFull()).findFirst();
             if (o.isPresent() && !o.get().isPlaceHolder()) {
-                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.GAME_FOUND, true));
+                p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.GAME_FOUND, true));
                 if (p.isInMatch()) {
                     p.getMatch().removePlayer(p);
                 }
-                Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
                     o.get().addPlayer(p);
                     PlayerManager.teleporting.remove(p.getUUID());
                 }, 5);
             } else {
-                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_GAME_FOUND, true));
+                p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.NO_GAME_FOUND, true));
                 PlayerManager.teleporting.remove(p.getUUID());
 
                 if (this.getLobbyLocation().getWorld().equals(p.getWorld())) {

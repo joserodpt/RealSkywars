@@ -173,7 +173,7 @@ public class PlayerData {
         this.uuid = p.getUniqueId();
         this.name = p.getName();
         this.coins = 0D;
-        this.lang = RealSkywars.getLanguageManager().getDefaultLanguage();
+        this.lang = RealSkywars.getPlugin().getLanguageManager().getDefaultLanguage();
         this.bought_items = "";
         this.prefs_mapviewer = "MAPV_ALL";
         this.prefs_cage_material = "GLASS";

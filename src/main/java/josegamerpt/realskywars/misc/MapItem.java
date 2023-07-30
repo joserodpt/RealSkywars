@@ -23,13 +23,13 @@ public class MapItem {
     private void makeIcon(RSWPlayer p) {
         int count = 1;
         if (this.g.isPlaceHolder()) {
-            this.icon = Itens.createItem(Material.BUCKET, count, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_NOTFOUND_TITLE, false));
+            this.icon = Itens.createItem(Material.BUCKET, count, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_NOTFOUND_TITLE, false));
         } else {
             if (this.g.getPlayerCount() > 0) {
                 count = this.g.getPlayerCount();
             }
 
-            this.icon = Itens.createItemLore(getStateMaterial(), count, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(this.g.isRanked()), variableList(RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.ITEMS_MAP_DESCRIPTION)));
+            this.icon = Itens.createItemLore(getStateMaterial(), count, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(this.g.isRanked()), variableList(RealSkywars.getPlugin().getLanguageManager().getList(p, LanguageManager.TL.ITEMS_MAP_DESCRIPTION)));
         }
     }
 

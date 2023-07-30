@@ -64,7 +64,7 @@ public class BlockWinTrail implements Trail {
                     fbs.setMetadata("trailBlock", new FixedMetadataValue(RealSkywars.getPlugin(), 1));
                     break;
                 case RANDOM:
-                    Material mr = this.randBlocks.get(RealSkywars.getRandom().nextInt(this.randBlocks.size()));
+                    Material mr = this.randBlocks.get(RealSkywars.getPlugin().getRandom().nextInt(this.randBlocks.size()));
                     FallingBlock fbr = this.p.getWorld().spawnFallingBlock(p.getLocation().add(0, 3, 0), mr.createBlockData());
                     fbr.setDropItem(false);
                     fbr.setVelocity(v);

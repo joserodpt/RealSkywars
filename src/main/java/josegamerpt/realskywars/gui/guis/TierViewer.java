@@ -44,7 +44,7 @@ public class TierViewer {
         this.cte = cte;
         this.inv = Bukkit.getServer().createInventory(null, 54, Text.color("&b&l" + ct.name() + " " + cte.name()));
 
-        this.items = RealSkywars.getChestManager().getChest(ct, cte != SWChest.Type.NORMAL);
+        this.items = RealSkywars.getPlugin().getChestManager().getChest(ct, cte != SWChest.Type.NORMAL);
 
         this.p = new Pagination<>(28, this.items);
         fillChest(this.p.getPage(this.pageNumber));
@@ -69,7 +69,7 @@ public class TierViewer {
                         }
 
                         e.setCancelled(true);
-                        RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) clicker);
+                        RSWPlayer p = RealSkywars.getPlugin().getPlayerManager().getPlayer((Player) clicker);
 
                         switch (e.getRawSlot()) {
                             case 49:
@@ -102,7 +102,7 @@ public class TierViewer {
                             new PlayerInput(p.getPlayer(), input -> {
                                 int val = Integer.parseInt(input.replace("%", ""));
 
-                                RealSkywars.getChestManager().setChance(current.ct, current.cte, a.getHeader(), val);
+                                RealSkywars.getPlugin().getChestManager().setChance(current.ct, current.cte, a.getHeader(), val);
 
                                 TierViewer tv = new TierViewer(p.getPlayer(), current.ct, current.cte);
                                 tv.openInventory(p.getPlayer());
@@ -187,23 +187,23 @@ public class TierViewer {
             inv.setItem(18, placeholder);
             inv.setItem(27, placeholder);
         } else {
-            inv.setItem(18, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
-            inv.setItem(27, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
+            inv.setItem(18, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
+            inv.setItem(27, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_TITLE), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_BACK_DESC))));
         }
 
         if (lastPage()) {
             inv.setItem(26, placeholder);
             inv.setItem(35, placeholder);
         } else {
-            inv.setItem(26, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
-            inv.setItem(35, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
+            inv.setItem(26, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
+            inv.setItem(35, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
         }
 
 
         int slot = 0;
         for (ItemStack i : inv.getContents()) {
             if (i == null) {
-                if (items.size() != 0) {
+                if (!items.isEmpty()) {
                     SWChestItem s = items.get(0);
                     inv.setItem(slot, s.getDisplayItemStack());
                     display.put(slot, s);

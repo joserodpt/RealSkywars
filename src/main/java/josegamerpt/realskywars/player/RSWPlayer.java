@@ -37,7 +37,7 @@ public class RSWPlayer {
     private String anonName = "?";
     private Player p;
     private PlayerState state = PlayerState.LOBBY_OR_NOGAME;
-    private String language = RealSkywars.getLanguageManager().getDefaultLanguage();
+    private String language = RealSkywars.getPlugin().getLanguageManager().getDefaultLanguage();
     private SWGameMode room;
     private SetupRoom setup;
     private Team team;
@@ -131,7 +131,7 @@ public class RSWPlayer {
                     this.winsSolo += i;
 
                     //achievement
-                    Achievement a = RealSkywars.getAchievementsManager().getAchievement(PlayerStatistics.WINS_SOLO, this.winsSolo);
+                    Achievement a = RealSkywars.getPlugin().getAchievementsManager().getAchievement(PlayerStatistics.WINS_SOLO, this.winsSolo);
                     if (a != null) {
                         a.giveAchievement(this);
                     }
@@ -148,7 +148,7 @@ public class RSWPlayer {
                     this.winsTEAMS += i;
 
                     //achievement
-                    Achievement a = RealSkywars.getAchievementsManager().getAchievement(PlayerStatistics.WINS_TEAMS, this.winsTEAMS);
+                    Achievement a = RealSkywars.getPlugin().getAchievementsManager().getAchievement(PlayerStatistics.WINS_TEAMS, this.winsTEAMS);
                     if (a != null) {
                         a.giveAchievement(this);
                     }
@@ -187,7 +187,7 @@ public class RSWPlayer {
                 } else {
                     this.gamesPlayed += i;
                     //achievement
-                    Achievement a = RealSkywars.getAchievementsManager().getAchievement(PlayerStatistics.GAMES_PLAYED, this.gamesPlayed);
+                    Achievement a = RealSkywars.getPlugin().getAchievementsManager().getAchievement(PlayerStatistics.GAMES_PLAYED, this.gamesPlayed);
                     if (a != null) {
                         a.giveAchievement(this);
                     }
@@ -199,7 +199,7 @@ public class RSWPlayer {
     public void saveData() {
         this.kills += this.gamekills;
 
-        Achievement a = RealSkywars.getAchievementsManager().getAchievement(PlayerStatistics.KILLS, this.kills);
+        Achievement a = RealSkywars.getPlugin().getAchievementsManager().getAchievement(PlayerStatistics.KILLS, this.kills);
         if (a != null) {
             a.giveAchievement(this);
         }
@@ -207,7 +207,7 @@ public class RSWPlayer {
         this.coins += this.balanceGame;
         this.balanceGame = 0D;
         this.gamekills = 0;
-        RealSkywars.getPlayerManager().savePlayer(this);
+        RealSkywars.getPlugin().getPlayerManager().savePlayer(this);
     }
 
     public double getGameBalance() {
@@ -221,9 +221,9 @@ public class RSWPlayer {
     }
 
     public void resetData() {
-        RealSkywars.getDatabaseManager().deletePlayerData(RealSkywars.getDatabaseManager().getPlayerData(this.getPlayer()), true);
-        RealSkywars.getPlayerManager().removePlayer(this);
-        this.p.kickPlayer(RealSkywars.getLanguageManager().getPrefix() + "§4Your data was cleared with success. \n §cPlease join the server again to complete the reset.");
+        RealSkywars.getPlugin().getDatabaseManager().deletePlayerData(RealSkywars.getPlugin().getDatabaseManager().getPlayerData(this.getPlayer()), true);
+        RealSkywars.getPlugin().getPlayerManager().removePlayer(this);
+        this.p.kickPlayer(RealSkywars.getPlugin().getLanguageManager().getPrefix() + "§4Your data was cleared with success. \n §cPlease join the server again to complete the reset.");
     }
 
     public String getName() {
@@ -347,7 +347,7 @@ public class RSWPlayer {
                         }
                     }
                 }
-                RealSkywars.getPlayerManager().savePlayer(this);
+                RealSkywars.getPlugin().getPlayerManager().savePlayer(this);
                 break;
             case WIN_BLOCKS:
                 if (o.equals("RandomBlock")) {
@@ -491,7 +491,7 @@ public class RSWPlayer {
 
         this.playerscoreboard.stop();
         this.saveData();
-        RealSkywars.getPlayerManager().removePlayer(this);
+        RealSkywars.getPlugin().getPlayerManager().removePlayer(this);
     }
 
     public void sendTitle(String s, String s1, int i, int i1, int i2) {
@@ -527,12 +527,12 @@ public class RSWPlayer {
     }
 
     public void hidePlayer(Plugin plugin, Player pl) {
-        if (!this.bot && pl != null && !RealSkywars.getGameManager().endingGames)
+        if (!this.bot && pl != null && !RealSkywars.getPlugin().getGameManager().endingGames)
             this.getPlayer().hidePlayer(plugin, pl);
     }
 
     public void showPlayer(Plugin plugin, Player pl) {
-        if (!this.bot && pl != null && !RealSkywars.getGameManager().endingGames)
+        if (!this.bot && pl != null && !RealSkywars.getPlugin().getGameManager().endingGames)
             this.getPlayer().showPlayer(plugin, pl);
     }
 
@@ -542,8 +542,7 @@ public class RSWPlayer {
 
     public void buyItem(String s) {
         this.bought.add(Text.strip(s));
-        RealSkywars.getPlayerManager().savePlayer(this);
-        RealSkywars.getPlayerManager().savePlayer(this);
+        RealSkywars.getPlugin().getPlayerManager().savePlayer(this);
     }
 
     public void sendActionbar(String s) {
@@ -573,7 +572,7 @@ public class RSWPlayer {
     public void leaveParty() {
         this.party.playerLeave(this);
         this.party = null;
-        this.sendMessage(RealSkywars.getLanguageManager().getString(this, LanguageManager.TS.PARTY_LEAVE, true).replace("%player%", this.getDisplayName()));
+        this.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(this, LanguageManager.TS.PARTY_LEAVE, true).replace("%player%", this.getDisplayName()));
     }
 
     public Selections.MapViewerPref getMapViewerPref() {
@@ -673,13 +672,13 @@ public class RSWPlayer {
                 this.show.forEach(rswPlayer -> this.player.showPlayer(RealSkywars.getPlugin(), rswPlayer));
 
                 if (this.player.isInMatch()) {
-                    String header = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", this.player.getMatch().getPlayers().size() + "");
-                    String footer = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", this.player.getMatch().getPlayers().size() + "");
+                    String header = String.join("\n", RealSkywars.getPlugin().getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", this.player.getMatch().getPlayers().size() + "");
+                    String footer = String.join("\n", RealSkywars.getPlugin().getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", this.player.getMatch().getPlayers().size() + "");
 
                     this.setHeaderFooter(header, footer);
                 } else {
-                    String header = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_OTHER)).replace("%players%", RealSkywars.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL) + "");
-                    String footer = String.join("\n", RealSkywars.getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_OTHER)).replace("%players%", RealSkywars.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL) + "");
+                    String header = String.join("\n", RealSkywars.getPlugin().getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_OTHER)).replace("%players%", RealSkywars.getPlugin().getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL) + "");
+                    String footer = String.join("\n", RealSkywars.getPlugin().getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_OTHER)).replace("%players%", RealSkywars.getPlugin().getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL) + "");
 
                     this.setHeaderFooter(header, footer);
                 }
@@ -699,7 +698,7 @@ public class RSWPlayer {
         public PlayerScoreboard(RSWPlayer r) {
             this.p = r;
             this.fb = new FastBoard(r.getPlayer());
-            if (RealSkywars.getGameManager().getLobbyLocation() != null) {
+            if (RealSkywars.getPlugin().getGameManager().getLobbyLocation() != null) {
                 this.run();
             }
 
@@ -707,17 +706,14 @@ public class RSWPlayer {
 
         protected String variables(String s, RSWPlayer gp) {
             if (gp.isInMatch()) {
-                return s.replace("%space%", Text.makeSpace()).replace("%players%", gp.getMatch().getPlayerCount() + "").replace("%nextevent%", nextEvent(gp.getMatch())).replace("%spectators%", gp.getMatch().getSpectatorsCount() + "").replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, gp.getMatch().isRanked()) + "").replace("%map%", gp.getMatch().getName()).replace("%runtime%", Text.formatSeconds(gp.getMatch().getTimePassed()) + "").replace("%state%", RealSkywars.getGameManager().getStateString(gp, gp.getMatch().getState())).replace("%mode%", gp.getMatch().getGameMode().name()).replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, gp.getMatch().isRanked()) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, gp.getMatch().isRanked()) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, gp.getMatch().isRanked()) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, gp.getMatch().isRanked()) + "");
+                return s.replace("%space%", Text.makeSpace()).replace("%players%", gp.getMatch().getPlayerCount() + "").replace("%nextevent%", nextEvent(gp.getMatch())).replace("%spectators%", gp.getMatch().getSpectatorsCount() + "").replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, gp.getMatch().isRanked()) + "").replace("%map%", gp.getMatch().getName()).replace("%runtime%", Text.formatSeconds(gp.getMatch().getTimePassed())).replace("%state%", RealSkywars.getPlugin().getGameManager().getStateString(gp, gp.getMatch().getState())).replace("%mode%", gp.getMatch().getGameMode().name()).replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, gp.getMatch().isRanked()) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, gp.getMatch().isRanked()) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, gp.getMatch().isRanked()) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, gp.getMatch().isRanked()) + "");
             } else {
-                return s.replace("%space%", Text.makeSpace()).replace("%coins%", gp.getCoins() + "").replace("%playing%", "" + RealSkywars.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL)).replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false) + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false) + "").replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false) + "").replace("%playing%", "" + RealSkywars.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL)).replace("%rankedkills%", gp.getStatistics(RSWPlayer.PlayerStatistics.KILLS, true) + "").replace("%rankeddeaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, true) + "").replace("%rankedsolowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true) + "").replace("%rankedteamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true) + "").replace("%rankedloses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, true) + "").replace("%rankedgamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true) + "");
+                return s.replace("%space%", Text.makeSpace()).replace("%coins%", gp.getCoins() + "").replace("%playing%", "" + RealSkywars.getPlugin().getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL)).replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false) + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false) + "").replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false) + "").replace("%playing%", "" + RealSkywars.getPlugin().getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL)).replace("%rankedkills%", gp.getStatistics(RSWPlayer.PlayerStatistics.KILLS, true) + "").replace("%rankeddeaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, true) + "").replace("%rankedsolowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true) + "").replace("%rankedteamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true) + "").replace("%rankedloses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, true) + "").replace("%rankedgamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true) + "");
             }
         }
 
         private String nextEvent(SWGameMode match) {
-            if (match.getEvents().size() > 0) {
-                return match.getEvents().get(0).getName();
-            }
-            return "-";
+            return match.getEvents().isEmpty() ? "-" : match.getEvents().get(0).getName();
         }
 
         public void stop() {
@@ -735,27 +731,24 @@ public class RSWPlayer {
                     if (p.getState() != null) {
                         switch (p.getState()) {
                             case LOBBY_OR_NOGAME:
-                                if (!RealSkywars.getGameManager().scoreboardInLobby()) {
+                                if (!RealSkywars.getPlugin().getGameManager().scoreboardInLobby() || !RealSkywars.getPlugin().getGameManager().isInLobby(p.getWorld())) {
                                     return;
                                 }
-                                if (!RealSkywars.getGameManager().isInLobby(p.getWorld())) {
-                                    return;
-                                }
-                                lista = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.SCOREBOARD_LOBBY_LINES);
-                                tit = RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SCOREBOARD_LOBBY_TITLE, false);
+                                lista = RealSkywars.getPlugin().getLanguageManager().getList(p, LanguageManager.TL.SCOREBOARD_LOBBY_LINES);
+                                tit = RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.SCOREBOARD_LOBBY_TITLE, false);
                                 break;
                             case CAGE:
-                                lista = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.SCOREBOARD_CAGE_LINES);
-                                tit = RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SCOREBOARD_CAGE_TITLE, false).replace("%map%", p.getMatch().getName()).replace("%mode%", p.getMatch().getGameMode().name());
+                                lista = RealSkywars.getPlugin().getLanguageManager().getList(p, LanguageManager.TL.SCOREBOARD_CAGE_LINES);
+                                tit = RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.SCOREBOARD_CAGE_TITLE, false).replace("%map%", p.getMatch().getName()).replace("%mode%", p.getMatch().getGameMode().name());
                                 break;
                             case SPECTATOR:
                             case EXTERNAL_SPECTATOR:
-                                lista = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.SCOREBOARD_SPECTATOR_LINES);
-                                tit = RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SCOREBOARD_SPECTATOR_TITLE, false).replace("%map%", p.getMatch().getName()).replace("%mode%", p.getMatch().getGameMode().name());
+                                lista = RealSkywars.getPlugin().getLanguageManager().getList(p, LanguageManager.TL.SCOREBOARD_SPECTATOR_LINES);
+                                tit = RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.SCOREBOARD_SPECTATOR_TITLE, false).replace("%map%", p.getMatch().getName()).replace("%mode%", p.getMatch().getGameMode().name());
                                 break;
                             case PLAYING:
-                                lista = RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.SCOREBOARD_PLAYING_LINES);
-                                tit = RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.SCOREBOARD_PLAYING_TITLE, false).replace("%map%", p.getMatch().getName()).replace("%mode%", p.getMatch().getGameMode().name());
+                                lista = RealSkywars.getPlugin().getLanguageManager().getList(p, LanguageManager.TL.SCOREBOARD_PLAYING_LINES);
+                                tit = RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.SCOREBOARD_PLAYING_TITLE, false).replace("%map%", p.getMatch().getName()).replace("%mode%", p.getMatch().getGameMode().name());
                                 break;
                             default:
                                 throw new IllegalStateException("Unexpected value SCOREBOARD!!! : " + p.getState());

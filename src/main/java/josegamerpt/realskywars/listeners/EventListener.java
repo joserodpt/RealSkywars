@@ -15,6 +15,10 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
 public class EventListener implements Listener {
+    private RealSkywars rs;
+    public EventListener(RealSkywars rs) {
+        this.rs = rs;
+    }
 
     @EventHandler
     public void blockChangeEvent(EntityChangeBlockEvent e) {
@@ -29,8 +33,8 @@ public class EventListener implements Listener {
     public void projectileHitEvent(ProjectileHitEvent e) {
         Entity ent = e.getEntity();
 
-        if (RealSkywars.getGameManager().isInGame(ent.getWorld())) {
-            SWGameMode match = RealSkywars.getGameManager().getMatch(ent.getWorld());
+        if (rs.getGameManager().isInGame(ent.getWorld())) {
+            SWGameMode match = rs.getGameManager().getMatch(ent.getWorld());
             if (match.getProjectileTier() == SWGameMode.ProjectileType.BREAK_BLOCKS) {
                 Projectile projectile = e.getEntity();
                 if (projectile instanceof EnderPearl) {
@@ -48,16 +52,16 @@ public class EventListener implements Listener {
     @EventHandler
     public void onSignChange(SignChangeEvent event) {
         if (event.getLine(0).contains("[RSW]") || event.getLine(0).contains("[rsw]")) {
-            event.setLine(0, RealSkywars.getLanguageManager().getPrefix());
+            event.setLine(0, RealSkywars.getPlugin().getLanguageManager().getPrefix());
             String name = event.getLine(1);
 
-            SWGameMode m = RealSkywars.getGameManager().getGame(name);
-            RSWPlayer p = RealSkywars.getPlayerManager().getPlayer(event.getPlayer());
+            SWGameMode m = rs.getGameManager().getGame(name);
+            RSWPlayer p = rs.getPlayerManager().getPlayer(event.getPlayer());
 
             if (m != null && event.getPlayer().isOp()) {
-                RealSkywars.getSignManager().addSign(m, event.getBlock());
+                rs.getSignManager().addSign(m, event.getBlock());
             } else {
-                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_GAME_FOUND, true));
+                p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.NO_GAME_FOUND, true));
             }
         }
     }

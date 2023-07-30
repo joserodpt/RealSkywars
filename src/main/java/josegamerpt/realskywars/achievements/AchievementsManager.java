@@ -11,6 +11,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public class AchievementsManager {
+    private RealSkywars rs;
+    public AchievementsManager(RealSkywars rs) {
+        this.rs = rs;
+    }
 
     public HashMap<RSWPlayer.PlayerStatistics, List<Achievement>> achievements = new HashMap<>();
 
@@ -68,7 +72,7 @@ public class AchievementsManager {
     }
 
     public ItemStack getItem(Achievement s, UUID uuid) {
-        RSWPlayer p = RealSkywars.getPlayerManager().getPlayer(uuid);
+        RSWPlayer p = rs.getPlayerManager().getPlayer(uuid);
 
         return Itens.createItemLore(getColor(s, p), 1, "&b&l" + s.getGoal(), Collections.singletonList("&aReward: &e" + s.getReward() + " coins"));
     }

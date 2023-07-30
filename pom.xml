@@ -7,7 +7,7 @@
 
     <groupId>pt.josegamerpt</groupId>
     <artifactId>RealSkywars</artifactId>
-    <version>27-11-2022 Build 1</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>RealSkywars</name>

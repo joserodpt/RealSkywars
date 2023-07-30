@@ -28,7 +28,7 @@ public class SWSign {
             if (b.getType().name().contains("SIGN")) {
                 Sign s = (Sign) b.getState();
 
-                s.setLine(0, RealSkywars.getLanguageManager().getPrefix());
+                s.setLine(0, RealSkywars.getPlugin().getLanguageManager().getPrefix());
                 s.setLine(1, Text.color("&b" + game.getName()));
                 s.setLine(2, Text.color("&f" + game.getGameMode().name() + " | &f" + game.getPlayerCount() + "&7/&f" + game.getMaxPlayers()));
                 s.setLine(3, Text.color("&b&l" + game.getState().name()));

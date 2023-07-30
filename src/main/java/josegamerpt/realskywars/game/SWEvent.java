@@ -48,25 +48,25 @@ public class SWEvent {
     public void execute() {
         switch (this.et) {
             case REFILL:
-                this.room.getInRoom().forEach(rswPlayer -> rswPlayer.sendTitle(RealSkywars.getLanguageManager().getList(rswPlayer, LanguageManager.TL.REFILL_EVENT_TITLE).get(0), RealSkywars.getLanguageManager().getList(rswPlayer, LanguageManager.TL.REFILL_EVENT_TITLE).get(1), 4, 10, 4));
+                this.room.getInRoom().forEach(rswPlayer -> rswPlayer.sendTitle(RealSkywars.getPlugin().getLanguageManager().getList(rswPlayer, LanguageManager.TL.REFILL_EVENT_TITLE).get(0), RealSkywars.getPlugin().getLanguageManager().getList(rswPlayer, LanguageManager.TL.REFILL_EVENT_TITLE).get(1), 4, 10, 4));
                 this.room.getInRoom().forEach(rswPlayer -> rswPlayer.playSound(Sound.BLOCK_CHEST_LOCKED, 50, 50));
                 break;
             case TNTRAIN:
-                this.room.getInRoom().forEach(rswPlayer -> rswPlayer.sendTitle(RealSkywars.getLanguageManager().getList(rswPlayer, LanguageManager.TL.TNTRAIN_EVENT_TITLE).get(0), RealSkywars.getLanguageManager().getList(rswPlayer, LanguageManager.TL.TNTRAIN_EVENT_TITLE).get(1), 4, 10, 4));
+                this.room.getInRoom().forEach(rswPlayer -> rswPlayer.sendTitle(RealSkywars.getPlugin().getLanguageManager().getList(rswPlayer, LanguageManager.TL.TNTRAIN_EVENT_TITLE).get(0), RealSkywars.getPlugin().getLanguageManager().getList(rswPlayer, LanguageManager.TL.TNTRAIN_EVENT_TITLE).get(1), 4, 10, 4));
                 this.room.getInRoom().forEach(rswPlayer -> rswPlayer.playSound(Sound.ENTITY_TNT_PRIMED, 50, 50));
                 for (RSWPlayer player : this.room.getPlayers()) {
                     player.spawnAbovePlayer(TNTPrimed.class);
                 }
                 break;
             case BORDERSHRINK:
-                this.room.getBossBar().setTitle(Text.color(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_DEATHMATCH)));
+                this.room.getBossBar().setTitle(Text.color(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_DEATHMATCH)));
                 this.room.getBossBar().setProgress(0);
                 this.room.getBossBar().setColor(BarColor.RED);
 
-                this.room.getInRoom().forEach(rswPlayer -> rswPlayer.sendTitle("", Text.color(RealSkywars.getLanguageManager().getString(rswPlayer, LanguageManager.TS.TITLE_DEATHMATCH, false)), 10, 20, 5));
+                this.room.getInRoom().forEach(rswPlayer -> rswPlayer.sendTitle("", Text.color(RealSkywars.getPlugin().getLanguageManager().getString(rswPlayer, LanguageManager.TS.TITLE_DEATHMATCH, false)), 10, 20, 5));
                 this.room.getInRoom().forEach(rswPlayer -> rswPlayer.playSound(Sound.ENTITY_ENDER_DRAGON_GROWL, 50, 50));
 
-                this.room.getBorder().setSize(this.room.getBorderSize() / 2, 30L);
+                this.room.getBorder().setSize((double) this.room.getBorderSize() / 2, 30L);
                 this.room.getBorder().setCenter(this.room.getArena().getCenter());
                 break;
         }

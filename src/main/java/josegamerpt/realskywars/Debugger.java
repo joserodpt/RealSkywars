@@ -1,7 +1,5 @@
 package josegamerpt.realskywars;
 
-import josegamerpt.realskywars.game.modes.SWGameMode;
-import josegamerpt.realskywars.player.PlayerManager;
 import org.bukkit.Bukkit;
 
 import java.util.logging.Level;
@@ -27,7 +25,7 @@ public class Debugger {
     public static void execute() {
         if (false) {
             Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.getPlugin(), () -> {
-                RealSkywars.getGameManager().getGames(PlayerManager.Modes.ALL).forEach(SWGameMode::updateSigns);
+                //RealSkywars.getGameManager().getGames(PlayerManager.Modes.ALL).forEach(SWGameMode::updateSigns);
                 Debugger.print(Debugger.class, "a");
             }, 20, 20);
         }

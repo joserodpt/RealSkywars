@@ -91,7 +91,7 @@ public class MapSettings {
 
                             e.setCancelled(true);
 
-                            RSWPlayer gp = RealSkywars.getPlayerManager().getPlayer(p);
+                            RSWPlayer gp = RealSkywars.getPlugin().getPlayerManager().getPlayer(p);
 
                             if (gp.getSetup().isGUIConfirmed()) {
                                 return;
@@ -159,14 +159,14 @@ public class MapSettings {
                     if (inventories.containsKey(uuid)) {
                         inventories.get(uuid).unregister();
 
-                        RSWPlayer gp = RealSkywars.getPlayerManager().getPlayer(p);
+                        RSWPlayer gp = RealSkywars.getPlugin().getPlayerManager().getPlayer(p);
                         if (!gp.getSetup().isGUIConfirmed()) {
                             Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
                                 MapSettings m = new MapSettings(gp.getSetup(), p.getUniqueId());
                                 m.openInventory(gp);
                             }, 3);
                         } else {
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> RealSkywars.getMapManager().continueSetup(gp), 10);
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> RealSkywars.getPlugin().getMapManager().continueSetup(gp), 10);
                         }
 
                     }

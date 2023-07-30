@@ -22,7 +22,7 @@ public class SWWorldSchematicEngine implements SWWorldEngine {
     private final String worldName;
 
     private final String schematicName;
-    private final WorldManager wm = RealSkywars.getWorldManager();
+    private final WorldManager wm = RealSkywars.getPlugin().getWorldManager();
 
 
     public SWWorldSchematicEngine(World w, String sname, SWGameMode gameMode) {
@@ -70,7 +70,7 @@ public class SWWorldSchematicEngine implements SWWorldEngine {
 
     @Override
     public void deleteWorld(SWGameMode.OperationReason rr) {
-        RealSkywars.getWorldManager().clearItems(world);
+        RealSkywars.getPlugin().getWorldManager().clearItems(world);
         switch (rr) {
             case LOAD:
             case SHUTDOWN:

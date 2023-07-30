@@ -4,6 +4,7 @@ import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.RSWPlayer;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -50,18 +51,18 @@ public class Kit {
     }
 
     public void saveKit() {
-        RealSkywars.getKitManager().getKits().add(this);
-        RealSkywars.getKitManager().registerKit(this);
+        RealSkywars.getPlugin().getKitManager().getKits().add(this);
+        RealSkywars.getPlugin().getKitManager().registerKit(this);
     }
 
     public void save() {
-        RealSkywars.getKitManager().getKits().remove(this);
-        RealSkywars.getKitManager().getKits().add(this);
+        RealSkywars.getPlugin().getKitManager().getKits().remove(this);
+        RealSkywars.getPlugin().getKitManager().getKits().add(this);
     }
 
     public void deleteKit() {
-        RealSkywars.getKitManager().unregisterKit(this);
-        RealSkywars.getKitManager().getKits().remove(this);
+        RealSkywars.getPlugin().getKitManager().unregisterKit(this);
+        RealSkywars.getPlugin().getKitManager().getKits().remove(this);
     }
 
     public List<String> getDescription(boolean shop) {
@@ -71,26 +72,26 @@ public class Kit {
 
         ArrayList<String> desc = new ArrayList<>();
 
-        desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_PRICE).replace("%price%", this.price.toString()));
+        desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_PRICE).replace("%price%", this.price.toString()));
 
         if (this.enderPearlGive) {
-            desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_ENDERPERK));
+            desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_ENDERPERK));
         }
 
         desc.add("");
         if (shop) {
-            desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_BUY));
+            desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_BUY));
         } else {
-            desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_SELECT));
+            desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_SELECT));
         }
 
         //contents
         if (this.hasItems()) {
             desc.add("");
-            desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_CONTAINS));
+            desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_CONTAINS));
             for (ItemStack s : this.contents) {
                 if (s != null) {
-                    desc.add(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.KIT_ITEM).replace("%amount%", s.getAmount() + "").replace("%item%", RealSkywars.getNMS().getItemName(s)));
+                    desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_ITEM).replace("%amount%", s.getAmount() + "").replace("%item%", WordUtils.capitalizeFully(s.getType().name().replace("_", " "))));
                 }
             }
         }

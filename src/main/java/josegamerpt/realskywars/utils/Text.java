@@ -51,7 +51,7 @@ public class Text {
 
     public static String anonName() {
         List<String> nicks = Config.file().getStringList("Config.Random-Nicknames");
-        return nicks.get(RealSkywars.getRandom().nextInt(nicks.size())) + " #" + RealSkywars.getRandom().nextInt(99);
+        return nicks.get(RealSkywars.getPlugin().getRandom().nextInt(nicks.size())) + " #" + RealSkywars.getPlugin().getRandom().nextInt(99);
     }
 
     public static String getDayAndTime() {
@@ -116,7 +116,7 @@ public class Text {
 
     private static String randSp() {
         List<String> sp = Arrays.asList("&6", "&7", "&8", "&9", "&5", "&f", "&e", "&a", "&b");
-        return sp.get(RealSkywars.getRandom().nextInt(sp.size()));
+        return sp.get(RealSkywars.getPlugin().getRandom().nextInt(sp.size()));
     }
 
     public static ArrayList<String> replaceVarInList(ArrayList<String> list, String rep, String var) {

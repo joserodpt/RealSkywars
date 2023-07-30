@@ -39,10 +39,10 @@ public class PlayerGUI {
 
         // infoMap
         ArrayList<String> lore = new ArrayList<>();
-        for (String s : RealSkywars.getLanguageManager().getList(p, LanguageManager.TL.STATS_ITEM_LORE)) {
+        for (String s : RealSkywars.getPlugin().getLanguageManager().getList(p, LanguageManager.TL.STATS_ITEM_LORE)) {
             lore.add(variables(s, target));
         }
-        ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.STATS_ITEM_NAME, false).replace("%player%", target.getDisplayName()), lore);
+        ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.STATS_ITEM_NAME, false).replace("%player%", target.getDisplayName()), lore);
         inv.setItem(2, infoMap);
 
         inventories.put(id, this);

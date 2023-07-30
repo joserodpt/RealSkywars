@@ -43,7 +43,7 @@ public class SWChest {
         this.z = z;
         this.worldName = worldName;
         this.bf = bf;
-        this.hologram = RealSkywars.getHologramManager().getHologramInstance();
+        this.hologram = RealSkywars.getPlugin().getHologramManager().getHologramInstance();
         this.clear();
     }
 
@@ -103,7 +103,7 @@ public class SWChest {
 
             List<ItemStack> tmp = new ArrayList<>();
             for (SWChestItem item : this.items) {
-                int chance = RealSkywars.getRandom().nextInt(100);
+                int chance = RealSkywars.getPlugin().getRandom().nextInt(100);
                 if (chance < item.getChance()) {
                     tmp.add(item.getItemStack());
                 }
@@ -120,11 +120,11 @@ public class SWChest {
                     int slot;
 
                     do {
-                        slot = RealSkywars.getRandom().nextInt(inv.getSize());
+                        slot = RealSkywars.getPlugin().getRandom().nextInt(inv.getSize());
                     } while (chosen[slot]);
 
                     chosen[slot] = true;
-                    inv.setItem(RealSkywars.getRandom().nextInt(inv.getSize()), itemStack);
+                    inv.setItem(RealSkywars.getPlugin().getRandom().nextInt(inv.getSize()), itemStack);
                 }
             } else {
                 tmp.forEach(inv::addItem);
@@ -148,16 +148,16 @@ public class SWChest {
                 //
             }, () -> {
                 this.getLocation().getWorld().spawnParticle(Particle.CLOUD, this.getLocation().add(0.5, 0, 0.5), 5);
-                if (this.isChest()) {
+                /*if (this.isChest()) {
                     RealSkywars.getNMS().playChestAnimation(this.getChestBlock(), false);
-                }
+                }*/
                 this.clear();
                 this.hologram.deleteHologram();
             }, (t) -> {
                 this.hologram.setTime(t.getSecondsLeft());
-                if (this.isChest()) {
+                /*if (this.isChest()) {
                     RealSkywars.getNMS().playChestAnimation(this.getChestBlock(), true);
-                }
+                }*/
             });
 
             this.chestCTD.scheduleTimer();

@@ -6,6 +6,7 @@ import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -39,7 +40,7 @@ public class DisplayItem {
 
     public DisplayItem() {
         this.interactive = false;
-        this.i = Itens.createItem(Material.BUCKET, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.SEARCH_NOTFOUND_NAME));
+        this.i = Itens.createItem(Material.BUCKET, 1, RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SEARCH_NOTFOUND_NAME));
     }
 
     public void makeItem() {
@@ -52,11 +53,11 @@ public class DisplayItem {
 
     private void makeItemStack(Material m) {
         if (this.it == ShopManager.Categories.KITS) {
-            Kit k = RealSkywars.getKitManager().getKit(name);
+            Kit k = RealSkywars.getPlugin().getKitManager().getKit(name);
 
             this.i = this.bought ? Itens.createItemLoreEnchanted(m, 1, "&r&f" + k.getName(), k.getDescription(false)) : Itens.createItemLore(m, 1, "&r&f" + k.getName(), k.getDescription(true));
         } else {
-            this.i = this.bought ? Itens.createItemLoreEnchanted(m, 1, formatName(name), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BOUGHT))) : Itens.createItemLore(m, 1, formatName(name), Collections.singletonList(RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BUY).replace("%price%", this.getPrice().toString())));
+            this.i = this.bought ? Itens.createItemLoreEnchanted(m, 1, formatName(name), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BOUGHT))) : Itens.createItemLore(m, 1, formatName(name), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BUY).replace("%price%", this.getPrice().toString())));
         }
     }
 
@@ -64,7 +65,7 @@ public class DisplayItem {
         String ret;
         try {
             Material m = Material.getMaterial(Text.strip(name));
-            ret = "&b" + RealSkywars.getNMS().getItemName(new ItemStack(m));
+            ret = "&b" + WordUtils.capitalizeFully(m.name().replace("_", " "));
         } catch (Exception e) {
             ret = name;
         }

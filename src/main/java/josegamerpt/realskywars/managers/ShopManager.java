@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 public class ShopManager {
+    private RealSkywars rs;
+    public ShopManager(RealSkywars rs) {
+        this.rs = rs;
+    }
 
     public ArrayList<DisplayItem> getCategoryContents(RSWPlayer p, ShopManager.Categories t) {
         ArrayList<DisplayItem> items = new ArrayList<>();
@@ -29,8 +33,8 @@ public class ShopManager {
                 cat = "Win-Blocks";
                 break;
             case KITS:
-                for (Kit a : RealSkywars.getKitManager().getKits()) {
-                    Boolean bought = RealSkywars.getPlayerManager().boughtItem(p, a.getName(), ShopManager.Categories.KITS);
+                for (Kit a : rs.getKitManager().getKits()) {
+                    Boolean bought = rs.getPlayerManager().boughtItem(p, a.getName(), ShopManager.Categories.KITS);
 
                     items.add(new DisplayItem(a.getID(), a.getIcon(), a.getName(), a.getPrice(), bought, a.getPermission(), ShopManager.Categories.KITS));
                 }
@@ -52,7 +56,7 @@ public class ShopManager {
                 String material = parse[0];
                 String name = Text.color(parse[2]);
                 String perm = parse[3];
-                Boolean bought = RealSkywars.getPlayerManager().boughtItem(p, name, t);
+                Boolean bought = rs.getPlayerManager().boughtItem(p, name, t);
 
                 try {
                     price = Double.parseDouble(parse[1]);
@@ -99,7 +103,7 @@ public class ShopManager {
                 ++i;
             }
 
-            if (items.size() == 0) {
+            if (items.isEmpty()) {
                 items.add(new DisplayItem());
             }
 

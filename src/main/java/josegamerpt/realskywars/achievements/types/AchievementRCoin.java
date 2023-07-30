@@ -33,7 +33,7 @@ public class AchievementRCoin implements Achievement {
 
     @Override
     public void giveAchievement(RSWPlayer p) {
-        p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.ACHIEVEMENT_GET, true).replace("%achievement%", this.goal + " - " + this.getAchievementName()).replace("%reward%", this.getRewardName()));
+        p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.ACHIEVEMENT_GET, true).replace("%achievement%", this.goal + " - " + this.getAchievementName()).replace("%reward%", this.getRewardName()));
         CurrencyManager cm = new CurrencyManager(p, (Double) this.getReward());
         cm.addCoins();
     }

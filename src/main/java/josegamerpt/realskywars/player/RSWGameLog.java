@@ -37,7 +37,7 @@ public class RSWGameLog {
     }
 
     public ItemStack getItem() {
-        return this.dummy ? Itens.createItem(Material.BUCKET, 1, RealSkywars.getLanguageManager().getString(LanguageManager.TSsingle.SEARCH_NOTFOUND_NAME)) :
+        return this.dummy ? Itens.createItem(Material.BUCKET, 1, RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SEARCH_NOTFOUND_NAME)) :
                 Itens.createItemLore(Material.FILLED_MAP, 1, "&f&l" + this.dayandtime, Arrays.asList("&fMap: &b" + this.map + " &f| Win: " + getWin(),
                         "&fPlayers: &b" + this.players,
                         "&fTime: &b" + Text.formatSeconds(this.seconds)));

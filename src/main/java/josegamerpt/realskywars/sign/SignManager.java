@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SignManager {
+    private RealSkywars rs;
+    public SignManager(RealSkywars rs) {
+        this.rs = rs;
+    }
 
     public void addSign(SWGameMode gm, Block b) {
         gm.addSign(new SWSign(gm, b));
@@ -23,7 +27,7 @@ public class SignManager {
 
     public void saveSigns() {
         List<SWSign> save = new ArrayList<>();
-        RealSkywars.getGameManager().getGames(PlayerManager.Modes.ALL).forEach(gameMode -> save.addAll(gameMode.getSigns()));
+        rs.getGameManager().getGames(PlayerManager.Modes.ALL).forEach(gameMode -> save.addAll(gameMode.getSigns()));
 
         Signs.file().set("Signs", null);
 
@@ -38,7 +42,7 @@ public class SignManager {
         if (Signs.file().getConfigurationSection("Signs") != null) {
             for (String loc : Signs.file().getConfigurationSection("Signs").getKeys(false)) {
                 String map = Signs.file().getString("Signs." + loc);
-                SWGameMode sgm = RealSkywars.getGameManager().getGame(map);
+                SWGameMode sgm = rs.getGameManager().getGame(map);
                 if (sgm != null) {
                     String[] data = loc.split("<");
                     World w = Bukkit.getWorld(data[0]);

@@ -25,11 +25,11 @@ public class SairCMD extends CommandBase {
     @Permission("RealSkywars.leave")
     public void defaultCommand(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
-            RSWPlayer p = RealSkywars.getPlayerManager().getPlayer((Player) commandSender);
+            RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
             if (p.isInMatch()) {
                 p.getMatch().removePlayer(p);
             } else {
-                p.sendMessage(RealSkywars.getLanguageManager().getString(p, LanguageManager.TS.NO_MATCH, true));
+                p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.NO_MATCH, true));
             }
         } else {
             String onlyPlayer = "[RealSkywars] Only players can run this command.";

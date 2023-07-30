@@ -122,7 +122,7 @@ public class RoomSettings {
                             }
                             e.setCancelled(true);
 
-                            RSWPlayer gp = RealSkywars.getPlayerManager().getPlayer(p);
+                            RSWPlayer gp = RealSkywars.getPlugin().getPlayerManager().getPlayer(p);
 
                             if (inv != null) {
                                 if (inv.getHolder() == e.getInventory().getHolder()) {
@@ -140,7 +140,7 @@ public class RoomSettings {
                                         // reset
                                         case 22:
                                             game.reset();
-                                            p.sendMessage(RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.MAP_RESET_DONE, true));
+                                            p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(gp, LanguageManager.TS.MAP_RESET_DONE, true));
 
                                             ItemStack set = null;
                                             switch (game.getState()) {
@@ -197,7 +197,7 @@ public class RoomSettings {
                                             }
                                             current.getInventory().setItem(10, set2);
 
-                                            p.sendMessage(RealSkywars.getLanguageManager().getString(gp, LanguageManager.TS.GAME_STATUS_SET, true).replace("%status%", game.getState().name()));
+                                            p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(gp, LanguageManager.TS.GAME_STATUS_SET, true).replace("%status%", game.getState().name()));
                                             break;
                                         case 14:
                                             // settings

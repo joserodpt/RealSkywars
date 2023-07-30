@@ -10,11 +10,12 @@ import josegamerpt.realskywars.world.WorldManager;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class SWWorldDefaultEngine implements SWWorldEngine {
 
-    private final WorldManager wm = RealSkywars.getWorldManager();
+    private final WorldManager wm = RealSkywars.getPlugin().getWorldManager();
     private World world;
     private final SWGameMode gameRoom;
     private final String worldName;
@@ -35,30 +36,26 @@ public class SWWorldDefaultEngine implements SWWorldEngine {
     public void resetWorld(SWGameMode.OperationReason rr) {
         Debugger.print(SWWorldDefaultEngine.class, "Resetting " + this.getName() + " - type: " + this.getType().name());
 
-        switch (rr) {
-            case SHUTDOWN:
-                //delete world
-                this.deleteWorld(SWGameMode.OperationReason.SHUTDOWN);
-                break;
-            default:
-                this.deleteWorld(SWGameMode.OperationReason.RESET);
-                //Copy world
-                this.wm.copyWorld(this.getName(), WorldManager.CopyTo.ROOT);
+        if (Objects.requireNonNull(rr) == SWGameMode.OperationReason.SHUTDOWN) {//delete world
+            this.deleteWorld(SWGameMode.OperationReason.SHUTDOWN);
+        } else {
+            this.deleteWorld(SWGameMode.OperationReason.RESET);
+            //Copy world
+            this.wm.copyWorld(this.getName(), WorldManager.CopyTo.ROOT);
 
-                //Load world
-                this.world = this.wm.createEmptyWorld(this.getName(), World.Environment.NORMAL);
-                if (this.world != null) {
-                    WorldBorder wb = this.world.getWorldBorder();
+            //Load world
+            this.world = this.wm.createEmptyWorld(this.getName(), World.Environment.NORMAL);
+            if (this.world != null) {
+                WorldBorder wb = this.world.getWorldBorder();
 
-                    wb.setCenter(this.gameRoom.getArena().getCenter());
-                    wb.setSize(this.gameRoom.getBorderSize());
+                wb.setCenter(this.gameRoom.getArena().getCenter());
+                wb.setSize(this.gameRoom.getBorderSize());
 
-                    this.gameRoom.setState(SWGameMode.GameState.AVAILABLE);
-                    Debugger.print(Solo.class, "[ROOM " + this.gameRoom.getName() + "] sucessfully resetted.");
-                } else {
-                    RealSkywars.log(Level.SEVERE, "ERROR! Could not load " + this.getName());
-                }
-                break;
+                this.gameRoom.setState(SWGameMode.GameState.AVAILABLE);
+                Debugger.print(Solo.class, "[ROOM " + this.gameRoom.getName() + "] sucessfully resetted.");
+            } else {
+                RealSkywars.log(Level.SEVERE, "ERROR! Could not load " + this.getName());
+            }
         }
     }
 
