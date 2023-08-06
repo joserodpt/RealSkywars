@@ -53,6 +53,8 @@ import java.util.stream.IntStream;
 
 public class RealSkywars extends JavaPlugin {
     private static RealSkywars pl;
+    private boolean newUpdate;
+
     public static RealSkywars getPlugin() {
         return pl;
     }
@@ -305,9 +307,20 @@ public class RealSkywars extends JavaPlugin {
 
             long elapsedTimeMillis = System.currentTimeMillis() - start;
 
+            new UpdateChecker(this, 105115).getVersion(version -> {
+                if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
+                    this.getLogger().info("The plugin is updated to the latest version.");
+                } else {
+                    this.newUpdate = true;
+                    this.getLogger().warning("There is a new update available! Version: " + version + " https://www.spigotmc.org/resources/105115/");
+                }
+            });
+
             float elapsedTimeSec = elapsedTimeMillis / 1000F;
             log("Finished loading in " + elapsedTimeSec + " seconds.");
             log(star);
+
+
         }
     }
 
@@ -378,4 +391,7 @@ public class RealSkywars extends JavaPlugin {
         Bukkit.getLogger().log(l, "[RealSkywars] " + s);
     }
 
+    public boolean hasNewUpdate() {
+        return this.newUpdate;
+    }
 }

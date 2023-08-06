@@ -433,6 +433,10 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
+        if (e.getPlayer().isOp() && rs.hasNewUpdate()) {
+            Text.send(e.getPlayer(), "&6&LWARNING! &r&fThere is a new update available for Real&bSkywars&f! https://www.spigotmc.org/resources/105115/");
+        }
+
         rs.getPlayerManager().loadPlayer(e.getPlayer());
     }
 

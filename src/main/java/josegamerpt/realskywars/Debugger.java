@@ -23,11 +23,6 @@ public class Debugger {
     }
 
     public static void execute() {
-        if (false) {
-            Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.getPlugin(), () -> {
-                //RealSkywars.getGameManager().getGames(PlayerManager.Modes.ALL).forEach(SWGameMode::updateSigns);
-                Debugger.print(Debugger.class, "a");
-            }, 20, 20);
-        }
+
     }
 }
