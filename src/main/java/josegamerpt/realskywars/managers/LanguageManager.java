@@ -81,6 +81,10 @@ public class LanguageManager {
         return trad;
     }
 
+    public String getString(TS ts, boolean b) {
+       return getString(new RSWPlayer(false), ts, b);
+    }
+
     public String getString(RSWPlayer p, TS ts, boolean b) {
         if (!b) {
             return Text.color(getString(p, ts));
@@ -103,7 +107,7 @@ public class LanguageManager {
                     flagItem.put(val, analyse);
                 }
             }
-            if (!(flagItem.size() == 0)) {
+            if (!(flagItem.isEmpty())) {
                 flag.put(s, flagItem);
             }
         }
@@ -582,8 +586,8 @@ public class LanguageManager {
         return tr;
     }
 
-    public boolean checkSelect() {
-        return langList.size() != 0;
+    public boolean areLanguagesEmpty() {
+        return langList.isEmpty();
     }
 
     public String getString(TSsingle ts) {

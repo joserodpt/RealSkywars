@@ -12,7 +12,6 @@ import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
-import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
 import josegamerpt.realskywars.utils.WorldEditUtils;
 import josegamerpt.realskywars.world.SWWorld;
@@ -27,10 +26,13 @@ import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.IntStream;
 
 @Command("realskywars")
 @Alias({"sw", "rsw"})
@@ -93,7 +95,7 @@ public class RealSkywarsCMD extends CommandBase {
     @SubCommand("kit")
     @Completion({"#enum", "#kits", "#range:100"})
     @Permission("rs.Admin")
-    public void kitcmd(final CommandSender commandSender, RealSkywarsCMD.KIT action, String name, @Optional Double cost) {
+    public void kitcmd(final CommandSender commandSender, KIT_OPERATION action, String name, @Optional Double cost) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
 
@@ -102,7 +104,7 @@ public class RealSkywarsCMD extends CommandBase {
                 return;
             }
             switch (action) {
-                case create:
+                case CREATE:
                     if (cost == null) {
                         p.sendMessage(rs.getLanguageManager().getPrefix() + "Cost value not accepted.");
                         return;
@@ -111,7 +113,7 @@ public class RealSkywarsCMD extends CommandBase {
                     KitSettings m = new KitSettings(k, p.getUUID());
                     m.openInventory(p);
                     break;
-                case delete:
+                case DELETE:
                     Kit k2 = rs.getKitManager().getKit(name);
                     if (k2 != null) {
                         k2.deleteKit();
@@ -120,7 +122,7 @@ public class RealSkywarsCMD extends CommandBase {
                         commandSender.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.NO_KIT_FOUND, true));
                     }
                     break;
-                case give:
+                case GIVE:
                     Kit k3 = rs.getKitManager().getKit(name);
                     if (k3 != null) {
                         k3.give(p);
@@ -164,62 +166,48 @@ public class RealSkywarsCMD extends CommandBase {
         }
     }
 
+    @SubCommand("balance")
+    @Alias("bal")
+    @Permission("rs.coins")
+    @WrongUsage("&c/rsw bal")
+    public void balancecmd(final CommandSender commandSender) {
+        if (commandSender instanceof Player) {
+            RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
+
+            p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.CMD_COINS, true).replace("%coins%", p.getCoins() + ""));
+        } else {
+            commandSender.sendMessage(onlyPlayer);
+        }
+    }
+
     @SubCommand("coins")
     @Permission("rs.coins")
     @Completion({"#enum", "#players", "#range:100"})
-    @WrongUsage("&c/rsw coins <send;add;set> <name> <coins>")
+    @WrongUsage("&c/rsw coins <send;add;set;remove> <name> <coins>")
     public void coinscmd(final CommandSender commandSender, CurrencyManager.Operations o, Player target, Double coins) {
+        if (o == null) {
+            Text.send(commandSender, RealSkywars.getPlugin().getLanguageManager().getPrefix() + "Invalid operation type.");
+            return;
+        }
+
+        RSWPlayer search = rs.getPlayerManager().getPlayer(target);
+
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
-            if (o == null) {
-                p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.CMD_COINS, true).replace("%coins%", p.getCoins() + ""));
-            } else {
-                RSWPlayer search = rs.getPlayerManager().getPlayer(target);
-                if (search != null) {
-                    switch (o) {
-                        case send:
-                            if (coins == null) {
-                                p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.INSUFICIENT_COINS, true).replace("%coins%", p.getCoins() + ""));
-                                return;
-                            }
-                            CurrencyManager c = new CurrencyManager(search, p, coins, false);
-                            if (c.canMakeOperation()) {
-                                c.transferCoins();
-                            } else {
-                                p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.INSUFICIENT_COINS, true).replace("%coins%", p.getCoins() + ""));
-                            }
-                            break;
-                        case set:
-                            if (!p.getPlayer().hasPermission("rs.Admin")) {
-                                p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.CMD_NOPERM, true));
-                                return;
-                            }
-                            if (search != null) {
-                                CurrencyManager c2 = new CurrencyManager(search, p, coins, true);
-                                c2.setCoins();
-                            } else {
-                                p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.NO_PLAYER_FOUND, true));
-                            }
-                            break;
-                        case add:
-                            if (!p.getPlayer().hasPermission("rs.Admin")) {
-                                p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.CMD_NOPERM, true));
-                                return;
-                            }
-                            if (search != null) {
-                                CurrencyManager c3 = new CurrencyManager(search, coins);
-                                c3.addCoins();
-                            } else {
-                                p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.NO_PLAYER_FOUND, true));
-                            }
-                            break;
-                    }
-                } else {
-                    p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.NO_PLAYER_FOUND, true));
-                }
+
+            if (search == null) {
+                Text.send(commandSender, rs.getLanguageManager().getString(p, LanguageManager.TS.NO_PLAYER_FOUND, true));
+                return;
             }
+
+            new CurrencyManager(search, p, coins, o, true);
         } else {
-            commandSender.sendMessage(onlyPlayer);
+            if (search == null) {
+                Text.send(commandSender, rs.getLanguageManager().getString(LanguageManager.TS.NO_PLAYER_FOUND, true));
+                return;
+            }
+
+            new CurrencyManager(search, coins, o, true);
         }
     }
 
@@ -462,7 +450,8 @@ public class RealSkywarsCMD extends CommandBase {
     @Permission("rs.Admin")
     public void setchest(final CommandSender commandSender, SWChest.Tier tt, Boolean middle) {
         if (commandSender instanceof Player) {
-            rs.getChestManager().set2Chest(tt, middle, Itens.getInventory(((Player) commandSender)));
+            final Player p = (Player) commandSender;
+            rs.getChestManager().set2Chest(tt, middle, Arrays.asList(IntStream.range(9, 35).boxed().map(p.getInventory()::getItem).filter(Objects::nonNull).toArray(ItemStack[]::new)));
             Text.send(commandSender, "Itens set for " + tt.name() + " (middle: " + middle + ")");
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -514,7 +503,7 @@ public class RealSkywarsCMD extends CommandBase {
             }
 
             if (wt.equals(SWWorld.WorldType.SCHEMATIC) && !WorldEditUtils.schemFileExists(mapname)) {
-                p.sendMessage("&cNo " + mapname + "&c found in the maps folder of rs.");
+                p.sendMessage("&cNo " + mapname + "&c found in RealSkywars/maps. Did you forget to add .schem?");
                 return;
             }
 
@@ -558,9 +547,9 @@ public class RealSkywarsCMD extends CommandBase {
     public void delete(final CommandSender commandSender, String map) {
         if (rs.getMapManager().getRegisteredMaps().contains(map)) {
             rs.getMapManager().unregisterMap(rs.getMapManager().getMap(map));
-            commandSender.sendMessage(rs.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.MAP_UNREGISTERED, true));
+            commandSender.sendMessage(rs.getLanguageManager().getString(LanguageManager.TS.MAP_UNREGISTERED, true));
         } else {
-            commandSender.sendMessage(rs.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.NO_GAME_FOUND, true));
+            commandSender.sendMessage(rs.getLanguageManager().getString(LanguageManager.TS.NO_GAME_FOUND, true));
         }
     }
 
@@ -585,5 +574,5 @@ public class RealSkywarsCMD extends CommandBase {
         Text.send(commandSender, "Ok.");
     }
 
-    public enum KIT {create, delete, give}
+    public enum KIT_OPERATION {CREATE, DELETE, GIVE}
 }

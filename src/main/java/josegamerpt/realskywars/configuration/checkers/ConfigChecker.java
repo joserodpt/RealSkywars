@@ -25,10 +25,10 @@ public class ConfigChecker {
             if (getConfigVersion() == 1) {//update to 2
                 newconfig = 2;
             }
-            RealSkywars.log(Level.INFO, "Config file updated to version " + newconfig + ".");
+            RealSkywars.getPlugin().log(Level.INFO, "Config file updated to version " + newconfig + ".");
         }
         if (getConfigVersion() == latest) {
-            RealSkywars.log(Level.INFO, "Your config file is updated to the latest version.");
+            RealSkywars.getPlugin().log(Level.INFO, "Your config file is updated to the latest version.");
         }
     }
 
@@ -38,9 +38,7 @@ public class ConfigChecker {
 
     public static boolean checkForErrors() {
         ArrayList<String> errs = new ArrayList<>();
-
-
         errors = String.join(", ", errs);
-        return errs.size() > 0;
+        return !errs.isEmpty();
     }
 }

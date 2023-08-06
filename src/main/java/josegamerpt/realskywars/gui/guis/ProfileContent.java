@@ -102,7 +102,6 @@ public class ProfileContent {
 
 
                             if (e.getClick() == ClickType.RIGHT && current.cat == ShopManager.Categories.KITS) {
-                                p.closeInventory();
                                 GUIManager.openKitPreview(p, RealSkywars.getPlugin().getKitManager().getKit(a.getID()), 0);
                                 return;
                             }

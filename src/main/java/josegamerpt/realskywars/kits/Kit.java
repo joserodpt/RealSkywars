@@ -4,7 +4,6 @@ import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.RSWPlayer;
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -12,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 
 public class Kit {
 
@@ -46,7 +46,7 @@ public class Kit {
     }
 
     public Kit() {
-        this.name = "None";
+        this.name = "none";
         this.buyable = false;
     }
 
@@ -79,11 +79,7 @@ public class Kit {
         }
 
         desc.add("");
-        if (shop) {
-            desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_BUY));
-        } else {
-            desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_SELECT));
-        }
+        desc.add(shop ? RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_BUY) : RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_SELECT));
 
         //contents
         if (this.hasItems()) {
@@ -91,7 +87,7 @@ public class Kit {
             desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_CONTAINS));
             for (ItemStack s : this.contents) {
                 if (s != null) {
-                    desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_ITEM).replace("%amount%", s.getAmount() + "").replace("%item%", WordUtils.capitalizeFully(s.getType().name().replace("_", " "))));
+                    desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_ITEM).replace("%amount%", s.getAmount() + "").replace("%item%", RealSkywars.getPlugin().getNMS().getItemName(s)));
                 }
             }
         }
@@ -99,7 +95,7 @@ public class Kit {
         return desc;
     }
 
-    private boolean hasItems() {
+    public boolean hasItems() {
         for (ItemStack s : this.contents) {
             if (s != null) return true;
         }
@@ -137,7 +133,7 @@ public class Kit {
             }
             throw new Exception(i.name() + " perk doesnt exist in the code!!!!");
         } catch (Exception e) {
-            e.printStackTrace();
+            RealSkywars.getPlugin().log(Level.SEVERE, "Error in getting Kit's perk: " + e.getMessage());
         }
         return false;
     }

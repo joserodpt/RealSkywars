@@ -85,6 +85,8 @@ public class WorldEditUtils {
                     editSession.close();
 
                     Debugger.print(WorldEditUtils.class, "Pasted!");
+
+                    location.getWorld().getPlayers().forEach(player -> player.sendMessage("[RealSkywars] Schematic pasted with success!"));
                 } catch (Exception e) {
                     Debugger.print(WorldEditUtils.class, "Error pasting schematic!");
                     e.printStackTrace();

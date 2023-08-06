@@ -54,7 +54,7 @@ public class SWWorldDefaultEngine implements SWWorldEngine {
                 this.gameRoom.setState(SWGameMode.GameState.AVAILABLE);
                 Debugger.print(Solo.class, "[ROOM " + this.gameRoom.getName() + "] sucessfully resetted.");
             } else {
-                RealSkywars.log(Level.SEVERE, "ERROR! Could not load " + this.getName());
+                RealSkywars.getPlugin().log(Level.SEVERE, "ERROR! Could not load " + this.getName());
             }
         }
     }

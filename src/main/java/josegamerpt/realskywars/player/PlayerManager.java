@@ -16,13 +16,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public class PlayerManager {
     private RealSkywars rs;
     public PlayerManager(RealSkywars rs) {
         this.rs = rs;
     }
-
     public static ArrayList<UUID> teleporting = new ArrayList<>();
     private final HashMap<Player, Player> trackingPlayers = new HashMap<>();
     private final ArrayList<RSWPlayer> players = new ArrayList<>();
@@ -120,7 +120,7 @@ public class PlayerManager {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            RealSkywars.getPlugin().log(Level.SEVERE, "Error while loading player data for " + p.getName() + " ->" + e.getMessage());
         }
     }
 
@@ -174,41 +174,48 @@ public class PlayerManager {
         return null;
     }
 
-    public void savePlayer(RSWPlayer p) {
+    public void savePlayer(RSWPlayer p, RSWPlayer.PlayerData pd) {
         if (p.getPlayer() != null) {
             PlayerData playerData = rs.getDatabaseManager().getPlayerData(p.getPlayer());
 
-            playerData.setName(p.getName());
+            switch (pd) {
+                case BOUGHT_ITEMS:
+                    playerData.setBoughtItems(p.getBoughtItems());
+                    break;
+                case CAGE_BLOCK:
+                    playerData.setCageBlock(((Material) p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK)).name());
+                    break;
+                case COINS:
+                    playerData.setCoins(p.getCoins());
+                    break;
+                case GAME:
+                    playerData.setWinsSolo(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false), false);
+                    playerData.setWinsSolo(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true), true);
 
-            playerData.setLanguage(p.getLanguage());
+                    playerData.setWinsTeams(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false), false);
+                    playerData.setWinsTeams(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true), true);
 
-            playerData.setCoins(p.getCoins());
+                    playerData.setKills(p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false), false);
+                    playerData.setKills(p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, true), true);
 
-            playerData.setMapViewerPref(p.getMapViewerPref().name());
+                    playerData.setDeaths(p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false), false);
+                    playerData.setDeaths(p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, true), true);
 
-            playerData.setCageBlock(((Material) p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK)).name());
+                    playerData.setLoses(p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false), false);
+                    playerData.setLoses(p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, true), true);
 
-            playerData.setWinsSolo(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false), false);
-            playerData.setWinsSolo(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true), true);
+                    playerData.setGamesPlayed(p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false), false);
+                    playerData.setGamesPlayed(p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true), true);
 
-            playerData.setWinsTeams(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false), false);
-            playerData.setWinsTeams(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true), true);
-
-            playerData.setKills(p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false), false);
-            playerData.setKills(p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, true), true);
-
-            playerData.setDeaths(p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false), false);
-            playerData.setDeaths(p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, true), true);
-
-            playerData.setLoses(p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false), false);
-            playerData.setLoses(p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, true), true);
-
-            playerData.setGamesPlayed(p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false), false);
-            playerData.setGamesPlayed(p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true), true);
-
-            playerData.setBoughtItems(p.getBoughtItems());
-
-            playerData.setGames_list(processGamesListSave(p.getGamesList()));
+                    playerData.setGames_list(processGamesListSave(p.getGamesList()));
+                    break;
+                case LANG:
+                    playerData.setLanguage(p.getLanguage());
+                    break;
+                case MAPVIEWER_PREF:
+                    playerData.setMapViewerPref(p.getMapViewerPref().name());
+                    break;
+            }
 
             rs.getDatabaseManager().savePlayerData(playerData, true);
         }
@@ -216,7 +223,7 @@ public class PlayerManager {
 
     public void setLanguage(RSWPlayer player, String s) {
         player.setProperty(RSWPlayer.PlayerProperties.LANGUAGE, s);
-        player.sendMessage(rs.getLanguageManager().getString(player, LanguageManager.TS.LANGUAGE_SET, true).replace("%language%", "" + s));
+        player.sendMessage(rs.getLanguageManager().getString(player, LanguageManager.TS.LANGUAGE_SET, true).replace("%language%", s));
     }
 
     public Boolean boughtItem(RSWPlayer p, String string, ShopManager.Categories c) {
@@ -300,6 +307,5 @@ public class PlayerManager {
     }
 
     public enum Modes {SOLO, SOLO_RANKED, TEAMS, TEAMS_RANKED, RANKED, ALL}
-
     public enum Items {LOBBY, CAGE, SETUP, SPECTATOR, PROFILE, CAGESET, MAPS, SHOP, LEAVE, VOTE, SPECTATE, KIT, PLAYAGAIN, CHEST1, CHEST2}
 }

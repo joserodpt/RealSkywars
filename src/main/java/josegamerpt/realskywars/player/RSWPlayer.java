@@ -29,6 +29,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class RSWPlayer {
     private final List<Trail> trails = new ArrayList<>();
@@ -60,7 +61,6 @@ public class RSWPlayer {
     private int rankedWinsTEAMS;
     private int rankedLoses;
     private int rankedGamesPlayed;
-
     private Double coins = 0D;
     private Double balanceGame = 0D;
     private PlayerScoreboard playerscoreboard;
@@ -75,7 +75,7 @@ public class RSWPlayer {
     private Boolean invincible = false;
 
     public RSWPlayer(Player jog, RSWPlayer.PlayerState estado, int kills, int d, int solowin, int teamwin, Double coi, String lang, ArrayList<String> bgh, int l, int gp, int rankedTotalkills, int rankedDeaths, int rankedWinsSolo, int rankedWinsTEAMS, int rankedLoses, int rankedGamesPlayed, ArrayList<RSWGameLog> gamesList) {
-        anonName = Text.anonName();
+        this.anonName = Text.anonName();
 
         this.p = jog;
         this.state = estado;
@@ -109,7 +109,7 @@ public class RSWPlayer {
         this.bot = true;
     }
 
-    public void spawnAbovePlayer(Class c) {
+    public <T extends Entity> void spawnAbovePlayer(Class<T> c) {
         if (this.p != null) {
             Entity ent = this.getWorld().spawn(this.getLocation().add(0, 3, 0), c);
             if (ent instanceof TNTPrimed) {
@@ -196,18 +196,21 @@ public class RSWPlayer {
         }
     }
 
-    public void saveData() {
-        this.kills += this.gamekills;
+    public void saveData(PlayerData pd) {
+        if (pd == PlayerData.GAME) {
+            this.kills += this.gamekills;
 
-        Achievement a = RealSkywars.getPlugin().getAchievementsManager().getAchievement(PlayerStatistics.KILLS, this.kills);
-        if (a != null) {
-            a.giveAchievement(this);
+            Achievement a = RealSkywars.getPlugin().getAchievementsManager().getAchievement(PlayerStatistics.KILLS, this.kills);
+            if (a != null) {
+                a.giveAchievement(this);
+            }
+
+            this.coins += this.balanceGame;
+            this.balanceGame = 0D;
+            this.gamekills = 0;
         }
 
-        this.coins += this.balanceGame;
-        this.balanceGame = 0D;
-        this.gamekills = 0;
-        RealSkywars.getPlugin().getPlayerManager().savePlayer(this);
+        RealSkywars.getPlugin().getPlayerManager().savePlayer(this, pd);
     }
 
     public double getGameBalance() {
@@ -291,13 +294,8 @@ public class RSWPlayer {
 
     public void setFlying(boolean b) {
         if (this.p != null) {
-            if (b) {
-                this.p.setAllowFlight(true);
-                this.p.setFlying(true);
-            } else {
-                this.p.setAllowFlight(false);
-                this.p.setFlying(false);
-            }
+                this.p.setAllowFlight(b);
+                this.p.setFlying(b);
         }
     }
 
@@ -321,12 +319,14 @@ public class RSWPlayer {
         switch (pp) {
             case MAPVIEWER_PREF:
                 this.mapViewerPref = Selections.MapViewerPref.valueOf((String) o);
+                this.saveData(PlayerData.MAPVIEWER_PREF);
                 break;
             case KIT:
                 this.kit = (Kit) o;
                 break;
             case BOW_PARTICLES:
                 this.bowParticle = (Particle) o;
+                this.saveData(PlayerData.BOW_PARTICLES);
                 break;
             case CAGE_BLOCK:
                 Material m = (Material) o;
@@ -347,7 +347,7 @@ public class RSWPlayer {
                         }
                     }
                 }
-                RealSkywars.getPlugin().getPlayerManager().savePlayer(this);
+                RealSkywars.getPlugin().getPlayerManager().savePlayer(this, PlayerData.CAGE_BLOCK);
                 break;
             case WIN_BLOCKS:
                 if (o.equals("RandomBlock")) {
@@ -362,6 +362,7 @@ public class RSWPlayer {
                 break;
             case LANGUAGE:
                 this.language = (String) o;
+                this.saveData(PlayerData.LANG);
                 break;
         }
     }
@@ -490,7 +491,7 @@ public class RSWPlayer {
         this.stopTrails();
 
         this.playerscoreboard.stop();
-        this.saveData();
+        this.saveData(PlayerData.GAME);
         RealSkywars.getPlugin().getPlayerManager().removePlayer(this);
     }
 
@@ -540,9 +541,12 @@ public class RSWPlayer {
         return this.rt;
     }
 
+    public enum PlayerData { CAGE_BLOCK, GAME, COINS, LANG, MAPVIEWER_PREF, BOW_PARTICLES, BOUGHT_ITEMS }
+
+
     public void buyItem(String s) {
         this.bought.add(Text.strip(s));
-        RealSkywars.getPlugin().getPlayerManager().savePlayer(this);
+        RealSkywars.getPlugin().getPlayerManager().savePlayer(this, PlayerData.BOUGHT_ITEMS);
     }
 
     public void sendActionbar(String s) {
@@ -612,6 +616,12 @@ public class RSWPlayer {
         this.gamesList.add(0, rswGameLog);
     }
 
+    public void setGameMode(GameMode gameMode) {
+        if (!this.isBot()) {
+            this.getPlayer().setGameMode(gameMode);
+        }
+    }
+
     //ENUMs
 
     public enum PlayerState {
@@ -671,17 +681,18 @@ public class RSWPlayer {
                 Bukkit.getOnlinePlayers().forEach(pl -> this.player.hidePlayer(RealSkywars.getPlugin(), pl));
                 this.show.forEach(rswPlayer -> this.player.showPlayer(RealSkywars.getPlugin(), rswPlayer));
 
+
+                String header, footer;
+
                 if (this.player.isInMatch()) {
-                    String header = String.join("\n", RealSkywars.getPlugin().getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", this.player.getMatch().getPlayers().size() + "");
-                    String footer = String.join("\n", RealSkywars.getPlugin().getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", this.player.getMatch().getPlayers().size() + "");
-
-                    this.setHeaderFooter(header, footer);
+                    header = String.join("\n", RealSkywars.getPlugin().getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", this.player.getMatch().getPlayers().size() + "").replace("%space%", Text.makeSpace());
+                    footer = String.join("\n", RealSkywars.getPlugin().getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", this.player.getMatch().getPlayers().size() + "").replace("%space%", Text.makeSpace());
                 } else {
-                    String header = String.join("\n", RealSkywars.getPlugin().getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_OTHER)).replace("%players%", RealSkywars.getPlugin().getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL) + "");
-                    String footer = String.join("\n", RealSkywars.getPlugin().getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_OTHER)).replace("%players%", RealSkywars.getPlugin().getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL) + "");
-
-                    this.setHeaderFooter(header, footer);
+                    header = String.join("\n", RealSkywars.getPlugin().getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_OTHER)).replace("%players%", RealSkywars.getPlugin().getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL) + "").replace("%space%", Text.makeSpace());
+                    footer = String.join("\n", RealSkywars.getPlugin().getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_OTHER)).replace("%players%", RealSkywars.getPlugin().getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL) + "").replace("%space%", Text.makeSpace());
                 }
+
+                this.setHeaderFooter(header, footer);
             }
         }
     }
@@ -754,17 +765,16 @@ public class RSWPlayer {
                                 throw new IllegalStateException("Unexpected value SCOREBOARD!!! : " + p.getState());
                         }
 
-                        ArrayList<String> send = new ArrayList<>();
-                        for (String s : lista) {
-                            send.add(variables(s, p));
-                        }
+                        List<String> send = lista.stream()
+                                .map(s -> variables(s, p))
+                                .collect(Collectors.toList());
                         displayScoreboard(tit, send);
                     }
                 }
             }.runTaskTimer(RealSkywars.getPlugin(), 0L, 20);
         }
 
-        private void displayScoreboard(String title, ArrayList<String> elements) {
+        private void displayScoreboard(String title, List<String> elements) {
             this.fb.updateTitle(title);
             this.fb.updateLines(elements);
         }

@@ -58,7 +58,6 @@ Kits:
       - null
     Permission: RealSkywars.Kit
     Perks:
-      DoubleJump: false
       EnderPearl: false
   '2':
     Name: Enderman
@@ -121,7 +120,6 @@ Kits:
       - null
     Permission: RealSkywars.Kit
     Perks:
-      DoubleJump: false
       EnderPearl: true
   '3':
     Name: '&9Default'
@@ -179,7 +177,6 @@ Kits:
       - null
     Permission: RealSkywars.Kit
     Perks:
-      DoubleJump: false
       EnderPearl: false
   '4':
     Name: '&9Warrior'
@@ -247,7 +244,6 @@ Kits:
       - null
     Permission: RealSkywars.Kit
     Perks:
-      DoubleJump: false
       EnderPearl: false
   '5':
     Name: '&aMiner'
@@ -322,7 +318,6 @@ Kits:
       - null
     Permission: RealSkywars.Kit
     Perks:
-      DoubleJump: false
       EnderPearl: false
   '6':
     Name: '&5Life'
@@ -374,7 +369,6 @@ Kits:
       - null
     Permission: RealSkywars.Kit
     Perks:
-      DoubleJump: false
       EnderPearl: false
   '7':
     Name: '&eDJ'
@@ -450,55 +444,4 @@ Kits:
       - null
     Permission: RealSkywars.Kit
     Perks:
-      DoubleJump: true
-      EnderPearl: false
-  '8':
-    Name: '&aJumper'
-    Price: 20.0
-    Icon: LEATHER_CHESTPLATE
-    Contents:
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-      - null
-    Permission: RealSkywars.Kit
-    Perks:
-      DoubleJump: true
       EnderPearl: false

@@ -1,4 +1,4 @@
-package josegamerpt.realskywars.holograms;
+package josegamerpt.realskywars.utils.holograms;
 
 import org.bukkit.Location;
 

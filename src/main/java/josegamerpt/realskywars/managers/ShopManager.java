@@ -88,7 +88,7 @@ public class ShopManager {
                     try {
                         s.addInfo("Particle", Particle.valueOf(parse[4]));
                     } catch (Exception e) {
-                        RealSkywars.log(Level.WARNING, parse[4] + " isnt a valid particle! Changed to drip lava.");
+                        RealSkywars.getPlugin().log(Level.WARNING, parse[4] + " isnt a valid particle! Changed to drip lava.");
                         s.addInfo("Particle", Particle.DRIP_LAVA);
                     }
                 }

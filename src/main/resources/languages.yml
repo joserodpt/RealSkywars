@@ -1,6 +1,6 @@
 Version: 1
 Strings:
-  Prefix: " &f&lReal&b&lSkywars &r"
+  Prefix: "&fReal&bSkywars &7> &r"
   Events:
     REFILL: "&aRefill"
     TNTRAIN: "&cTNT &fRain"
@@ -103,8 +103,8 @@ Languages:
           Not-Found: "&eNo kit has been found with that name."
           Delete-Done: "&fKit &adeleted&f."
         Coins:
-          Add: "&b%coins% &have been added to your balance."
-          Remove: "&b%coins% &have been removed from your balance."
+          Add: "&b%coins% &fhave been added to your balance."
+          Remove: "&b%coins% &fhave been removed from your balance."
           Set: "&fYou now have &b%coins% &fcoins."
           Sender: "&fYou sent &b%coins% coins &fto %player%."
           Reciever: "&fYou recieved &b%coins% coins &ffrom %player%."
@@ -165,7 +165,7 @@ Languages:
         Map-Unregistered: "&fThe map has been &aunregistered&f."
         Map-Exists: "&cThere is already a map with that name."
         Lobby-Loc-Not-Set: "&fThe lobby location &cis not set."
-        Insuficient-Coins: "&cYou can't buy that. &fYou only have &b%coins%&f coins."
+        Insuficient-Coins: "&cYou can't do that. &fYou only have &b%coins%&f coins."
         Command-Not-Found: "&fNo command has been found with that syntax."
         Add-Tier: "&fThe items have been added to the tier."
         Set-Tier: "&fThe tier has been set."
@@ -305,7 +305,7 @@ Languages:
           - " &bR &fDeaths: &b%rankeddeaths%"
           - "%space%"
           - " &fGames: &a%gamesplayed% &7/ &b%rankedgamesplayed%"
-          - " &Defeats: &a%loses% &7/ &b%rankedloses%"
+          - " &fDefeats: &a%loses% &7/ &b%rankedloses%"
           - " &b%playing% &fplaying"
         Title: "&aRealSkywars &fLobby"
       Cage:

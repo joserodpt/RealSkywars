@@ -104,19 +104,17 @@ public class ShopViewer {
                             }
 
                             if (e.getClick() == ClickType.RIGHT && current.cat == ShopManager.Categories.KITS) {
-                                p.closeInventory();
                                 GUIManager.openKitPreview(p, RealSkywars.getPlugin().getKitManager().getKit(a.getID()), 1);
                                 return;
                             }
 
                             if (p.getPlayer().hasPermission(a.getPermission())) {
+                                p.closeInventory();
                                 if (a.isBought()) {
                                     p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.SHOP_ALREADY_BOUGHT, true).replace("%name%", a.getName()));
                                 } else {
-                                    CurrencyManager cm = new CurrencyManager(p, a.getPrice());
-                                    if (cm.canMakeOperation()) {
-                                        cm.removeCoins();
-
+                                    CurrencyManager cm = new CurrencyManager(p, a.getPrice(), CurrencyManager.Operations.REMOVE, false);
+                                    if (cm.removeCoins()) {
                                         p.buyItem(a.getName() + "|" + current.cat.name());
 
                                         a.setBought(true);

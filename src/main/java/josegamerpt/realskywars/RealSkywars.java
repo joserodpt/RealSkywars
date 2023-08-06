@@ -17,12 +17,16 @@ import josegamerpt.realskywars.database.DatabaseManager;
 import josegamerpt.realskywars.database.SQL;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.gui.guis.*;
-import josegamerpt.realskywars.holograms.HologramManager;
+import josegamerpt.realskywars.utils.holograms.HologramManager;
 import josegamerpt.realskywars.kits.KitManager;
 import josegamerpt.realskywars.leaderboards.LeaderboardManager;
 import josegamerpt.realskywars.listeners.EventListener;
 import josegamerpt.realskywars.listeners.GameRoomListeners;
 import josegamerpt.realskywars.managers.*;
+import josegamerpt.realskywars.nms.NMS114R1tov116R3;
+import josegamerpt.realskywars.nms.NMS117R1;
+import josegamerpt.realskywars.nms.NMS118R2andUP;
+import josegamerpt.realskywars.nms.RSWnms;
 import josegamerpt.realskywars.party.PartyManager;
 import josegamerpt.realskywars.player.PlayerEvents;
 import josegamerpt.realskywars.player.PlayerManager;
@@ -44,10 +48,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class RealSkywars extends JavaPlugin {
     private static RealSkywars pl;
+    public static RealSkywars getPlugin() {
+        return pl;
+    }
 
+    private RSWnms nms;
     private final WorldManager wm = new WorldManager(this);
     private final LanguageManager lm = new LanguageManager();
     private final PlayerManager playerm = new PlayerManager(this);
@@ -65,81 +75,54 @@ public class RealSkywars extends JavaPlugin {
     private DatabaseManager databaseManager;
     private HologramManager hologramManager;
     private final PluginManager pm = Bukkit.getPluginManager();
-
-    public static RealSkywars getPlugin() {
-        return pl;
-    }
-
-    public static void log(String s) {
-        Bukkit.getLogger().log(Level.INFO, "[RealSkywars] " + s);
-    }
-
-    public static void log(Level l, String s) {
-        Bukkit.getLogger().log(l, "[RealSkywars] " + s);
-    }
-
+    public RSWnms getNMS() { return nms; }
     public WorldManager getWorldManager() {
         return wm;
     }
     public RSWEventsAPI getEventsAPI() { return rswapie; }
-
     public LanguageManager getLanguageManager() {
         return lm;
     }
-
     public PlayerManager getPlayerManager() {
         return playerm;
     }
-
     public MapManager getMapManager() {
         return mapm;
     }
-
     public GameManager getGameManager() {
         return gamem;
     }
-
     public ShopManager getShopManager() {
         return shopm;
     }
-
     public KitManager getKitManager() {
         return kitm;
     }
-
     public PartyManager getPartyManager() {
         return partym;
     }
-
     public Random getRandom() {
         return rand;
     }
-
     public ChestManager getChestManager() {
         return chestManager;
     }
-
     public DatabaseManager getDatabaseManager() {
         return databaseManager;
     }
-
     public LeaderboardManager getLeaderboardManager() {
         return lbm;
     }
-
     public AchievementsManager getAchievementsManager() {
         return am;
     }
-
     public HologramManager getHologramManager() {
         return hologramManager;
     }
-
     public SignManager getSignManager() {
         return sm;
     }
-
-    public void onEnable() { //TODO: passar instancia disto em vez de tudo static
+    public void onEnable() {
         long start = System.currentTimeMillis();
         pl = this;
 
@@ -148,6 +131,15 @@ public class RealSkywars extends JavaPlugin {
 
         //setup metrics
         new Metrics(this, 16365);
+
+        //verify nms version
+        if (!setupNMS()) {
+            getLogger().severe("Your server version is not currently supported by RealSkywars.");
+            getLogger().severe("If you think this is a bug, contact JoseGamer_PT.");
+            log(star);
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
 
         log("Loading languages.");
         Languages.setup(this);
@@ -162,7 +154,7 @@ public class RealSkywars extends JavaPlugin {
         }
 
         lm.loadLanguages();
-        if (!lm.checkSelect()) {
+        if (lm.areLanguagesEmpty()) {
             log(Level.SEVERE, "[ERROR] No Languages have been Detected. Stopped loading.");
             HandlerList.unregisterAll(this);
             Bukkit.getPluginManager().disablePlugin(this);
@@ -203,7 +195,7 @@ public class RealSkywars extends JavaPlugin {
             try {
                 databaseManager = new DatabaseManager(this);
             } catch (SQLException a) {
-                a.printStackTrace();
+                getLogger().severe("Error while creating Database Manager for RealSkywars: " + a.getMessage());
             }
 
             chestManager = new ChestManager();
@@ -225,6 +217,7 @@ public class RealSkywars extends JavaPlugin {
             pm.registerEvents(TierViewer.getListener(), this);
             pm.registerEvents(AchievementViewer.getListener(), this);
             pm.registerEvents(GameLogViewer.getListener(), this);
+            pm.registerEvents(VoteGUI.getListener(), this);
 
             //load leaderboard
             lbm.refreshLeaderboards();
@@ -240,14 +233,9 @@ public class RealSkywars extends JavaPlugin {
             CommandManager commandManager = new CommandManager(this);
             commandManager.hideTabComplete(true);
             //command suggestions
-            commandManager.getCompletionHandler().register("#createsuggestions", input -> {
-                ArrayList<String> sugests = new ArrayList<>();
-                for (int i = 0; i < 200; ++i) {
-                    sugests.add("Room" + i);
-                }
-
-                return sugests;
-            });
+            commandManager.getCompletionHandler().register("#createsuggestions", input -> IntStream.range(0, 200)
+                    .mapToObj(i -> "Room" + i)
+                    .collect(Collectors.toCollection(ArrayList::new)));
 
             commandManager.getCompletionHandler().register("#maps", input -> this.getGameManager().getRoomNames());
             commandManager.getCompletionHandler().register("#boolean", input -> Arrays.asList("false", "true"));
@@ -255,42 +243,44 @@ public class RealSkywars extends JavaPlugin {
             commandManager.getCompletionHandler().register("#kits", input -> kitm.getKitNames());
 
             commandManager.getParameterHandler().register(SWChest.Tier.class, argument -> {
-                SWChest.Tier tt = SWChest.Tier.valueOf(argument.toString().toUpperCase());
-                if (tt == null) return new TypeResult(argument);
-                return new TypeResult(tt, argument);
+                try {
+                    SWChest.Tier tt = SWChest.Tier.valueOf(argument.toString().toUpperCase());
+                    return new TypeResult(tt, argument);
+                } catch (Exception e) {
+                    return new TypeResult(null, argument);
+                }
             });
             commandManager.getParameterHandler().register(SWGameMode.Mode.class, argument -> {
                 try {
                     SWGameMode.Mode tt = SWGameMode.Mode.valueOf(argument.toString().toUpperCase());
-                    if (tt == null) return new TypeResult(argument);
                     return new TypeResult(tt, argument);
                 } catch (Exception e) {
-                    return new TypeResult(argument);
+                    return new TypeResult(null, argument);
                 }
             });
             commandManager.getParameterHandler().register(SWWorld.WorldType.class, argument -> {
                 try {
                     SWWorld.WorldType tt = SWWorld.WorldType.valueOf(argument.toString().toUpperCase());
-                    if (tt == null) return new TypeResult(argument);
                     return new TypeResult(tt, argument);
                 } catch (Exception e) {
-                    return new TypeResult(argument);
+                    return new TypeResult(null, argument);
                 }
             });
             commandManager.getParameterHandler().register(CurrencyManager.Operations.class, argument -> {
-                CurrencyManager.Operations tt = CurrencyManager.Operations.valueOf(argument.toString().toLowerCase());
-                if (tt == null) return new TypeResult(argument);
-                return new TypeResult(tt, argument);
-            });
-            commandManager.getParameterHandler().register(RealSkywarsCMD.KIT.class, argument -> {
-                RealSkywarsCMD.KIT tt;
                 try {
-                    tt = RealSkywarsCMD.KIT.valueOf(argument.toString().toLowerCase());
-                    if (tt == null) return new TypeResult(argument);
-                } catch (IllegalArgumentException e) {
-                    return new TypeResult(argument);
+                    CurrencyManager.Operations tt = CurrencyManager.Operations.valueOf(argument.toString().toUpperCase());
+                    return new TypeResult(tt, argument);
+                } catch (Exception e) {
+                    return new TypeResult(null, argument);
                 }
-                return new TypeResult(tt, argument);
+            });
+            commandManager.getParameterHandler().register(RealSkywarsCMD.KIT_OPERATION.class, argument -> {
+                try {
+                    RealSkywarsCMD.KIT_OPERATION tt = RealSkywarsCMD.KIT_OPERATION.valueOf(argument.toString().toUpperCase());
+                    return new TypeResult(tt, argument);
+                } catch (Exception e) {
+                    return new TypeResult(null, argument);
+                }
             });
 
             //command messages
@@ -303,7 +293,7 @@ public class RealSkywars extends JavaPlugin {
 
             //placeholderAPI support
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-                RealSkywars.log("Hooked on PlaceholderAPI!");
+                getLogger().info("Hooked on PlaceholderAPI!");
                 new RealSkywarsPlaceholderAPI(this).register();
             }
 
@@ -354,4 +344,38 @@ public class RealSkywars extends JavaPlugin {
         mapm.loadMaps();
         gamem.loadLobby();
     }
+
+    public String getServerVersion() {
+        return Bukkit.getServer().getClass().getPackage().getName().substring(23);
+    }
+
+    private boolean setupNMS() {
+        String version = getServerVersion();
+        getLogger().info("Your server is running version " + version);
+
+        switch (version) {
+            case "v1_20_R1":
+            case "v1_19_R3":
+            case "v1_18_R2":
+                nms = new NMS118R2andUP();
+                break;
+            case "v1_17_R1":
+                nms = new NMS117R1();
+            case "v1_16_R3":
+            case "v1_15_R1":
+            case "v1_14_R1":
+                nms = new NMS114R1tov116R3();
+                break;
+        }
+        return nms != null;
+    }
+
+    public void log(String s) {
+        Bukkit.getLogger().log(Level.INFO, "[RealSkywars] " + s);
+    }
+
+    public void log(Level l, String s) {
+        Bukkit.getLogger().log(l, "[RealSkywars] " + s);
+    }
+
 }

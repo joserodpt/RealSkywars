@@ -1,9 +1,9 @@
-package josegamerpt.realskywars.holograms.support;
+package josegamerpt.realskywars.utils.holograms.support;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.holograms.SWHologram;
+import josegamerpt.realskywars.utils.holograms.SWHologram;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Location;
 import org.bukkit.Material;

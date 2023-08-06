@@ -3,7 +3,6 @@ package josegamerpt.realskywars.world;
 import com.google.common.collect.Lists;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Entity;
@@ -124,9 +123,9 @@ public class WorldManager {
     private void tpToLobby(Player p) {
         if (rs.getGameManager().getLobbyLocation() != null) {
             p.teleport(rs.getGameManager().getLobbyLocation());
-            p.sendMessage(rs.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.LOBBY_TELEPORT, true));
+            p.sendMessage(rs.getLanguageManager().getString(LanguageManager.TS.LOBBY_TELEPORT, true));
         } else {
-            p.sendMessage(rs.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.LOBBYLOC_NOT_SET, true));
+            p.sendMessage(rs.getLanguageManager().getString(LanguageManager.TS.LOBBYLOC_NOT_SET, true));
         }
     }
 
@@ -156,10 +155,10 @@ public class WorldManager {
                 }
             }
         } catch (FileNotFoundException e) {
-            RealSkywars.log(Level.SEVERE, "Failed to copy world: world not found");
+            RealSkywars.getPlugin().log(Level.SEVERE, "Failed to copy world: world not found");
             e.printStackTrace();
         } catch (IOException e) {
-            RealSkywars.log(Level.SEVERE, "Failed to copy world.");
+            RealSkywars.getPlugin().log(Level.SEVERE, "Failed to copy world.");
             e.printStackTrace();
         }
     }
@@ -186,7 +185,7 @@ public class WorldManager {
         }
 
         if (!directory.delete()) {
-            RealSkywars.log(Level.WARNING, "Unable to delete directory " + directory);
+            RealSkywars.getPlugin().log(Level.WARNING, "Unable to delete directory " + directory);
         }
     }
 

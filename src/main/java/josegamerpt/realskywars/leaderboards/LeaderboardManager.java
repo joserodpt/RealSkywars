@@ -24,8 +24,7 @@ public class LeaderboardManager {
             try {
                 this.refreshLeaderboard(value);
             } catch (Exception e) {
-                RealSkywars.log(Level.SEVERE, "Error while loading Leaderboard for " + value.name());
-                e.printStackTrace();
+                RealSkywars.getPlugin().log(Level.SEVERE, "Error while loading Leaderboard for " + value.name() + " -> " + e.getMessage());
             }
         }
     }

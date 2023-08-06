@@ -1,9 +1,9 @@
-package josegamerpt.realskywars.holograms;
+package josegamerpt.realskywars.utils.holograms;
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.holograms.support.DHHologram;
-import josegamerpt.realskywars.holograms.support.HDHologram;
-import josegamerpt.realskywars.holograms.support.NoHologram;
+import josegamerpt.realskywars.utils.holograms.support.DHHologram;
+import josegamerpt.realskywars.utils.holograms.support.HDHologram;
+import josegamerpt.realskywars.utils.holograms.support.NoHologram;
 import org.bukkit.Bukkit;
 
 public class HologramManager {
@@ -20,10 +20,10 @@ public class HologramManager {
 
         switch (this.selected) {
             case DECENT_HOLOGRAMS:
-                RealSkywars.log("Hooked on Decent Holograms!");
+                RealSkywars.getPlugin().log("Hooked on Decent Holograms!");
                 break;
             case HOLOGRAPHIC_DISPLAYS:
-                RealSkywars.log("Hooked on Holographic Displays!");
+                RealSkywars.getPlugin().log("Hooked on Holographic Displays!");
                 break;
         }
     }

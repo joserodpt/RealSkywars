@@ -306,6 +306,7 @@ public abstract class SWGameMode {
     public void spectate(RSWPlayer p, SpectateType st, Location killLoc) {
         p.setInvincible(true);
         p.setFlying(true);
+        p.setGameMode(GameMode.CREATIVE);
 
         switch (st) {
             case GAME:
@@ -354,7 +355,6 @@ public abstract class SWGameMode {
 
                 p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.EXTERNAL_SPECTATOR);
                 p.teleport(this.getSpectatorLocation());
-                p.getPlayer().setGameMode(GameMode.SURVIVAL);
                 p.heal();
 
                 //update tab
@@ -394,7 +394,7 @@ public abstract class SWGameMode {
     public void reset() {
         this.setState(GameState.RESETTING);
 
-        this.kickPlayers(rs.getLanguageManager().getString(new RSWPlayer(false), LanguageManager.TS.ARENA_RESET, true));
+        this.kickPlayers(rs.getLanguageManager().getString(LanguageManager.TS.ARENA_RESET, true));
         this.resetArena(OperationReason.RESET);
     }
 
@@ -502,7 +502,7 @@ public abstract class SWGameMode {
 
             p.addGameLog(new RSWGameLog(this.getName(), this.getGameMode(), this.isRanked(), this.getMaxPlayers(), winner, this.getTimePassed(), Text.getDayAndTime()));
 
-            p.saveData();
+            p.saveData(RSWPlayer.PlayerData.GAME);
         }
     }
 
@@ -572,6 +572,7 @@ public abstract class SWGameMode {
 
         p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.LOBBY_OR_NOGAME);
         p.setFlying(false);
+        p.setGameMode(GameMode.SURVIVAL);
         p.heal();
 
         if (p.hasKit()) {

@@ -5,7 +5,7 @@ import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.game.SWEvent;
 import josegamerpt.realskywars.game.modes.SWGameMode;
-import josegamerpt.realskywars.holograms.SWHologram;
+import josegamerpt.realskywars.utils.holograms.SWHologram;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -148,16 +148,16 @@ public class SWChest {
                 //
             }, () -> {
                 this.getLocation().getWorld().spawnParticle(Particle.CLOUD, this.getLocation().add(0.5, 0, 0.5), 5);
-                /*if (this.isChest()) {
-                    RealSkywars.getNMS().playChestAnimation(this.getChestBlock(), false);
-                }*/
+                if (this.isChest()) {
+                    RealSkywars.getPlugin().getNMS().playChestAnimation(this.getChestBlock(), false);
+                }
                 this.clear();
                 this.hologram.deleteHologram();
             }, (t) -> {
                 this.hologram.setTime(t.getSecondsLeft());
-                /*if (this.isChest()) {
-                    RealSkywars.getNMS().playChestAnimation(this.getChestBlock(), true);
-                }*/
+                if (this.isChest()) {
+                    RealSkywars.getPlugin().getNMS().playChestAnimation(this.getChestBlock(), true);
+                }
             });
 
             this.chestCTD.scheduleTimer();

@@ -45,7 +45,7 @@ public class Team {
         this.members.forEach(rswPlayer -> rswPlayer.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.TEAM_BROADCAST_LEAVE, true).replace("%player%", p.getName())));
 
         if (this.playing && members.isEmpty()) {
-            eliminated = true;
+            this.eliminated = true;
         }
         p.setTeam(null);
         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.TEAM_LEAVE, true).replace("%team%", getName()));

@@ -19,20 +19,15 @@ public class SWWorldSchematicEngine implements SWWorldEngine {
 
     private final World world;
     private final SWGameMode gameRoom;
-    private final String worldName;
-
     private final String schematicName;
     private final WorldManager wm = RealSkywars.getPlugin().getWorldManager();
 
-
     public SWWorldSchematicEngine(World w, String sname, SWGameMode gameMode) {
-        this.worldName = w.getName();
         this.schematicName = sname;
         this.world = w;
         this.world.setAutoSave(false);
         this.gameRoom = gameMode;
     }
-
 
     @Override
     public World getWorld() {
@@ -62,7 +57,7 @@ public class SWWorldSchematicEngine implements SWWorldEngine {
                     this.gameRoom.setState(SWGameMode.GameState.AVAILABLE);
                     Debugger.print(Solo.class, "[ROOM " + this.gameRoom.getName() + "] sucessfully resetted.");
                 } else {
-                    RealSkywars.log(Level.SEVERE, "ERROR! Could not load " + this.getName());
+                    RealSkywars.getPlugin().log(Level.SEVERE, "ERROR! Could not load " + this.getName());
                 }
                 break;
         }

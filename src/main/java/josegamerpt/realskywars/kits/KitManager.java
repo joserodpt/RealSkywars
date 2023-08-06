@@ -2,6 +2,7 @@ package josegamerpt.realskywars.kits;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Kits;
+import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -29,7 +30,7 @@ public class KitManager {
                     mat = Material.getMaterial(matString);
                 } catch (Exception e) {
                     mat = Material.BARRIER;
-                    RealSkywars.log(Level.WARNING, matString + " isnt a valid material [KIT]");
+                    RealSkywars.getPlugin().log(Level.WARNING, matString + " isnt a valid material [KIT]");
                 }
                 ItemStack[] k = getKitContents(id);
                 String perm = Kits.file().getString("Kits." + id + ".Permission");

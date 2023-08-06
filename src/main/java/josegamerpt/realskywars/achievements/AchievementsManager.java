@@ -53,7 +53,7 @@ public class AchievementsManager {
             this.achievements.put(t, achiv);
         }
 
-        RealSkywars.log("Loaded " + achi + " rewards for " + cats + " coin categories.");
+        RealSkywars.getPlugin().log("Loaded " + achi + " rewards for " + cats + " coin categories.");
     }
 
     public List<Achievement> getAchievements(RSWPlayer.PlayerStatistics ds) {

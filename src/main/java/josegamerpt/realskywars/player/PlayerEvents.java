@@ -12,9 +12,9 @@ import josegamerpt.realskywars.gui.GUIManager;
 import josegamerpt.realskywars.gui.guis.MapsViewer;
 import josegamerpt.realskywars.gui.guis.PlayerGUI;
 import josegamerpt.realskywars.gui.guis.ProfileContent;
+import josegamerpt.realskywars.gui.guis.VoteGUI;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
-import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Text;
 
 import org.bukkit.*;
@@ -129,12 +129,14 @@ public class PlayerEvents implements Listener {
 
                                     if (p.getMatch().getStartRoomTimer() != null) {
                                         if (p.getMatch().getStartRoomTimer().getSecondsLeft() > Config.file().getInt("Config.Vote-Before-Seconds")) {
-                                            GUIManager.openVote(p);
+                                            VoteGUI vg = new VoteGUI(p);
+                                            vg.openInventory(p.getPlayer());
                                         } else {
                                             p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.CANT_VOTE, true));
                                         }
                                     } else {
-                                        GUIManager.openVote(p);
+                                        VoteGUI vg = new VoteGUI(p);
+                                        vg.openInventory(p.getPlayer());
                                     }
 
                                     break;
@@ -450,21 +452,6 @@ public class PlayerEvents implements Listener {
             assert gp != null;
             if (gp.getProperty(RSWPlayer.PlayerProperties.BOW_PARTICLES) != null && gp.isInMatch()) {
                 gp.addTrail(new BowTrail((Particle) gp.getProperty(RSWPlayer.PlayerProperties.BOW_PARTICLES), e.getEntity(), gp));
-            }
-        }
-    }
-
-    //make chest open
-    @EventHandler
-    public void onInv(InventoryCloseEvent event) {
-        if (event.getInventory().getHolder() instanceof Chest) {
-            RSWPlayer p = rs.getPlayerManager().getPlayer((Player) event.getPlayer());
-            if (p != null && p.isInMatch()) {
-                Chest c = (Chest) event.getInventory().getHolder();
-                SWChest swc = p.getMatch().getChest(c.getLocation());
-                if (swc != null && swc.isOpened()) { //TODO: remove?
-                   // Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> rs.getNMS().playChestAnimation(swc.getChestBlock(), true), 2);
-                }
             }
         }
     }

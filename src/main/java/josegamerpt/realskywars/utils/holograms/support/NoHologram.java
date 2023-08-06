@@ -1,6 +1,6 @@
-package josegamerpt.realskywars.holograms.support;
+package josegamerpt.realskywars.utils.holograms.support;
 
-import josegamerpt.realskywars.holograms.SWHologram;
+import josegamerpt.realskywars.utils.holograms.SWHologram;
 import org.bukkit.Location;
 
 public class NoHologram implements SWHologram {

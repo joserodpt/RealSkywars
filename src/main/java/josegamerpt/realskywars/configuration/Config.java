@@ -35,7 +35,7 @@ public class Config implements Listener {
         try {
             customFile.save(file);
         } catch (IOException e) {
-            RealSkywars.log("Couldn't save " + name + "!");
+            RealSkywars.getPlugin().log("Couldn't save " + name + "!");
         }
     }
 

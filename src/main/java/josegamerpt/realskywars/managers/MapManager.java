@@ -304,7 +304,7 @@ public class MapManager {
 
                 p.getSetup().setWorld(w);
             } else {
-                RealSkywars.log(Level.WARNING, "Could not create setup world for " + p.getSetup().getName());
+                RealSkywars.getPlugin().log(Level.WARNING, "Could not create setup world for " + p.getSetup().getName());
             }
         }
     }
@@ -328,12 +328,13 @@ public class MapManager {
     }
 
     public void finishSetup(RSWPlayer p) {
-        rs.getGameManager().tpToLobby(p);
         WorldEditPlugin w = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
         try {
             com.sk89q.worldedit.regions.Region r = w.getSession(p.getPlayer()).getSelection(w.getSession(p.getPlayer()).getSelectionWorld());
 
             if (r != null) {
+                rs.getGameManager().tpToLobby(p);
+
                 Location pos2 = new Location(p.getSetup().getWorld(), r.getMinimumPoint().getBlockX(), r.getMinimumPoint().getBlockY(), r.getMinimumPoint().getBlockZ());
                 Location pos1 = new Location(p.getSetup().getWorld(), r.getMaximumPoint().getBlockX(), r.getMaximumPoint().getBlockY(), r.getMaximumPoint().getBlockZ());
 
@@ -407,7 +408,6 @@ public class MapManager {
             }
         } catch (Exception e) {
             p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.NO_ARENA_BOUNDARIES, true));
-            e.printStackTrace();
         }
     }
 }

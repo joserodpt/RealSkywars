@@ -1,8 +1,8 @@
-package josegamerpt.realskywars.holograms.support;
+package josegamerpt.realskywars.utils.holograms.support;
 
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
-import josegamerpt.realskywars.holograms.SWHologram;
+import josegamerpt.realskywars.utils.holograms.SWHologram;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,7 +13,7 @@ public class DHHologram implements SWHologram {
     @Override
     public void spawnHologram(Location loc) {
         if (this.holo == null) {
-            this.holo = DHAPI.createHologram(loc.toString(), loc.add(0.5, 2, 0.5));
+            this.holo = DHAPI.createHologram("RSW-" + loc.getWorld().getName() + "-X" + loc.getBlockX() + "Y" + loc.getBlockY() + "Z" + loc.getBlockZ(), loc.add(0.5, 2, 0.5));
             DHAPI.addHologramLine(this.holo, Material.CLOCK);
             DHAPI.addHologramLine(this.holo, "~");
         }
