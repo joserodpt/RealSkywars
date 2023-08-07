@@ -20,13 +20,15 @@ import josegamerpt.realskywars.utils.Text;
 import josegamerpt.realskywars.utils.WorldEditUtils;
 import josegamerpt.realskywars.world.SWWorld;
 import josegamerpt.realskywars.world.WorldManager;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
-import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.logging.Level;
 
 public class MapManager {
@@ -35,28 +37,10 @@ public class MapManager {
         this.rs = rs;
     }
 
-    public static void saveSettings(SWGameMode game) {
-        Maps.file().set(game.getName() + ".Settings.Spectator", game.isSpectatorEnabled());
-        Maps.file().set(game.getName() + ".Settings.Instant-End", game.isInstantEndEnabled());
-        Maps.file().set(game.getName() + ".ranked", game.isRanked());
-        Maps.save();
-    }
-
-    public ArrayList<String> getRegisteredMaps() {
-        Maps.reload();
-        return new ArrayList<>(Maps.file().getConfigurationSection("").getKeys(false));
-    }
-
-    public void unregisterMap(SWGameMode map) {
-        rs.getGameManager().removeRoom(map);
-        Maps.file().set(map.getName(), null);
-        Maps.save();
-    }
-
     public void loadMaps() {
         rs.getGameManager().clearRooms();
 
-        for (String s : getRegisteredMaps()) {
+        for (String s : this.getRegisteredMaps()) {
             if (getGameType(s) == null) {
                 throw new IllegalStateException("Mode " + Maps.file().getString(s + ".Settings.GameType") + " doesnt exist! Map: " + s);
             }
@@ -96,98 +80,15 @@ public class MapManager {
         }
     }
 
-    private SWWorld.WorldType getWorldType(String s) {
-        return SWWorld.WorldType.valueOf(s);
+    public ArrayList<String> getRegisteredMaps() {
+        Maps.reload();
+        return new ArrayList<>(Maps.file().getRoot().getRoutesAsStrings(false));
     }
-
-    private Boolean isRanked(String s) {
-        return Maps.file().getBoolean(s + ".ranked");
+    public void unregisterMap(SWGameMode map) {
+        rs.getGameManager().removeRoom(map);
+        Maps.file().set(map.getName(), null);
+        Maps.save();
     }
-
-    private ArrayList<SWChest> getChests(String worldName, String section) {
-        ArrayList<SWChest> chests = new ArrayList<>();
-        ConfigurationSection cs = Maps.file().getConfigurationSection(section + ".Chests");
-        if (cs != null) {
-            Set<String> keys = cs.getKeys(false);
-            for (String i : keys) {
-                int x = Maps.file().getInt(section + ".Chests." + i + ".LocationX");
-                int y = Maps.file().getInt(section + ".Chests." + i + ".LocationY");
-                int z = Maps.file().getInt(section + ".Chests." + i + ".LocationZ");
-                BlockFace f = BlockFace.valueOf(Maps.file().getString(section + ".Chests." + i + ".Face"));
-
-                SWChest.Type ct = SWChest.Type.valueOf(Maps.file().getString(section + ".Chests." + i + ".Type"));
-                if (ct == null) {
-                    Debugger.print(MapManager.class, "CHEST FACE INVALID WHILE LOADING " + worldName + "!! >> " + Maps.file().getString(section + ".Chests." + i + ".Type"));
-                }
-
-                chests.add(new SWChest(ct, worldName, x, y, z, f));
-            }
-        } else {
-            Debugger.print(MapManager.class, "There are no chests in " + worldName + " (possibly a bug? Check config pls!)");
-        }
-        return chests;
-    }
-
-    private SWGameMode.Mode getGameType(String s) {
-        return SWGameMode.Mode.valueOf(Maps.file().getString(s + ".Settings.GameType"));
-    }
-
-    private Boolean isInstantEndingEnabled(String s) {
-        return Maps.file().getBoolean(s + ".Settings.Instant-End");
-    }
-
-    private Location getPOS1(World w, String s) {
-        double hx = Maps.file().getDouble(s + ".World.Border.POS1-X");
-        double hy = Maps.file().getDouble(s + ".World.Border.POS1-Y");
-        double hz = Maps.file().getDouble(s + ".World.Border.POS1-Z");
-
-        return new Location(w, hx, hy, hz);
-    }
-
-    private Location getPOS2(World w, String s) {
-        double hx = Maps.file().getDouble(s + ".World.Border.POS2-X");
-        double hy = Maps.file().getDouble(s + ".World.Border.POS2-Y");
-        double hz = Maps.file().getDouble(s + ".World.Border.POS2-Z");
-
-        return new Location(w, hx, hy, hz);
-    }
-
-    public Boolean isSpecEnabled(String s) {
-        return Maps.file().getBoolean(s + ".Settings.Spectator");
-    }
-
-    public Location getSpecLoc(String nome) {
-        double x = Maps.file().getDouble(nome + ".Locations.Spectator.X");
-        double y = Maps.file().getDouble(nome + ".Locations.Spectator.Y");
-        double z = Maps.file().getDouble(nome + ".Locations.Spectator.Z");
-        float pitch = (float) Maps.file().getDouble(nome + ".Locations.Spectator.Pitch");
-        float yaw = (float) Maps.file().getDouble(nome + ".Locations.Spectator.Yaw");
-        return new Location(Bukkit.getWorld(nome), x, y, z, pitch, yaw);
-    }
-
-    public SWGameMode getMap(String s) {
-        return rs.getGameManager().getGames(PlayerManager.Modes.ALL).stream()
-                .filter(g -> g.getName().equalsIgnoreCase(s))
-                .findFirst()
-                .orElse(null);
-    }
-
-
-    public ArrayList<Cage> getCages(String s, Location specLoc) {
-        ConfigurationSection cs = Maps.file().getConfigurationSection(s + ".Locations.Cages");
-        Set<String> keys = cs.getKeys(false);
-        ArrayList<Cage> locs = new ArrayList<>();
-        int id = 0;
-        for (String i : keys) {
-            int x = Maps.file().getInt(s + ".Locations.Cages." + i + ".X");
-            int y = Maps.file().getInt(s + ".Locations.Cages." + i + ".Y");
-            int z = Maps.file().getInt(s + ".Locations.Cages." + i + ".Z");
-            locs.add(new SoloCage(id, x, y, z, Maps.file().getString(s + ".world"), specLoc.getBlockX(), specLoc.getBlockY(), specLoc.getBlockZ()));
-            id++;
-        }
-        return locs;
-    }
-
     public void saveMap(SWGameMode g) {
         String s = g.getName();
 
@@ -266,7 +167,40 @@ public class MapManager {
 
         Maps.save();
     }
+    public SWGameMode getMap(String s) {
+        return rs.getGameManager().getGames(GameManager.GameModes.ALL).stream()
+                .filter(g -> g.getName().equalsIgnoreCase(s))
+                .findFirst()
+                .orElse(null);
+    }
+    public ArrayList<Cage> getCages(String s, Location specLoc) {
+        ArrayList<Cage> locs = new ArrayList<>();
+        int id = 0;
+        for (String i : Maps.file().getSection(s + ".Locations.Cages").getRoutesAsStrings(false)) {
+            int x = Maps.file().getInt(s + ".Locations.Cages." + i + ".X");
+            int y = Maps.file().getInt(s + ".Locations.Cages." + i + ".Y");
+            int z = Maps.file().getInt(s + ".Locations.Cages." + i + ".Z");
+            locs.add(new SoloCage(id, x, y, z, Maps.file().getString(s + ".world"), specLoc.getBlockX(), specLoc.getBlockY(), specLoc.getBlockZ()));
+            id++;
+        }
+        return locs;
+    }
+    public void setupSolo(RSWPlayer p, String mapname, SWWorld.WorldType wt, int maxP) {
+        SetupRoom s = new SetupRoom(mapname, null, wt, maxP);
+        s.setSchematic(mapname);
+        p.setSetup(s);
 
+        MapSettings m = new MapSettings(s, p.getUUID());
+        m.openInventory(p);
+    }
+    public void setupTeams(RSWPlayer p, String mapname, SWWorld.WorldType wt, int teams, int pperteam) {
+        SetupRoom s = new SetupRoom(mapname, null, wt, teams, pperteam);
+        s.setSchematic(mapname);
+        p.setSetup(s);
+
+        MapSettings m = new MapSettings(s, p.getUUID());
+        m.openInventory(p);
+    }
     public void cancelSetup(RSWPlayer p) {
         rs.getGameManager().tpToLobby(p);
         rs.getPlayerManager().giveItems(p.getPlayer(), PlayerManager.Items.LOBBY);
@@ -274,7 +208,6 @@ public class MapManager {
         Maps.save();
         p.setSetup(null);
     }
-
     public void continueSetup(RSWPlayer p) {
         if (!p.getSetup().isTPConfirmed()) {
             p.getSetup().setTPConfirm(true);
@@ -308,25 +241,6 @@ public class MapManager {
             }
         }
     }
-
-    public void setupSolo(RSWPlayer p, String mapname, SWWorld.WorldType wt, int maxP) {
-        SetupRoom s = new SetupRoom(mapname, null, wt, maxP);
-        s.setSchematic(mapname);
-        p.setSetup(s);
-
-        MapSettings m = new MapSettings(s, p.getUUID());
-        m.openInventory(p);
-    }
-
-    public void setupTeams(RSWPlayer p, String mapname, SWWorld.WorldType wt, int teams, int pperteam) {
-        SetupRoom s = new SetupRoom(mapname, null, wt, teams, pperteam);
-        s.setSchematic(mapname);
-        p.setSetup(s);
-
-        MapSettings m = new MapSettings(s, p.getUUID());
-        m.openInventory(p);
-    }
-
     public void finishSetup(RSWPlayer p) {
         WorldEditPlugin w = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
         try {
@@ -409,5 +323,70 @@ public class MapManager {
         } catch (Exception e) {
             p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.NO_ARENA_BOUNDARIES, true));
         }
+    }
+    public static void saveSettings(SWGameMode game) {
+        Maps.file().set(game.getName() + ".Settings.Spectator", game.isSpectatorEnabled());
+        Maps.file().set(game.getName() + ".Settings.Instant-End", game.isInstantEndEnabled());
+        Maps.file().set(game.getName() + ".ranked", game.isRanked());
+        Maps.save();
+    }
+
+    private SWGameMode.Mode getGameType(String s) {
+        return SWGameMode.Mode.valueOf(Maps.file().getString(s + ".Settings.GameType"));
+    }
+    private Boolean isInstantEndingEnabled(String s) {
+        return Maps.file().getBoolean(s + ".Settings.Instant-End");
+    }
+    private Location getPOS1(World w, String s) {
+        double hx = Maps.file().getDouble(s + ".World.Border.POS1-X");
+        double hy = Maps.file().getDouble(s + ".World.Border.POS1-Y");
+        double hz = Maps.file().getDouble(s + ".World.Border.POS1-Z");
+
+        return new Location(w, hx, hy, hz);
+    }
+    private Location getPOS2(World w, String s) {
+        double hx = Maps.file().getDouble(s + ".World.Border.POS2-X");
+        double hy = Maps.file().getDouble(s + ".World.Border.POS2-Y");
+        double hz = Maps.file().getDouble(s + ".World.Border.POS2-Z");
+
+        return new Location(w, hx, hy, hz);
+    }
+    public Boolean isSpecEnabled(String s) {
+        return Maps.file().getBoolean(s + ".Settings.Spectator");
+    }
+    public Location getSpecLoc(String nome) {
+        double x = Maps.file().getDouble(nome + ".Locations.Spectator.X");
+        double y = Maps.file().getDouble(nome + ".Locations.Spectator.Y");
+        double z = Maps.file().getDouble(nome + ".Locations.Spectator.Z");
+        float pitch = Maps.file().getFloat(nome + ".Locations.Spectator.Pitch");
+        float yaw = Maps.file().getFloat(nome + ".Locations.Spectator.Yaw");
+        return new Location(Bukkit.getWorld(nome), x, y, z, pitch, yaw);
+    }
+    private SWWorld.WorldType getWorldType(String s) {
+        return SWWorld.WorldType.valueOf(s);
+    }
+    private Boolean isRanked(String s) {
+        return Maps.file().getBoolean(s + ".ranked");
+    }
+    private ArrayList<SWChest> getChests(String worldName, String section) {
+        ArrayList<SWChest> chests = new ArrayList<>();
+        if (Maps.file().isSection(section + ".Chests")) {
+            for (String i : Maps.file().getSection(section + ".Chests").getRoutesAsStrings(false)) {
+                int x = Maps.file().getInt(section + ".Chests." + i + ".LocationX");
+                int y = Maps.file().getInt(section + ".Chests." + i + ".LocationY");
+                int z = Maps.file().getInt(section + ".Chests." + i + ".LocationZ");
+                BlockFace f = BlockFace.valueOf(Maps.file().getString(section + ".Chests." + i + ".Face"));
+
+                SWChest.Type ct = SWChest.Type.valueOf(Maps.file().getString(section + ".Chests." + i + ".Type"));
+                if (ct == null) {
+                    Debugger.print(MapManager.class, "CHEST FACE INVALID WHILE LOADING " + worldName + "!! >> " + Maps.file().getString(section + ".Chests." + i + ".Type"));
+                }
+
+                chests.add(new SWChest(ct, worldName, x, y, z, f));
+            }
+        } else {
+            Debugger.print(MapManager.class, "There are no chests in " + worldName + " (possibly a bug? Check config pls!)");
+        }
+        return chests;
     }
 }

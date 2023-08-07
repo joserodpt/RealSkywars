@@ -5,10 +5,10 @@ import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.modes.Placeholder;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.game.modes.SWGameMode.GameState;
+import josegamerpt.realskywars.game.modes.SWSign;
 import josegamerpt.realskywars.misc.Selections;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
-import josegamerpt.realskywars.sign.SWSign;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -71,16 +71,16 @@ public class GameManager {
                 f.addAll(this.games.stream().filter(r -> r.getState().equals(GameState.PLAYING) || r.getState().equals(GameState.FINISHING)).collect(Collectors.toList()));
                 break;
             case SOLO:
-                f.addAll(this.getGames(PlayerManager.Modes.SOLO));
+                f.addAll(this.getGames(GameModes.SOLO));
                 break;
             case TEAMS:
-                f.addAll(this.getGames(PlayerManager.Modes.TEAMS));
+                f.addAll(this.getGames(GameModes.TEAMS));
                 break;
             case SOLO_RANKED:
-                f.addAll(this.getGames(PlayerManager.Modes.SOLO_RANKED));
+                f.addAll(this.getGames(GameModes.SOLO_RANKED));
                 break;
             case TEAMS_RANKED:
-                f.addAll(this.getGames(PlayerManager.Modes.TEAMS_RANKED));
+                f.addAll(this.getGames(GameModes.TEAMS_RANKED));
                 break;
             default:
                 break;
@@ -113,12 +113,12 @@ public class GameManager {
 
     public void loadLobby() {
         this.loginTP = Config.file().getBoolean("Config.Auto-Teleport-To-Lobby");
-        if (Config.file().isConfigurationSection("Config.Lobby")) {
+        if (Config.file().isSection("Config.Lobby")) {
             double x = Config.file().getDouble("Config.Lobby.X");
             double y = Config.file().getDouble("Config.Lobby.Y");
             double z = Config.file().getDouble("Config.Lobby.Z");
-            float yaw = (float) Config.file().getDouble("Config.Lobby.Yaw");
-            float pitch = (float) Config.file().getDouble("Config.Lobby.Pitch");
+            float yaw = Config.file().getFloat("Config.Lobby.Yaw");
+            float pitch = Config.file().getFloat("Config.Lobby.Pitch");
             World world = Bukkit.getServer().getWorld(Config.file().getString("Config.Lobby.World"));
             this.lobbyLOC = new Location(world, x, y, z, yaw, pitch);
         }
@@ -151,7 +151,7 @@ public class GameManager {
         this.games.clear();
     }
 
-    public List<SWGameMode> getGames(PlayerManager.Modes pt) {
+    public List<SWGameMode> getGames(GameModes pt) {
         switch (pt) {
             case ALL:
                 return this.games;
@@ -200,7 +200,7 @@ public class GameManager {
                 if (p.isInMatch()) {
                     p.getMatch().removePlayer(p);
                 }
-                Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
                     o.get().addPlayer(p);
                     PlayerManager.teleporting.remove(p.getUUID());
                 }, 5);
@@ -232,4 +232,6 @@ public class GameManager {
         }
         return null;
     }
+
+    public enum GameModes {SOLO, SOLO_RANKED, TEAMS, TEAMS_RANKED, RANKED, ALL}
 }

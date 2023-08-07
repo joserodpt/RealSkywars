@@ -1,45 +1,53 @@
 package josegamerpt.realskywars.configuration;
 
-import josegamerpt.realskywars.RealSkywars;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import dev.dejvokep.boostedyaml.YamlDocument;
+import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
+import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
+import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
+import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
+import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 public class Config implements Listener {
 
-    private static String name = "config.yml";
-    private static File file;
-    private static FileConfiguration customFile;
+    private static final String name = "config.yml";
+    private static YamlDocument document;
 
-    public static void setup(Plugin p) {
-        file = new File(p.getDataFolder(), name);
-
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException ignored) {
-            }
+    public static void setup(final JavaPlugin rm) {
+        try {
+            document = YamlDocument.create(new File(rm.getDataFolder(), name), rm.getResource(name),
+                    GeneralSettings.DEFAULT,
+                    LoaderSettings.builder().setAutoUpdate(true).build(),
+                    DumperSettings.DEFAULT,
+                    UpdaterSettings.builder().setVersioning(new BasicVersioning("Version")).build());
+        } catch (final IOException e) {
+            Bukkit.getLogger().log(Level.SEVERE, "Couldn't setup " + name + "!");
         }
-        customFile = YamlConfiguration.loadConfiguration(file);
     }
 
-    public static FileConfiguration file() {
-        return customFile;
+    public static YamlDocument file() {
+        return document;
     }
 
     public static void save() {
         try {
-            customFile.save(file);
-        } catch (IOException e) {
-            RealSkywars.getPlugin().log("Couldn't save " + name + "!");
+            document.save();
+        } catch (final IOException e) {
+            Bukkit.getLogger().log(Level.SEVERE, "Couldn't save " + name + "!");
         }
     }
 
     public static void reload() {
-        customFile = YamlConfiguration.loadConfiguration(file);
+        try {
+            document.reload();
+        } catch (final IOException e) {
+            Bukkit.getLogger().log(Level.SEVERE, "Couldn't reload " + name + "!");
+        }
     }
 }

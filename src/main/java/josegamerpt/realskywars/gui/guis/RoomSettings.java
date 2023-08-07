@@ -139,6 +139,8 @@ public class RoomSettings {
                                     switch (e.getRawSlot()) {
                                         // reset
                                         case 22:
+                                            p.closeInventory();
+                                            p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(gp, LanguageManager.TS.ARENA_RESET, true));
                                             game.reset();
                                             p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(gp, LanguageManager.TS.MAP_RESET_DONE, true));
 

@@ -1,9 +1,10 @@
 package josegamerpt.realskywars;
 
 import josegamerpt.realskywars.leaderboards.LeaderboardManager;
-import josegamerpt.realskywars.player.PlayerManager;
+import josegamerpt.realskywars.managers.GameManager;
 import org.bukkit.OfflinePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -56,6 +57,7 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
      *
      * @return The name of the author as a String.
      */
+    @NotNull
     @Override
     public String getAuthor(){
         return plugin.getDescription().getAuthors().toString();
@@ -70,6 +72,7 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
      *
      * @return The identifier in {@code %<identifier>_<value>%} as String.
      */
+    @NotNull
     @Override
     public String getIdentifier(){
         return "realskywars";
@@ -82,6 +85,7 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
      *
      * @return The version as a String.
      */
+    @NotNull
     @Override
     public String getVersion(){
         return plugin.getDescription().getVersion();
@@ -92,13 +96,13 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
         switch (identifier.toLowerCase(Locale.ROOT))
         {
             case "playing":
-                return plugin.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.ALL) + "";
+                return plugin.getPlayerManager().getPlayingPlayers(GameManager.GameModes.ALL) + "";
             case "playing_solo":
-                return plugin.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.SOLO) + "";
+                return plugin.getPlayerManager().getPlayingPlayers(GameManager.GameModes.SOLO) + "";
             case "playing_teams":
-                return plugin.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.TEAMS) + "";
+                return plugin.getPlayerManager().getPlayingPlayers(GameManager.GameModes.TEAMS) + "";
             case "playing_ranked":
-                return plugin.getPlayerManager().getPlayingPlayers(PlayerManager.Modes.RANKED) + "";
+                return plugin.getPlayerManager().getPlayingPlayers(GameManager.GameModes.RANKED) + "";
                 //SOLO
             case "solo_wins_1":
                 return plugin.getLeaderboardManager().getLeaderboard(LeaderboardManager.Leaderboard.SOLO_WINS).getIndex(1);

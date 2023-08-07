@@ -4,6 +4,7 @@ import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.configuration.Config;
+import josegamerpt.realskywars.configuration.Maps;
 import josegamerpt.realskywars.game.Countdown;
 import josegamerpt.realskywars.game.SWEvent;
 import josegamerpt.realskywars.game.modes.teams.Team;
@@ -11,7 +12,6 @@ import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWGameLog;
 import josegamerpt.realskywars.player.RSWPlayer;
-import josegamerpt.realskywars.sign.SWSign;
 import josegamerpt.realskywars.utils.ArenaCuboid;
 import josegamerpt.realskywars.utils.Demolition;
 import josegamerpt.realskywars.utils.MathUtils;
@@ -38,15 +38,15 @@ public abstract class SWGameMode {
 
     private final SWWorld world;
     private final ArenaCuboid arenaCuboid;
-    private final ArrayList<SWChest> chests;
-
+    private final List<SWChest> chests;
+    private List<SWSign> signs;
     private final String name;
     private final int maxPlayers;
     private final WorldBorder border;
     private final int borderSize;
     private final Location spectatorLocation;
     private final String schematicName;
-    private final ArrayList<RSWPlayer> inRoom = new ArrayList<>();
+    private final List<RSWPlayer> inRoom = new ArrayList<>();
     private final HashMap<UUID, Integer> chestVotes = new HashMap<>();
     private final HashMap<UUID, Integer> projectileVotes = new HashMap<>();
     private final HashMap<UUID, Integer> timeVotes = new HashMap<>();
@@ -63,12 +63,11 @@ public abstract class SWGameMode {
     private BukkitTask timeCounterTask;
     private ProjectileType projectileType = ProjectileType.NORMAL;
     private TimeType timeType = TimeType.DAY;
-    private ArrayList<SWEvent> events;
-    private final ArrayList<SWSign> signs = new ArrayList<>();
+    private List<SWEvent> events;
 
     private RealSkywars rs;
 
-    public SWGameMode(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd, RealSkywars rs) {
+    public SWGameMode(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, List<SWChest> chests, Boolean rankd, RealSkywars rs) {
         this.rs = rs;
 
         this.name = nome;
@@ -94,7 +93,11 @@ public abstract class SWGameMode {
         this.projectileVotes.put(UUID.randomUUID(), 1);
         this.timeVotes.put(UUID.randomUUID(), 1);
 
+        //load events
         this.events = parseEvents();
+
+        //load signs
+        this.signs = loadSigns();
 
         this.bossBar = Bukkit.createBossBar(Text.color(rs.getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_WAIT)), BarColor.WHITE, BarStyle.SOLID);
     }
@@ -104,6 +107,7 @@ public abstract class SWGameMode {
         this.world = null;
         this.arenaCuboid = null;
         this.chests = null;
+        this.signs = null;
         this.maxPlayers = -1;
         this.border = null;
         this.borderSize = -1;
@@ -132,7 +136,7 @@ public abstract class SWGameMode {
     }
 
     private void tickEvents() {
-        ArrayList<SWEvent> tmp = new ArrayList<>(this.events);
+        List<SWEvent> tmp = new ArrayList<>(this.events);
         tmp.forEach(SWEvent::tick);
     }
 
@@ -199,8 +203,8 @@ public abstract class SWGameMode {
         return this.getPlayers().size();
     }
 
-    public ArrayList<RSWPlayer> getPlayers() {
-        ArrayList<RSWPlayer> players = new ArrayList<>();
+    public List<RSWPlayer> getPlayers() {
+        List<RSWPlayer> players = new ArrayList<>();
         for (RSWPlayer rswPlayer : this.inRoom) {
             if (rswPlayer.getState() == RSWPlayer.PlayerState.PLAYING || rswPlayer.getState() == RSWPlayer.PlayerState.CAGE)
                 players.add(rswPlayer);
@@ -209,7 +213,7 @@ public abstract class SWGameMode {
         return players;
     }
 
-    public ArrayList<RSWPlayer> getInRoom() {
+    public List<RSWPlayer> getInRoom() {
         return this.inRoom;
     }
 
@@ -218,7 +222,7 @@ public abstract class SWGameMode {
     }
 
     public List<RSWPlayer> getSpectators() {
-        ArrayList<RSWPlayer> players = new ArrayList<>();
+        List<RSWPlayer> players = new ArrayList<>();
         for (RSWPlayer rswPlayer : this.inRoom) {
             if (rswPlayer.getState() == RSWPlayer.PlayerState.SPECTATOR || rswPlayer.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR)
                 players.add(rswPlayer);
@@ -231,7 +235,7 @@ public abstract class SWGameMode {
     }
 
     public void kickPlayers(String msg) {
-        ArrayList<RSWPlayer> tmp = new ArrayList<>(this.inRoom);
+        List<RSWPlayer> tmp = new ArrayList<>(this.inRoom);
 
         for (RSWPlayer p : tmp) {
             if (msg != null) {
@@ -247,6 +251,7 @@ public abstract class SWGameMode {
 
     public void setState(SWGameMode.GameState w) {
         this.state = w;
+        this.getRealSkywars().getEventsAPI().callRoomStateChange(this);
     }
 
     abstract public boolean isPlaceHolder();
@@ -381,9 +386,9 @@ public abstract class SWGameMode {
 
     abstract public Mode getGameMode();
 
-    abstract public ArrayList<Cage> getCages();
+    abstract public List<Cage> getCages();
 
-    abstract public ArrayList<Team> getTeams();
+    abstract public List<Team> getTeams();
 
     abstract public int maxMembersTeam();
 
@@ -444,11 +449,11 @@ public abstract class SWGameMode {
         return false;
     }
 
-    public ArrayList<SWChest> getChests() {
+    public List<SWChest> getChests() {
         return this.chests;
     }
 
-    public ArrayList<SWEvent> getEvents() {
+    public List<SWEvent> getEvents() {
         return this.events;
     }
 
@@ -467,9 +472,27 @@ public abstract class SWGameMode {
         return this.schematicName;
     }
 
-    public void addSign(SWSign swSign) {
-        this.signs.add(swSign);
-        rs.getSignManager().saveSigns();
+    private List<SWSign> loadSigns() {
+        List<SWSign> list = new ArrayList<>();
+
+        if (Maps.file().isList(this.getName() + ".Signs")) {
+            for (String i : Maps.file().getStringList(this.getName() + ".Signs")) {
+
+                String[] signData = i.split("<");
+                World w = Bukkit.getWorld(signData[0]);
+                int x = Integer.parseInt(signData[1]);
+                int y = Integer.parseInt(signData[2]);
+                int z = Integer.parseInt(signData[3]);
+
+                list.add(new SWSign(this, w.getBlockAt(x, y, z)));
+            }
+        }
+        return list;
+    }
+
+    public void addSign(Block b) {
+        this.signs.add(new SWSign(this, b));
+        this.saveSigns();
     }
 
     public void updateSigns() {
@@ -481,16 +504,24 @@ public abstract class SWGameMode {
         for (SWSign sign : this.signs) {
             if (sign.getBlock().equals(b)) {
                 tmp = sign;
+                sign.getBehindBlock().setType(Material.BLACK_CONCRETE);
                 sign.delete();
             }
         }
         if (tmp != null) {
             this.signs.remove(tmp);
         }
-        rs.getSignManager().saveSigns();
+
+        this.saveSigns();
     }
 
-    public ArrayList<SWSign> getSigns() {
+    private void saveSigns() {
+        Maps.file().set(this.getName() + ".Signs", this.getSigns().stream().map(SWSign::getLocationSerialized)
+                .collect(Collectors.toCollection(ArrayList::new)));
+        Maps.save();
+    }
+
+    public List<SWSign> getSigns() {
         return this.signs;
     }
 
@@ -687,8 +718,8 @@ public abstract class SWGameMode {
         return this.winTimer;
     }
 
-    public ArrayList<SWEvent> parseEvents() {
-        ArrayList<SWEvent> ret = new ArrayList<>();
+    public List<SWEvent> parseEvents() {
+        List<SWEvent> ret = new ArrayList<>();
         String search = "Teams";
         switch (this.getGameMode()) {
             case SOLO:

@@ -17,16 +17,15 @@ import org.bukkit.World;
 import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Teams extends SWGameMode {
 
     private final int maxMembersTeam;
-    private final ArrayList<Team> teams;
+    private final List<Team> teams;
 
-    public Teams(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, ArrayList<Team> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd, RealSkywars rs) {
+    public Teams(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, List<Team> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, List<SWChest> chests, Boolean rankd, RealSkywars rs) {
         super(nome, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, pos1, pos2, chests, rankd, rs);
 
         this.teams = teams;
@@ -149,7 +148,7 @@ public class Teams extends SWGameMode {
 
                     if (p.getPlayer() != null) {
                         super.getBossBar().addPlayer(p.getPlayer());
-                        ArrayList<String> up = super.getRealSkywars().getLanguageManager().getList(p, LanguageManager.TL.TITLE_ROOMJOIN);
+                        List<String> up = super.getRealSkywars().getLanguageManager().getList(p, LanguageManager.TL.TITLE_ROOMJOIN);
                         p.getPlayer().sendTitle(up.get(0), up.get(1), 10, 120, 10);
                     }
 
@@ -267,12 +266,12 @@ public class Teams extends SWGameMode {
     }
 
     @Override
-    public ArrayList<Cage> getCages() {
+    public List<Cage> getCages() {
         return null;
     }
 
     @Override
-    public ArrayList<Team> getTeams() {
+    public List<Team> getTeams() {
         return this.teams;
     }
 

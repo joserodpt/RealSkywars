@@ -8,8 +8,6 @@ import josegamerpt.realskywars.commands.PartyCMD;
 import josegamerpt.realskywars.commands.RealSkywarsCMD;
 import josegamerpt.realskywars.commands.SairCMD;
 import josegamerpt.realskywars.configuration.*;
-import josegamerpt.realskywars.configuration.checkers.ConfigChecker;
-import josegamerpt.realskywars.configuration.checkers.LangChecker;
 import josegamerpt.realskywars.configuration.chests.BasicChest;
 import josegamerpt.realskywars.configuration.chests.EPICChest;
 import josegamerpt.realskywars.configuration.chests.NormalChest;
@@ -30,7 +28,6 @@ import josegamerpt.realskywars.nms.RSWnms;
 import josegamerpt.realskywars.party.PartyManager;
 import josegamerpt.realskywars.player.PlayerEvents;
 import josegamerpt.realskywars.player.PlayerManager;
-import josegamerpt.realskywars.sign.SignManager;
 import josegamerpt.realskywars.utils.GUIBuilder;
 import josegamerpt.realskywars.utils.PlayerInput;
 import josegamerpt.realskywars.utils.Text;
@@ -70,7 +67,6 @@ public class RealSkywars extends JavaPlugin {
     private final PartyManager partym = new PartyManager(this);
     private final LeaderboardManager lbm = new LeaderboardManager(this);
     private final AchievementsManager am = new AchievementsManager(this);
-    private final SignManager sm = new SignManager(this);
     public final RSWEventsAPI rswapie = new RSWEventsAPI();
     private final Random rand = new Random();
     private ChestManager chestManager;
@@ -121,9 +117,7 @@ public class RealSkywars extends JavaPlugin {
     public HologramManager getHologramManager() {
         return hologramManager;
     }
-    public SignManager getSignManager() {
-        return sm;
-    }
+
     public void onEnable() {
         long start = System.currentTimeMillis();
         pl = this;
@@ -145,15 +139,6 @@ public class RealSkywars extends JavaPlugin {
 
         log("Loading languages.");
         Languages.setup(this);
-        LangChecker.updateConfig();
-
-        if (LangChecker.checkForErrors()) {
-            log(Level.SEVERE, "There are some problems with your languages.yml: " + LangChecker.getErrors() + "\nPlease check this errors. Plugin is disabled due to config errors.");
-            log(Level.INFO, star);
-            HandlerList.unregisterAll(this);
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
 
         lm.loadLanguages();
         if (lm.areLanguagesEmpty()) {
@@ -164,169 +149,157 @@ public class RealSkywars extends JavaPlugin {
         }
 
         log("Setting up configuration.");
-        saveDefaultConfig();
         Config.setup(this);
-        ConfigChecker.updateConfig();
 
-        if (ConfigChecker.checkForErrors()) {
-            log(Level.SEVERE, "There are some problems with your config.yml: " + ConfigChecker.getErrors() + "\nPlease check this errors. Plugin is disabled due to config errors.");
-            log(Level.INFO, star);
-            HandlerList.unregisterAll(this);
-            Bukkit.getPluginManager().disablePlugin(this);
-        } else {
-            Debugger.debug = Config.file().getBoolean("Debug-Mode");
-            Debugger.print(RealSkywars.class, "DEBUG MODE ENABLED");
-            Debugger.execute();
-            this.getGameManager().loadLobby();
+        Debugger.debug = Config.file().getBoolean("Debug-Mode");
+        Debugger.print(RealSkywars.class, "DEBUG MODE ENABLED");
+        Debugger.execute();
+        this.getGameManager().loadLobby();
 
-            //config
-            Achievements.setup(this);
-            Maps.setup(this);
-            SQL.setup(this);
-            Shops.setup(this);
-            Kits.setup(this);
-            Signs.setup(this);
+        //config
+        Achievements.setup(this);
+        Maps.setup(this);
+        SQL.setup(this);
+        Shops.setup(this);
+        Kits.setup(this);
 
-            hologramManager = new HologramManager();
+        hologramManager = new HologramManager();
 
-            //chests
-            BasicChest.setup(this);
-            NormalChest.setup(this);
-            EPICChest.setup(this);
+        //chests
+        BasicChest.setup(this);
+        NormalChest.setup(this);
+        EPICChest.setup(this);
 
-            try {
-                databaseManager = new DatabaseManager(this);
-            } catch (SQLException a) {
-                getLogger().severe("Error while creating Database Manager for RealSkywars: " + a.getMessage());
-            }
-
-            chestManager = new ChestManager();
-
-            log("Setting up events.");
-            pm.registerEvents(new PlayerEvents(this), this);
-            pm.registerEvents(new EventListener(this), this);
-            pm.registerEvents(new GameRoomListeners(), this);
-            pm.registerEvents(PlayerInput.getListener(), this);
-            pm.registerEvents(GUIBuilder.getListener(), this);
-            pm.registerEvents(GameLogViewer.getListener(), this);
-            pm.registerEvents(MapSettings.getListener(), this);
-            pm.registerEvents(RoomSettings.getListener(), this);
-            pm.registerEvents(PlayerGUI.getListener(), this);
-            pm.registerEvents(ShopViewer.getListener(), this);
-            pm.registerEvents(ProfileContent.getListener(), this);
-            pm.registerEvents(KitSettings.getListener(), this);
-            pm.registerEvents(MapsViewer.getListener(), this);
-            pm.registerEvents(TierViewer.getListener(), this);
-            pm.registerEvents(AchievementViewer.getListener(), this);
-            pm.registerEvents(GameLogViewer.getListener(), this);
-            pm.registerEvents(VoteGUI.getListener(), this);
-
-            //load leaderboard
-            lbm.refreshLeaderboards();
-
-            log("Loading maps.");
-            mapm.loadMaps();
-            log("Loaded " + this.getGameManager().getLoadedInt() + " maps.");
-            playerm.loadPlayers();
-            kitm.loadKits();
-            log("Loaded " + kitm.getKitCount() + " kits.");
-            am.loadAchievements();
-
-            CommandManager commandManager = new CommandManager(this);
-            commandManager.hideTabComplete(true);
-            //command suggestions
-            commandManager.getCompletionHandler().register("#createsuggestions", input -> IntStream.range(0, 200)
-                    .mapToObj(i -> "Room" + i)
-                    .collect(Collectors.toCollection(ArrayList::new)));
-
-            commandManager.getCompletionHandler().register("#maps", input -> this.getGameManager().getRoomNames());
-            commandManager.getCompletionHandler().register("#boolean", input -> Arrays.asList("false", "true"));
-            commandManager.getCompletionHandler().register("#worldtype", input -> Arrays.asList("DEFAULT", "SCHEMATIC"));
-            commandManager.getCompletionHandler().register("#kits", input -> kitm.getKitNames());
-
-            commandManager.getParameterHandler().register(SWChest.Tier.class, argument -> {
-                try {
-                    SWChest.Tier tt = SWChest.Tier.valueOf(argument.toString().toUpperCase());
-                    return new TypeResult(tt, argument);
-                } catch (Exception e) {
-                    return new TypeResult(null, argument);
-                }
-            });
-            commandManager.getParameterHandler().register(SWGameMode.Mode.class, argument -> {
-                try {
-                    SWGameMode.Mode tt = SWGameMode.Mode.valueOf(argument.toString().toUpperCase());
-                    return new TypeResult(tt, argument);
-                } catch (Exception e) {
-                    return new TypeResult(null, argument);
-                }
-            });
-            commandManager.getParameterHandler().register(SWWorld.WorldType.class, argument -> {
-                try {
-                    SWWorld.WorldType tt = SWWorld.WorldType.valueOf(argument.toString().toUpperCase());
-                    return new TypeResult(tt, argument);
-                } catch (Exception e) {
-                    return new TypeResult(null, argument);
-                }
-            });
-            commandManager.getParameterHandler().register(CurrencyManager.Operations.class, argument -> {
-                try {
-                    CurrencyManager.Operations tt = CurrencyManager.Operations.valueOf(argument.toString().toUpperCase());
-                    return new TypeResult(tt, argument);
-                } catch (Exception e) {
-                    return new TypeResult(null, argument);
-                }
-            });
-            commandManager.getParameterHandler().register(RealSkywarsCMD.KIT_OPERATION.class, argument -> {
-                try {
-                    RealSkywarsCMD.KIT_OPERATION tt = RealSkywarsCMD.KIT_OPERATION.valueOf(argument.toString().toUpperCase());
-                    return new TypeResult(tt, argument);
-                } catch (Exception e) {
-                    return new TypeResult(null, argument);
-                }
-            });
-
-            //command messages
-            commandManager.getMessageHandler().register("cmd.no.exists", sender -> sender.sendMessage(lm.getPrefix() + Text.color("&cThe command you're trying to run doesn't exist!")));
-            commandManager.getMessageHandler().register("cmd.no.permission", sender -> sender.sendMessage(lm.getPrefix() + Text.color("&fYou &cdon't &fhave permission to execute this command!")));
-            commandManager.getMessageHandler().register("cmd.wrong.usage", sender -> sender.sendMessage(lm.getPrefix() + Text.color("&cWrong usage for the command!")));
-
-            //registo de comandos #portugal
-            commandManager.register(new RealSkywarsCMD(this), new SairCMD(this), new PartyCMD(this));
-
-            //placeholderAPI support
-            if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-                getLogger().info("Hooked on PlaceholderAPI!");
-                new RealSkywarsPlaceholderAPI(this).register();
-            }
-
-            //load signs
-            sm.loadSigns();
-
-            //refresh leaderboards
-            Bukkit.getScheduler().scheduleSyncRepeatingTask(this, lbm::refreshLeaderboards, Config.file().getInt("Config.Refresh-Leaderboards"), Config.file().getInt("Config.Refresh-Leaderboards"));
-
-            long elapsedTimeMillis = System.currentTimeMillis() - start;
-
-            new UpdateChecker(this, 105115).getVersion(version -> {
-                if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
-                    this.getLogger().info("The plugin is updated to the latest version.");
-                } else {
-                    this.newUpdate = true;
-                    this.getLogger().warning("There is a new update available! Version: " + version + " https://www.spigotmc.org/resources/105115/");
-                }
-            });
-
-            float elapsedTimeSec = elapsedTimeMillis / 1000F;
-            log("Finished loading in " + elapsedTimeSec + " seconds.");
-            log(star);
-
-
+        try {
+            databaseManager = new DatabaseManager(this);
+        } catch (SQLException a) {
+            getLogger().severe("Error while creating Database Manager for RealSkywars: " + a.getMessage());
         }
+
+        chestManager = new ChestManager();
+
+        log("Setting up events.");
+        pm.registerEvents(new PlayerEvents(this), this);
+        pm.registerEvents(new EventListener(this), this);
+        pm.registerEvents(new GameRoomListeners(), this);
+        pm.registerEvents(PlayerInput.getListener(), this);
+        pm.registerEvents(GUIBuilder.getListener(), this);
+        pm.registerEvents(GameLogViewer.getListener(), this);
+        pm.registerEvents(MapSettings.getListener(), this);
+        pm.registerEvents(RoomSettings.getListener(), this);
+        pm.registerEvents(PlayerGUI.getListener(), this);
+        pm.registerEvents(ShopViewer.getListener(), this);
+        pm.registerEvents(ProfileContent.getListener(), this);
+        pm.registerEvents(KitSettings.getListener(), this);
+        pm.registerEvents(MapsViewer.getListener(), this);
+        pm.registerEvents(TierViewer.getListener(), this);
+        pm.registerEvents(AchievementViewer.getListener(), this);
+        pm.registerEvents(GameLogViewer.getListener(), this);
+        pm.registerEvents(VoteGUI.getListener(), this);
+
+        //load leaderboard
+        lbm.refreshLeaderboards();
+
+        log("Loading maps.");
+        mapm.loadMaps();
+        log("Loaded " + this.getGameManager().getLoadedInt() + " maps.");
+        playerm.loadPlayers();
+        kitm.loadKits();
+        log("Loaded " + kitm.getKitCount() + " kits.");
+        am.loadAchievements();
+
+        CommandManager commandManager = new CommandManager(this);
+        commandManager.hideTabComplete(true);
+        //command suggestions
+        commandManager.getCompletionHandler().register("#createsuggestions", input -> IntStream.range(0, 200)
+                .mapToObj(i -> "Room" + i)
+                .collect(Collectors.toCollection(ArrayList::new)));
+
+        commandManager.getCompletionHandler().register("#maps", input -> this.getGameManager().getRoomNames());
+        commandManager.getCompletionHandler().register("#boolean", input -> Arrays.asList("false", "true"));
+        commandManager.getCompletionHandler().register("#worldtype", input -> Arrays.asList("DEFAULT", "SCHEMATIC"));
+        commandManager.getCompletionHandler().register("#kits", input -> kitm.getKitNames());
+
+        commandManager.getParameterHandler().register(SWChest.Tier.class, argument -> {
+            try {
+                SWChest.Tier tt = SWChest.Tier.valueOf(argument.toString().toUpperCase());
+                return new TypeResult(tt, argument);
+            } catch (Exception e) {
+                return new TypeResult(null, argument);
+            }
+        });
+        commandManager.getParameterHandler().register(SWGameMode.Mode.class, argument -> {
+            try {
+                SWGameMode.Mode tt = SWGameMode.Mode.valueOf(argument.toString().toUpperCase());
+                return new TypeResult(tt, argument);
+            } catch (Exception e) {
+                return new TypeResult(null, argument);
+            }
+        });
+        commandManager.getParameterHandler().register(SWWorld.WorldType.class, argument -> {
+            try {
+                SWWorld.WorldType tt = SWWorld.WorldType.valueOf(argument.toString().toUpperCase());
+                return new TypeResult(tt, argument);
+            } catch (Exception e) {
+                return new TypeResult(null, argument);
+            }
+        });
+        commandManager.getParameterHandler().register(CurrencyManager.Operations.class, argument -> {
+            try {
+                CurrencyManager.Operations tt = CurrencyManager.Operations.valueOf(argument.toString().toUpperCase());
+                return new TypeResult(tt, argument);
+            } catch (Exception e) {
+                return new TypeResult(null, argument);
+            }
+        });
+        commandManager.getParameterHandler().register(RealSkywarsCMD.KIT_OPERATION.class, argument -> {
+            try {
+                RealSkywarsCMD.KIT_OPERATION tt = RealSkywarsCMD.KIT_OPERATION.valueOf(argument.toString().toUpperCase());
+                return new TypeResult(tt, argument);
+            } catch (Exception e) {
+                return new TypeResult(null, argument);
+            }
+        });
+
+        //command messages
+        commandManager.getMessageHandler().register("cmd.no.exists", sender -> sender.sendMessage(lm.getPrefix() + Text.color("&cThe command you're trying to run doesn't exist!")));
+        commandManager.getMessageHandler().register("cmd.no.permission", sender -> sender.sendMessage(lm.getPrefix() + Text.color("&fYou &cdon't &fhave permission to execute this command!")));
+        commandManager.getMessageHandler().register("cmd.wrong.usage", sender -> sender.sendMessage(lm.getPrefix() + Text.color("&cWrong usage for the command!")));
+
+        //registo de comandos #portugal
+        commandManager.register(new RealSkywarsCMD(this), new SairCMD(this), new PartyCMD(this));
+
+        //placeholderAPI support
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            getLogger().info("Hooked on PlaceholderAPI!");
+            new RealSkywarsPlaceholderAPI(this).register();
+        }
+
+        //refresh leaderboards
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, lbm::refreshLeaderboards, Config.file().getInt("Config.Refresh-Leaderboards"), Config.file().getInt("Config.Refresh-Leaderboards"));
+
+        long elapsedTimeMillis = System.currentTimeMillis() - start;
+
+        new UpdateChecker(this, 105115).getVersion(version -> {
+            if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
+                this.getLogger().info("The plugin is updated to the latest version.");
+            } else {
+                this.newUpdate = true;
+                this.getLogger().warning("There is a new update available! Version: " + version + " https://www.spigotmc.org/resources/105115/");
+            }
+        });
+
+        float elapsedTimeSec = elapsedTimeMillis / 1000F;
+        log("Finished loading in " + elapsedTimeSec + " seconds.");
+        log(star);
     }
 
     public void onDisable() {
         this.getGameManager().endGames();
-        this.getGameManager().getGames(PlayerManager.Modes.ALL).forEach(SWGameMode::clear);
+        this.getGameManager().getGames(GameManager.GameModes.ALL).forEach(SWGameMode::clear);
+
+        HandlerList.unregisterAll(this);
+        Bukkit.getPluginManager().disablePlugin(this);
     }
 
     public void reload() {
@@ -348,7 +321,6 @@ public class RealSkywars extends JavaPlugin {
         playerm.loadPlayers();
         Shops.reload();
         Kits.reload();
-        Signs.reload();
         kitm.loadKits();
 
         am.loadAchievements();

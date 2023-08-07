@@ -57,7 +57,7 @@ RealSkywars softdepends on: **Multiverse-Core, My_Worlds, HolographicDisplays, D
 
 ## Permissions
 
-All major and admin related permissions are assigned to: **RealSkywars.Admin**
+All major and admin related permissions are assigned to: **RealSkywaRealSkywars.Admin**
 Default Kits have the permission: **RealSkywars.Kit**
 Permissions to vote:
 |What is the player voting for?|Permission|

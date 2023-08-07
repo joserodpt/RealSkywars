@@ -2,7 +2,6 @@ package josegamerpt.realskywars.kits;
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Kits;
-import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -10,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class KitManager {
 
@@ -17,7 +17,7 @@ public class KitManager {
 
     public void loadKits() {
         kits.clear();
-        if (Kits.file().getConfigurationSection("Kits") != null) {
+        if (Kits.file().isConfigurationSection("Kits")) {
             for (String s : Kits.file().getConfigurationSection("Kits").getKeys(false)) {
                 int id = Integer.parseInt(s);
                 String name = Text.color(Kits.file().getString("Kits." + id + ".Name"));
@@ -57,11 +57,12 @@ public class KitManager {
 
     private ItemStack[] getKitContents(int asd) {
         List<?> list = Kits.file().getList("Kits." + asd + ".Contents");
+        assert list != null;
         return list.toArray(new ItemStack[0]);
     }
 
     public int getNewID() {
-        if (Kits.file().getConfigurationSection("Kits") != null) {
+        if (Kits.file().isConfigurationSection("Kits")) {
             return Kits.file().getConfigurationSection("Kits").getKeys(false).size() + 1;
         } else {
             return 1;
@@ -87,23 +88,21 @@ public class KitManager {
     }
 
     public Kit getKit(String string) {
-        for (Kit k : this.kits) {
-            if (k.getName().equalsIgnoreCase(string)) {
-                return k;
-            }
-        }
-        return new Kit();
+        return this.kits.stream()
+                .filter(k -> k.getName().equalsIgnoreCase(string))
+                .findFirst()
+                .orElse(new Kit());
     }
+
 
     public int getKitCount() {
         return this.kits.size();
     }
 
     public List<String> getKitNames() {
-        List<String> sugests = new ArrayList<>();
-        this.kits.forEach(kit -> sugests.add(Text.strip(kit.getName())));
-        return sugests;
-
+        return this.kits.stream()
+                .map(kit -> Text.strip(kit.getName()))
+                .collect(Collectors.toList());
     }
 
     public enum KitPerks {ENDER_PEARl}

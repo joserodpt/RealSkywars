@@ -59,7 +59,7 @@ public class CurrencyManager {
                     }
                     break;
                 case SET:
-                    if (!this.fromPlayer.getPlayer().hasPermission("rs.Admin")) {
+                    if (!this.fromPlayer.getPlayer().hasPermission("RealSkywars.Admin")) {
                         this.fromPlayer.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(this.fromPlayer, LanguageManager.TS.CMD_NOPERM, true));
                         return;
                     }
@@ -67,7 +67,7 @@ public class CurrencyManager {
                     this.setCoins();
                     break;
                 case ADD:
-                    if (!this.fromPlayer.getPlayer().hasPermission("rs.Admin")) {
+                    if (!this.fromPlayer.getPlayer().hasPermission("RealSkywars.Admin")) {
                         this.fromPlayer.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(this.fromPlayer, LanguageManager.TS.CMD_NOPERM, true));
                         return;
                     }
@@ -75,7 +75,7 @@ public class CurrencyManager {
                     this.addCoins();
                     break;
                 case REMOVE:
-                    if (!this.fromPlayer.getPlayer().hasPermission("rs.Admin")) {
+                    if (!this.fromPlayer.getPlayer().hasPermission("RealSkywars.Admin")) {
                         this.fromPlayer.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(this.fromPlayer, LanguageManager.TS.CMD_NOPERM, true));
                         return;
                     }

@@ -4,6 +4,7 @@ import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.configuration.Languages;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Text;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +15,7 @@ public class LanguageManager {
 
     public void loadLanguages() {
         this.langList.clear();
-        this.langList.addAll(Languages.file().getConfigurationSection("Languages").getKeys(false));
+        this.langList.addAll(Languages.file().getSection("Languages").getRoutesAsStrings(false));
     }
 
     public String getDefaultLanguage() {
@@ -579,7 +580,7 @@ public class LanguageManager {
             }
         } catch (Exception e) {
             tr = "Error finding translation (" + ts.name() + ") check console";
-            e.printStackTrace();
+            Bukkit.getLogger().severe("Error finding translation for RealSkywars: " + e.getMessage());
             return tr;
         }
 
@@ -643,7 +644,7 @@ public class LanguageManager {
                     return Text.color(Languages.file().getString("Strings.Menus.Main-Menu-Button.Title"));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().severe("Error finding translation for RealSkywars: " + e.getMessage());
             return "Error finding translation (" + ts.name() + ") check console";
         }
     }

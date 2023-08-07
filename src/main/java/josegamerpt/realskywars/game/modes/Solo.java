@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 
 public class Solo extends SWGameMode {
 
-    private final ArrayList<Cage> cages;
+    private final List<Cage> cages;
 
-    public Solo(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, ArrayList<Cage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, ArrayList<SWChest> chests, Boolean rankd, RealSkywars rs) {
+    public Solo(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, List<Cage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, List<SWChest> chests, Boolean rankd, RealSkywars rs) {
         super(nome, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, pos1, pos2, chests, rankd, rs);
         this.cages = cages;
     }
@@ -246,12 +246,12 @@ public class Solo extends SWGameMode {
     }
 
     @Override
-    public ArrayList<Cage> getCages() {
+    public List<Cage> getCages() {
         return this.cages;
     }
 
     @Override
-    public ArrayList<Team> getTeams() {
+    public List<Team> getTeams() {
         return null;
     }
 

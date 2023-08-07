@@ -8,14 +8,15 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static josegamerpt.realskywars.game.modes.SWGameMode.Mode.TEAMS;
 
 public class SetupRoom {
 
     private final String name;
-    private final ArrayList<Cage> cages = new ArrayList<>();
-    private final ArrayList<SWChest> chests = new ArrayList<>();
+    private final List<Cage> cages = new ArrayList<>();
+    private final List<SWChest> chests = new ArrayList<>();
     private final int maxPlayers;
     private final SWGameMode.Mode mode;
     private Boolean tpConfirm = false;
@@ -60,7 +61,7 @@ public class SetupRoom {
         return teams;
     }
 
-    public ArrayList<Cage> getCages() {
+    public List<Cage> getCages() {
         return this.cages;
     }
 
@@ -148,7 +149,7 @@ public class SetupRoom {
         this.chests.add(swChest);
     }
 
-    public ArrayList<SWChest> getChests() {
+    public List<SWChest> getChests() {
         return this.chests;
     }
 

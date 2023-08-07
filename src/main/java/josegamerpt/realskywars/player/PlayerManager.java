@@ -3,6 +3,7 @@ package josegamerpt.realskywars.player;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.database.PlayerData;
 import josegamerpt.realskywars.game.modes.SWGameMode;
+import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.misc.DisplayItem;
@@ -250,7 +251,7 @@ public class PlayerManager {
         return bought;
     }
 
-    public int getPlayingPlayers(Modes pt) {
+    public int getPlayingPlayers(GameManager.GameModes pt) {
         return rs.getGameManager().getGames(pt).stream().mapToInt(SWGameMode::getPlayerCount).sum();
     }
 
@@ -306,6 +307,5 @@ public class PlayerManager {
         }.runTaskTimerAsynchronously(RealSkywars.getPlugin(), 5L, 30L);
     }
 
-    public enum Modes {SOLO, SOLO_RANKED, TEAMS, TEAMS_RANKED, RANKED, ALL}
     public enum Items {LOBBY, CAGE, SETUP, SPECTATOR, PROFILE, CAGESET, MAPS, SHOP, LEAVE, VOTE, SPECTATE, KIT, PLAYAGAIN, CHEST1, CHEST2}
 }

@@ -32,7 +32,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 
 public class PlayerEvents implements Listener {
@@ -175,9 +174,9 @@ public class PlayerEvents implements Listener {
                             SWGameMode game = rs.getGameManager().getGame(mapName);
 
                             if (game != null) {
-                                if (e.getPlayer().isSneaking() && e.getPlayer().isOp()) {
+                                if (e.getPlayer().isSneaking() && (e.getPlayer().isOp() || e.getPlayer().hasPermission("RealSkywars.Admin"))) {
                                     //remove sign
-                                    rs.getSignManager().removeSign(game, e.getClickedBlock());
+                                    game.removeSign(e.getClickedBlock());
                                 } else {
                                     game.addPlayer(p);
                                 }
@@ -325,7 +324,7 @@ public class PlayerEvents implements Listener {
                 if (damaged.isInMatch()) {
                     e.setDamage(0);
                     if (damaged.getState().name().contains("SPEC")) {
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
                             damaged.getPlayer().spigot().respawn();
                             damaged.teleport(damaged.getMatch().getSpectatorLocation());
                         }, 1);
@@ -335,7 +334,7 @@ public class PlayerEvents implements Listener {
                     if (damaged.getMatch().getState() == SWGameMode.GameState.PLAYING) {
                         damaged.addStatistic(RSWPlayer.Statistic.DEATH, 1, damaged.getMatch().isRanked());
 
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
                             damaged.getPlayer().spigot().respawn();
                             damaged.getMatch().spectate(damaged, SWGameMode.SpectateType.GAME, damaged.getMatch().getSpectatorLocation());
                         }, 1);
@@ -376,7 +375,7 @@ public class PlayerEvents implements Listener {
         RSWPlayer killed = rs.getPlayerManager().getPlayer(pkilled);
 
         if (killed.getState().name().contains("SPEC")) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
                 killed.getPlayer().spigot().respawn();
                 killed.teleport(killed.getMatch().getSpectatorLocation());
             }, 1);
@@ -387,7 +386,7 @@ public class PlayerEvents implements Listener {
             killed.addStatistic(RSWPlayer.Statistic.DEATH, 1, killed.getMatch().isRanked());
 
             Location finalDeathLoc = deathLoc;
-            Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
                 if (killed.getPlayer() != null) {
                     killed.getPlayer().spigot().respawn();
                 }

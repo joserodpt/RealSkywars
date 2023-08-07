@@ -58,8 +58,8 @@ public class EventListener implements Listener {
             SWGameMode m = rs.getGameManager().getGame(name);
             RSWPlayer p = rs.getPlayerManager().getPlayer(event.getPlayer());
 
-            if (m != null && event.getPlayer().isOp()) {
-                rs.getSignManager().addSign(m, event.getBlock());
+            if (m != null && (event.getPlayer().isOp() || p.getPlayer().hasPermission("RealSkywars.Admin"))) {
+                m.addSign(event.getBlock());
             } else {
                 p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.NO_GAME_FOUND, true));
             }

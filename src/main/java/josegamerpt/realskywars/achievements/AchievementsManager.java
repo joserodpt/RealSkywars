@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AchievementsManager {
     private RealSkywars rs;
@@ -22,7 +23,9 @@ public class AchievementsManager {
         int cats = 0, achi = 0;
         this.achievements.clear();
         //load coin achievements
-        for (String dir : Achievements.file().getConfigurationSection("Coins").getKeys(false)) {
+        for (String dir : Achievements.file().getSection("Coins").getRoutesAsStrings(false).stream()
+                .map(Object::toString)
+                .collect(Collectors.toSet())) {
             ++cats;
             RSWPlayer.PlayerStatistics t = null;
 
@@ -44,7 +47,7 @@ public class AchievementsManager {
             List<Achievement> achiv = new ArrayList<>();
 
             String path = "Coins." + dir;
-            for (String meta : Achievements.file().getConfigurationSection(path).getKeys(false)) {
+            for (String meta : Achievements.file().getSection(path).getRoutesAsStrings(false)) {
                 ++achi;
                 Double value = Achievements.file().getDouble(path + "." + meta);
                 achiv.add(new AchievementRCoin(t, Integer.parseInt(meta), value));
