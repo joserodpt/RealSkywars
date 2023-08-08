@@ -198,15 +198,15 @@ public class GUIManager {
 
         p.closeInventory();
 
-        GUIBuilder inventory = new GUIBuilder(kit.getName(), 45, p.getUUID());
+        GUIBuilder inventory = new GUIBuilder(kit.getDisplayName(), 54, p.getUUID());
 
         int i = 0;
-        for (ItemStack content : kit.getContents()) {
+        for (ItemStack content : kit.getKitInventory().getInventory()) {
             if (content != null) {
                 inventory.addItem(event -> {
                 }, content, i);
-                ++i;
             }
+            ++i;
         }
 
         inventory.setItem(event -> {
@@ -219,7 +219,7 @@ public class GUIManager {
                 ShopViewer s = new ShopViewer(p, ShopManager.Categories.KITS);
                 s.openInventory(p);
             }
-        }, Itens.createItem(Material.BIRCH_DOOR, 1, ""), 44);
+        }, Itens.createItem(Material.BIRCH_DOOR, 1, ""), 53);
 
         inventory.openInventory(p.getPlayer());
     }

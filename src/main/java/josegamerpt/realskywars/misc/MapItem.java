@@ -8,7 +8,8 @@ import josegamerpt.realskywars.utils.Itens;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MapItem {
 
@@ -37,12 +38,11 @@ public class MapItem {
         return ranked ? "&bRANKED" : "";
     }
 
-    private ArrayList<String> variableList(ArrayList<String> list) {
-        ArrayList<String> a = new ArrayList<>();
-        for (String s : list) {
-            a.add(s.replace("%players%", this.g.getPlayerCount() + "").replace("%maxplayers%", this.g.getMaxPlayers() + ""));
-        }
-        return a;
+    private List<String> variableList(List<String> list) {
+        return list.stream()
+                .map(s -> s.replace("%players%", String.valueOf(this.g.getPlayerCount()))
+                        .replace("%maxplayers%", String.valueOf(this.g.getMaxPlayers())))
+                .collect(Collectors.toList());
     }
 
     private Material getStateMaterial() {

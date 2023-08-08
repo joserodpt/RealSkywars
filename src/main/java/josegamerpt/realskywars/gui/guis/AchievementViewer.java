@@ -29,20 +29,17 @@ public class AchievementViewer {
     static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     private final Inventory inv;
     private final UUID uuid;
-    private final List<Achievement> items;
     private final HashMap<Integer, Achievement> display = new HashMap<>();
-    private final RSWPlayer.PlayerStatistics at;
     int pageNumber = 0;
     Pagination<Achievement> p;
 
     public AchievementViewer(RSWPlayer p, RSWPlayer.PlayerStatistics at) {
         this.uuid = p.getUUID();
-        this.at = at;
         this.inv = Bukkit.getServer().createInventory(null, 54, Text.color("&b&l" + at.name().replace("_", " ")));
 
-        this.items = RealSkywars.getPlugin().getAchievementsManager().getAchievements(at);
+        List<Achievement> items = RealSkywars.getPlugin().getAchievementsManager().getAchievements(at);
 
-        this.p = new Pagination<>(28, this.items);
+        this.p = new Pagination<>(28, items);
         fillChest(this.p.getPage(this.pageNumber));
 
         this.register();
@@ -153,6 +150,10 @@ public class AchievementViewer {
 
         display.clear();
 
+        inv.setItem(9, placeholder);
+        inv.setItem(17, placeholder);
+        inv.setItem(36, placeholder);
+        inv.setItem(44, placeholder);
         inv.setItem(45, placeholder);
         inv.setItem(46, placeholder);
         inv.setItem(47, placeholder);
@@ -162,10 +163,6 @@ public class AchievementViewer {
         inv.setItem(51, placeholder);
         inv.setItem(52, placeholder);
         inv.setItem(53, placeholder);
-        inv.setItem(36, placeholder);
-        inv.setItem(44, placeholder);
-        inv.setItem(9, placeholder);
-        inv.setItem(17, placeholder);
 
         if (firstPage()) {
             inv.setItem(18, placeholder);

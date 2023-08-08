@@ -1,4 +1,4 @@
-Version: 1
+Version: 2
 Strings:
   Prefix: "&fReal&bSkywars &7> &r"
   Events:
@@ -36,7 +36,6 @@ Strings:
     Items: "&fx%amount% &b%item%"
     Buy: "&fLeft click to buy! Right click to preview."
     Select: "&fClick to select. Right click to preview."
-    Ender-Perk: "&fThis kit has the &5Ender&f hability! It gives you enderpearls at a time interval."
 Default-Language: ENGLISH
 Languages:
   ENGLISH:
@@ -164,6 +163,7 @@ Languages:
         No-Player-Found: "&fNo player has been found."
         Map-Unregistered: "&fThe map has been &aunregistered&f."
         Map-Exists: "&cThere is already a map with that name."
+        Kit-Exists: "&cThere is already a kit with that name."
         Lobby-Loc-Not-Set: "&fThe lobby location &cis not set."
         Insuficient-Coins: "&cYou can't do that. &fYou only have &b%coins%&f coins."
         Command-Not-Found: "&fNo command has been found with that syntax."
@@ -463,6 +463,7 @@ Languages:
         No-Player-Found: "&fNo se ha encontrado ningún jugador."
         Map-Unregistered: "&fEl mapa ha sido &adesregistrado&f."
         Map-Exists: "&cYa existe un mapa con ese nombre."
+        Kit-Exists: "&cYa existe un kit con ese nombre."
         Lobby-Loc-Not-Set: "&fLa ubicación del lobby &cno está establecido."
         Insuficient-Coins: "&cNo puedes comprar eso. &fSólo tienes &b%coins%&f monedas."
         Command-Not-Found: "&fNo se ha encontrado ningún comando con esa sintaxis."
@@ -762,6 +763,7 @@ Languages:
         No-Player-Found: "&fNenhum jogador foi encontrado."
         Map-Unregistered: "&fO mapa foi &adesregistado&f."
         Map-Exists: "&cJá existe &fum mapa com esse nome."
+        Kit-Exists: "&cJá existe &fum kit com esse nome."
         Lobby-Loc-Not-Set: "&fA posição do lobby &cnão está definida."
         Insuficient-Coins: "&cNão podes comprar isso. &fApenas tens &b%coins%&f coins."
         Command-Not-Found: "&fNenhum comando foi encontrado com esses termos."

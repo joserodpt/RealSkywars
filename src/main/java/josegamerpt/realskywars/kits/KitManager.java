@@ -1,12 +1,14 @@
 package josegamerpt.realskywars.kits;
 
+import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Kits;
+import josegamerpt.realskywars.utils.ItemStackSpringer;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -16,95 +18,76 @@ public class KitManager {
     private final ArrayList<Kit> kits = new ArrayList<>();
 
     public void loadKits() {
-        kits.clear();
-        if (Kits.file().isConfigurationSection("Kits")) {
-            for (String s : Kits.file().getConfigurationSection("Kits").getKeys(false)) {
-                int id = Integer.parseInt(s);
-                String name = Text.color(Kits.file().getString("Kits." + id + ".Name"));
-                Double price = Kits.file().getDouble("Kits." + id + ".Price");
+        this.kits.clear();
 
-                String matString = Kits.file().getString("Kits." + id + ".Icon");
+        if (Kits.file().isSection("Kits")) {
+            Debugger.print(KitManager.class, "KITS: " + Kits.file().getSection("Kits").getRoutesAsStrings(false));
+
+            for (String name : Kits.file().getSection("Kits").getRoutesAsStrings(false)) {
+                Debugger.print(KitManager.class, "Loading KIT " + name);
+                String displayName = Text.color(Kits.file().getString("Kits." + name + ".Display-Name"));
+                Double price = Kits.file().getDouble("Kits." + name + ".Price");
+
+                String matString = Kits.file().getString("Kits." + name + ".Icon");
                 Material mat;
                 Kit kit;
                 try {
                     mat = Material.getMaterial(matString);
                 } catch (Exception e) {
                     mat = Material.BARRIER;
-                    RealSkywars.getPlugin().log(Level.WARNING, matString + " isnt a valid material [KIT]");
-                }
-                ItemStack[] k = getKitContents(id);
-                String perm = Kits.file().getString("Kits." + id + ".Permission");
-                kit = new Kit(id, name, price, mat, k, perm);
-
-                if (Kits.file().getBoolean("Kits." + id + ".Perks.EnderPearl")) {
-                    kit.setPerk(KitPerks.ENDER_PEARl, true);
+                    RealSkywars.getPlugin().log(Level.WARNING, matString + " isn't a valid material [KIT]");
                 }
 
-                kit.save();
+                List<HashMap<String, Object>> inv = (List<HashMap<String, Object>>) Kits.file().getList("Kits." + name + ".Contents");
+
+                if (inv.isEmpty()) {
+                    Debugger.printerr(KitManager.class, "Inventory Itens on " + "Kits." + name + ".Contents" + " are empty! Skipping kit.");
+                    continue;
+                }
+
+                kit = new Kit(name, displayName, price, mat, new KitInventory(ItemStackSpringer.getItemsDeSerialized(inv)), Kits.file().getString("Kits." + name + ".Permission"));
+
+                if (Kits.file().isList("Kits." + name + ".Perks")) {
+                    Kits.file().getStringList("Kits." + name + ".Perks")
+                            .forEach(kit::addPerk);
+                }
+
+                this.getKits().add(kit);
+
+                Debugger.print(KitManager.class, "Loaded " + kit);
             }
         }
     }
 
     public void registerKit(Kit k) {
-        Kits.file().set("Kits." + k.getID() + ".Name", k.getName());
-        Kits.file().set("Kits." + k.getID() + ".Price", k.getPrice());
-        Kits.file().set("Kits." + k.getID() + ".Icon", k.getIcon().name());
-        Kits.file().set("Kits." + k.getID() + ".Contents", k.getContents());
-        Kits.file().set("Kits." + k.getID() + ".Permission", k.getPermission());
-        Kits.file().set("Kits." + k.getID() + ".Perks.EnderPearl", k.getPerk(KitPerks.ENDER_PEARl));
+        Kits.file().set("Kits." + k.getName() + ".Display-Name", k.getDisplayName());
+        Kits.file().set("Kits." + k.getName() + ".Price", k.getPrice());
+        Kits.file().set("Kits." + k.getName() + ".Icon", k.getIcon().name());
+        Kits.file().set("Kits." + k.getName() + ".Permission", k.getPermission());
+
+        if (!k.getKitPerks().isEmpty()) {
+            Kits.file().set("Kits." + k.getName() + ".Perks", k.getKitPerks().stream().map(Enum::name).collect(Collectors.toList()));
+        }
+
+        Kits.file().set("Kits." + k.getName() + ".Contents", k.getKitInventory().getSerialized());
         Kits.save();
     }
 
-    private ItemStack[] getKitContents(int asd) {
-        List<?> list = Kits.file().getList("Kits." + asd + ".Contents");
-        assert list != null;
-        return list.toArray(new ItemStack[0]);
-    }
-
-    public int getNewID() {
-        if (Kits.file().isConfigurationSection("Kits")) {
-            return Kits.file().getConfigurationSection("Kits").getKeys(false).size() + 1;
-        } else {
-            return 1;
-        }
+    public void unregisterKit(Kit k) {
+        this.getKits().remove(k);
+        Kits.file().set("Kits", null);
+        this.getKits().forEach(this::registerKit);
+        Kits.save();
     }
 
     public ArrayList<Kit> getKits() {
         return this.kits;
     }
 
-    public Kit getKit(int id) {
-        for (Kit k : this.kits) {
-            if (k.getID() == id) {
-                return k;
-            }
-        }
-        return null;
-    }
-
-    public void unregisterKit(Kit k) {
-        Kits.file().set("Kits." + k.getID(), null);
-        Kits.save();
-    }
-
     public Kit getKit(String string) {
         return this.kits.stream()
                 .filter(k -> k.getName().equalsIgnoreCase(string))
                 .findFirst()
-                .orElse(new Kit());
+                .orElse(null);
     }
-
-
-    public int getKitCount() {
-        return this.kits.size();
-    }
-
-    public List<String> getKitNames() {
-        return this.kits.stream()
-                .map(kit -> Text.strip(kit.getName()))
-                .collect(Collectors.toList());
-    }
-
-    public enum KitPerks {ENDER_PEARl}
-
 }

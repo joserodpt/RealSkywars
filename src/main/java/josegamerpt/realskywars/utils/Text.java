@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Text {
 
@@ -64,6 +65,9 @@ public class Text {
     }
 
     public static String color(String string) {
+        if (string == null) {
+            return "";
+        }
         return ChatColor.translateAlternateColorCodes('&', string);
     }
 
@@ -71,12 +75,10 @@ public class Text {
         return ChatColor.stripColor(s);
     }
 
-    public static ArrayList<String> color(List<?> list) {
-        ArrayList<String> color = new ArrayList<>();
-        for (Object s : list) {
-            color.add(Text.color((String) s));
-        }
-        return color;
+    public static List<String> color(List<?> list) {
+        return list.stream()
+                .map(element -> Text.color((String) element))
+                .collect(Collectors.toList());
     }
 
     public static String formatSeconds(int n) {
@@ -98,7 +100,7 @@ public class Text {
         list.forEach(s -> p.sendMessage(color(s)));
     }
 
-    public static void sendList(Player p, ArrayList<String> list, Object var) {
+    public static void sendList(Player p, List<String> list, Object var) {
         list.forEach(s -> p.sendMessage(color(s).replace("%CAGES%", var + "")));
     }
 
@@ -119,12 +121,10 @@ public class Text {
         return sp.get(RealSkywars.getPlugin().getRandom().nextInt(sp.size()));
     }
 
-    public static ArrayList<String> replaceVarInList(ArrayList<String> list, String rep, String var) {
-        ArrayList<String> color = new ArrayList<>();
-        for (String s : list) {
-            color.add(s.replace(rep, var));
-        }
-        return color;
+    public static List<String> replaceVarInList(List<String> list, String rep, String var) {
+        return list.stream()
+                .map(s -> s.replace(rep, var))
+                .collect(Collectors.toList());
     }
 
     public enum DefaultFontInfo {

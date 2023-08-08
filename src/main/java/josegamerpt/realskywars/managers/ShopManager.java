@@ -3,7 +3,6 @@ package josegamerpt.realskywars.managers;
 import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Shops;
-import josegamerpt.realskywars.kits.Kit;
 import josegamerpt.realskywars.misc.DisplayItem;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Text;
@@ -12,6 +11,7 @@ import org.bukkit.Particle;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class ShopManager {
     private RealSkywars rs;
@@ -33,11 +33,16 @@ public class ShopManager {
                 cat = "Win-Blocks";
                 break;
             case KITS:
-                for (Kit a : rs.getKitManager().getKits()) {
-                    Boolean bought = rs.getPlayerManager().boughtItem(p, a.getName(), ShopManager.Categories.KITS);
-
-                    items.add(new DisplayItem(a.getID(), a.getIcon(), a.getName(), a.getPrice(), bought, a.getPermission(), ShopManager.Categories.KITS));
-                }
+                items.addAll(rs.getKitManager().getKits().stream()
+                        .map(a -> new DisplayItem(
+                                a.getName(),
+                                a.getDisplayName(),
+                                a.getIcon(),
+                                a.getPrice(),
+                                p.boughtItem(a.getName(), ShopManager.Categories.KITS),
+                                a.getPermission(),
+                                ShopManager.Categories.KITS))
+                        .collect(Collectors.toList()));
                 rapidReturn = true;
                 break;
             case BOW_PARTICLES:
@@ -54,9 +59,9 @@ public class ShopManager {
                 boolean error = false;
                 double price;
                 String material = parse[0];
-                String name = Text.color(parse[2]);
+                String displayName = Text.color(parse[2]);
+                String name = Text.strip(displayName);
                 String perm = parse[3];
-                Boolean bought = rs.getPlayerManager().boughtItem(p, name, t);
 
                 try {
                     price = Double.parseDouble(parse[1]);
@@ -75,11 +80,11 @@ public class ShopManager {
 
                 if (m == null) {
                     m = Material.BARRIER;
-                    Debugger.print(ShopManager.class, "[FATAL] MATERIAL ISNT VALID: " + material);
+                    Debugger.print(ShopManager.class, "[FATAL] Material: " + material + " isn't valid! Changed to Barrier Material.");
                     error = true;
                 }
 
-                DisplayItem s = new DisplayItem(i, m, name, price, bought, perm, ShopManager.Categories.CAGE_BLOCKS);
+                DisplayItem s = new DisplayItem(name, displayName, m, price, p.boughtItem(name, t), perm, ShopManager.Categories.CAGE_BLOCKS);
                 if (material.equalsIgnoreCase("randomblock")) {
                     s.addInfo("RandomBlock", "RandomBlock");
                 }
@@ -88,7 +93,7 @@ public class ShopManager {
                     try {
                         s.addInfo("Particle", Particle.valueOf(parse[4]));
                     } catch (Exception e) {
-                        RealSkywars.getPlugin().log(Level.WARNING, parse[4] + " isnt a valid particle! Changed to drip lava.");
+                        RealSkywars.getPlugin().log(Level.WARNING, "[FATAL] " + parse[4] + " isn't a valid particle! Changed to drip lava.");
                         s.addInfo("Particle", Particle.DRIP_LAVA);
                     }
                 }
@@ -96,7 +101,6 @@ public class ShopManager {
                 if (error) {
                     s.setInteractive(false);
                     s.setName("&4Configuration Error. &cEnable debug for more info. Line &f" + i);
-                    s.makeItem();
                 }
 
                 items.add(s);

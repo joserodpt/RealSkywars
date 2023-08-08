@@ -150,19 +150,19 @@ public class GameLogViewer {
 
         display.clear();
 
-        inv.setItem(45, placeholder);
-        inv.setItem(46, placeholder);
-        inv.setItem(47, placeholder);
-        inv.setItem(48, placeholder);
-        inv.setItem(49, placeholder);
-        inv.setItem(50, placeholder);
-        inv.setItem(51, placeholder);
-        inv.setItem(52, placeholder);
-        inv.setItem(53, placeholder);
-        inv.setItem(36, placeholder);
-        inv.setItem(44, placeholder);
-        inv.setItem(9, placeholder);
-        inv.setItem(17, placeholder);
+inv.setItem(9, placeholder);
+inv.setItem(17, placeholder);
+inv.setItem(36, placeholder);
+inv.setItem(44, placeholder);
+inv.setItem(45, placeholder);
+inv.setItem(46, placeholder);
+inv.setItem(47, placeholder);
+inv.setItem(48, placeholder);
+inv.setItem(49, placeholder);
+inv.setItem(50, placeholder);
+inv.setItem(51, placeholder);
+inv.setItem(52, placeholder);
+inv.setItem(53, placeholder);
 
         if (firstPage()) {
             inv.setItem(18, placeholder);

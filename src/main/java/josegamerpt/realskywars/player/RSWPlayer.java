@@ -12,6 +12,7 @@ import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.kits.Kit;
 import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
+import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.misc.Selections;
 import josegamerpt.realskywars.party.Party;
 import josegamerpt.realskywars.utils.Text;
@@ -414,6 +415,10 @@ public class RSWPlayer {
         return this.bought != null ? this.bought : new ArrayList<>();
     }
 
+    public Boolean boughtItem(String name, ShopManager.Categories c) {
+        return this.getBoughtItems().contains(name + "|" + c.name());
+    }
+
     public PlayerScoreboard getScoreboard() {
         return this.playerscoreboard;
     }
@@ -738,7 +743,7 @@ public class RSWPlayer {
         public void run() {
             this.task = new BukkitRunnable() {
                 public void run() {
-                    ArrayList<String> lista;
+                    List<String> lista;
                     String tit;
                     if (p.getState() != null) {
                         switch (p.getState()) {

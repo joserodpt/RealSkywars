@@ -102,12 +102,12 @@ public class ProfileContent {
 
 
                             if (e.getClick() == ClickType.RIGHT && current.cat == ShopManager.Categories.KITS) {
-                                GUIManager.openKitPreview(p, RealSkywars.getPlugin().getKitManager().getKit(a.getID()), 0);
+                                GUIManager.openKitPreview(p, RealSkywars.getPlugin().getKitManager().getKit(a.getName()), 0);
                                 return;
                             }
                             switch (current.cat) {
                                 case KITS:
-                                    p.setProperty(RSWPlayer.PlayerProperties.KIT, RealSkywars.getPlugin().getKitManager().getKit(a.getID()));
+                                    p.setProperty(RSWPlayer.PlayerProperties.KIT, RealSkywars.getPlugin().getKitManager().getKit(a.getName()));
                                     p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.KITS, false)));
                                     p.closeInventory();
                                     break;
@@ -201,6 +201,10 @@ public class ProfileContent {
 
         display.clear();
 
+        inv.setItem(9, placeholder);
+        inv.setItem(17, placeholder);
+        inv.setItem(36, placeholder);
+        inv.setItem(44, placeholder);
         inv.setItem(45, placeholder);
         inv.setItem(46, placeholder);
         inv.setItem(47, placeholder);
@@ -210,10 +214,6 @@ public class ProfileContent {
         inv.setItem(51, placeholder);
         inv.setItem(52, placeholder);
         inv.setItem(53, placeholder);
-        inv.setItem(36, placeholder);
-        inv.setItem(44, placeholder);
-        inv.setItem(9, placeholder);
-        inv.setItem(17, placeholder);
 
         if (firstPage()) {
             inv.setItem(18, placeholder);

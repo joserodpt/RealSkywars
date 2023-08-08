@@ -12,30 +12,29 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 public class DisplayItem {
 
-    private final HashMap<String, Object> info = new HashMap<>();
-    private int id;
+    private final Map<String, Object> info = new HashMap<>();
+    private String name, displayName;
     private Material m;
     private ItemStack i;
     private Double price;
     private Boolean bought = false;
-    private String name;
     private String permission;
     private Boolean interactive;
     private ShopManager.Categories it;
 
-    public DisplayItem(int id, Material ma, String n, Double per, Boolean b, String perm, ShopManager.Categories t) {
-        this.id = id;
+    public DisplayItem(String name, String displayName, Material ma, Double per, Boolean b, String perm, ShopManager.Categories t) {
+        this.name = name;
+        this.displayName = displayName;
         this.price = per;
         this.bought = b;
-        this.name = n;
         this.permission = perm;
         this.interactive = true;
         this.it = t;
         this.m = ma;
-        makeItemStack(ma);
     }
 
     public DisplayItem() {
@@ -43,23 +42,10 @@ public class DisplayItem {
         this.i = Itens.createItem(Material.BUCKET, 1, RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SEARCH_NOTFOUND_NAME));
     }
 
-    public void makeItem() {
-        makeItemStack(m);
-    }
-
     public void addInfo(String a, Object b) {
         info.put(a, b);
     }
 
-    private void makeItemStack(Material m) {
-        if (this.it == ShopManager.Categories.KITS) {
-            Kit k = RealSkywars.getPlugin().getKitManager().getKit(name);
-
-            this.i = this.bought ? Itens.createItemLoreEnchanted(m, 1, "&r&f" + k.getName(), k.getDescription(false)) : Itens.createItemLore(m, 1, "&r&f" + k.getName(), k.getDescription(true));
-        } else {
-            this.i = this.bought ? Itens.createItemLoreEnchanted(m, 1, formatName(name), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BOUGHT))) : Itens.createItemLore(m, 1, formatName(name), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BUY).replace("%price%", this.getPrice().toString())));
-        }
-    }
 
     private String formatName(String name) {
         String ret;
@@ -105,8 +91,12 @@ public class DisplayItem {
         return this.name;
     }
 
+    public String getDisplayName() {
+        return this.displayName;
+    }
+
     public void setName(String s) {
-        name = s;
+        this.name = s;
     }
 
     public Double getPrice() {
@@ -114,11 +104,13 @@ public class DisplayItem {
     }
 
     public ItemStack getItemStack() {
-        return this.i;
-    }
+        if (this.it == ShopManager.Categories.KITS) {
+            Kit k = RealSkywars.getPlugin().getKitManager().getKit(name);
 
-    public int getID() {
-        return this.id;
+            return this.bought ? Itens.createItemLoreEnchanted(m, 1, "&r&f" + k.getDisplayName(), k.getDescription(false)) : Itens.createItemLore(m, 1, "&r&f" + k.getDisplayName(), k.getDescription(true));
+        } else {
+            return this.bought ? Itens.createItemLoreEnchanted(m, 1, formatName(this.getDisplayName()), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BOUGHT))) : Itens.createItemLore(m, 1, formatName(this.getDisplayName()), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BUY).replace("%price%", this.getPrice().toString())));
+        }
     }
 
     public Material getMaterial() {

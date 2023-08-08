@@ -104,7 +104,7 @@ public class ShopViewer {
                             }
 
                             if (e.getClick() == ClickType.RIGHT && current.cat == ShopManager.Categories.KITS) {
-                                GUIManager.openKitPreview(p, RealSkywars.getPlugin().getKitManager().getKit(a.getID()), 1);
+                                GUIManager.openKitPreview(p, RealSkywars.getPlugin().getKitManager().getKit(a.getName()), 1);
                                 return;
                             }
 
@@ -183,12 +183,15 @@ public class ShopViewer {
     public void fillChest(List<DisplayItem> items) {
         inv.clear();
 
-        for (int i = 0; i < 9; ++i) {
+        for (int i = 0; i < 10; ++i) {
             inv.setItem(i, placeholder);
         }
 
         display.clear();
 
+        inv.setItem(17, placeholder);
+        inv.setItem(36, placeholder);
+        inv.setItem(44, placeholder);
         inv.setItem(45, placeholder);
         inv.setItem(46, placeholder);
         inv.setItem(47, placeholder);
@@ -198,10 +201,6 @@ public class ShopViewer {
         inv.setItem(51, placeholder);
         inv.setItem(52, placeholder);
         inv.setItem(53, placeholder);
-        inv.setItem(36, placeholder);
-        inv.setItem(44, placeholder);
-        inv.setItem(9, placeholder);
-        inv.setItem(17, placeholder);
 
         if (firstPage()) {
             inv.setItem(18, placeholder);
@@ -236,7 +235,7 @@ public class ShopViewer {
     }
 
     private boolean lastPage() {
-        return pageNumber == (p.totalPages() - 1);
+        return p == null || pageNumber == (p.totalPages() - 1);
     }
 
     private boolean firstPage() {

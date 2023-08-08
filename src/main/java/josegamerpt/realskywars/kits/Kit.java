@@ -11,59 +11,43 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 
 public class Kit {
+    public enum Perks {ENDER}
 
-    private final String name;
+    private final String name, displayname;
     private Double price;
-    private ItemStack[] contents;
-    private int id;
+    private KitInventory kitInventory;
     private Material icon;
     private String permission;
-    private final boolean buyable;
-    private boolean enderPearlGive = false;
+    private List<Perks> kit_perks = new ArrayList<>();
+    private boolean buyable = true;
     private int enderTask = -2;
 
-    public Kit(int ID, String n, Double cost, Material ic, ItemStack[] contents, String perm) {
-        this.id = ID;
-        this.name = n;
+    public Kit(String name, String displayname, Double cost, Material ic, KitInventory kitInventory, String perm) {
+        this.name = name;
+        this.displayname = displayname;
         this.price = cost;
         this.icon = ic;
-        this.contents = contents;
+        this.kitInventory = kitInventory;
         this.permission = perm;
-        this.buyable = true;
     }
 
-    public Kit(int ID, String n, Double cost, ItemStack[] contents) {
-        this.id = ID;
-        this.name = n;
+    public Kit(String name, String displayname, Double cost, KitInventory kitInventory) {
+        this.name = name;
+        this.displayname = displayname;
         this.price = cost;
         this.icon = Material.LEATHER_CHESTPLATE;
-        this.contents = contents;
+        this.kitInventory = kitInventory;
         this.permission = "RealSkywars.Kit";
-        this.buyable = true;
     }
 
     public Kit() {
         this.name = "none";
+        this.displayname = this.name;
         this.buyable = false;
     }
 
-    public void saveKit() {
-        RealSkywars.getPlugin().getKitManager().getKits().add(this);
-        RealSkywars.getPlugin().getKitManager().registerKit(this);
-    }
-
-    public void save() {
-        RealSkywars.getPlugin().getKitManager().getKits().remove(this);
-        RealSkywars.getPlugin().getKitManager().getKits().add(this);
-    }
-
-    public void deleteKit() {
-        RealSkywars.getPlugin().getKitManager().unregisterKit(this);
-        RealSkywars.getPlugin().getKitManager().getKits().remove(this);
-    }
 
     public List<String> getDescription(boolean shop) {
         if (!this.buyable) {
@@ -74,40 +58,44 @@ public class Kit {
 
         desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_PRICE).replace("%price%", this.price.toString()));
 
-        if (this.enderPearlGive) {
-            desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_ENDERPERK));
+        //contents
+        if (this.hasItems()) {
+            desc.add("");
+            desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_CONTAINS));
+
+            for (ItemStack s : this.getKitInventory().getListInventory()) {
+                desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_ITEM).replace("%amount%", s.getAmount() + "").replace("%item%", RealSkywars.getPlugin().getNMS().getItemName(s)));
+            }
+        }
+
+        if (this.hasPerk(Perks.ENDER)) {
+            desc.add("&fx1 Perk: &dEnder");
         }
 
         desc.add("");
         desc.add(shop ? RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_BUY) : RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_SELECT));
 
-        //contents
-        if (this.hasItems()) {
-            desc.add("");
-            desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_CONTAINS));
-            for (ItemStack s : this.contents) {
-                if (s != null) {
-                    desc.add(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.KIT_ITEM).replace("%amount%", s.getAmount() + "").replace("%item%", RealSkywars.getPlugin().getNMS().getItemName(s)));
-                }
-            }
-        }
-
         return desc;
     }
 
+    public List<Perks> getKitPerks() {
+        return this.kit_perks;
+    }
+
+    public boolean hasPerk(Perks perk) {
+        return this.getKitPerks().contains(perk);
+    }
+
     public boolean hasItems() {
-        for (ItemStack s : this.contents) {
-            if (s != null) return true;
-        }
-        return false;
+        return this.kitInventory.hasItems();
+    }
+
+    public String getDisplayName() {
+        return this.displayname;
     }
 
     public String getName() {
         return this.name;
-    }
-
-    public int getID() {
-        return this.id;
     }
 
     public Double getPrice() {
@@ -118,41 +106,51 @@ public class Kit {
         return this.icon;
     }
 
-    public ItemStack[] getContents() {
-        return this.contents;
-    }
-
     public String getPermission() {
         return this.permission;
     }
 
-    public Boolean getPerk(KitManager.KitPerks i) {
-        try {
-            if (i == KitManager.KitPerks.ENDER_PEARl) {
-                return this.enderPearlGive;
-            }
-            throw new Exception(i.name() + " perk doesnt exist in the code!!!!");
-        } catch (Exception e) {
-            RealSkywars.getPlugin().log(Level.SEVERE, "Error in getting Kit's perk: " + e.getMessage());
+
+    public void addPerk(Perks perk) {
+        if (!this.hasPerk(perk)) {
+            this.getKitPerks().add(perk);
         }
-        return false;
     }
 
-    public void setPerk(KitManager.KitPerks perk, boolean b) {
-        if (perk == KitManager.KitPerks.ENDER_PEARl) {
-            this.enderPearlGive = b;
+    public void removePerk(Perks perk) {
+        if (this.hasPerk(perk)) {
+            this.getKitPerks().remove(perk);
+        }
+    }
+
+    public void addPerk(String perkName) {
+        Kit.Perks kp;
+        try {
+            kp = Kit.Perks.valueOf(perkName.toUpperCase());
+            this.addPerk(kp);
+        } catch (Exception e) {
+            Bukkit.getLogger().severe(perkName + " isn't a valid Kit Perk. Ignoring.");
         }
     }
 
     public void give(RSWPlayer p) {
+        if (p.getPlayer().isOp()) {
+            this.getKitInventory().giveToPlayer(p);
+            return;
+        }
+
         if (!p.isBot() && p.hasKit()) {
-            p.getPlayer().getInventory().setContents(this.contents);
+            this.getKitInventory().giveToPlayer(p);
             this.startTasks(p);
         }
     }
 
+    public KitInventory getKitInventory() {
+        return this.kitInventory;
+    }
+
     private void startTasks(RSWPlayer p) {
-        if (this.enderPearlGive) {
+        if (this.hasPerk(Perks.ENDER)) {
             this.enderTask = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
                 if (p.isInMatch()) {
                     p.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
@@ -167,5 +165,20 @@ public class Kit {
         if (this.enderTask != -2) {
             Bukkit.getScheduler().cancelTask(this.enderTask);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Kit{" +
+                "name='" + name + '\'' +
+                ", displayname='" + displayname + '\'' +
+                ", price=" + price +
+                ", kitInventory=" + kitInventory +
+                ", icon=" + icon +
+                ", permission='" + permission + '\'' +
+                ", kit_perks=" + kit_perks +
+                ", buyable=" + buyable +
+                ", enderTask=" + enderTask +
+                '}';
     }
 }

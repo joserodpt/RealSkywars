@@ -15,6 +15,7 @@ import josegamerpt.realskywars.database.DatabaseManager;
 import josegamerpt.realskywars.database.SQL;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.gui.guis.*;
+import josegamerpt.realskywars.kits.KitSettings;
 import josegamerpt.realskywars.utils.holograms.HologramManager;
 import josegamerpt.realskywars.kits.KitManager;
 import josegamerpt.realskywars.leaderboards.LeaderboardManager;
@@ -197,16 +198,19 @@ public class RealSkywars extends JavaPlugin {
         pm.registerEvents(GameLogViewer.getListener(), this);
         pm.registerEvents(VoteGUI.getListener(), this);
 
-        //load leaderboard
-        lbm.refreshLeaderboards();
+        kitm.loadKits();
+        log("Loaded " + kitm.getKits().size() + " kits.");
 
         log("Loading maps.");
         mapm.loadMaps();
         log("Loaded " + this.getGameManager().getLoadedInt() + " maps.");
         playerm.loadPlayers();
-        kitm.loadKits();
-        log("Loaded " + kitm.getKitCount() + " kits.");
+
         am.loadAchievements();
+
+        //load leaderboard
+        lbm.refreshLeaderboards();
+
 
         CommandManager commandManager = new CommandManager(this);
         commandManager.hideTabComplete(true);
@@ -218,7 +222,9 @@ public class RealSkywars extends JavaPlugin {
         commandManager.getCompletionHandler().register("#maps", input -> this.getGameManager().getRoomNames());
         commandManager.getCompletionHandler().register("#boolean", input -> Arrays.asList("false", "true"));
         commandManager.getCompletionHandler().register("#worldtype", input -> Arrays.asList("DEFAULT", "SCHEMATIC"));
-        commandManager.getCompletionHandler().register("#kits", input -> kitm.getKitNames());
+        commandManager.getCompletionHandler().register("#kits", input -> kitm.getKits().stream()
+                .map(kit -> Text.strip(kit.getName()))
+                .collect(Collectors.toList()));
 
         commandManager.getParameterHandler().register(SWChest.Tier.class, argument -> {
             try {

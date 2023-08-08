@@ -7,11 +7,14 @@ import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.gui.GUIManager;
 import josegamerpt.realskywars.gui.guis.*;
 import josegamerpt.realskywars.kits.Kit;
+import josegamerpt.realskywars.kits.KitInventory;
+import josegamerpt.realskywars.kits.KitSettings;
 import josegamerpt.realskywars.managers.CurrencyManager;
 import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.player.RSWPlayer;
+import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
 import josegamerpt.realskywars.utils.WorldEditUtils;
 import josegamerpt.realskywars.world.SWWorld;
@@ -23,6 +26,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -52,7 +56,7 @@ public class RealSkywarsCMD extends CommandBase {
 
     @SubCommand("reload")
     @Alias("rl")
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     public void reloadcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
@@ -94,7 +98,7 @@ public class RealSkywarsCMD extends CommandBase {
 
     @SubCommand("kit")
     @Completion({"#enum", "#kits", "#range:100"})
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     public void kitcmd(final CommandSender commandSender, KIT_OPERATION action, String name, @Optional Double cost) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
@@ -109,14 +113,19 @@ public class RealSkywarsCMD extends CommandBase {
                         p.sendMessage(rs.getLanguageManager().getPrefix() + "Cost value not accepted.");
                         return;
                     }
-                    Kit k = new Kit(rs.getKitManager().getNewID(), name, cost, p.getInventory().getContents());
-                    KitSettings m = new KitSettings(k, p.getUUID());
-                    m.openInventory(p);
+
+                    if (rs.getKitManager().getKit(name) == null) {
+                        Kit k = new Kit(Text.strip(Text.color(name)), name, cost, new KitInventory(p.getPlayer().getInventory().getContents()));
+                        KitSettings m = new KitSettings(k, p.getUUID());
+                        m.openInventory(p);
+                    } else {
+                        commandSender.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.KIT_EXISTS, true));
+                    }
                     break;
                 case DELETE:
                     Kit k2 = rs.getKitManager().getKit(name);
                     if (k2 != null) {
-                        k2.deleteKit();
+                        rs.getKitManager().unregisterKit(k2);
                         commandSender.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.DELETEKIT_DONE, true));
                     } else {
                         commandSender.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.NO_KIT_FOUND, true));
@@ -212,7 +221,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("verifylang")
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     public void verifylangcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
@@ -246,7 +255,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("setspectator")
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     public void setspectator(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
@@ -293,7 +302,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("addsharik")
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     public void addsharik(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
@@ -324,7 +333,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("setlobby")
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     public void setlobby(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
@@ -343,7 +352,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("cancelsetup")
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     public void cancelsetup(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
@@ -358,7 +367,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("finishsetup")
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     public void finishsetup(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
@@ -377,7 +386,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("maps")
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     public void maps(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
@@ -394,7 +403,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("players")
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     public void players(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
@@ -414,7 +423,7 @@ public class RealSkywarsCMD extends CommandBase {
 
     @SubCommand("map")
     @Completion("#maps")
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     public void map(final CommandSender commandSender, String name) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
@@ -432,7 +441,7 @@ public class RealSkywarsCMD extends CommandBase {
 
     @SubCommand("tp")
     @Completion("#maps")
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     public void tpcmd(final CommandSender commandSender, String name) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
@@ -447,7 +456,7 @@ public class RealSkywarsCMD extends CommandBase {
 
     @SubCommand("set2chest")
     @Completion({"#enum", "#boolean"})
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     public void setchest(final CommandSender commandSender, SWChest.Tier tt, Boolean middle) {
         if (commandSender instanceof Player) {
             final Player p = (Player) commandSender;
@@ -460,7 +469,7 @@ public class RealSkywarsCMD extends CommandBase {
 
     @SubCommand("seetier")
     @Completion({"#enum", "#boolean"})
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     public void seetier(final CommandSender commandSender, SWChest.Tier tt, Boolean middle) {
         if (commandSender instanceof Player) {
             Player p = (Player) commandSender;
@@ -473,7 +482,7 @@ public class RealSkywarsCMD extends CommandBase {
 
     @SubCommand("player")
     @Completion("#players")
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     public void player(final CommandSender commandSender, Player get) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
@@ -490,7 +499,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("create")
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     @Completion({"#range:50", "#worldtype", "#range:20", "#range:20"})
     @WrongUsage("&c/rsw create <name> <type> <players> or /rsw create <name> <type> <number of teams> <players per team>")
     public void createcmd(final CommandSender commandSender, String mapname, SWWorld.WorldType wt, Integer maxPlayersandTeams, @Optional Integer teamPlayers) {
@@ -542,7 +551,7 @@ public class RealSkywarsCMD extends CommandBase {
     @SubCommand("unregister")
     @Completion("#maps")
     @Alias("del")
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     @WrongUsage("&c/rsw unregister <map>")
     public void delete(final CommandSender commandSender, String map) {
         if (rs.getMapManager().getRegisteredMaps().contains(map)) {
@@ -555,7 +564,7 @@ public class RealSkywarsCMD extends CommandBase {
 
     @SubCommand("reset")
     @Completion("#maps")
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     @WrongUsage("&c/rsw reset <map>")
     public void reset(final CommandSender commandSender, String map) {
         RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
@@ -569,7 +578,7 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("refreshLeaderboards")
-    @Permission("RealSkywaRealSkywars.Admin")
+    @Permission("RealSkywars.Admin")
     public void reset(final CommandSender commandSender) {
         rs.getLeaderboardManager().refreshLeaderboards();
         Text.send(commandSender, "Leaderboards Refreshed.");

@@ -2,24 +2,29 @@ package josegamerpt.realskywars;
 
 import org.bukkit.Bukkit;
 
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class Debugger {
     public static Boolean debug = false;
 
+    public static void printerr(Class a, String b) {
+        print(Level.SEVERE, a, b);
+    }
+
     public static void print(Class a, String b) {
+        print(Level.WARNING, a, b);
+    }
+
+    private static void print(Level l, Class a, String b) {
         if (debug) {
-            Bukkit.getLogger().log(Level.WARNING, "[RSW:DEBUG] " + getName(a) + " : " + b);
+            Bukkit.getLogger().log(l, "[RSW:DEBUG] " + getName(a).replace("josegamerpt.realskywars.", "") + " > " + b);
         }
     }
 
     static String getName(Class a) {
         Class<?> enclosingClass = a.getEnclosingClass();
-        if (enclosingClass != null) {
-            return enclosingClass.getName();
-        } else {
-            return a.getName();
-        }
+        return Objects.requireNonNullElse(enclosingClass, a).getName();
     }
 
     public static void execute() {

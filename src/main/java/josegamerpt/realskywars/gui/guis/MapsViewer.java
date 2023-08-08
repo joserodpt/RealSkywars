@@ -219,6 +219,10 @@ public class MapsViewer {
             inv.setItem(i, placeholder);
         }
 
+        inv.setItem(9, placeholder);
+        inv.setItem(17, placeholder);
+        inv.setItem(36, placeholder);
+        inv.setItem(44, placeholder);
         inv.setItem(45, placeholder);
         inv.setItem(46, placeholder);
         inv.setItem(47, placeholder);
@@ -228,10 +232,6 @@ public class MapsViewer {
         inv.setItem(51, placeholder);
         inv.setItem(52, placeholder);
         inv.setItem(53, placeholder);
-        inv.setItem(36, placeholder);
-        inv.setItem(44, placeholder);
-        inv.setItem(9, placeholder);
-        inv.setItem(17, placeholder);
 
         if (firstPage()) {
             inv.setItem(18, placeholder);

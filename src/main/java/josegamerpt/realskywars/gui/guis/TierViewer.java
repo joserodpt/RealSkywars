@@ -31,7 +31,6 @@ public class TierViewer {
     static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     private final Inventory inv;
     private final UUID uuid;
-    private final List<SWChestItem> items;
     private final HashMap<Integer, SWChestItem> display = new HashMap<>();
     private final SWChest.Tier ct;
     private final SWChest.Type cte;
@@ -44,9 +43,9 @@ public class TierViewer {
         this.cte = cte;
         this.inv = Bukkit.getServer().createInventory(null, 54, Text.color("&b&l" + ct.name() + " " + cte.name()));
 
-        this.items = RealSkywars.getPlugin().getChestManager().getChest(ct, cte != SWChest.Type.NORMAL);
+        List<SWChestItem> items = RealSkywars.getPlugin().getChestManager().getChest(ct, cte != SWChest.Type.NORMAL);
 
-        this.p = new Pagination<>(28, this.items);
+        this.p = new Pagination<>(28, items);
         fillChest(this.p.getPage(this.pageNumber));
 
         this.register();
@@ -168,7 +167,10 @@ public class TierViewer {
 
         display.clear();
 
-        inv.setItem(49, placeholder);
+        inv.setItem(9, placeholder);
+        inv.setItem(17, placeholder);
+        inv.setItem(36, placeholder);
+        inv.setItem(44, placeholder);
         inv.setItem(45, placeholder);
         inv.setItem(46, placeholder);
         inv.setItem(47, placeholder);
@@ -178,10 +180,6 @@ public class TierViewer {
         inv.setItem(51, placeholder);
         inv.setItem(52, placeholder);
         inv.setItem(53, placeholder);
-        inv.setItem(36, placeholder);
-        inv.setItem(44, placeholder);
-        inv.setItem(9, placeholder);
-        inv.setItem(17, placeholder);
 
         if (firstPage()) {
             inv.setItem(18, placeholder);

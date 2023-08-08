@@ -18,7 +18,6 @@ import org.bukkit.World;
 import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,7 +71,7 @@ public class Solo extends SWGameMode {
 
                     //start msg
                     for (String s : Text.color(super.getRealSkywars().getLanguageManager().getList(p, LanguageManager.TL.ARENA_START))) {
-                        p.sendCenterMessage(s.replace("%chests%", WordUtils.capitalizeFully(super.getChestTier().name())).replace("%kit%", p.getKit().getName()).replace("%project%", WordUtils.capitalizeFully(super.getProjectileTier().name().replace("_", " "))).replace("%time%", WordUtils.capitalizeFully(super.getTimeType().name())));
+                        p.sendCenterMessage(s.replace("%chests%", WordUtils.capitalizeFully(super.getChestTier().name())).replace("%kit%", p.getKit().getDisplayName()).replace("%project%", WordUtils.capitalizeFully(super.getProjectileTier().name().replace("_", " "))).replace("%time%", WordUtils.capitalizeFully(super.getTimeType().name())));
                     }
 
                     p.getKit().give(p);
@@ -138,7 +137,7 @@ public class Solo extends SWGameMode {
                     if (p.getPlayer() != null) {
                         super.getBossBar().addPlayer(p.getPlayer());
                         p.heal();
-                        ArrayList<String> up = super.getRealSkywars().getLanguageManager().getList(p, LanguageManager.TL.TITLE_ROOMJOIN);
+                        List<String> up = super.getRealSkywars().getLanguageManager().getList(p, LanguageManager.TL.TITLE_ROOMJOIN);
                         p.getPlayer().sendTitle(up.get(0), up.get(1), 10, 120, 10);
                     }
 

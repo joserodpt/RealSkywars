@@ -8,7 +8,6 @@ import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.misc.DisplayItem;
 import josegamerpt.realskywars.utils.Itens;
-import josegamerpt.realskywars.utils.Text;
 import org.apache.logging.log4j.util.Strings;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -225,10 +224,6 @@ public class PlayerManager {
     public void setLanguage(RSWPlayer player, String s) {
         player.setProperty(RSWPlayer.PlayerProperties.LANGUAGE, s);
         player.sendMessage(rs.getLanguageManager().getString(player, LanguageManager.TS.LANGUAGE_SET, true).replace("%language%", s));
-    }
-
-    public Boolean boughtItem(RSWPlayer p, String string, ShopManager.Categories c) {
-        return p.getBoughtItems().contains(Text.strip(string + "|" + c.name()));
     }
 
     public void loadPlayers() {

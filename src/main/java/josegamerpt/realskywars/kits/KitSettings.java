@@ -1,8 +1,6 @@
-package josegamerpt.realskywars.gui.guis;
+package josegamerpt.realskywars.kits;
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.kits.Kit;
-import josegamerpt.realskywars.kits.KitManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
@@ -12,7 +10,6 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -26,22 +23,28 @@ import java.util.UUID;
 
 public class KitSettings {
 
-    public static Kit kt;
-    static Inventory inv;
-    static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
-    static ItemStack confirm = Itens.createItemLore(Material.CHEST, 1, "&9Save Settings", Collections.singletonList("&7Click here to confirm your settings."));
-    static ItemStack saved = Itens.createItemLore(Material.ENDER_CHEST, 1, "&9Save Settings", Collections.singletonList("&7Settings saved. You can now exit from this menu."));
-    // settings
-    static ItemStack dragon = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&aON"));
-    static ItemStack dragoff = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&cOFF"));
+    public Kit kt;
+    private Inventory inv;
+    private ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
+    private ItemStack confirm = Itens.createItemLore(Material.CHEST, 1, "&9Save Settings", Collections.singletonList("&7Click here to save your settings."));
+    private ItemStack ender_pearl = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&aON"));
+    private ItemStack ender_pearl_off = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&cOFF"));
     private static final Map<UUID, KitSettings> inventories = new HashMap<>();
     private final UUID uuid;
 
-    public KitSettings(Kit g, UUID id) {
+    public KitSettings(Kit k, UUID id) {
         this.uuid = id;
-        kt = g;
+        this.kt = k;
 
-        inv = Bukkit.getServer().createInventory(null, 27, Text.color(g.getName() + " Settings"));
+        inv = Bukkit.getServer().createInventory(null, 27, Text.color(k.getDisplayName() + " Settings"));
+
+        load();
+
+        this.register();
+    }
+
+    private void load() {
+        inv.clear();
 
         for (int i = 0; i < 9; ++i) {
             inv.setItem(i, placeholder);
@@ -59,15 +62,9 @@ public class KitSettings {
         inv.setItem(9, placeholder);
         inv.setItem(17, placeholder);
 
-        if (g.getPerk(KitManager.KitPerks.ENDER_PEARl)) {
-            inv.setItem(16, dragon);
-        } else {
-            inv.setItem(16, dragoff);
-        }
+        inv.setItem(13, this.kt.hasPerk(Kit.Perks.ENDER) ? ender_pearl : ender_pearl_off);
 
         inv.setItem(22, confirm);
-
-        this.register();
     }
 
     public static Listener getListener() {
@@ -90,32 +87,25 @@ public class KitSettings {
 
                             e.setCancelled(true);
 
-                            if (inv != null) {
-                                if (inv.getHolder() == e.getInventory().getHolder()) {
-                                    if (e.getClick().equals(ClickType.NUMBER_KEY)) {
-                                        e.setCancelled(true);
-                                    }
-                                    e.setCancelled(true);
+                            ItemStack clickedItem = e.getCurrentItem();
 
-                                    ItemStack clickedItem = e.getCurrentItem();
+                            if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
 
-                                    if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
+                            if (e.getRawSlot() == 22) {
+                                RealSkywars.getPlugin().getKitManager().getKits().add(current.kt);
+                                RealSkywars.getPlugin().getKitManager().registerKit(current.kt);
 
-                                    if (e.getRawSlot() == 22) {
-                                        inv.setItem(22, saved);
-                                    }
+                                p.closeInventory();
+                            }
 
-                                    // settings
-                                    if (e.getRawSlot() == 16) {
-                                        if (kt.getPerk(KitManager.KitPerks.ENDER_PEARl)) {
-                                            kt.setPerk(KitManager.KitPerks.ENDER_PEARl, false);
-                                            inv.setItem(16, dragoff);
-                                        } else {
-                                            kt.setPerk(KitManager.KitPerks.ENDER_PEARl, true);
-                                            inv.setItem(16, dragon);
-                                        }
-                                    }
+                            // settings
+                            if (e.getRawSlot() == 13) {
+                                if (current.kt.hasPerk(Kit.Perks.ENDER)) {
+                                    current.kt.removePerk(Kit.Perks.ENDER);
+                                } else {
+                                    current.kt.addPerk(Kit.Perks.ENDER);
                                 }
+                                current.load();
                             }
                         }
                     }
@@ -132,8 +122,6 @@ public class KitSettings {
                     UUID uuid = p.getUniqueId();
                     if (inventories.containsKey(uuid)) {
                         inventories.get(uuid).unregister();
-
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> kt.saveKit(), 10);
                     }
                 }
             }
