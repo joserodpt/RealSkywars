@@ -1,29 +1,49 @@
 package josegamerpt.realskywars.player;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.database.PlayerData;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.managers.ShopManager;
-import josegamerpt.realskywars.misc.DisplayItem;
+import josegamerpt.realskywars.shop.ShopDisplayItem;
+import josegamerpt.realskywars.shop.ShopManager;
 import josegamerpt.realskywars.utils.Itens;
-import org.apache.logging.log4j.util.Strings;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class PlayerManager {
     private RealSkywars rs;
     public PlayerManager(RealSkywars rs) {
         this.rs = rs;
     }
-    public static ArrayList<UUID> teleporting = new ArrayList<>();
+    public ArrayList<UUID> teleporting = new ArrayList<>();
     private final HashMap<Player, Player> trackingPlayers = new HashMap<>();
     private final ArrayList<RSWPlayer> players = new ArrayList<>();
 
@@ -55,6 +75,7 @@ public class PlayerManager {
                     p.getInventory().setItem(8, getItem(pg, Items.CHEST2));
                     break;
                 default:
+                    RealSkywars.getPlugin().warning(i.name() + " not registered in PlayerManager");
                     break;
             }
         }
@@ -112,13 +133,13 @@ public class PlayerManager {
             Bukkit.getOnlinePlayers().forEach(player -> gp.getTab().add(player));
             gp.getTab().updateRoomTAB();
 
-            for (RSWPlayer player : rs.getPlayerManager().getPlayers()) {
-                if (player.isInMatch()) {
-                    RSWPlayer.RoomTAB rt = player.getTab();
-                    rt.remove(p);
-                    rt.updateRoomTAB();
-                }
-            }
+            rs.getPlayerManager().getPlayers().stream()
+                    .filter(RSWPlayer::isInMatch)
+                    .forEach(player -> {
+                        RSWPlayer.RoomTAB rt = player.getTab();
+                        rt.remove(p);
+                        rt.updateRoomTAB();
+                    });
         } catch (Exception e) {
             RealSkywars.getPlugin().log(Level.SEVERE, "Error while loading player data for " + p.getName() + " ->" + e.getMessage());
         }
@@ -143,7 +164,6 @@ public class PlayerManager {
                     int seconds = Integer.parseInt(data[5]);
                     String dayandtime = data[6];
                     tmp.add(0, new RSWGameLog(mapa, mode, ranked, jogadores, win, seconds, dayandtime));
-
                 }
             }
         }
@@ -151,28 +171,25 @@ public class PlayerManager {
     }
 
     private String processGamesListSave(ArrayList<RSWGameLog> gamesList) {
-        ArrayList<String> join = new ArrayList<>();
-        gamesList.forEach(rswGameLog -> join.add(0, rswGameLog.getSerializedData()));
-        return Strings.join(join, '/');
+        return gamesList.stream()
+                .map(RSWGameLog::getSerializedData)
+                .collect(Collectors.joining("/"));
     }
 
     public RSWPlayer getPlayer(Player p) {
-        for (RSWPlayer g : this.players) {
-            if (g.getPlayer() == p) {
-                return g;
-            }
-        }
-        return null;
+        return this.players.stream()
+                .filter(g -> g.getPlayer() == p)
+                .findFirst()
+                .orElse(null);
     }
 
     public RSWPlayer getPlayer(UUID u) {
-        for (RSWPlayer g : this.players) {
-            if (g.getUUID() == u) {
-                return g;
-            }
-        }
-        return null;
+        return this.players.stream()
+                .filter(g -> g.getUUID().equals(u))
+                .findFirst()
+                .orElse(null);
     }
+
 
     public void savePlayer(RSWPlayer p, RSWPlayer.PlayerData pd) {
         if (p.getPlayer() != null) {
@@ -231,17 +248,13 @@ public class PlayerManager {
         Bukkit.getOnlinePlayers().forEach(this::loadPlayer);
     }
 
-    public List<DisplayItem> getBoughtItems(RSWPlayer player, ShopManager.Categories t) {
-        List<DisplayItem> bought = new ArrayList<>();
-
-        for (DisplayItem a : rs.getShopManager().getCategoryContents(player, t)) {
-            if (a != null && a.isBought()) {
-                bought.add(a);
-            }
-        }
+    public List<ShopDisplayItem> getBoughtItems(RSWPlayer player, ShopManager.Categories t) {
+        List<ShopDisplayItem> bought = rs.getShopManager().getCategoryContents(player, t).stream()
+                .filter(a -> a != null && a.isBought())
+                .collect(Collectors.toList());
 
         if (bought.isEmpty()) {
-            bought.add(new DisplayItem());
+            bought.add(new ShopDisplayItem());
         }
         return bought;
     }
@@ -300,6 +313,10 @@ public class PlayerManager {
                 player.setCompassTarget(target.getLocation());
             }
         }.runTaskTimerAsynchronously(RealSkywars.getPlugin(), 5L, 30L);
+    }
+
+    public ArrayList<UUID> getTeleporting() {
+        return teleporting;
     }
 
     public enum Items {LOBBY, CAGE, SETUP, SPECTATOR, PROFILE, CAGESET, MAPS, SHOP, LEAVE, VOTE, SPECTATE, KIT, PLAYAGAIN, CHEST1, CHEST2}

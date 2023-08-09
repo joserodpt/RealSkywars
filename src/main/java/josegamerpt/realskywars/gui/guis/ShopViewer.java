@@ -1,11 +1,27 @@
 package josegamerpt.realskywars.gui.guis;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.gui.GUIManager;
 import josegamerpt.realskywars.managers.CurrencyManager;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.managers.ShopManager;
-import josegamerpt.realskywars.misc.DisplayItem;
+import josegamerpt.realskywars.shop.ShopManager;
+import josegamerpt.realskywars.shop.ShopDisplayItem;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Pagination;
@@ -27,13 +43,13 @@ import java.util.*;
 
 public class ShopViewer {
 
-    static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
+    private ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     private static final Map<UUID, ShopViewer> inventories = new HashMap<>();
-    int pageNumber = 0;
-    Pagination<DisplayItem> p;
+    private int pageNumber = 0;
+    private Pagination<ShopDisplayItem> p;
     private final Inventory inv;
     private final UUID uuid;
-    private final HashMap<Integer, DisplayItem> display = new HashMap<>();
+    private final Map<Integer, ShopDisplayItem> display = new HashMap<>();
     private final ShopManager.Categories cat;
 
     public ShopViewer(RSWPlayer swPl, ShopManager.Categories t) {
@@ -41,7 +57,7 @@ public class ShopViewer {
         this.cat = t;
         inv = Bukkit.getServer().createInventory(null, 54, getTitle(swPl, t));
 
-        List<DisplayItem> items = RealSkywars.getPlugin().getShopManager().getCategoryContents(swPl, t);
+        List<ShopDisplayItem> items = RealSkywars.getPlugin().getShopManager().getCategoryContents(swPl, t);
 
         if (!items.isEmpty()) {
             p = new Pagination<>(28, items);
@@ -49,7 +65,6 @@ public class ShopViewer {
         } else {
             fillChest(Collections.emptyList());
         }
-        this.register();
     }
 
     public static Listener getListener() {
@@ -74,9 +89,6 @@ public class ShopViewer {
                         switch (e.getRawSlot()) {
                             case 49:
                                 clicker.closeInventory();
-                                if (inventories.containsKey(uuid)) {
-                                    inventories.get(uuid).unregister();
-                                }
                                 GUIManager.openShopMenu(p);
                                 break;
                             case 26:
@@ -96,7 +108,7 @@ public class ShopViewer {
                         }
 
                         if (current.display.containsKey(e.getRawSlot())) {
-                            DisplayItem a = current.display.get(e.getRawSlot());
+                            ShopDisplayItem a = current.display.get(e.getRawSlot());
 
                             if (!a.isInteractive()) {
                                 p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.NOT_BUYABLE, true));
@@ -134,7 +146,7 @@ public class ShopViewer {
 
             private void backPage(ShopViewer asd) {
                 if (asd.p.exists(asd.pageNumber - 1)) {
-                    asd.pageNumber--;
+                    --asd.pageNumber;
                 }
 
                 asd.fillChest(asd.p.getPage(asd.pageNumber));
@@ -142,7 +154,7 @@ public class ShopViewer {
 
             private void nextPage(ShopViewer asd) {
                 if (asd.p.exists(asd.pageNumber + 1)) {
-                    asd.pageNumber++;
+                    ++asd.pageNumber;
                 }
 
                 asd.fillChest(asd.p.getPage(asd.pageNumber));
@@ -158,7 +170,6 @@ public class ShopViewer {
                     UUID uuid = p.getUniqueId();
                     if (inventories.containsKey(uuid)) {
                         inventories.get(uuid).unregister();
-
                     }
                 }
             }
@@ -180,27 +191,13 @@ public class ShopViewer {
         }
     }
 
-    public void fillChest(List<DisplayItem> items) {
+    public void fillChest(List<ShopDisplayItem> items) {
         inv.clear();
-
-        for (int i = 0; i < 10; ++i) {
-            inv.setItem(i, placeholder);
-        }
-
         display.clear();
 
-        inv.setItem(17, placeholder);
-        inv.setItem(36, placeholder);
-        inv.setItem(44, placeholder);
-        inv.setItem(45, placeholder);
-        inv.setItem(46, placeholder);
-        inv.setItem(47, placeholder);
-        inv.setItem(48, placeholder);
-        inv.setItem(49, placeholder);
-        inv.setItem(50, placeholder);
-        inv.setItem(51, placeholder);
-        inv.setItem(52, placeholder);
-        inv.setItem(53, placeholder);
+        for (int slot : new int[]{0,1,2,3,4,5,6,7,8,9,17, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53}) {
+            inv.setItem(slot, placeholder);
+        }
 
         if (firstPage()) {
             inv.setItem(18, placeholder);
@@ -224,13 +221,13 @@ public class ShopViewer {
         for (ItemStack i : inv.getContents()) {
             if (i == null) {
                 if (!items.isEmpty()) {
-                    DisplayItem s = items.get(0);
+                    ShopDisplayItem s = items.get(0);
                     inv.setItem(slot, s.getItemStack());
                     display.put(slot, s);
                     items.remove(0);
                 }
             }
-            slot++;
+            ++slot;
         }
     }
 
@@ -252,6 +249,7 @@ public class ShopViewer {
             } else {
                 player.getPlayer().openInventory(inv);
             }
+            register();
         }
     }
 

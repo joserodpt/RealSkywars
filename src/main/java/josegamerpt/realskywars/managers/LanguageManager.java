@@ -1,10 +1,26 @@
 package josegamerpt.realskywars.managers;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
+import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.configuration.Languages;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Text;
-import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +37,103 @@ public class LanguageManager {
 
     public String getDefaultLanguage() {
         return this.langList.contains(Config.file().getString("Config.Default-Language")) ? Config.file().getString("Config.Default-Language") : langList.get(0);
+    }
+
+    public HashMap<String, HashMap<TS, String>> verifyLanguages() {
+        HashMap<String, HashMap<TS, String>> flag = new HashMap<>();
+        HashMap<TS, String> flagItem = new HashMap<>();
+        for (String s : getLanguages()) {
+            for (TS val : TS.values()) {
+                String analyse = getString(s, val);
+                if (analyse.equals("String not found (" + val.name() + ")") || analyse.equals("Error finding translation (" + val.name() + ")")) {
+                    flagItem.put(val, analyse);
+                }
+            }
+            if (!(flagItem.isEmpty())) {
+                flag.put(s, flagItem);
+            }
+        }
+        return flag;
+    }
+
+    public boolean areLanguagesEmpty() {
+        return langList.isEmpty();
+    }
+
+    public String getString(TSsingle ts) {
+        try {
+            switch (ts) {
+                default:
+                    return "String not found (" + ts.name() + ")";
+                case BOSSBAR_ARENA_END:
+                    return Text.color(Languages.file().getString("Strings.Boss-Bar.End"));
+                case BOSSBAR_ARENA_WAIT:
+                    return Text.color(Languages.file().getString("Strings.Boss-Bar.Wait"));
+                case BOSSBAR_ARENA_RUNTIME:
+                    return Text.color(Languages.file().getString("Strings.Boss-Bar.Run-Time"));
+                case BOSSBAR_ARENA_STARTING:
+                    return Text.color(Languages.file().getString("Strings.Boss-Bar.Starting"));
+                case BOSSBAR_ARENA_DEATHMATCH:
+                    return Text.color(Languages.file().getString("Strings.Boss-Bar.DeathMatch"));
+                case SEARCH_NOTFOUND_NAME:
+                    return Text.color(Languages.file().getString("Strings.Search.Not-Found"));
+                case SHOP_BUY:
+                    return Text.color(Languages.file().getString("Strings.Shop.Buy"));
+                case SHOP_BOUGHT:
+                    return Text.color(Languages.file().getString("Strings.Shop.Already-Bought"));
+                case ADMIN_SHUTDOWN:
+                    return Text.color(Languages.file().getString("Strings.Admin-Shutdown"));
+                case KIT_BUY:
+                    return Text.color(Languages.file().getString("Strings.Kit.Buy"));
+                case KIT_ITEM:
+                    return Text.color(Languages.file().getString("Strings.Kit.Items"));
+                case KIT_PRICE:
+                    return Text.color(Languages.file().getString("Strings.Kit.Price"));
+                case KIT_SELECT:
+                    return Text.color(Languages.file().getString("Strings.Kit.Select"));
+                case KIT_CONTAINS:
+                    return Text.color(Languages.file().getString("Strings.Kit.Contains"));
+                case BUTTONS_BACK_DESC:
+                    return Text.color(Languages.file().getString("Strings.Menus.Back-Button.Description"));
+                case BUTTONS_FILTER_DESC:
+                    return Text.color(Languages.file().getString("Strings.Menus.Filter-Button.Description"));
+                case BUTTONS_NEXT_DESC:
+                    return Text.color(Languages.file().getString("Strings.Menus.Next-Button.Description"));
+                case BUTTONS_BACK_TITLE:
+                    return Text.color(Languages.file().getString("Strings.Menus.Back-Button.Title"));
+                case BUTTONS_FILTER_TITLE:
+                    return Text.color(Languages.file().getString("Strings.Menus.Filter-Button.Title"));
+                case BUTTONS_NEXT_TITLE:
+                    return Text.color(Languages.file().getString("Strings.Menus.Next-Button.Title"));
+                case BUTTONS_MENU_DESC:
+                    return Text.color(Languages.file().getString("Strings.Menus.Main-Menu-Button.Description"));
+                case BUTTONS_MENU_TITLE:
+                    return Text.color(Languages.file().getString("Strings.Menus.Main-Menu-Button.Title"));
+            }
+        } catch (Exception e) {
+            RealSkywars.getPlugin().severe("Error finding translation for RealSkywars: " + e.getMessage());
+            return "Error finding translation (" + ts.name() + ") check console";
+        }
+    }
+
+    public ArrayList<String> getLanguages() {
+        return langList;
+    }
+
+    public String getString(TS ts, boolean b) {
+        return getString(new RSWPlayer(false), ts, b);
+    }
+
+    public String getString(RSWPlayer p, TS ts, boolean b) {
+        if (!b) {
+            return Text.color(getString(p, ts));
+        } else {
+            return getPrefix() + Text.color(getString(p, ts));
+        }
+    }
+
+    public String getPrefix() {
+        return Text.color(Languages.file().getString("Strings.Prefix"));
     }
 
     public List<String> getList(RSWPlayer p, TL tl) {
@@ -81,39 +194,6 @@ public class LanguageManager {
         }
 
         return trad;
-    }
-
-    public String getString(TS ts, boolean b) {
-       return getString(new RSWPlayer(false), ts, b);
-    }
-
-    public String getString(RSWPlayer p, TS ts, boolean b) {
-        if (!b) {
-            return Text.color(getString(p, ts));
-        } else {
-            return getPrefix() + Text.color(getString(p, ts));
-        }
-    }
-
-    public String getPrefix() {
-        return Text.color(Languages.file().getString("Strings.Prefix"));
-    }
-
-    public HashMap<String, HashMap<TS, String>> verifyLanguages() {
-        HashMap<String, HashMap<TS, String>> flag = new HashMap<>();
-        HashMap<TS, String> flagItem = new HashMap<>();
-        for (String s : getLanguages()) {
-            for (TS val : TS.values()) {
-                String analyse = getString(s, val);
-                if (analyse.equals("String not found (" + val.name() + ")") || analyse.equals("Error finding translation (" + val.name() + ")")) {
-                    flagItem.put(val, analyse);
-                }
-            }
-            if (!(flagItem.isEmpty())) {
-                flag.put(s, flagItem);
-            }
-        }
-        return flag;
     }
 
     private String getString(String l, TS ts) {
@@ -584,75 +664,11 @@ public class LanguageManager {
             }
         } catch (Exception e) {
             tr = "Error finding translation (" + ts.name() + ") check console";
-            Bukkit.getLogger().severe("Error finding translation for RealSkywars: " + e.getMessage());
+            RealSkywars.getPlugin().severe("Error finding translation for RealSkywars: " + e.getMessage());
             return tr;
         }
 
         return tr;
-    }
-
-    public boolean areLanguagesEmpty() {
-        return langList.isEmpty();
-    }
-
-    public String getString(TSsingle ts) {
-        try {
-            switch (ts) {
-                default:
-                    return "String not found (" + ts.name() + ")";
-                case BOSSBAR_ARENA_END:
-                    return Text.color(Languages.file().getString("Strings.Boss-Bar.End"));
-                case BOSSBAR_ARENA_WAIT:
-                    return Text.color(Languages.file().getString("Strings.Boss-Bar.Wait"));
-                case BOSSBAR_ARENA_RUNTIME:
-                    return Text.color(Languages.file().getString("Strings.Boss-Bar.Run-Time"));
-                case BOSSBAR_ARENA_STARTING:
-                    return Text.color(Languages.file().getString("Strings.Boss-Bar.Starting"));
-                case BOSSBAR_ARENA_DEATHMATCH:
-                    return Text.color(Languages.file().getString("Strings.Boss-Bar.DeathMatch"));
-                case SEARCH_NOTFOUND_NAME:
-                    return Text.color(Languages.file().getString("Strings.Search.Not-Found"));
-                case SHOP_BUY:
-                    return Text.color(Languages.file().getString("Strings.Shop.Buy"));
-                case SHOP_BOUGHT:
-                    return Text.color(Languages.file().getString("Strings.Shop.Already-Bought"));
-                case ADMIN_SHUTDOWN:
-                    return Text.color(Languages.file().getString("Strings.Admin-Shutdown"));
-                case KIT_BUY:
-                    return Text.color(Languages.file().getString("Strings.Kit.Buy"));
-                case KIT_ITEM:
-                    return Text.color(Languages.file().getString("Strings.Kit.Items"));
-                case KIT_PRICE:
-                    return Text.color(Languages.file().getString("Strings.Kit.Price"));
-                case KIT_SELECT:
-                    return Text.color(Languages.file().getString("Strings.Kit.Select"));
-                case KIT_CONTAINS:
-                    return Text.color(Languages.file().getString("Strings.Kit.Contains"));
-                case BUTTONS_BACK_DESC:
-                    return Text.color(Languages.file().getString("Strings.Menus.Back-Button.Description"));
-                case BUTTONS_FILTER_DESC:
-                    return Text.color(Languages.file().getString("Strings.Menus.Filter-Button.Description"));
-                case BUTTONS_NEXT_DESC:
-                    return Text.color(Languages.file().getString("Strings.Menus.Next-Button.Description"));
-                case BUTTONS_BACK_TITLE:
-                    return Text.color(Languages.file().getString("Strings.Menus.Back-Button.Title"));
-                case BUTTONS_FILTER_TITLE:
-                    return Text.color(Languages.file().getString("Strings.Menus.Filter-Button.Title"));
-                case BUTTONS_NEXT_TITLE:
-                    return Text.color(Languages.file().getString("Strings.Menus.Next-Button.Title"));
-                case BUTTONS_MENU_DESC:
-                    return Text.color(Languages.file().getString("Strings.Menus.Main-Menu-Button.Description"));
-                case BUTTONS_MENU_TITLE:
-                    return Text.color(Languages.file().getString("Strings.Menus.Main-Menu-Button.Title"));
-            }
-        } catch (Exception e) {
-            Bukkit.getLogger().severe("Error finding translation for RealSkywars: " + e.getMessage());
-            return "Error finding translation (" + ts.name() + ") check console";
-        }
-    }
-
-    public ArrayList<String> getLanguages() {
-        return langList;
     }
 
     public enum TS {

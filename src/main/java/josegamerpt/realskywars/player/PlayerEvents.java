@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.player;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.SoloCage;
@@ -10,11 +26,9 @@ import josegamerpt.realskywars.effects.BowTrail;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.gui.GUIManager;
 import josegamerpt.realskywars.gui.guis.MapsViewer;
-import josegamerpt.realskywars.gui.guis.PlayerGUI;
-import josegamerpt.realskywars.gui.guis.ProfileContent;
 import josegamerpt.realskywars.gui.guis.VoteGUI;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.managers.ShopManager;
+import josegamerpt.realskywars.shop.ShopManager;
 import josegamerpt.realskywars.utils.Text;
 
 import org.bukkit.*;
@@ -238,41 +252,41 @@ public class PlayerEvents implements Listener {
     public void place(BlockPlaceEvent event) {
         if (event.getPlayer().isOp()) {
             RSWPlayer pg = rs.getPlayerManager().getPlayer(event.getPlayer());
-            if (pg.getSetup() != null) {
+            if (pg.getSetupRoom() != null) {
                 if (event.getBlock().getType().equals(Material.BEACON)) {
-                    switch (pg.getSetup().getGameType()) {
+                    switch (pg.getSetupRoom().getGameType()) {
                         case SOLO:
-                            if ((pg.getSetup().getCages().size() + 1) < pg.getSetup().getMaxPlayers()) {
+                            if ((pg.getSetupRoom().getCages().size() + 1) < pg.getSetupRoom().getMaxPlayers()) {
                                 log(event, pg);
                             } else {
                                 log(event, pg);
-                                pg.getSetup().confirmCages(true);
+                                pg.getSetupRoom().confirmCages(true);
                                 pg.sendMessage(rs.getLanguageManager().getString(pg, LanguageManager.TS.CAGES_SET, false));
                             }
                             break;
                         case TEAMS:
-                            if ((pg.getSetup().getCages().size() + 1) < pg.getSetup().getTeamCount()) {
+                            if ((pg.getSetupRoom().getCages().size() + 1) < pg.getSetupRoom().getTeamCount()) {
                                 log(event, pg);
                             } else {
                                 log(event, pg);
-                                pg.getSetup().confirmCages(true);
+                                pg.getSetupRoom().confirmCages(true);
                                 pg.sendMessage(rs.getLanguageManager().getString(pg, LanguageManager.TS.CAGES_SET, false));
                             }
                             break;
                     }
                 }
-                if (event.getBlock().getType() == Material.CHEST && pg.getSetup() != null) {
+                if (event.getBlock().getType() == Material.CHEST && pg.getSetupRoom() != null) {
                     String name = event.getItemInHand().getItemMeta().getDisplayName();
                     Block b = event.getBlock();
                     BlockData blockData = b.getBlockData();
                     BlockFace f = ((Directional) blockData).getFacing();
                     switch (Text.strip(name).toLowerCase()) {
                         case "common chest":
-                            pg.getSetup().addChest(new SWChest(SWChest.Type.NORMAL, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f));
+                            pg.getSetupRoom().addChest(new SWChest(SWChest.Type.NORMAL, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f));
                             pg.sendMessage("Added Normal Chest.");
                             break;
                         case "mid chest":
-                            pg.getSetup().addChest(new SWChest(SWChest.Type.MID, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f));
+                            pg.getSetupRoom().addChest(new SWChest(SWChest.Type.MID, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f));
                             pg.sendMessage("Added Mid Chest.");
                             break;
                     }
@@ -291,15 +305,15 @@ public class PlayerEvents implements Listener {
 
     public void log(BlockPlaceEvent e, RSWPlayer p) {
         Location loc = e.getBlock().getLocation().add(0.5, 0, 0.5);
-        int i = p.getSetup().getCages().size() + 1;
-        switch (p.getSetup().getGameType()) {
+        int i = p.getSetupRoom().getCages().size() + 1;
+        switch (p.getSetupRoom().getGameType()) {
             case SOLO:
                 SoloCage c = new SoloCage(i, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getWorld().getName(), 0, 64, 0);
-                p.getSetup().addCage(c);
+                p.getSetupRoom().addCage(c);
                 break;
             case TEAMS:
-                TeamCage tc = new TeamCage(i, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getWorld().getName(), p.getSetup().getPlayersPerTeam());
-                p.getSetup().addCage(tc);
+                TeamCage tc = new TeamCage(i, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getWorld().getName(), p.getSetupRoom().getPlayersPerTeam());
+                p.getSetupRoom().addCage(tc);
                 break;
         }
         e.getPlayer().sendMessage(ChatColor.GREEN + "You placed cage number " + i);

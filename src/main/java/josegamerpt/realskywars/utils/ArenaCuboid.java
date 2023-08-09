@@ -176,16 +176,6 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
         return copy;
     }
 
-    public int getTotalBlocks() {
-        int tot = 0;
-        for (Block b : getBlocks()) {
-            if (b.isEmpty() == false) {
-                tot++;
-            }
-        }
-        return tot;
-    }
-
     /**
      * Get the the centre of the Cuboid.
      *

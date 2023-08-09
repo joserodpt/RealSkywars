@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.kits;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Kits;
@@ -8,8 +24,8 @@ import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -38,7 +54,7 @@ public class KitManager {
                     RealSkywars.getPlugin().log(Level.WARNING, matString + " isn't a valid material [KIT]");
                 }
 
-                List<HashMap<String, Object>> inv = (List<HashMap<String, Object>>) Kits.file().getList("Kits." + name + ".Contents");
+                List<Map<String, Object>> inv = (List<Map<String, Object>>) Kits.file().getList("Kits." + name + ".Contents");
 
                 if (inv.isEmpty()) {
                     Debugger.printerr(KitManager.class, "Inventory Itens on " + "Kits." + name + ".Contents" + " are empty! Skipping kit.");

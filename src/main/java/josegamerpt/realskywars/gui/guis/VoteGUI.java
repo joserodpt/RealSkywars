@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.gui.guis;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.managers.LanguageManager;
@@ -39,8 +55,6 @@ public class VoteGUI {
         this.inv = Bukkit.getServer().createInventory(null, 54, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_VOTE_TITLE, false));
 
         fillChest();
-
-        this.register();
     }
 
     public void fillChest() {
@@ -70,12 +84,9 @@ public class VoteGUI {
                 break;
         }
 
-        int[] numbers = {0, 1, 2, 9, 11, 18, 20, 27, 29, 36, 38, 45, 46, 47};
-
-        for (int number : numbers) {
+        for (int number : new int[]{0, 1, 2, 9, 11, 18, 20, 27, 29, 36, 38, 45, 46, 47}) {
             this.inv.setItem(number, Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
         }
-
     }
 
     public void openInventory(Player target) {
@@ -88,6 +99,7 @@ public class VoteGUI {
             } else {
                 target.openInventory(inv);
             }
+            register();
         }
     }
 
@@ -97,7 +109,6 @@ public class VoteGUI {
             public void onClick(InventoryClickEvent e) {
                 HumanEntity clicker = e.getWhoClicked();
                 if (clicker instanceof Player) {
-                    Player player = (Player) clicker;
                     if (e.getCurrentItem() == null) {
                         return;
                     }

@@ -1,452 +1,287 @@
 Max-Itens-Per-Chest: 7
-Itens:
-  '1':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: LAVA_BUCKET
-    Chance: 5
-  '2':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: WATER_BUCKET
-    Chance: 5
-  '3':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: BAKED_POTATO
-      amount: 3
-    Chance: 5
-  '4':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: APPLE
-      amount: 3
-    Chance: 5
-  '5':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: BREAD
-      amount: 3
-    Chance: 5
-  '6':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: STONE
-      amount: 8
-    Chance: 100
-  '7':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: ARROW
-      amount: 4
-    Chance: 5
-  '8':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: WOODEN_SHOVEL
-    Chance: 40
-  '9':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: WOODEN_PICKAXE
-    Chance: 40
-  '10':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: STONE
-      amount: 12
-    Chance: 40
-  '11':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: WOODEN_SWORD
-    Chance: 40
-  '12':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: LEATHER_HELMET
-    Chance: 40
-  '13':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: LEATHER_CHESTPLATE
-    Chance: 40
-  '14':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: LEATHER_LEGGINGS
-    Chance: 40
-  '15':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: LEATHER_BOOTS
-    Chance: 40
-  '16':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: STONE_SWORD
-    Chance: 40
-  '17':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: STONE_PICKAXE
-    Chance: 40
-  '18':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: STONE_AXE
-    Chance: 40
-  '19':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: STONE_SHOVEL
-    Chance: 40
-  '20':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: COOKED_CHICKEN
-      amount: 2
-    Chance: 40
-  '21':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: COOKED_BEEF
-      amount: 2
-    Chance: 40
-  '22':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: STONE
-      amount: 16
-    Chance: 40
-  '23':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: OAK_PLANKS
-      amount: 16
-    Chance: 40
-  '24':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: SNOWBALL
-      amount: 4
-    Chance: 40
-  '25':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: EGG
-      amount: 4
-    Chance: 40
-  '26':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: ARROW
-      amount: 4
-    Chance: 40
-  '27':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: IRON_PICKAXE
-    Chance: 30
-  '28':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: ARROW
-      amount: 8
-    Chance: 30
-  '29':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: IRON_SHOVEL
-    Chance: 30
-  '30':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: GOLDEN_LEGGINGS
-    Chance: 30
-  '31':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: GOLDEN_BOOTS
-    Chance: 30
-  '32':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: GOLDEN_CHESTPLATE
-    Chance: 30
-  '33':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: GOLDEN_HELMET
-    Chance: 30
-  '34':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: ENDER_PEARL
-    Chance: 30
-  '35':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: EXPERIENCE_BOTTLE
-    Chance: 30
-  '36':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: ENDER_PEARL
-      amount: 2
-    Chance: 30
-  '37':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: IRON_SWORD
-    Chance: 30
-  '38':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: IRON_AXE
-    Chance: 30
-  '39':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: GOLDEN_APPLE
-    Chance: 30
-  '40':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: ARROW
-      amount: 8
-    Chance: 30
-  '41':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: IRON_HELMET
-    Chance: 30
-  '42':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: IRON_CHESTPLATE
-    Chance: 30
-  '43':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: IRON_LEGGINGS
-    Chance: 30
-  '44':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: IRON_BOOTS
-    Chance: 30
-Mid:
-  Itens:
-    '0':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: WATER_BUCKET
-      Chance: 80
-    '1':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: LAVA_BUCKET
-      Chance: 80
-    '2':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: IRON_INGOT
-        amount: 4
-      Chance: 50
-    '3':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: OAK_PLANKS
-        amount: 64
-      Chance: 80
-    '4':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: OAK_PLANKS
-        amount: 32
-      Chance: 90
-    '5':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: COBBLESTONE
-        amount: 64
-      Chance: 80
-    '6':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: COBBLESTONE
-        amount: 32
-      Chance: 90
-    '7':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_BOOTS
-      Chance: 50
-    '8':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_HELMET
-      Chance: 50
-    '9':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: CHAINMAIL_HELMET
-      Chance: 50
-    '10':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: CHAINMAIL_BOOTS
-      Chance: 50
-    '11':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND
-        amount: 5
-      Chance: 50
-    '12':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: EMERALD
-        amount: 3
-      Chance: 50
-    '13':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: TNT
-        amount: 7
-      Chance: 50
-    '14':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: TNT
-        amount: 4
-      Chance: 50
-    '15':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: LEVER
-        amount: 5
-      Chance: 50
-    '16':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: LEVER
-        amount: 3
-      Chance: 50
-    '17':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: LEVER
-        amount: 2
-      Chance: 50
-    '18':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_AXE
-      Chance: 70
-    '19':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_SWORD
-      Chance: 60
-    '20':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_SHOVEL
-      Chance: 50
-    '21':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_PICKAXE
-      Chance: 50
-    '22':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_HELMET
-      Chance: 50
-    '23':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_CHESTPLATE
-      Chance: 50
-    '24':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_LEGGINGS
-      Chance: 50
-    '25':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_BOOTS
-      Chance: 50
+Items:
+  - Chance: 5
+    Item:
+      AMOUNT: 1
+      MATERIAL: LAVA_BUCKET
+  - Chance: 5
+    Item:
+      AMOUNT: 1
+      MATERIAL: WATER_BUCKET
+  - Chance: 5
+    Item:
+      AMOUNT: 3
+      MATERIAL: BAKED_POTATO
+  - Chance: 5
+    Item:
+      AMOUNT: 3
+      MATERIAL: APPLE
+  - Chance: 5
+    Item:
+      AMOUNT: 3
+      MATERIAL: BREAD
+  - Chance: 100
+    Item:
+      AMOUNT: 8
+      MATERIAL: STONE
+  - Chance: 5
+    Item:
+      AMOUNT: 4
+      MATERIAL: ARROW
+  - Chance: 40
+    Item:
+      AMOUNT: 1
+      MATERIAL: WOODEN_SHOVEL
+  - Chance: 40
+    Item:
+      AMOUNT: 1
+      MATERIAL: WOODEN_PICKAXE
+  - Chance: 40
+    Item:
+      AMOUNT: 12
+      MATERIAL: STONE
+  - Chance: 40
+    Item:
+      AMOUNT: 1
+      MATERIAL: WOODEN_SWORD
+  - Chance: 40
+    Item:
+      AMOUNT: 1
+      LEATHER_ARMOR_COLOR: 10511680
+      MATERIAL: LEATHER_HELMET
+  - Chance: 40
+    Item:
+      AMOUNT: 1
+      LEATHER_ARMOR_COLOR: 10511680
+      MATERIAL: LEATHER_CHESTPLATE
+  - Chance: 40
+    Item:
+      AMOUNT: 1
+      LEATHER_ARMOR_COLOR: 10511680
+      MATERIAL: LEATHER_LEGGINGS
+  - Chance: 40
+    Item:
+      AMOUNT: 1
+      LEATHER_ARMOR_COLOR: 10511680
+      MATERIAL: LEATHER_BOOTS
+  - Chance: 40
+    Item:
+      AMOUNT: 1
+      MATERIAL: STONE_SWORD
+  - Chance: 40
+    Item:
+      AMOUNT: 1
+      MATERIAL: STONE_PICKAXE
+  - Chance: 40
+    Item:
+      AMOUNT: 1
+      MATERIAL: STONE_AXE
+  - Chance: 40
+    Item:
+      AMOUNT: 1
+      MATERIAL: STONE_SHOVEL
+  - Chance: 40
+    Item:
+      AMOUNT: 2
+      MATERIAL: COOKED_CHICKEN
+  - Chance: 40
+    Item:
+      AMOUNT: 2
+      MATERIAL: COOKED_BEEF
+  - Chance: 40
+    Item:
+      AMOUNT: 16
+      MATERIAL: STONE
+  - Chance: 40
+    Item:
+      AMOUNT: 16
+      MATERIAL: OAK_PLANKS
+  - Chance: 40
+    Item:
+      AMOUNT: 4
+      MATERIAL: SNOWBALL
+  - Chance: 40
+    Item:
+      AMOUNT: 4
+      MATERIAL: EGG
+  - Chance: 40
+    Item:
+      AMOUNT: 4
+      MATERIAL: ARROW
+  - Chance: 30
+    Item:
+      AMOUNT: 1
+      MATERIAL: IRON_PICKAXE
+  - Chance: 30
+    Item:
+      AMOUNT: 8
+      MATERIAL: ARROW
+  - Chance: 30
+    Item:
+      AMOUNT: 1
+      MATERIAL: IRON_SHOVEL
+  - Chance: 30
+    Item:
+      AMOUNT: 1
+      MATERIAL: GOLDEN_LEGGINGS
+  - Chance: 30
+    Item:
+      AMOUNT: 1
+      MATERIAL: GOLDEN_BOOTS
+  - Chance: 30
+    Item:
+      AMOUNT: 1
+      MATERIAL: GOLDEN_CHESTPLATE
+  - Chance: 30
+    Item:
+      AMOUNT: 1
+      MATERIAL: GOLDEN_HELMET
+  - Chance: 30
+    Item:
+      AMOUNT: 1
+      MATERIAL: ENDER_PEARL
+  - Chance: 30
+    Item:
+      AMOUNT: 1
+      MATERIAL: EXPERIENCE_BOTTLE
+  - Chance: 30
+    Item:
+      AMOUNT: 2
+      MATERIAL: ENDER_PEARL
+  - Chance: 30
+    Item:
+      AMOUNT: 1
+      MATERIAL: IRON_SWORD
+  - Chance: 30
+    Item:
+      AMOUNT: 1
+      MATERIAL: IRON_AXE
+  - Chance: 30
+    Item:
+      AMOUNT: 1
+      MATERIAL: GOLDEN_APPLE
+  - Chance: 30
+    Item:
+      AMOUNT: 8
+      MATERIAL: ARROW
+  - Chance: 30
+    Item:
+      AMOUNT: 1
+      MATERIAL: IRON_HELMET
+  - Chance: 30
+    Item:
+      AMOUNT: 1
+      MATERIAL: IRON_CHESTPLATE
+  - Chance: 30
+    Item:
+      AMOUNT: 1
+      MATERIAL: IRON_LEGGINGS
+  - Chance: 30
+    Item:
+      AMOUNT: 1
+      MATERIAL: IRON_BOOTS
+Mid-Items:
+  - Chance: 80
+    Item:
+      AMOUNT: 1
+      MATERIAL: WATER_BUCKET
+  - Chance: 80
+    Item:
+      AMOUNT: 1
+      MATERIAL: LAVA_BUCKET
+  - Chance: 50
+    Item:
+      AMOUNT: 4
+      MATERIAL: IRON_INGOT
+  - Chance: 80
+    Item:
+      AMOUNT: 64
+      MATERIAL: OAK_PLANKS
+  - Chance: 90
+    Item:
+      AMOUNT: 32
+      MATERIAL: OAK_PLANKS
+  - Chance: 80
+    Item:
+      AMOUNT: 64
+      MATERIAL: COBBLESTONE
+  - Chance: 90
+    Item:
+      AMOUNT: 32
+      MATERIAL: COBBLESTONE
+  - Chance: 50
+    Item:
+      AMOUNT: 1
+      MATERIAL: DIAMOND_BOOTS
+  - Chance: 50
+    Item:
+      AMOUNT: 1
+      MATERIAL: DIAMOND_HELMET
+  - Chance: 50
+    Item:
+      AMOUNT: 1
+      MATERIAL: CHAINMAIL_HELMET
+  - Chance: 50
+    Item:
+      AMOUNT: 1
+      MATERIAL: CHAINMAIL_BOOTS
+  - Chance: 50
+    Item:
+      AMOUNT: 5
+      MATERIAL: DIAMOND
+  - Chance: 50
+    Item:
+      AMOUNT: 3
+      MATERIAL: EMERALD
+  - Chance: 50
+    Item:
+      AMOUNT: 7
+      MATERIAL: TNT
+  - Chance: 50
+    Item:
+      AMOUNT: 4
+      MATERIAL: TNT
+  - Chance: 50
+    Item:
+      AMOUNT: 5
+      MATERIAL: LEVER
+  - Chance: 50
+    Item:
+      AMOUNT: 3
+      MATERIAL: LEVER
+  - Chance: 50
+    Item:
+      AMOUNT: 2
+      MATERIAL: LEVER
+  - Chance: 70
+    Item:
+      AMOUNT: 1
+      MATERIAL: DIAMOND_AXE
+  - Chance: 60
+    Item:
+      AMOUNT: 1
+      MATERIAL: DIAMOND_SWORD
+  - Chance: 50
+    Item:
+      AMOUNT: 1
+      MATERIAL: DIAMOND_SHOVEL
+  - Chance: 50
+    Item:
+      AMOUNT: 1
+      MATERIAL: DIAMOND_PICKAXE
+  - Chance: 50
+    Item:
+      AMOUNT: 1
+      MATERIAL: DIAMOND_HELMET
+  - Chance: 50
+    Item:
+      AMOUNT: 1
+      MATERIAL: DIAMOND_CHESTPLATE
+  - Chance: 50
+    Item:
+      AMOUNT: 1
+      MATERIAL: DIAMOND_LEGGINGS
+  - Chance: 50
+    Item:
+      AMOUNT: 1
+      MATERIAL: DIAMOND_BOOTS

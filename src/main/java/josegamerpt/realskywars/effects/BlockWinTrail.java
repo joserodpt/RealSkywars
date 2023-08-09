@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.effects;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.Bukkit;
@@ -10,8 +26,9 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BlockWinTrail implements Trail {
 
@@ -20,17 +37,14 @@ public class BlockWinTrail implements Trail {
     private BukkitTask task;
     private final BlockWinType bwp;
     private Material single;
-    private final List<Material> randBlocks = new ArrayList<>();
+    private List<Material> randBlocks = Arrays.stream(Material.values())
+            .filter(m -> !m.equals(Material.AIR) && m.isSolid() && m.isBlock() && m.isItem())
+            .collect(Collectors.toList());
 
     public BlockWinTrail(RSWPlayer gp, int seconds) {
         this.executionTime = seconds;
         this.p = gp;
         this.bwp = BlockWinType.RANDOM;
-        for (Material m : Material.values()) {
-            if (!m.equals(Material.AIR) && m.isSolid() && m.isBlock() && m.isItem()) {
-                this.randBlocks.add(m);
-            }
-        }
         startTask();
     }
 
@@ -40,10 +54,6 @@ public class BlockWinTrail implements Trail {
         this.bwp = BlockWinType.SINGLE;
         this.single = b;
         startTask();
-    }
-
-    private void stop() {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), this::cancelTask, this.executionTime * 20L);
     }
 
     @Override
@@ -76,7 +86,8 @@ public class BlockWinTrail implements Trail {
             }
             p.getPlayer().playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 50, 50);
         }, 5, 1);
-        stop();
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), this::cancelTask, this.executionTime * 20L);
     }
 
     @Override

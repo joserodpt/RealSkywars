@@ -1,7 +1,24 @@
 package josegamerpt.realskywars.gui.guis;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.game.SetupRoom;
+import josegamerpt.realskywars.game.modes.SWGameMode;
+import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
@@ -11,64 +28,89 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class MapSettings {
-
     private static final Map<UUID, MapSettings> inventories = new HashMap<>();
-    static Inventory inv;
-    static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
-    static ItemStack confirm = Itens.createItemLore(Material.CHEST, 1, "&9Save Settings", Collections.singletonList("&7Click here to confirm your settings."));
-    // settings
-    static ItemStack specon = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &aON &7for dead players."));
-    static ItemStack specoff = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &cOFF &7for dead players."));
-    static ItemStack ieon = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &aON&7."));
-    static ItemStack ieoff = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &cOFF&7."));
-    static ItemStack rankedon = Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked Mode is turned &aON&7."));
-    static ItemStack rankedoff = Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked Mode is turned &cOFF&7."));
-    private final UUID uuid;
-    SetupRoom gr;
+    private Inventory inv;
 
-    public MapSettings(SetupRoom g, UUID id) {
+    private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
+    private final ItemStack specon = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &aON &7for dead players."));
+    private final ItemStack rankedon = Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked is turned &aON&7."));
+    private final ItemStack rankedoff = Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked is turned &cOFF&7."));
+
+    private final ItemStack specoff = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &cOFF &7for dead players."));
+    private final ItemStack ieon = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &aON&7."));
+    private final ItemStack ieoff = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &cOFF&7."));
+    private final ItemStack aAvailable = Itens.createItemLore(Material.GREEN_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&aAvailable", "&7Starting", "&7Waiting", "&7Playing", "&7Finishing", "&7Resetting"));
+    private final ItemStack aStarting = Itens.createItemLore(Material.YELLOW_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&aStarting", "&7Waiting", "&7Playing", "&7Finishing", "&7Resetting"));
+    private final ItemStack aWaiting = Itens.createItemLore(Material.LIGHT_BLUE_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&aWaiting", "&7Playing", "&7Finishing", "&7Resetting"));
+    private final  ItemStack aPlaying = Itens.createItemLore(Material.RED_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&7Waiting", "&aPlaying", "&7Finishing", "&7Resetting"));
+    private final ItemStack aFinishing = Itens.createItemLore(Material.GRAY_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&7Waiting", "&7Playing", "&aFinishing", "&7Resetting"));
+    private final ItemStack aResetting = Itens.createItemLore(Material.PURPLE_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&7Waiting", "&7Playing", "&7Finishing", "&aResetting"));
+    private final ItemStack resetRoom = Itens.createItemLore(Material.BARRIER, 1, "&9Reset Room", Arrays.asList("&cClick here to reset the room.", "&4NOTE: ALL PLAYERS WILL BE KICKED FROM THE GAME."));
+    private final ItemStack borderon = Itens.createItemLore(Material.ITEM_FRAME, 1, "&9Border", Collections.singletonList("&7Border is turned &aON&7."));
+    private final ItemStack borderoff = Itens.createItemLore(Material.ITEM_FRAME, 1, "&9Border", Collections.singletonList("&7Border is turned &cOFF&7."));
+
+    private static int refreshTask;
+    private final UUID uuid;
+    private SWGameMode game;
+
+    public MapSettings(SWGameMode g, UUID id) {
         this.uuid = id;
-        gr = g;
+        this.game = g;
 
         inv = Bukkit.getServer().createInventory(null, 27, Text.color(g.getName() + " Settings"));
 
-        for (int i = 0; i < 9; ++i) {
-            inv.setItem(i, placeholder);
+        loadInv();
+
+        refresher();
+    }
+
+    private void loadInv() {
+        inv.clear();
+
+        int[] slots = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26};
+
+        for (int slot : slots) {
+            inv.setItem(slot, placeholder);
         }
 
-        inv.setItem(18, placeholder);
-        inv.setItem(19, placeholder);
-        inv.setItem(20, placeholder);
-        inv.setItem(21, placeholder);
-        inv.setItem(23, placeholder);
-        inv.setItem(24, placeholder);
-        inv.setItem(25, placeholder);
-        inv.setItem(26, placeholder);
+        // ARENASTATE
+        switch (game.getState()) {
+            case AVAILABLE:
+                inv.setItem(10, aAvailable);
+                break;
+            case FINISHING:
+                inv.setItem(10, aFinishing);
+                break;
+            case PLAYING:
+                inv.setItem(10, aPlaying);
+                break;
+            case RESETTING:
+                inv.setItem(10, aResetting);
+                break;
+            case STARTING:
+                inv.setItem(10, aStarting);
+                break;
+            case WAITING:
+                inv.setItem(10, aWaiting);
+                break;
+        }
 
-        inv.setItem(9, placeholder);
-        inv.setItem(17, placeholder);
+        inv.setItem(13, game.isBorderEnabled() ? borderon : borderoff);
+        inv.setItem(14, game.isRanked() ? rankedon : rankedoff);
+        inv.setItem(15, game.isSpectatorEnabled() ? specon : specoff);
+        inv.setItem(16, game.isInstantEndEnabled() ? ieon : ieoff);
 
-        inv.setItem(10, g.isSpectatingON() ? specon : specoff);
-        inv.setItem(13, g.isRanked() ? rankedon : rankedoff);
-        inv.setItem(16, g.isInstantEnding() ? ieon : ieoff);
-
-
-        inv.setItem(22, confirm);
-
-        this.register();
+        // resetbutton
+        inv.setItem(22, resetRoom);
     }
 
     public static Listener getListener() {
@@ -81,68 +123,78 @@ public class MapSettings {
                         return;
                     }
                     Player p = (Player) clicker;
-                    if (p != null) {
-                        UUID uuid = p.getUniqueId();
-                        if (inventories.containsKey(uuid)) {
-                            MapSettings current = inventories.get(uuid);
-                            if (e.getInventory().getHolder() != current.getInventory().getHolder()) {
-                                return;
-                            }
+                    UUID uuid = p.getUniqueId();
+                    if (inventories.containsKey(uuid)) {
+                        MapSettings current = inventories.get(uuid);
+                        if (!e.getInventory().getType().name().equalsIgnoreCase(current.getInventory().getType().name())) {
+                            return;
+                        }
 
-                            e.setCancelled(true);
+                        e.setCancelled(true);
 
-                            RSWPlayer gp = RealSkywars.getPlugin().getPlayerManager().getPlayer(p);
+                        RSWPlayer gp = RealSkywars.getPlugin().getPlayerManager().getPlayer(p);
+                        ItemStack clickedItem = e.getCurrentItem();
 
-                            if (gp.getSetup().isGUIConfirmed()) {
-                                return;
-                            }
+                        if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
 
-                            if (inv != null) {
-                                if (inv.getHolder() == e.getInventory().getHolder()) {
-                                    if (e.getClick().equals(ClickType.NUMBER_KEY)) {
-                                        e.setCancelled(true);
-                                    }
-                                    e.setCancelled(true);
+                        switch (e.getRawSlot()) {
+                            // reset
+                            case 22:
+                                p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(gp, LanguageManager.TS.ARENA_RESET, true));
+                                current.game.reset();
+                                p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(gp, LanguageManager.TS.MAP_RESET_DONE, true));
 
-                                    ItemStack clickedItem = e.getCurrentItem();
-
-                                    if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
-
-                                    switch (e.getRawSlot()) {
-                                        case 22:
-                                            gp.getSetup().setGUIConfirm(true);
-                                            p.closeInventory();
-                                            break;
-
-                                        //Settings
-                                        case 10:
-                                            if (gp.getSetup().isSpectatingON()) {
-                                                inv.setItem(10, specoff);
-                                            } else {
-                                                inv.setItem(10, specon);
-                                            }
-                                            gp.getSetup().setSpectating(!gp.getSetup().isSpectatingON());
-                                            break;
-                                        case 13:
-                                            if (gp.getSetup().isRanked()) {
-                                                inv.setItem(13, rankedoff);
-                                            } else {
-                                                inv.setItem(13, rankedon);
-                                            }
-                                            gp.getSetup().setRanked(!gp.getSetup().isRanked());
-                                            break;
-                                        case 16:
-
-                                            if (gp.getSetup().isInstantEnding()) {
-                                                inv.setItem(16, ieoff);
-                                            } else {
-                                                inv.setItem(16, ieon);
-                                            }
-                                            gp.getSetup().setInstantEnding(!gp.getSetup().isInstantEnding());
-                                            break;
-                                    }
+                                current.loadInv();
+                                break;
+                            case 10:
+                                // arstat
+                                switch (current.game.getState()) {
+                                    case AVAILABLE:
+                                        current.game.setState(SWGameMode.GameState.STARTING);
+                                        break;
+                                    case FINISHING:
+                                        current.game.setState(SWGameMode.GameState.RESETTING);
+                                        break;
+                                    case PLAYING:
+                                        current.game.setState(SWGameMode.GameState.FINISHING);
+                                        break;
+                                    case RESETTING:
+                                        current.game.setState(SWGameMode.GameState.AVAILABLE);
+                                        break;
+                                    case STARTING:
+                                        current.game.setState(SWGameMode.GameState.WAITING);
+                                        break;
+                                    case WAITING:
+                                        current.game.setState(SWGameMode.GameState.PLAYING);
+                                        break;
                                 }
-                            }
+                                current.loadInv();
+
+                                p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(gp, LanguageManager.TS.GAME_STATUS_SET, true).replace("%status%", current.game.getState().name()));
+                                break;
+                            case 13:
+                                // settings
+                                current.game.setBorderEnabled(!current.game.isBorderEnabled());
+                                current.game.save(SWGameMode.Data.SETTINGS, true);
+                                current.loadInv();
+                                break;
+                            case 14:
+                                // settings
+                                current.game.setRanked(!current.game.isRanked());
+                                current.game.save(SWGameMode.Data.SETTINGS, true);
+                                current.loadInv();
+                                break;
+                            case 15:
+                                // settings
+                                current.game.setSpectator(!current.game.isSpectatorEnabled());
+                                current.game.save(SWGameMode.Data.SETTINGS, true);
+                                current.loadInv();
+                                break;
+                            case 16:
+                                current.game.setInstantEnd(!current.game.isInstantEndEnabled());
+                                current.game.save(SWGameMode.Data.SETTINGS, true);
+                                current.loadInv();
+                                break;
                         }
                     }
                 }
@@ -159,16 +211,7 @@ public class MapSettings {
                     if (inventories.containsKey(uuid)) {
                         inventories.get(uuid).unregister();
 
-                        RSWPlayer gp = RealSkywars.getPlugin().getPlayerManager().getPlayer(p);
-                        if (!gp.getSetup().isGUIConfirmed()) {
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
-                                MapSettings m = new MapSettings(gp.getSetup(), p.getUniqueId());
-                                m.openInventory(gp);
-                            }, 3);
-                        } else {
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> RealSkywars.getPlugin().getMapManager().continueSetup(gp), 10);
-                        }
-
+                        Bukkit.getScheduler().cancelTask(refreshTask);
                     }
                 }
             }
@@ -185,7 +228,16 @@ public class MapSettings {
             } else {
                 player.getPlayer().openInventory(inv);
             }
+            register();
         }
+    }
+
+    private void refresher() {
+        refreshTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.getPlugin(), () -> {
+            ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, "&9Info", Arrays.asList("&fMap type: &b" + game.getSWWorld().getType().name(), "&fPlayers: &b" + game.getPlayerCount() + "/" + game.getMaxPlayers(), "&fSpectators: &b" + game.getSpectatorsCount(), "&fChest Tier: &b" + game.getChestTier().name(), "", "&fRunning Time: &b" + Text.formatSeconds(game.getTimePassed())));
+            // infoMap
+            inv.setItem(4, infoMap);
+        }, 0L, 10L);
     }
 
     private Inventory getInventory() {

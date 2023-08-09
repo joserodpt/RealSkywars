@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.chests;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.utils.Itens;
 import org.bukkit.inventory.ItemStack;
 
@@ -8,13 +24,10 @@ import java.util.Arrays;
 public class SWChestItem {
 
     private final ItemStack itemstack;
-    private final int chance;
-    private final String header;
-
-    public SWChestItem(ItemStack i, int chance, String header) {
+    private int chance;
+    public SWChestItem(ItemStack i, int chance) {
         this.itemstack = i;
         this.chance = chance;
-        this.header = header;
     }
 
     public ItemStack getItemStack() {
@@ -26,10 +39,18 @@ public class SWChestItem {
     }
 
     public ItemStack getDisplayItemStack() {
-        return Itens.addLore(this.getItemStack(), Arrays.asList("&f&lChance: &b&l" + this.chance + "%", "&fClick here to change the percentage."));
+        return Itens.addLore(this.getItemStack(), Arrays.asList("&fChance: &b" + this.chance + "%", "&7Click here to change the percentage."));
     }
 
-    public String getHeader() {
-        return this.header;
+    public void setChance(int val) {
+        this.chance = val;
+    }
+
+    @Override
+    public String toString() {
+        return "SWChestItem{" +
+                "itemstack=" + itemstack +
+                ", chance=" + chance +
+                '}';
     }
 }

@@ -1,5 +1,20 @@
 package josegamerpt.realskywars.player;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.achievements.Achievement;
 import josegamerpt.realskywars.cages.Cage;
@@ -12,8 +27,7 @@ import josegamerpt.realskywars.game.modes.teams.Team;
 import josegamerpt.realskywars.kits.Kit;
 import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.managers.ShopManager;
-import josegamerpt.realskywars.misc.Selections;
+import josegamerpt.realskywars.shop.ShopManager;
 import josegamerpt.realskywars.party.Party;
 import josegamerpt.realskywars.utils.Text;
 import josegamerpt.realskywars.utils.fastboard.FastBoard;
@@ -46,35 +60,20 @@ public class RSWPlayer {
     private Team team;
     private Cage cage;
     private Party party;
+
     //statistics
+    private int gamekills, kills, deaths, winsSolo, winsTEAMS, loses, gamesPlayed;
+    private int rankedTotalkills, rankedDeaths, rankedWinsSolo, rankedWinsTEAMS, rankedLoses, rankedGamesPlayed;
 
-    private int gamekills;
-
-    private int kills;
-    private int deaths;
-    private int winsSolo;
-    private int winsTEAMS;
-    private int loses;
-    private int gamesPlayed;
-
-    private int rankedTotalkills;
-    private int rankedDeaths;
-    private int rankedWinsSolo;
-    private int rankedWinsTEAMS;
-    private int rankedLoses;
-    private int rankedGamesPlayed;
-    private Double coins = 0D;
-    private Double balanceGame = 0D;
+    private Double coins = 0D, balanceGame = 0D;
     private PlayerScoreboard playerscoreboard;
     private Material cageBlock = Material.GLASS;
     private ArrayList<String> bought = new ArrayList<>();
-    private Selections.MapViewerPref mapViewerPref;
-    private Boolean bot = false;
+    private MapViewerPref mapViewerPref;
     private Kit kit;
     private Particle bowParticle;
-    private boolean winblockRandom = false;
     private Material winblockMaterial;
-    private Boolean invincible = false;
+    private Boolean invincible = false, bot = false, winblockRandom = false;
 
     public RSWPlayer(Player jog, RSWPlayer.PlayerState estado, int kills, int d, int solowin, int teamwin, Double coi, String lang, ArrayList<String> bgh, int l, int gp, int rankedTotalkills, int rankedDeaths, int rankedWinsSolo, int rankedWinsTEAMS, int rankedLoses, int rankedGamesPlayed, ArrayList<RSWGameLog> gamesList) {
         this.anonName = Text.anonName();
@@ -232,11 +231,7 @@ public class RSWPlayer {
     }
 
     public String getName() {
-        if (this.p != null) {
-            return this.p.getName();
-        } else {
-            return this.anonName;
-        }
+        return this.p == null ? this.anonName :  this.p.getName();
     }
 
     public void teleport(Location l) {
@@ -258,10 +253,7 @@ public class RSWPlayer {
     }
 
     public Location getLocation() {
-        if (this.p != null) {
-            return this.p.getLocation();
-        }
-        return null;
+        return this.p == null ? null : this.p.getLocation();
     }
 
     public void playSound(Sound s, int i, int i1) {
@@ -271,10 +263,7 @@ public class RSWPlayer {
     }
 
     public World getWorld() {
-        if (this.p != null) {
-            return this.p.getWorld();
-        }
-        return null;
+        return this.p == null ? null : this.p.getWorld();
     }
 
     public void executeWinBlock(int t) {
@@ -320,7 +309,7 @@ public class RSWPlayer {
     public void setProperty(PlayerProperties pp, Object o) {
         switch (pp) {
             case MAPVIEWER_PREF:
-                this.mapViewerPref = Selections.MapViewerPref.valueOf((String) o);
+                this.mapViewerPref = MapViewerPref.valueOf((String) o);
                 this.saveData(PlayerData.MAPVIEWER_PREF);
                 break;
             case KIT:
@@ -403,7 +392,7 @@ public class RSWPlayer {
         this.room = o;
     }
 
-    public SetupRoom getSetup() {
+    public SetupRoom getSetupRoom() {
         return this.setup;
     }
 
@@ -585,11 +574,11 @@ public class RSWPlayer {
         this.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(this, LanguageManager.TS.PARTY_LEAVE, true).replace("%player%", this.getDisplayName()));
     }
 
-    public Selections.MapViewerPref getMapViewerPref() {
+    public MapViewerPref getMapViewerPref() {
         return this.mapViewerPref;
     }
 
-    public void setMapViewerPref(Selections.MapViewerPref a) {
+    public void setMapViewerPref(MapViewerPref a) {
         this.mapViewerPref = a;
     }
 
@@ -640,8 +629,11 @@ public class RSWPlayer {
 
     public enum PlayerStatistics {WINS_SOLO, WINS_TEAMS, KILLS, DEATHS, LOSES, GAMES_PLAYED, GAME_BALANCE, GAME_KILLS}
 
-    //TAB per player
+    public enum MapViewerPref {
+        MAPV_SPECTATE, MAPV_AVAILABLE, MAPV_STARTING, MAPV_WAITING, MAPV_ALL, SOLO, TEAMS, SOLO_RANKED, TEAMS_RANKED
+    }
 
+    //TAB per player
     public class RoomTAB {
 
         private final RSWPlayer player;
@@ -687,9 +679,7 @@ public class RSWPlayer {
                 Bukkit.getOnlinePlayers().forEach(pl -> this.player.hidePlayer(RealSkywars.getPlugin(), pl));
                 this.show.forEach(rswPlayer -> this.player.showPlayer(RealSkywars.getPlugin(), rswPlayer));
 
-
                 String header, footer;
-
                 if (this.player.isInMatch()) {
                     header = String.join("\n", RealSkywars.getPlugin().getLanguageManager().getList(this.player, LanguageManager.TL.TAB_HEADER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", this.player.getMatch().getPlayers().size() + "").replace("%space%", Text.makeSpace());
                     footer = String.join("\n", RealSkywars.getPlugin().getLanguageManager().getList(this.player, LanguageManager.TL.TAB_FOOTER_MATCH)).replace("%map%", this.player.getMatch().getName()).replace("%players%", this.player.getMatch().getPlayers().size() + "").replace("%space%", Text.makeSpace());
@@ -703,9 +693,7 @@ public class RSWPlayer {
         }
     }
 
-
     //Player Scoreboard
-
     public class PlayerScoreboard {
 
         private final FastBoard fb;

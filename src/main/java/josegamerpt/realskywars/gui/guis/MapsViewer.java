@@ -1,10 +1,24 @@
 package josegamerpt.realskywars.gui.guis;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.misc.MapItem;
-import josegamerpt.realskywars.misc.Selections;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Pagination;
@@ -23,19 +37,20 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MapsViewer {
 
     private static final Map<UUID, MapsViewer> inventories = new HashMap<>();
     int pageNumber = 0;
-    Pagination<SWGameMode> p;
+    private Pagination<SWGameMode> p;
     private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     private final Inventory inv;
     private final UUID uuid;
     private final RSWPlayer gp;
-    private final HashMap<Integer, SWGameMode> display = new HashMap<>();
+    private final Map<Integer, SWGameMode> display = new HashMap<>();
 
-    public MapsViewer(RSWPlayer as, Selections.MapViewerPref t, String invName) {
+    public MapsViewer(RSWPlayer as, RSWPlayer.MapViewerPref t, String invName) {
         this.uuid = as.getUUID();
         this.inv = Bukkit.getServer().createInventory(null, 54, Text.color(invName) + ": " + RealSkywars.getPlugin().getLanguageManager().getString(as, select(t), false));
 
@@ -44,8 +59,6 @@ public class MapsViewer {
 
         this.p = new Pagination<>(28, items);
         fillChest(p.getPage(pageNumber), as);
-
-        this.register();
     }
 
     public static Listener getListener() {
@@ -100,31 +113,31 @@ public class MapsViewer {
             private void selectNext(RSWPlayer gp) {
                 switch (gp.getMapViewerPref()) {
                     case MAPV_ALL:
-                        gp.setMapViewerPref(Selections.MapViewerPref.MAPV_AVAILABLE);
+                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.MAPV_AVAILABLE);
                         break;
                     case MAPV_AVAILABLE:
-                        gp.setMapViewerPref(Selections.MapViewerPref.MAPV_WAITING);
+                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.MAPV_WAITING);
                         break;
                     case MAPV_WAITING:
-                        gp.setMapViewerPref(Selections.MapViewerPref.MAPV_STARTING);
+                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.MAPV_STARTING);
                         break;
                     case MAPV_STARTING:
-                        gp.setMapViewerPref(Selections.MapViewerPref.MAPV_SPECTATE);
+                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.MAPV_SPECTATE);
                         break;
                     case MAPV_SPECTATE:
-                        gp.setMapViewerPref(Selections.MapViewerPref.SOLO);
+                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.SOLO);
                         break;
                     case SOLO:
-                        gp.setMapViewerPref(Selections.MapViewerPref.SOLO_RANKED);
+                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.SOLO_RANKED);
                         break;
                     case SOLO_RANKED:
-                        gp.setMapViewerPref(Selections.MapViewerPref.TEAMS);
+                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.TEAMS);
                         break;
                     case TEAMS:
-                        gp.setMapViewerPref(Selections.MapViewerPref.TEAMS_RANKED);
+                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.TEAMS_RANKED);
                         break;
                     case TEAMS_RANKED:
-                        gp.setMapViewerPref(Selections.MapViewerPref.MAPV_ALL);
+                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.MAPV_ALL);
                         break;
                 }
 
@@ -136,7 +149,7 @@ public class MapsViewer {
 
             private void backPage(MapsViewer asd) {
                 if (asd.p.exists(asd.pageNumber - 1)) {
-                    asd.pageNumber--;
+                    --asd.pageNumber;
                 }
 
                 asd.fillChest(asd.p.getPage(asd.pageNumber), asd.gp);
@@ -144,7 +157,7 @@ public class MapsViewer {
 
             private void nextPage(MapsViewer asd) {
                 if (asd.p.exists(asd.pageNumber + 1)) {
-                    asd.pageNumber++;
+                    ++asd.pageNumber;
                 }
 
                 asd.fillChest(asd.p.getPage(asd.pageNumber), asd.gp);
@@ -174,7 +187,7 @@ public class MapsViewer {
         return pageNumber == 0;
     }
 
-    private LanguageManager.TS select(Selections.MapViewerPref t) {
+    private LanguageManager.TS select(RSWPlayer.MapViewerPref t) {
         switch (t) {
             case MAPV_ALL:
                 return LanguageManager.TS.MAP_ALL;
@@ -208,6 +221,7 @@ public class MapsViewer {
             } else {
                 player.getPlayer().openInventory(inv);
             }
+            register();
         }
     }
 
@@ -215,23 +229,9 @@ public class MapsViewer {
         inv.clear();
         display.clear();
 
-        for (int i = 0; i < 9; ++i) {
-            inv.setItem(i, placeholder);
+        for (int slot : new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53}) {
+            inv.setItem(slot, placeholder);
         }
-
-        inv.setItem(9, placeholder);
-        inv.setItem(17, placeholder);
-        inv.setItem(36, placeholder);
-        inv.setItem(44, placeholder);
-        inv.setItem(45, placeholder);
-        inv.setItem(46, placeholder);
-        inv.setItem(47, placeholder);
-        inv.setItem(48, placeholder);
-        inv.setItem(49, placeholder);
-        inv.setItem(50, placeholder);
-        inv.setItem(51, placeholder);
-        inv.setItem(52, placeholder);
-        inv.setItem(53, placeholder);
 
         if (firstPage()) {
             inv.setItem(18, placeholder);
@@ -254,13 +254,12 @@ public class MapsViewer {
             if (i == null) {
                 if (!items.isEmpty()) {
                     SWGameMode s = items.get(0);
-                    MapItem a = new MapItem(s, p);
-                    inv.setItem(slot, a.geIcon());
+                    inv.setItem(slot, makeIcon(p,s));
                     display.put(slot, s);
                     items.remove(0);
                 }
             }
-            slot++;
+            ++slot;
         }
 
         inv.setItem(49, Itens.createItemLore(Material.COMPARATOR, 1, RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_FILTER_TITLE), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_FILTER_DESC))));
@@ -276,5 +275,48 @@ public class MapsViewer {
 
     private void unregister() {
         inventories.remove(this.uuid);
+    }
+
+    private ItemStack makeIcon(RSWPlayer p, SWGameMode g) {
+        int count = 1;
+        if (g.isPlaceHolder()) {
+            return Itens.createItem(Material.BUCKET, count, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_NOTFOUND_TITLE, false));
+        } else {
+            if (g.getPlayerCount() > 0) {
+                count = g.getPlayerCount();
+            }
+
+            return Itens.createItemLore(getStateMaterial(g), count, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(g.isRanked()), variableList(RealSkywars.getPlugin().getLanguageManager().getList(p, LanguageManager.TL.ITEMS_MAP_DESCRIPTION), g));
+        }
+    }
+
+    private String rankedFormatting(Boolean ranked) {
+        return ranked ? "&bRANKED" : "";
+    }
+
+    private List<String> variableList(List<String> list, SWGameMode g) {
+        return list.stream()
+                .map(s -> s.replace("%players%", String.valueOf(g.getPlayerCount()))
+                        .replace("%maxplayers%", String.valueOf(g.getMaxPlayers())))
+                .collect(Collectors.toList());
+    }
+
+    private Material getStateMaterial(SWGameMode g) {
+        switch (g.getState()) {
+            case WAITING:
+                return g.isRanked() ? Material.LIGHT_BLUE_CONCRETE : Material.LIGHT_BLUE_WOOL;
+            case AVAILABLE:
+                return g.isRanked() ? Material.GREEN_CONCRETE : Material.GREEN_WOOL;
+            case STARTING:
+                return g.isRanked() ? Material.YELLOW_CONCRETE : Material.YELLOW_WOOL;
+            case PLAYING:
+                return g.isRanked() ? Material.RED_CONCRETE : Material.RED_WOOL;
+            case FINISHING:
+                return g.isRanked() ? Material.PURPLE_CONCRETE : Material.PURPLE_WOOL;
+            case RESETTING:
+                return g.isRanked() ? Material.BLACK_CONCRETE : Material.BLACK_WOOL;
+            default:
+                return g.isRanked() ? Material.BEACON : Material.DIRT;
+        }
     }
 }

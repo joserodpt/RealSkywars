@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.kits;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.managers.LanguageManager;
@@ -87,7 +103,7 @@ public class Kit {
     }
 
     public boolean hasItems() {
-        return this.kitInventory.hasItems();
+        return this.getKitInventory() != null && this.getKitInventory().hasItems();
     }
 
     public String getDisplayName() {
@@ -129,11 +145,16 @@ public class Kit {
             kp = Kit.Perks.valueOf(perkName.toUpperCase());
             this.addPerk(kp);
         } catch (Exception e) {
-            Bukkit.getLogger().severe(perkName + " isn't a valid Kit Perk. Ignoring.");
+            RealSkywars.getPlugin().severe(perkName + " isn't a valid Kit Perk. Ignoring.");
         }
     }
 
     public void give(RSWPlayer p) {
+        if (this.getKitInventory() == null) {
+            RealSkywars.getPlugin().severe(this.getName() + " kit content's are null (?) Skipping give order.");
+            return;
+        }
+
         if (p.getPlayer().isOp()) {
             this.getKitInventory().giveToPlayer(p);
             return;

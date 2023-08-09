@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.chests;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.Countdown;
@@ -24,9 +40,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class SWChest {
-    private final int x;
-    private final int y;
-    private final int z;
+    private final int x, y, z;
     private final String worldName;
     private final Type type;
     private final BlockFace bf;
@@ -60,10 +74,6 @@ public class SWChest {
 
     public Type getType() {
         return this.type;
-    }
-
-    public Boolean isMiddle() {
-        return this.type == Type.MID;
     }
 
     public Location getLocation() {

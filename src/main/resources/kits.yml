@@ -73,7 +73,7 @@ Kits:
   Warrior:
     Display-Name: '&9Warrior'
     Price: 10.0
-    Icon: LEATHER_CHESTPLATE
+    Icon: IRON_SWORD
     Permission: RealSkywars.Kit
     Contents:
       - AMOUNT: 1

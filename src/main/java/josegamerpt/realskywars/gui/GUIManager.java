@@ -1,13 +1,29 @@
 package josegamerpt.realskywars.gui;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.gui.guis.AchievementViewer;
 import josegamerpt.realskywars.gui.guis.GameLogViewer;
-import josegamerpt.realskywars.gui.guis.ProfileContent;
+import josegamerpt.realskywars.player.ProfileContent;
 import josegamerpt.realskywars.gui.guis.ShopViewer;
 import josegamerpt.realskywars.kits.Kit;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.managers.ShopManager;
+import josegamerpt.realskywars.shop.ShopManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.GUIBuilder;
 import josegamerpt.realskywars.utils.Itens;
@@ -20,31 +36,51 @@ import java.util.Collections;
 public class GUIManager {
 
     public static void openShopMenu(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENUS_SHOP_TILE, false), 9, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+        GUIBuilder inventory = new GUIBuilder(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENUS_SHOP_TILE, false), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         inventory.addItem(e -> {
             p.closeInventory();
-            ShopViewer v = new ShopViewer(p, ShopManager.Categories.CAGE_BLOCKS);
-            v.openInventory(p);
-        }, Itens.createItem(Material.SPAWNER, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.CAGEBLOCK, false)), 0);
+
+            new BukkitRunnable() {
+                public void run() {
+                    ShopViewer v = new ShopViewer(p, ShopManager.Categories.CAGE_BLOCKS);
+                    v.openInventory(p);
+                }
+            }.runTaskLater(RealSkywars.getPlugin(), 1);
+        }, Itens.createItem(Material.SPAWNER, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.CAGEBLOCK, false)), 10);
 
         inventory.addItem(e -> {
             p.closeInventory();
-            ShopViewer v = new ShopViewer(p, ShopManager.Categories.KITS);
-            v.openInventory(p);
-        }, Itens.createItem(Material.CHEST, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.KITS, false)), 1);
+
+            new BukkitRunnable() {
+                public void run() {
+                    ShopViewer v = new ShopViewer(p, ShopManager.Categories.KITS);
+                    v.openInventory(p);
+                }
+            }.runTaskLater(RealSkywars.getPlugin(), 1);
+        }, Itens.createItem(Material.CHEST, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.KITS, false)), 12);
 
         inventory.addItem(e -> {
             p.closeInventory();
-            ShopViewer v = new ShopViewer(p, ShopManager.Categories.WIN_BLOCKS);
-            v.openInventory(p);
-        }, Itens.createItem(Material.FIREWORK_ROCKET, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.WINBLOCK, false)), 2);
+
+            new BukkitRunnable() {
+                public void run() {
+                    ShopViewer v = new ShopViewer(p, ShopManager.Categories.WIN_BLOCKS);
+                    v.openInventory(p);
+                }
+            }.runTaskLater(RealSkywars.getPlugin(), 1);
+        }, Itens.createItem(Material.FIREWORK_ROCKET, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.WINBLOCK, false)), 14);
 
         inventory.addItem(e -> {
             p.closeInventory();
-            ShopViewer v = new ShopViewer(p, ShopManager.Categories.BOW_PARTICLES);
-            v.openInventory(p);
-        }, Itens.createItem(Material.BOW, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.BOWPARTICLE, false)), 3);
+
+            new BukkitRunnable() {
+                public void run() {
+                    ShopViewer v = new ShopViewer(p, ShopManager.Categories.BOW_PARTICLES);
+                    v.openInventory(p);
+                }
+            }.runTaskLater(RealSkywars.getPlugin(), 1);
+        }, Itens.createItem(Material.BOW, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.BOWPARTICLE, false)), 16);
 
         inventory.openInventory(p.getPlayer());
     }
@@ -72,7 +108,6 @@ public class GUIManager {
         for (String s : RealSkywars.getPlugin().getLanguageManager().getLanguages()) {
             inventory.addItem(e -> RealSkywars.getPlugin().getPlayerManager().setLanguage(p, s), Itens.createItemLore(Material.BOOK, 1, "&b" + s, Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_LANG_SELECT, false))), i);
             ++i;
-
         }
 
         inventory.openInventory(p.getPlayer());
@@ -93,7 +128,7 @@ public class GUIManager {
                     ProfileContent v = new ProfileContent(p, ShopManager.Categories.KITS);
                     v.openInventory(p);
                 }
-            }.runTaskLater(RealSkywars.getPlugin(), 2);
+            }.runTaskLater(RealSkywars.getPlugin(), 1);
         }, Itens.createItemLore(Material.CHEST, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.KITS, false), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 10);
 
         inventory.addItem(e -> {
@@ -105,7 +140,7 @@ public class GUIManager {
                     ProfileContent v = new ProfileContent(p, ShopManager.Categories.CAGE_BLOCKS);
                     v.openInventory(p);
                 }
-            }.runTaskLater(RealSkywars.getPlugin(), 2);
+            }.runTaskLater(RealSkywars.getPlugin(), 1);
 
         }, Itens.createItemLore(Material.SPAWNER, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.CAGEBLOCK, false), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 12);
 
@@ -117,7 +152,7 @@ public class GUIManager {
                     ProfileContent v = new ProfileContent(p, ShopManager.Categories.WIN_BLOCKS);
                     v.openInventory(p);
                 }
-            }.runTaskLater(RealSkywars.getPlugin(), 2);
+            }.runTaskLater(RealSkywars.getPlugin(), 1);
         }, Itens.createItemLore(Material.FIREWORK_ROCKET, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.WINBLOCK, false), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 14);
 
         inventory.addItem(e -> {
@@ -128,7 +163,7 @@ public class GUIManager {
                     ProfileContent v = new ProfileContent(p, ShopManager.Categories.BOW_PARTICLES);
                     v.openInventory(p);
                 }
-            }.runTaskLater(RealSkywars.getPlugin(), 2);
+            }.runTaskLater(RealSkywars.getPlugin(), 1);
         }, Itens.createItemLore(Material.BOW, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.BOWPARTICLE, false), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 13);
 
         inventory.addItem(e -> {

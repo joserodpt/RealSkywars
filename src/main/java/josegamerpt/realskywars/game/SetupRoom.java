@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.game;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.chests.SWChest;
 import josegamerpt.realskywars.game.modes.SWGameMode;
@@ -23,16 +39,12 @@ public class SetupRoom {
     private World worldMap;
     private Location spectatorLocation;
     private Boolean spec = true;
-    private boolean cagesConfirmed = false;
-    private boolean speclocConfirm = false;
-    private Boolean guiConfirm = false;
-    private Boolean instantEnding = false;
-
     private int teams;
     private int playersPerTeam;
-    private Boolean ranked = false;
     private final SWWorld.WorldType worldType;
     private String schematic = "none";
+
+    private Boolean cagesConfirmed = false, speclocConfirm = false, instantEnding = false,  borderEnabled = true, ranked = false;
 
     public SetupRoom(String nome, World w, SWWorld.WorldType wt, int players) {
         this.name = nome.replace(".schematic", "").replace(".schem", "");
@@ -49,7 +61,6 @@ public class SetupRoom {
         this.teams = teams;
         this.playersPerTeam = ppert;
         this.mode = TEAMS;
-
         this.maxPlayers = teams * ppert;
     }
 
@@ -79,10 +90,6 @@ public class SetupRoom {
 
     public boolean isSpectatorLocConfirmed() {
         return this.speclocConfirm;
-    }
-
-    public boolean isGUIConfirmed() {
-        return this.guiConfirm;
     }
 
     public void setSpectatorLoc(Location location) {
@@ -133,10 +140,6 @@ public class SetupRoom {
         this.tpConfirm = b;
     }
 
-    public void setGUIConfirm(boolean b) {
-        this.guiConfirm = b;
-    }
-
     public void setInstantEnding(boolean b) {
         this.instantEnding = b;
     }
@@ -171,5 +174,37 @@ public class SetupRoom {
 
     public void setSchematic(String name) {
         this.schematic = name;
+    }
+
+    public Boolean isBorderEnabled() {
+        return this.borderEnabled;
+    }
+
+    public void setBorderEnabled(boolean b) {
+        this.borderEnabled = b;
+    }
+
+    @Override
+    public String toString() {
+        return "SetupRoom{" +
+                "name='" + name + '\'' +
+                ", cages=" + cages +
+                ", chests=" + chests +
+                ", maxPlayers=" + maxPlayers +
+                ", mode=" + mode +
+                ", tpConfirm=" + tpConfirm +
+                ", worldMap=" + worldMap +
+                ", spectatorLocation=" + spectatorLocation +
+                ", spec=" + spec +
+                ", teams=" + teams +
+                ", playersPerTeam=" + playersPerTeam +
+                ", worldType=" + worldType +
+                ", schematic='" + schematic + '\'' +
+                ", cagesConfirmed=" + cagesConfirmed +
+                ", speclocConfirm=" + speclocConfirm +
+                ", instantEnding=" + instantEnding +
+                ", borderEnabled=" + borderEnabled +
+                ", ranked=" + ranked +
+                '}';
     }
 }

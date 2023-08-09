@@ -1,14 +1,25 @@
 package josegamerpt.realskywars.utils;
 
 /*
- * Copyright (c) José Rodrigues 2023. All rights reserved.
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
  * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
  */
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import josegamerpt.realskywars.Debugger;
-import org.bukkit.Bukkit;
+import josegamerpt.realskywars.RealSkywars;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
@@ -30,97 +41,77 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-class ItemStackWrapper {
+public class ItemStackSpringer {
 
-    private int slot = -1;
-    private ItemStack i;
-    private HashMap<String, Object> data;
-
-    //wrap item, save item without slot
-    public ItemStackWrapper(ItemStack i) {
-        this.i = i;
+    public static Map<String, Object> getItemSerialized(ItemStack i) {
+        return getItemSerialized(-1, i);
     }
 
-    //wrap item, save item in slot
-    public ItemStackWrapper(int slot, ItemStack i) {
-        this.slot = slot;
-        this.i = i;
-    }
-
-    //unwrap item
-    public ItemStackWrapper(HashMap<String, Object> stringObjectHashMap) {
-        this.data = stringObjectHashMap;
-        if (this.data.containsKey(ItemCategories.SLOT.name())) {
-            this.slot = (int) this.data.get(ItemCategories.SLOT.name());
-        }
-    }
-
-    public Map<String, Object> getItemSerialized() {
+    public static Map<String, Object> getItemSerialized(int slot, ItemStack i) {
         Map<String, Object> singleItem = new HashMap<>();
-        if (this.i == null) {
+        if (i == null) {
             //null items are empty items
-            singleItem.put(ItemStackWrapper.ItemCategories.EMPTY.name(), ItemStackWrapper.ItemCategories.EMPTY.name());
+            singleItem.put(ItemCategories.EMPTY.name(), ItemCategories.EMPTY.name());
             return singleItem;
         }
 
-        if (this.slot != -1) {
+        if (slot != -1) {
             //save item slot
-            singleItem.put(ItemStackWrapper.ItemCategories.SLOT.name(), this.slot);
+            singleItem.put(ItemCategories.SLOT.name(), slot);
         }
 
         //save item durability, if it has any
-        if (this.i.getItemMeta() instanceof Damageable) {
-            Damageable damageable = (Damageable) this.i.getItemMeta();
+        if (i.getItemMeta() instanceof Damageable) {
+            Damageable damageable = (Damageable) i.getItemMeta();
             if (damageable.hasDamage()) {
                 int damage = damageable.getDamage();
-                singleItem.put(ItemStackWrapper.ItemCategories.DAMAGE.name(), damage);
+                singleItem.put(ItemCategories.DAMAGE.name(), damage);
             }
         }
 
         //save display name
-        if (this.i.hasItemMeta() && this.i.getItemMeta().hasDisplayName()) {
-            singleItem.put(ItemStackWrapper.ItemCategories.NAME.name(), this.i.getItemMeta().getDisplayName());
+        if (i.hasItemMeta() && i.getItemMeta().hasDisplayName()) {
+            singleItem.put(ItemCategories.NAME.name(), i.getItemMeta().getDisplayName());
         }
 
         //save item's lore
-        if (this.i.hasItemMeta() && this.i.getItemMeta().hasLore()) {
-            singleItem.put(ItemStackWrapper.ItemCategories.LORE.name(), this.i.getItemMeta().getLore());
+        if (i.hasItemMeta() && i.getItemMeta().hasLore()) {
+            singleItem.put(ItemCategories.LORE.name(), i.getItemMeta().getLore());
         }
 
         //save item's enchants
-        if (this.i.hasItemMeta() && this.i.getItemMeta().hasEnchants()) {
-            singleItem.put(ItemStackWrapper.ItemCategories.ENCHANTMENTS.name(), this.i.getEnchantments().entrySet().stream()
+        if (i.hasItemMeta() && i.getItemMeta().hasEnchants()) {
+            singleItem.put(ItemCategories.ENCHANTMENTS.name(), i.getEnchantments().entrySet().stream()
                     .map(entry -> entry.getKey().getKey().getKey() + ":" + entry.getValue())
                     .collect(Collectors.joining(";")));
         }
 
         //Leather Armor Items
-        if (this.i.getType().name().contains("LEATHER_")) {
-            LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) this.i.getItemMeta();
+        if (i.getType().name().contains("LEATHER_")) {
+            LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) i.getItemMeta();
             org.bukkit.Color armorColor = leatherArmorMeta.getColor();
-            singleItem.put(ItemStackWrapper.ItemCategories.LEATHER_ARMOR_COLOR.name(), armorColor.asRGB());
+            singleItem.put(ItemCategories.LEATHER_ARMOR_COLOR.name(), armorColor.asRGB());
         }
 
         //Banners
-        if (this.i.getType().name().contains("_BANNER")) {
-            BannerMeta bannerMeta = (BannerMeta) this.i.getItemMeta();
+        if (i.getType().name().contains("_BANNER")) {
+            BannerMeta bannerMeta = (BannerMeta) i.getItemMeta();
 
             if (!bannerMeta.getPatterns().isEmpty()) {
                 List<Map<String, Object>> patternsSave = bannerMeta.getPatterns().stream()
                         .map(Pattern::serialize)
                         .collect(Collectors.toList());
 
-                singleItem.put(ItemStackWrapper.ItemCategories.BANNER_PATTERNS.name(), patternsSave);
+                singleItem.put(ItemCategories.BANNER_PATTERNS.name(), patternsSave);
             }
         }
 
         //Writtable and Written Book
-        if (this.i.getType() == Material.WRITABLE_BOOK || this.i.getType() == Material.WRITTEN_BOOK) {
+        if (i.getType() == Material.WRITABLE_BOOK || i.getType() == Material.WRITTEN_BOOK) {
             BookMeta bookMeta = (BookMeta) i.getItemMeta();
             if (bookMeta != null) {
                 Map<String, Object> book_data = new HashMap<>();
@@ -134,21 +125,21 @@ class ItemStackWrapper {
                     book_data.put("pages", bookMeta.getPages());
                 }
 
-                singleItem.put(ItemStackWrapper.ItemCategories.BOOK_DATA.name(), book_data);
+                singleItem.put(ItemCategories.BOOK_DATA.name(), book_data);
             }
         }
 
         //Enchanted books
-        if (this.i.getType() == Material.ENCHANTED_BOOK) {
+        if (i.getType() == Material.ENCHANTED_BOOK) {
             EnchantmentStorageMeta meta = (EnchantmentStorageMeta) i.getItemMeta();
 
-            singleItem.put(ItemStackWrapper.ItemCategories.BOOK_ENCHANTMENTS.name(), meta.getStoredEnchants().entrySet().stream()
+            singleItem.put(ItemCategories.BOOK_ENCHANTMENTS.name(), meta.getStoredEnchants().entrySet().stream()
                     .map(entry -> entry.getKey().getKey().getKey() + ":" + entry.getValue())
                     .collect(Collectors.joining(";")));
         }
 
         //Firework
-        if (this.i.getType() == Material.FIREWORK_ROCKET) {
+        if (i.getType() == Material.FIREWORK_ROCKET) {
             FireworkMeta fireworkMeta = (FireworkMeta) i.getItemMeta();
 
             if (fireworkMeta != null) {
@@ -159,33 +150,33 @@ class ItemStackWrapper {
                 // Get the list of firework effects
                 if (fireworkMeta.hasEffects()) {
                     List<Map<String, Object>> effects_serialized = fireworkMeta.getEffects().stream()
-                            .map(this::serializeFirework)
+                            .map(ItemStackSpringer::serializeFirework)
                             .collect(Collectors.toList());
 
                     firework_data.put("effects", effects_serialized);
                 }
 
-                singleItem.put(ItemStackWrapper.ItemCategories.FIREWORK_DATA.name(),firework_data);
+                singleItem.put(ItemCategories.FIREWORK_DATA.name(),firework_data);
             }
         }
 
         //Potion
-        if (this.i.getType() == Material.POTION || this.i.getType() == Material.LINGERING_POTION || this.i.getType() == Material.SPLASH_POTION) {
+        if (i.getType() == Material.POTION || i.getType() == Material.LINGERING_POTION || i.getType() == Material.SPLASH_POTION) {
             PotionMeta potionMeta = (PotionMeta) i.getItemMeta();
 
             if (potionMeta != null) {
-                singleItem.put(ItemStackWrapper.ItemCategories.POTION_DATA.name(), serializePotionData(potionMeta.getBasePotionData()));
+                singleItem.put(ItemCategories.POTION_DATA.name(), serializePotionData(potionMeta.getBasePotionData()));
             }
         }
 
         //save item material and amount
-        singleItem.put(ItemStackWrapper.ItemCategories.MATERIAL.name(), this.i.getType().name());
-        singleItem.put(ItemStackWrapper.ItemCategories.AMOUNT.name(), this.i.getAmount());
+        singleItem.put(ItemCategories.MATERIAL.name(), i.getType().name());
+        singleItem.put(ItemCategories.AMOUNT.name(), i.getAmount());
 
         return singleItem;
     }
 
-    public Map<String, Object> serializePotionData(PotionData potionData) {
+    public static Map<String, Object> serializePotionData(PotionData potionData) {
         return ImmutableMap.of(
                 "type", potionData.getType().name(),
                 "extended", potionData.isExtended(),
@@ -193,7 +184,7 @@ class ItemStackWrapper {
         );
     }
 
-    public PotionData deserializePotionData(Map<String, Object> data) {
+    public static PotionData deserializePotionData(Map<String, Object> data) {
         if (data.containsKey("type") && data.containsKey("extended") && data.containsKey("upgraded")) {
             PotionType type = PotionType.valueOf((String) data.get("type"));
             boolean extended = (boolean) data.get("extended");
@@ -203,24 +194,25 @@ class ItemStackWrapper {
         return null;
     }
 
-    public ItemStack getItemDeSerialized() {
+    public static ItemStack getItemDeSerialized(Map<String, Object> data) {
+        Debugger.print(ItemStackSpringer.class, "Attempting to deserialize Item with Data " + data.toString());
         if (!data.containsKey(ItemCategories.MATERIAL.name())) {
             return null;
         }
 
-        Debugger.print(ItemStackSpringer.class, "Attempting to deserialize Item Data of Material " + this.data.get(ItemStackWrapper.ItemCategories.MATERIAL.name()));
+        Debugger.print(ItemStackSpringer.class, "Attempting to deserialize Item Data of Material " + data.get(ItemCategories.MATERIAL.name()));
 
-        Material m = Material.valueOf((String) popKey(this.data, ItemStackWrapper.ItemCategories.MATERIAL.name()));
+        Material m = Material.valueOf((String) data.get(ItemCategories.MATERIAL.name()));
 
         int amount;
         try {
-            amount = (int) popKey(this.data, ItemStackWrapper.ItemCategories.AMOUNT.name());
+            amount = (int) data.get(ItemCategories.AMOUNT.name());
         } catch (Exception ignored) {
             amount = 1;
         }
         ItemStack i = new ItemStack(m, amount);
 
-        for (Map.Entry<String, Object> par : this.data.entrySet()) {
+        for (Map.Entry<String, Object> par : data.entrySet()) {
             ItemMeta meta = i.getItemMeta();
 
             String key = par.getKey();
@@ -330,7 +322,7 @@ class ItemStackWrapper {
 
                     fireworkMeta.setPower((Integer) firework_data.get("power"));
                     fireworkMeta.addEffects(((List<HashMap<String, Object>>) firework_data.get("effects")).stream()
-                            .map(this::deSerializeFirework)
+                            .map(ItemStackSpringer::deSerializeFirework)
                             .collect(Collectors.toList()));
 
                 }
@@ -348,18 +340,14 @@ class ItemStackWrapper {
             }
         }
 
-        Debugger.print(ItemStackSpringer.class, "Item Deserialized: " + i + " in slot: " + this.slot);
+        Debugger.print(ItemStackSpringer.class, "Item Deserialized: " + i);
 
         return i;
     }
 
-    public int getSlot() {
-        return this.slot;
-    }
-
-    private Map<String, Object> serializeFirework(FireworkEffect fireworkEffect) {
+    private static Map<String, Object> serializeFirework(FireworkEffect fireworkEffect) {
         //Reference from FireworkEffect.class
-        //return ImmutableMap.of("flicker", this.flicker, "trail", this.trail, "colors", this.colors, "fade-colors", this.fadeColors, "type", this.type.name());
+        //return ImmutableMap.of("flicker", flicker, "trail", trail, "colors", colors, "fade-colors", fadeColors, "type", type.name());
         return ImmutableMap.of(
                 "flicker", fireworkEffect.hasFlicker(),
                 "trail", fireworkEffect.hasTrail(),
@@ -369,7 +357,7 @@ class ItemStackWrapper {
         );
     }
 
-    private FireworkEffect deSerializeFirework(Map<String, Object> stringObjectEntry) {
+    private static FireworkEffect deSerializeFirework(Map<String, Object> stringObjectEntry) {
         return FireworkEffect.builder()
                 .trail((Boolean) stringObjectEntry.get("trail"))
                 .flicker((Boolean) stringObjectEntry.get("flicker"))
@@ -379,7 +367,7 @@ class ItemStackWrapper {
                 .build();
     }
 
-    public Enchantment getEnchantmentByName(String name) {
+    public static Enchantment getEnchantmentByName(String name) {
         switch (name.toLowerCase()) {
             case "protection":
                 return Enchantment.PROTECTION_ENVIRONMENTAL;
@@ -458,54 +446,31 @@ class ItemStackWrapper {
             case "soul_speed":
                 return Enchantment.SOUL_SPEED;
             default:
-                Bukkit.getLogger().severe(name + " isn't a known Enchantment (is this a bug?) Skipping this enchant.");
+                RealSkywars.getPlugin().severe(name + " isn't a known Enchantment (is this a bug?) Skipping this enchant.");
                 return null;
         }
     }
 
-    public static <K, V> V popKey(HashMap<K, V> map, K key) {
-        V value = map.get(key);
-        if (value != null) {
-            map.remove(key);
-        }
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return "ItemStackWrapper{" +
-                "slot=" + slot +
-                ", i=" + i +
-                '}';
-    }
-
     public enum ItemCategories { SLOT, NAME, MATERIAL, AMOUNT, DAMAGE, LORE, ENCHANTMENTS, EMPTY,
         LEATHER_ARMOR_COLOR, BANNER_PATTERNS, BOOK_DATA, BOOK_ENCHANTMENTS, FIREWORK_DATA, POTION_DATA }
-}
 
-public class ItemStackSpringer {
-
-    //disable slot saving with -1
-    public static ItemStack[] getItemsDeSerialized(List<HashMap<String, Object>> l) {
-        List<ItemStackWrapper> wrapped = l.stream()
-                .filter(Objects::nonNull)
-                .map(ItemStackWrapper::new)
-                .collect(Collectors.toList());
-
-        Optional<ItemStackWrapper> maxSlotItem = wrapped.stream()
-                .max(Comparator.comparingInt(ItemStackWrapper::getSlot));
+    public static ItemStack[] getItemsDeSerialized(List<Map<String, Object>> l) {
+        Optional<Map<String, Object>> maxSlotItem = l.stream()
+                .max(Comparator.comparingInt(map -> map.containsKey("SLOT") ? (int) map.get("SLOT") : -1));
 
         return maxSlotItem.map(maxSLOT -> {
             ItemStack[] arr;
 
-            if (maxSLOT.getSlot() == -1) {
-                arr = wrapped.stream()
-                        .map(ItemStackWrapper::getItemDeSerialized)
+            int slot = (int) maxSLOT.get("SLOT");
+
+            if (slot == -1) {
+                arr = l.stream()
+                        .map(ItemStackSpringer::getItemDeSerialized)
                         .toArray(ItemStack[]::new);
             } else {
-                arr = new ItemStack[maxSLOT.getSlot() + 1];
+                arr = new ItemStack[slot + 1];
 
-                wrapped.forEach(itemStackWrapper1 -> arr[itemStackWrapper1.getSlot()] = itemStackWrapper1.getItemDeSerialized());
+                l.forEach(itemStackWrapper1 -> arr[(int) itemStackWrapper1.get("SLOT")] = getItemDeSerialized(itemStackWrapper1));
             }
 
             return arr;
@@ -515,8 +480,7 @@ public class ItemStackSpringer {
     public static List<Map<String, Object>> getItemsSerialized(ItemStack[] l) {
         return IntStream.range(0, l.length)
                 .filter(i -> l[i] != null)
-                .mapToObj(i -> new ItemStackWrapper(i, l[i]))
-                .map(ItemStackWrapper::getItemSerialized)
+                .mapToObj(item -> getItemSerialized(l[item]))
                 .collect(Collectors.toList());
     }
 }

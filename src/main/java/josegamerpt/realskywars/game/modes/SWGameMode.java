@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.game.modes;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.chests.SWChest;
@@ -21,6 +37,8 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Directional;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -50,13 +68,11 @@ public abstract class SWGameMode {
     private final HashMap<UUID, Integer> chestVotes = new HashMap<>();
     private final HashMap<UUID, Integer> projectileVotes = new HashMap<>();
     private final HashMap<UUID, Integer> timeVotes = new HashMap<>();
-    private Boolean ranked;
     private SWGameMode.GameState state;
     private BossBar bossBar;
     private SWChest.Tier chestTier = SWChest.Tier.NORMAL;
     private int timePassed = 0;
-    private Boolean specEnabled;
-    private Boolean instantEnding;
+    private Boolean specEnabled, instantEnding, ranked, borderEnabled;
     private Countdown startTimer;
     private Countdown startRoomTimer;
     private Countdown winTimer;
@@ -67,7 +83,7 @@ public abstract class SWGameMode {
 
     private RealSkywars rs;
 
-    public SWGameMode(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, List<SWChest> chests, Boolean rankd, RealSkywars rs) {
+    public SWGameMode(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean borderEnabled, Location pos1, Location pos2, List<SWChest> chests, Boolean rankd, RealSkywars rs) {
         this.rs = rs;
 
         this.name = nome;
@@ -85,6 +101,7 @@ public abstract class SWGameMode {
         this.spectatorLocation = spectatorLocation;
         this.specEnabled = specEnabled;
         this.instantEnding = instantEnding;
+        this.borderEnabled = borderEnabled;
 
         this.chests = chests;
         this.ranked = rankd;
@@ -113,6 +130,21 @@ public abstract class SWGameMode {
         this.borderSize = -1;
         this.spectatorLocation = null;
         this.schematicName = "";
+    }
+
+    public String forceStart(RSWPlayer p) {
+        if (canStartGame()) {
+            return this.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.CMD_CANT_FORCESTART, true);
+        } else {
+            switch (this.getState()) {
+                case PLAYING:
+                case FINISHING:
+                    return this.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.ALREADY_STARTED, true);
+                default:
+                    this.startGameFunction();
+                    return this.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.CMD_MATCH_FORCESTART, true);
+            }
+        }
     }
 
     public void startTimers() {
@@ -175,12 +207,12 @@ public abstract class SWGameMode {
         return this.ranked;
     }
 
-    public boolean isFull() {
-        return this.getPlayerCount() == this.getMaxPlayers();
+    public Boolean isBorderEnabled() {
+        return this.borderEnabled;
     }
 
-    public void saveRoom() {
-        rs.getGameManager().addRoom(this);
+    public boolean isFull() {
+        return this.getPlayerCount() == this.getMaxPlayers();
     }
 
     public String getName() {
@@ -202,7 +234,6 @@ public abstract class SWGameMode {
     public int getPlayerCount() {
         return this.getPlayers().size();
     }
-
     public List<RSWPlayer> getPlayers() {
         List<RSWPlayer> players = new ArrayList<>();
         for (RSWPlayer rswPlayer : this.inRoom) {
@@ -213,12 +244,12 @@ public abstract class SWGameMode {
         return players;
     }
 
-    public List<RSWPlayer> getInRoom() {
+    public List<RSWPlayer> getAllPlayers() {
         return this.inRoom;
     }
 
     public int getSpectatorsCount() {
-        return getSpectators().size();
+        return this.getSpectators().size();
     }
 
     public List<RSWPlayer> getSpectators() {
@@ -256,7 +287,6 @@ public abstract class SWGameMode {
 
     abstract public boolean isPlaceHolder();
 
-    abstract public String forceStart(RSWPlayer p);
     abstract public boolean canStartGame();
 
     abstract public void removePlayer(RSWPlayer p);
@@ -265,11 +295,9 @@ public abstract class SWGameMode {
         return new Location(this.getSWWorld().getWorld(), this.spectatorLocation.getBlockX(), this.spectatorLocation.getBlockY(), this.spectatorLocation.getBlockZ());
     }
 
-    public void setTierType(SWChest.Tier b, Boolean updateChests) {
+    public void setTierType(SWChest.Tier b) {
         this.chestTier = b;
-        if (updateChests) {
-            this.chests.forEach(swChest -> swChest.setLoot(rs.getChestManager().getChest(this.chestTier, swChest.isMiddle()), rs.getChestManager().getMaxItems(this.chestTier)));
-        }
+        this.chests.forEach(swChest -> swChest.setLoot(rs.getChestManager().getChest(this.chestTier, swChest.getType()), rs.getChestManager().getMaxItems(this.chestTier)));
     }
 
     public void setTime(TimeType tt) {
@@ -539,18 +567,18 @@ public abstract class SWGameMode {
 
     abstract public void startGameFunction();
 
-        protected void calculateVotes() {
+    protected void calculateVotes() {
         //chest calculate
         int bigger = MathUtils.mostFrequentElement(getChestVotes().values());
         switch (bigger) {
             case 1:
-                this.setTierType(SWChest.Tier.BASIC, true);
+                this.setTierType(SWChest.Tier.BASIC);
                 break;
             case 3:
-                this.setTierType(SWChest.Tier.EPIC, true);
+                this.setTierType(SWChest.Tier.EPIC);
                 break;
             default:
-                this.setTierType(SWChest.Tier.NORMAL, true);
+                this.setTierType(SWChest.Tier.NORMAL);
                 break;
         }
 
@@ -579,7 +607,7 @@ public abstract class SWGameMode {
 
     protected void cancelGameStart() {
         getStartRoomTimer().killTask();
-        for (RSWPlayer p : getInRoom()) {
+        for (RSWPlayer p : getAllPlayers()) {
             p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.ARENA_CANCEL, true));
             p.sendActionbar(rs.getLanguageManager().getString(p, LanguageManager.TS.ARENA_CANCEL, false));
             p.setBarNumber(0);
@@ -743,8 +771,109 @@ public abstract class SWGameMode {
         return rs;
     }
 
-    //enums
+    public void setBorderEnabled(boolean b) {
+        this.borderEnabled = b;
+    }
 
+    public enum Data {
+        ALL, SETTINGS, WORLD, NAME, TYPE, NUM_PLAYERS, CAGES, CHESTS, SPECT_LOC, BORDER
+    }
+
+    public void save(Data d, boolean save) {
+        switch (d) {
+            case ALL:
+                this.save(Data.SETTINGS, false);
+                this.save(Data.WORLD, false);
+                this.save(Data.NAME, false);
+                this.save(Data.TYPE, false);
+                this.save(Data.NUM_PLAYERS, false);
+                this.save(Data.CAGES, false);
+                this.save(Data.CHESTS, false);
+                this.save(Data.SPECT_LOC, false);
+                this.save(Data.BORDER, false);
+                break;
+            case WORLD:
+                // World
+                Maps.file().set(this.getName() + ".world", this.getSWWorld().getName());
+                break;
+            case NAME:
+                Maps.file().set(this.getName() + ".name", this.name);
+                break;
+            case NUM_PLAYERS:
+                Maps.file().set(this.getName() + ".number-of-players", this.getMaxPlayers());
+                break;
+            case TYPE:
+                Maps.file().set(this.getName() + ".type", this.getSWWorld().getType().name());
+                if (this.getSWWorld().getType() == SWWorld.WorldType.SCHEMATIC) {
+                    Maps.file().set(this.getName() + ".schematic", this.getShematicName());
+                }
+                break;
+            case CAGES:
+                switch (this.getGameMode()) {
+                    case SOLO:
+                        for (Cage c : this.getCages()) {
+                            Location loc = c.getLoc();
+                            Maps.file().set(this.getName() + ".Locations.Cages." + c.getID() + ".X", loc.getBlockX());
+                            Maps.file().set(this.getName() + ".Locations.Cages." + c.getID() + ".Y", loc.getBlockY());
+                            Maps.file().set(this.getName() + ".Locations.Cages." + c.getID() + ".Z", loc.getBlockZ());
+                        }
+                        break;
+                    case TEAMS:
+                        for (Team c : this.getTeams()) {
+                            Location loc = c.getTeamCage().getLoc();
+                            Maps.file().set(this.getName() + ".Locations.Cages." + c.getTeamCage().getID() + ".X", loc.getBlockX());
+                            Maps.file().set(this.getName() + ".Locations.Cages." + c.getTeamCage().getID() + ".Y", loc.getBlockY());
+                            Maps.file().set(this.getName() + ".Locations.Cages." + c.getTeamCage().getID() + ".Z", loc.getBlockZ());
+                        }
+                        break;
+                }
+                break;
+            case CHESTS:
+                int chestID = 1;
+                for (SWChest chest : this.getChests()) {
+                    Maps.file().set(this.getName() + ".Chests." + chestID + ".LocationX", chest.getLocation().getBlockX());
+                    Maps.file().set(this.getName() + ".Chests." + chestID + ".LocationY", chest.getLocation().getBlockY());
+                    Maps.file().set(this.getName() + ".Chests." + chestID + ".LocationZ", chest.getLocation().getBlockZ());
+                    String face;
+                    try {
+                        BlockFace f = ((Directional) chest.getChestBlock().getBlockData()).getFacing();
+                        face = f.name();
+                    } catch (Exception ignored) { face = "NORTH"; }
+                    Maps.file().set(this.getName() + ".Chests." + chestID + ".Face", face);
+                    Maps.file().set(this.getName() + ".Chests." + chestID + ".Type", chest.getType().name());
+                    ++chestID;
+                }
+                break;
+            case SPECT_LOC:
+                Maps.file().set(this.getName() + ".Locations.Spectator.X", this.getSpectatorLocation().getX());
+                Maps.file().set(this.getName() + ".Locations.Spectator.Y", this.getSpectatorLocation().getY());
+                Maps.file().set(this.getName() + ".Locations.Spectator.Z", this.getSpectatorLocation().getZ());
+                Maps.file().set(this.getName() + ".Locations.Spectator.Yaw", this.getSpectatorLocation().getYaw());
+                Maps.file().set(this.getName() + ".Locations.Spectator.Pitch", this.getSpectatorLocation().getPitch());
+
+                break;
+            case SETTINGS:
+                Maps.file().set(this.getName() + ".Settings.GameType", this.getGameMode().name());
+                Maps.file().set(this.getName() + ".Settings.Spectator", this.isSpectatorEnabled());
+                Maps.file().set(this.getName() + ".Settings.Instant-End", this.isInstantEndEnabled());
+                Maps.file().set(this.getName() + ".Settings.Ranked", this.isRanked());
+                Maps.file().set(this.getName() + ".Settings.Border", this.isBorderEnabled());
+                break;
+            case BORDER:
+                Maps.file().set(this.getName() + ".World.Border.POS1-X", this.getPOS1().getX());
+                Maps.file().set(this.getName() + ".World.Border.POS1-Y", this.getPOS1().getY());
+                Maps.file().set(this.getName() + ".World.Border.POS1-Z", this.getPOS1().getZ());
+                Maps.file().set(this.getName() + ".World.Border.POS2-X", this.getPOS2().getX());
+                Maps.file().set(this.getName() + ".World.Border.POS2-Y", this.getPOS2().getY());
+                Maps.file().set(this.getName() + ".World.Border.POS2-Z", this.getPOS2().getZ());
+                break;
+        }
+        if (save) {
+            Maps.save();
+        }
+    }
+
+    //enums
     public enum GameState {
         AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING
     }
@@ -768,5 +897,4 @@ public abstract class SWGameMode {
     }
 
     public enum SpectateType {GAME, EXTERNAL}
-
 }

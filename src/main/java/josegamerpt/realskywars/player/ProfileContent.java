@@ -1,15 +1,28 @@
-package josegamerpt.realskywars.gui.guis;
+package josegamerpt.realskywars.player;
+
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
 
 import josegamerpt.realskywars.RealSkywars;
-import josegamerpt.realskywars.chests.SWChest;
-import josegamerpt.realskywars.chests.SWChestItem;
 import josegamerpt.realskywars.gui.GUIManager;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.player.RSWPlayer;
+import josegamerpt.realskywars.shop.ShopManager;
+import josegamerpt.realskywars.shop.ShopDisplayItem;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Pagination;
-import josegamerpt.realskywars.utils.PlayerInput;
-import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -17,6 +30,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -25,30 +39,24 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class TierViewer {
+public class ProfileContent {
 
-    private static final Map<UUID, TierViewer> inventories = new HashMap<>();
     static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
+    private static final Map<UUID, ProfileContent> inventories = new HashMap<>();
+    int pageNumber = 0;
+    Pagination<ShopDisplayItem> p;
     private final Inventory inv;
     private final UUID uuid;
-    private final HashMap<Integer, SWChestItem> display = new HashMap<>();
-    private final SWChest.Tier ct;
-    private final SWChest.Type cte;
-    int pageNumber = 0;
-    Pagination<SWChestItem> p;
+    private final Map<Integer, ShopDisplayItem> display = new HashMap<>();
+    private final ShopManager.Categories cat;
 
-    public TierViewer(Player p, SWChest.Tier ct, SWChest.Type cte) {
-        this.uuid = p.getUniqueId();
-        this.ct = ct;
-        this.cte = cte;
-        this.inv = Bukkit.getServer().createInventory(null, 54, Text.color("&b&l" + ct.name() + " " + cte.name()));
+    public ProfileContent(RSWPlayer p, ShopManager.Categories t) {
+        this.uuid = p.getUUID();
+        this.cat = t;
+        inv = Bukkit.getServer().createInventory(null, 54, getTitle(p, t));
 
-        List<SWChestItem> items = RealSkywars.getPlugin().getChestManager().getChest(ct, cte != SWChest.Type.NORMAL);
-
-        this.p = new Pagination<>(28, items);
-        fillChest(this.p.getPage(this.pageNumber));
-
-        this.register();
+        this.p = new Pagination<>(28, RealSkywars.getPlugin().getPlayerManager().getBoughtItems(p, t));
+        fillChest(this.p.getPage(pageNumber));
     }
 
     public static Listener getListener() {
@@ -62,7 +70,7 @@ public class TierViewer {
                     }
                     UUID uuid = clicker.getUniqueId();
                     if (inventories.containsKey(uuid)) {
-                        TierViewer current = inventories.get(uuid);
+                        ProfileContent current = inventories.get(uuid);
                         if (e.getInventory().getHolder() != current.getInventory().getHolder()) {
                             return;
                         }
@@ -76,7 +84,7 @@ public class TierViewer {
                                 if (inventories.containsKey(uuid)) {
                                     inventories.get(uuid).unregister();
                                 }
-                                GUIManager.openAchievementGUI(p);
+                                GUIManager.openPlayerMenu(p);
                                 break;
                             case 26:
                             case 35:
@@ -95,36 +103,58 @@ public class TierViewer {
                         }
 
                         if (current.display.containsKey(e.getRawSlot())) {
-                            SWChestItem a = current.display.get(e.getRawSlot());
-                            p.closeInventory();
+                            ShopDisplayItem a = current.display.get(e.getRawSlot());
 
-                            new PlayerInput(p.getPlayer(), input -> {
-                                int val = Integer.parseInt(input.replace("%", ""));
+                            if (!a.isInteractive()) {
+                                p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.NOT_BUYABLE, true));
+                                return;
+                            }
 
-                                RealSkywars.getPlugin().getChestManager().setChance(current.ct, current.cte, a.getHeader(), val);
 
-                                TierViewer tv = new TierViewer(p.getPlayer(), current.ct, current.cte);
-                                tv.openInventory(p.getPlayer());
-                            }, input -> {
-                                TierViewer tv = new TierViewer(p.getPlayer(), current.ct, current.cte);
-                                tv.openInventory(p.getPlayer());
-                            });
+                            if (e.getClick() == ClickType.RIGHT && current.cat == ShopManager.Categories.KITS) {
+                                GUIManager.openKitPreview(p, RealSkywars.getPlugin().getKitManager().getKit(a.getName()), 0);
+                                return;
+                            }
+                            switch (current.cat) {
+                                case KITS:
+                                    p.setProperty(RSWPlayer.PlayerProperties.KIT, RealSkywars.getPlugin().getKitManager().getKit(a.getName()));
+                                    p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.KITS, false)));
+                                    p.closeInventory();
+                                    break;
+                                case BOW_PARTICLES:
+                                    p.setProperty(RSWPlayer.PlayerProperties.BOW_PARTICLES, a.getInfo("Particle"));
+                                    p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.BOWPARTICLE, false)));
+                                    break;
+                                case CAGE_BLOCKS:
+                                    p.setProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK, a.getItemStack().getType());
+                                    p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.CAGEBLOCK, false)));
+                                    break;
+                                case WIN_BLOCKS:
+                                    if (a.containsInfo("RandomBlock")) {
+                                        p.setProperty(RSWPlayer.PlayerProperties.WIN_BLOCKS, "RandomBlock");
+                                        p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.WINBLOCK, false)));
+                                    } else {
+                                        p.setProperty(RSWPlayer.PlayerProperties.WIN_BLOCKS, a.getMaterial().name());
+                                        p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.PROFILE_SELECTED, true).replace("%name%", a.getName()).replace("%type%", RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.WINBLOCK, false)));
+                                    }
+                                    break;
+                            }
                         }
                     }
                 }
             }
 
-            private void backPage(TierViewer asd) {
+            private void backPage(ProfileContent asd) {
                 if (asd.p.exists(asd.pageNumber - 1)) {
-                    asd.pageNumber--;
+                    --asd.pageNumber;
                 }
 
                 asd.fillChest(asd.p.getPage(asd.pageNumber));
             }
 
-            private void nextPage(TierViewer asd) {
+            private void nextPage(ProfileContent asd) {
                 if (asd.p.exists(asd.pageNumber + 1)) {
-                    asd.pageNumber++;
+                    ++asd.pageNumber;
                 }
 
                 asd.fillChest(asd.p.getPage(asd.pageNumber));
@@ -144,9 +174,7 @@ public class TierViewer {
                     }
                 }
             }
-        }
-
-                ;
+        };
     }
 
     private boolean lastPage() {
@@ -157,8 +185,22 @@ public class TierViewer {
         return pageNumber == 0;
     }
 
-    public void fillChest(List<SWChestItem> items) {
+    private String getTitle(RSWPlayer p, ShopManager.Categories t) {
+        switch (t) {
+            case KITS:
+                return RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.KITS, false);
+            case BOW_PARTICLES:
+                return RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.BOWPARTICLE, false);
+            case WIN_BLOCKS:
+                return RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.WINBLOCK, false);
+            case CAGE_BLOCKS:
+                return RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.CAGEBLOCK, false);
+            default:
+                return "? not found";
+        }
+    }
 
+    public void fillChest(List<ShopDisplayItem> items) {
         inv.clear();
 
         for (int i = 0; i < 9; ++i) {
@@ -197,31 +239,33 @@ public class TierViewer {
             inv.setItem(35, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_TITLE), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_NEXT_DESC))));
         }
 
+        inv.setItem(49, Itens.createItemLore(Material.CHEST, 1, RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_MENU_TITLE), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.BUTTONS_MENU_DESC))));
 
         int slot = 0;
         for (ItemStack i : inv.getContents()) {
             if (i == null) {
                 if (!items.isEmpty()) {
-                    SWChestItem s = items.get(0);
-                    inv.setItem(slot, s.getDisplayItemStack());
+                    ShopDisplayItem s = items.get(0);
+                    inv.setItem(slot, s.getItemStack());
                     display.put(slot, s);
                     items.remove(0);
                 }
             }
-            slot++;
+            ++slot;
         }
     }
 
-    public void openInventory(Player player) {
+    public void openInventory(RSWPlayer player) {
         Inventory inv = getInventory();
-        InventoryView openInv = player.getOpenInventory();
+        InventoryView openInv = player.getPlayer().getOpenInventory();
         if (openInv != null) {
-            Inventory openTop = player.getOpenInventory().getTopInventory();
+            Inventory openTop = player.getPlayer().getOpenInventory().getTopInventory();
             if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
                 openTop.setContents(inv.getContents());
             } else {
-                player.openInventory(inv);
+                player.getPlayer().openInventory(inv);
             }
+            register();
         }
     }
 

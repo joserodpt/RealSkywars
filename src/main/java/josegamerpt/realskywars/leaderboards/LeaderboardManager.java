@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.leaderboards;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import com.j256.ormlite.stmt.QueryBuilder;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.database.PlayerData;
@@ -17,10 +33,10 @@ public class LeaderboardManager {
         this.rs = rs;
     }
 
-    public HashMap<LeaderboardManager.Leaderboard, josegamerpt.realskywars.leaderboards.Leaderboard> leaderboards = new HashMap<>();
+    public HashMap<LeaderboardCategories, Leaderboard> leaderboards = new HashMap<>();
 
     public void refreshLeaderboards() {
-        for (Leaderboard value : Leaderboard.values()) {
+        for (LeaderboardCategories value : LeaderboardCategories.values()) {
             try {
                 this.refreshLeaderboard(value);
             } catch (Exception e) {
@@ -29,7 +45,7 @@ public class LeaderboardManager {
         }
     }
 
-    public void refreshLeaderboard(LeaderboardManager.Leaderboard l) throws SQLException {
+    public void refreshLeaderboard(LeaderboardCategories l) throws SQLException {
         QueryBuilder<PlayerData, UUID> qb = rs.getDatabaseManager().getQueryDao().queryBuilder();
         String select;
         switch (l) {
@@ -62,13 +78,13 @@ public class LeaderboardManager {
         }
         qb.orderBy(select, false);
         List<PlayerData> expansions = rs.getDatabaseManager().getQueryDao().query(qb.prepare());
-        josegamerpt.realskywars.leaderboards.Leaderboard lb = getLeaderboard(l, expansions);
+        Leaderboard lb = getLeaderboard(l, expansions);
         this.leaderboards.put(l, lb);
     }
 
     @NotNull
-    private static josegamerpt.realskywars.leaderboards.Leaderboard getLeaderboard(Leaderboard l, List<PlayerData> expansions) {
-        josegamerpt.realskywars.leaderboards.Leaderboard lb = new josegamerpt.realskywars.leaderboards.Leaderboard();
+    private Leaderboard getLeaderboard(LeaderboardCategories l, List<PlayerData> expansions) {
+        Leaderboard lb = new Leaderboard();
         for (int i = 1; i < 11; ++i) {
             PlayerData p = null;
             try {
@@ -111,11 +127,11 @@ public class LeaderboardManager {
         return lb;
     }
 
-    public josegamerpt.realskywars.leaderboards.Leaderboard getLeaderboard(LeaderboardManager.Leaderboard l) {
+    public Leaderboard getLeaderboard(LeaderboardCategories l) {
         return this.leaderboards.get(l);
     }
 
-    public enum Leaderboard {
+    public enum LeaderboardCategories {
         SOLO_WINS, SOLO_RANKED_WINS, TEAMS_WINS, TEAMS_RANKED_WINS,
         KILLS, DEATHS, KILLS_RANKED, DEATHS_RANKED
     }

@@ -1,6 +1,22 @@
 package josegamerpt.realskywars.nms;
 
-import org.bukkit.Bukkit;
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
+import josegamerpt.realskywars.RealSkywars;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
@@ -27,8 +43,8 @@ public class NMS114R1tov116R3 implements RSWnms {
             world.getMethod("playBlockAction", block_pos, block_class, Integer.TYPE, Integer.TYPE).invoke(invoke, instance, i_block_data.getMethod("getBlock").invoke(world.getMethod("getType", block_pos).invoke(invoke, instance)), 1, open ? 1 : 0);
         }
         catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException ex) {
-            Bukkit.getLogger().severe("Error while executing chest animation for RealSkywars");
-            Bukkit.getLogger().severe(ex.toString());
+            RealSkywars.getPlugin().severe("Error while executing chest animation nms.");
+            RealSkywars.getPlugin().severe(ex.toString());
         }
     }
 
@@ -52,8 +68,8 @@ public class NMS114R1tov116R3 implements RSWnms {
             String jsonString = chat_serializer.getMethod("a", i_chat_base_component).invoke(null, json).toString();
             return (String) getNameMethod.invoke(localeLanguageInstance, jsonString);
         } catch (Exception ex) {
-            Bukkit.getLogger().severe("Error while executing getItemName for RealSkywars");
-            Bukkit.getLogger().severe(ex.toString());
+            RealSkywars.getPlugin().severe("Error while executing getItemName nms.");
+            RealSkywars.getPlugin().severe(ex.toString());
             return null;
         }
     }

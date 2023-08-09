@@ -1,5 +1,20 @@
 package josegamerpt.realskywars.utils;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ */
+
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
@@ -52,7 +67,8 @@ public class WorldEditUtils {
 
             Debugger.print(WorldEditUtils.class, "All done!");
         } catch (WorldEditException e) {
-            e.printStackTrace();
+            RealSkywars.getPlugin().severe("Error while setting blocks!");
+            RealSkywars.getPlugin().severe(e.getMessage());
         }
     }
 
@@ -88,12 +104,12 @@ public class WorldEditUtils {
 
                     location.getWorld().getPlayers().forEach(player -> player.sendMessage("[RealSkywars] Schematic pasted with success!"));
                 } catch (Exception e) {
-                    Debugger.print(WorldEditUtils.class, "Error pasting schematic!");
-                    e.printStackTrace();
+                    RealSkywars.getPlugin().severe("Error while pasting schematic!");
+                    RealSkywars.getPlugin().severe(e.getMessage());
                 }
             } catch (Exception e) {
-                Debugger.print(WorldEditUtils.class, "Error pasting schematic!");
-                e.printStackTrace();
+                RealSkywars.getPlugin().severe("Error while pasting schematic!");
+                RealSkywars.getPlugin().severe(e.getMessage());
             }
         }
     }

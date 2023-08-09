@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.gui.guis;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.achievements.Achievement;
 import josegamerpt.realskywars.gui.GUIManager;
@@ -26,10 +42,10 @@ import java.util.*;
 public class AchievementViewer {
 
     private static final Map<UUID, AchievementViewer> inventories = new HashMap<>();
-    static ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
+    final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     private final Inventory inv;
     private final UUID uuid;
-    private final HashMap<Integer, Achievement> display = new HashMap<>();
+    private final Map<Integer, Achievement> display = new HashMap<>();
     int pageNumber = 0;
     Pagination<Achievement> p;
 
@@ -41,8 +57,6 @@ public class AchievementViewer {
 
         this.p = new Pagination<>(28, items);
         fillChest(this.p.getPage(this.pageNumber));
-
-        this.register();
     }
 
     public static Listener getListener() {
@@ -88,18 +102,19 @@ public class AchievementViewer {
                                 break;
                         }
 
+                        /*
                         if (current.display.containsKey(e.getRawSlot())) {
                             Achievement a = current.display.get(e.getRawSlot());
 
-
                         }
+                         */
                     }
                 }
             }
 
             private void backPage(AchievementViewer asd) {
                 if (asd.p.exists(asd.pageNumber - 1)) {
-                    asd.pageNumber--;
+                    --asd.pageNumber;
                 }
 
                 asd.fillChest(asd.p.getPage(asd.pageNumber));
@@ -107,7 +122,7 @@ public class AchievementViewer {
 
             private void nextPage(AchievementViewer asd) {
                 if (asd.p.exists(asd.pageNumber + 1)) {
-                    asd.pageNumber++;
+                    ++asd.pageNumber;
                 }
 
                 asd.fillChest(asd.p.getPage(asd.pageNumber));
@@ -141,28 +156,12 @@ public class AchievementViewer {
     }
 
     public void fillChest(List<Achievement> items) {
-
         inv.clear();
-
-        for (int i = 0; i < 9; ++i) {
-            inv.setItem(i, placeholder);
-        }
-
         display.clear();
 
-        inv.setItem(9, placeholder);
-        inv.setItem(17, placeholder);
-        inv.setItem(36, placeholder);
-        inv.setItem(44, placeholder);
-        inv.setItem(45, placeholder);
-        inv.setItem(46, placeholder);
-        inv.setItem(47, placeholder);
-        inv.setItem(48, placeholder);
-        inv.setItem(49, placeholder);
-        inv.setItem(50, placeholder);
-        inv.setItem(51, placeholder);
-        inv.setItem(52, placeholder);
-        inv.setItem(53, placeholder);
+        for (int slot : new int[]{0,1,2,3,4,5,6,7,8,9,17, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53}) {
+            inv.setItem(slot, placeholder);
+        }
 
         if (firstPage()) {
             inv.setItem(18, placeholder);
@@ -192,7 +191,7 @@ public class AchievementViewer {
                     items.remove(0);
                 }
             }
-            slot++;
+            ++slot;
         }
     }
 
@@ -206,6 +205,7 @@ public class AchievementViewer {
             } else {
                 player.getPlayer().openInventory(inv);
             }
+            register();
         }
     }
 

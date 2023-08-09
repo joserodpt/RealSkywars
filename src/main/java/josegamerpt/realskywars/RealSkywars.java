@@ -1,9 +1,25 @@
 package josegamerpt.realskywars;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ */
+
 import josegamerpt.realskywars.achievements.AchievementsManager;
 import josegamerpt.realskywars.api.RSWEventsAPI;
 import josegamerpt.realskywars.chests.ChestManager;
 import josegamerpt.realskywars.chests.SWChest;
+import josegamerpt.realskywars.chests.TierViewer;
 import josegamerpt.realskywars.commands.PartyCMD;
 import josegamerpt.realskywars.commands.RealSkywarsCMD;
 import josegamerpt.realskywars.commands.SairCMD;
@@ -16,6 +32,9 @@ import josegamerpt.realskywars.database.SQL;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.gui.guis.*;
 import josegamerpt.realskywars.kits.KitSettings;
+import josegamerpt.realskywars.player.PlayerGUI;
+import josegamerpt.realskywars.player.ProfileContent;
+import josegamerpt.realskywars.shop.ShopManager;
 import josegamerpt.realskywars.utils.holograms.HologramManager;
 import josegamerpt.realskywars.kits.KitManager;
 import josegamerpt.realskywars.leaderboards.LeaderboardManager;
@@ -51,11 +70,10 @@ import java.util.stream.IntStream;
 
 public class RealSkywars extends JavaPlugin {
     private static RealSkywars pl;
-    private boolean newUpdate;
-
     public static RealSkywars getPlugin() {
         return pl;
     }
+    private boolean newUpdate;
 
     private RSWnms nms;
     private final WorldManager wm = new WorldManager(this);
@@ -186,8 +204,8 @@ public class RealSkywars extends JavaPlugin {
         pm.registerEvents(PlayerInput.getListener(), this);
         pm.registerEvents(GUIBuilder.getListener(), this);
         pm.registerEvents(GameLogViewer.getListener(), this);
+        pm.registerEvents(SetupRoomSettings.getListener(), this);
         pm.registerEvents(MapSettings.getListener(), this);
-        pm.registerEvents(RoomSettings.getListener(), this);
         pm.registerEvents(PlayerGUI.getListener(), this);
         pm.registerEvents(ShopViewer.getListener(), this);
         pm.registerEvents(ProfileContent.getListener(), this);
@@ -203,7 +221,7 @@ public class RealSkywars extends JavaPlugin {
 
         log("Loading maps.");
         mapm.loadMaps();
-        log("Loaded " + this.getGameManager().getLoadedInt() + " maps.");
+        log("Loaded " + this.getGameManager().getGames(GameManager.GameModes.ALL).size() + " maps.");
         playerm.loadPlayers();
 
         am.loadAchievements();
@@ -216,7 +234,7 @@ public class RealSkywars extends JavaPlugin {
         commandManager.hideTabComplete(true);
         //command suggestions
         commandManager.getCompletionHandler().register("#createsuggestions", input -> IntStream.range(0, 200)
-                .mapToObj(i -> "Room" + i)
+                .mapToObj(i -> "Map" + i)
                 .collect(Collectors.toCollection(ArrayList::new)));
 
         commandManager.getCompletionHandler().register("#maps", input -> this.getGameManager().getRoomNames());
@@ -229,6 +247,14 @@ public class RealSkywars extends JavaPlugin {
         commandManager.getParameterHandler().register(SWChest.Tier.class, argument -> {
             try {
                 SWChest.Tier tt = SWChest.Tier.valueOf(argument.toString().toUpperCase());
+                return new TypeResult(tt, argument);
+            } catch (Exception e) {
+                return new TypeResult(null, argument);
+            }
+        });
+        commandManager.getParameterHandler().register(SWChest.Type.class, argument -> {
+            try {
+                SWChest.Type tt = SWChest.Type.valueOf(argument.toString().toUpperCase());
                 return new TypeResult(tt, argument);
             } catch (Exception e) {
                 return new TypeResult(null, argument);
@@ -361,8 +387,16 @@ public class RealSkywars extends JavaPlugin {
         return nms != null;
     }
 
+    public void warning(String s) {
+        log(Level.WARNING, s);
+    }
+
+    public void severe(String s) {
+        log(Level.SEVERE, s);
+    }
+
     public void log(String s) {
-        Bukkit.getLogger().log(Level.INFO, "[RealSkywars] " + s);
+        log(Level.INFO, s);
     }
 
     public void log(Level l, String s) {

@@ -1,7 +1,24 @@
 package josegamerpt.realskywars.commands;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.chests.SWChest;
+import josegamerpt.realskywars.chests.TierViewer;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.gui.GUIManager;
@@ -12,9 +29,10 @@ import josegamerpt.realskywars.kits.KitSettings;
 import josegamerpt.realskywars.managers.CurrencyManager;
 import josegamerpt.realskywars.managers.GameManager;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.managers.ShopManager;
+import josegamerpt.realskywars.shop.ShopManager;
+import josegamerpt.realskywars.player.PlayerGUI;
+import josegamerpt.realskywars.player.ProfileContent;
 import josegamerpt.realskywars.player.RSWPlayer;
-import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
 import josegamerpt.realskywars.utils.WorldEditUtils;
 import josegamerpt.realskywars.world.SWWorld;
@@ -26,7 +44,6 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -259,9 +276,9 @@ public class RealSkywarsCMD extends CommandBase {
     public void setspectator(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
-            if (p.getSetup() != null) {
-                p.getSetup().setSpectatorLoc(p.getLocation());
-                p.getSetup().setSpectatorConfirm(true);
+            if (p.getSetupRoom() != null) {
+                p.getSetupRoom().setSpectatorLoc(p.getLocation());
+                p.getSetupRoom().setSpectatorConfirm(true);
                 p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.CMD_FINISHSETUP, true));
             } else {
                 p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.NO_SETUPMODE, true));
@@ -356,7 +373,7 @@ public class RealSkywarsCMD extends CommandBase {
     public void cancelsetup(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
-            if (p.getSetup() != null) {
+            if (p.getSetupRoom() != null) {
                 rs.getMapManager().cancelSetup(p);
             } else {
                 p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.NO_SETUPMODE, true));
@@ -371,8 +388,8 @@ public class RealSkywarsCMD extends CommandBase {
     public void finishsetup(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
-            if (p.getSetup() != null) {
-                if (p.getSetup().isGUIConfirmed() && p.getSetup().areCagesConfirmed() & p.getSetup().isSpectatorLocConfirmed()) {
+            if (p.getSetupRoom() != null) {
+                if (p.getSetupRoom().areCagesConfirmed() & p.getSetupRoom().isSpectatorLocConfirmed()) {
                     rs.getMapManager().finishSetup(p);
                 } else {
                     p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.SETUP_NOT_FINISHED, true));
@@ -429,7 +446,7 @@ public class RealSkywarsCMD extends CommandBase {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
             SWGameMode sw = rs.getGameManager().getGame(name);
             if (sw != null) {
-                RoomSettings r = new RoomSettings(sw, p.getUUID());
+                MapSettings r = new MapSettings(sw, p.getUUID());
                 r.openInventory(p);
             } else {
                 p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.NO_GAME_FOUND, true));
@@ -455,25 +472,25 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("set2chest")
-    @Completion({"#enum", "#boolean"})
+    @Completion({"#enum", "#enum"})
     @Permission("RealSkywars.Admin")
-    public void setchest(final CommandSender commandSender, SWChest.Tier tt, Boolean middle) {
+    public void setchest(final CommandSender commandSender, SWChest.Tier tt, SWChest.Type t) {
         if (commandSender instanceof Player) {
             final Player p = (Player) commandSender;
-            rs.getChestManager().set2Chest(tt, middle, Arrays.asList(IntStream.range(9, 35).boxed().map(p.getInventory()::getItem).filter(Objects::nonNull).toArray(ItemStack[]::new)));
-            Text.send(commandSender, "Itens set for " + tt.name() + " (middle: " + middle + ")");
+            rs.getChestManager().set2Chest(tt, t, Arrays.asList(IntStream.range(9, 35).boxed().map(p.getInventory()::getItem).filter(Objects::nonNull).toArray(ItemStack[]::new)));
+            Text.send(commandSender, "Itens set for " + tt.name() + " (middle: " + t.name() + ")");
         } else {
             commandSender.sendMessage(onlyPlayer);
         }
     }
 
     @SubCommand("seetier")
-    @Completion({"#enum", "#boolean"})
+    @Completion({"#enum", "#enum"})
     @Permission("RealSkywars.Admin")
-    public void seetier(final CommandSender commandSender, SWChest.Tier tt, Boolean middle) {
+    public void seetier(final CommandSender commandSender, SWChest.Tier tt, SWChest.Type t) {
         if (commandSender instanceof Player) {
             Player p = (Player) commandSender;
-            TierViewer tv = new TierViewer(p, tt, middle ? SWChest.Type.MID : SWChest.Type.NORMAL);
+            TierViewer tv = new TierViewer(p, tt, t);
             tv.openInventory(p);
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -500,7 +517,7 @@ public class RealSkywarsCMD extends CommandBase {
 
     @SubCommand("create")
     @Permission("RealSkywars.Admin")
-    @Completion({"#range:50", "#worldtype", "#range:20", "#range:20"})
+    @Completion({"#createsuggestions", "#worldtype", "#range:20", "#range:20"})
     @WrongUsage("&c/rsw create <name> <type> <players> or /rsw create <name> <type> <number of teams> <players per team>")
     public void createcmd(final CommandSender commandSender, String mapname, SWWorld.WorldType wt, Integer maxPlayersandTeams, @Optional Integer teamPlayers) {
         if (commandSender instanceof Player) {
@@ -522,7 +539,7 @@ public class RealSkywarsCMD extends CommandBase {
                     if (rs.getMapManager().getRegisteredMaps().contains(mapname)) {
                         p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.MAP_EXISTS, true));
                     } else {
-                        if (p.getSetup() != null) {
+                        if (p.getSetupRoom() != null) {
                             p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.SETUP_NOT_FINISHED, true));
                         } else {
                             rs.getMapManager().setupSolo(p, mapname, wt, maxPlayersandTeams);
@@ -531,7 +548,7 @@ public class RealSkywarsCMD extends CommandBase {
                 } else {
                     //teams
                     if (!rs.getMapManager().getRegisteredMaps().contains(mapname)) {
-                        if (p.getSetup() != null) {
+                        if (p.getSetupRoom() != null) {
                             p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.SETUP_NOT_FINISHED, true));
                         } else {
                             rs.getMapManager().setupTeams(p, mapname, wt, maxPlayersandTeams, teamPlayers);

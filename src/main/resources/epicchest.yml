@@ -1,543 +1,285 @@
 Max-Itens-Per-Chest: 7
-Itens:
-  '1':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: EGG
-      amount: 4
-    Chance: 50
-  '2':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: SNOWBALL
-      amount: 4
-    Chance: 50
-  '3':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: LAVA_BUCKET
-    Chance: 50
-  '4':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: WATER_BUCKET
-    Chance: 50
-  '5':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: BAKED_POTATO
-      amount: 8
-    Chance: 50
-  '6':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: APPLE
-      amount: 8
-    Chance: 50
-  '7':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: BREAD
-      amount: 8
-    Chance: 50
-  '8':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: STONE
-      amount: 16
-    Chance: 50
-  '9':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: OAK_PLANKS
-      amount: 16
-    Chance: 50
-  '10':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: STONE
-      amount: 32
-    Chance: 30
-  '11':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: OAK_PLANKS
-      amount: 32
-    Chance: 30
-  '12':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: SNOWBALL
-      amount: 6
-    Chance: 30
-  '13':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: COOKED_CHICKEN
-      amount: 6
-    Chance: 30
-  '14':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: COOKED_BEEF
-      amount: 6
-    Chance: 30
-  '15':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: ARROW
-      amount: 8
-    Chance: 30
-  '16':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: EGG
-      amount: 6
-    Chance: 30
-  '17':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: DIAMOND_HELMET
-    Chance: 60
-  '18':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: DIAMOND_CHESTPLATE
-    Chance: 60
-  '19':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: DIAMOND_LEGGINGS
-    Chance: 60
-  '20':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: DIAMOND_BOOTS
-    Chance: 60
-  '21':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: ENDER_PEARL
-      amount: 4
-    Chance: 60
-  '22':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: DIAMOND_SWORD
-    Chance: 60
-  '23':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: BOW
-    Chance: 60
-  '24':
-    ItemStack:
-      ==: org.bukkit.inventory.ItemStack
-      v: 1952
-      type: DIAMOND_AXE
-    Chance: 60
-Mid:
-  Itens:
-    '1':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: EGG
-        amount: 4
-      Chance: 50
-    '2':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: SNOWBALL
-        amount: 4
-      Chance: 50
-    '3':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: LAVA_BUCKET
-      Chance: 50
-    '4':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: WATER_BUCKET
-      Chance: 50
-    '5':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: BAKED_POTATO
-        amount: 8
-      Chance: 50
-    '6':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: APPLE
-        amount: 8
-      Chance: 50
-    '7':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: BREAD
-        amount: 8
-      Chance: 50
-    '8':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: STONE
-        amount: 16
-      Chance: 50
-    '9':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: OAK_PLANKS
-        amount: 16
-      Chance: 50
-    '10':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: STONE
-        amount: 32
-      Chance: 30
-    '11':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: OAK_PLANKS
-        amount: 32
-      Chance: 30
-    '12':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: SNOWBALL
-        amount: 6
-      Chance: 30
-    '13':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: COOKED_CHICKEN
-        amount: 6
-      Chance: 30
-    '14':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: COOKED_BEEF
-        amount: 6
-      Chance: 30
-    '15':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: ARROW
-        amount: 8
-      Chance: 30
-    '16':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: EGG
-        amount: 6
-      Chance: 30
-    '25':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_SWORD
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            DAMAGE_ALL: 1
-      Chance: 60
-    '26':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_HELMET
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 1
-      Chance: 60
-    '27':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_BOOTS
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 1
-      Chance: 60
-    '28':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_CHESTPLATE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 1
-      Chance: 60
-    '29':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_LEGGINGS
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 1
-      Chance: 60
-    '30':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: BOW
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            ARROW_DAMAGE: 3
-            ARROW_KNOCKBACK: 1
-      Chance: 60
-    '31':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_SWORD
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            DAMAGE_ALL: 3
-            KNOCKBACK: 2
-      Chance: 60
-    '32':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_LEGGINGS
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 3
-      Chance: 60
-    '33':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_HELMET
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 3
-      Chance: 60
-    '34':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_CHESTPLATE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 3
-      Chance: 60
-    '35':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_BOOTS
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 3
-      Chance: 60
-    '36':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_SWORD
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            DAMAGE_ALL: 4
-            FIRE_ASPECT: 2
-      Chance: 50
-    '37':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_BOOTS
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 4
-      Chance: 50
-    '38':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_CHESTPLATE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 4
-      Chance: 50
-    '39':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_HELMET
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 4
-      Chance: 50
-    '40':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_LEGGINGS
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 4
-      Chance: 50
-    '41':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: GOLDEN_APPLE
-        amount: 32
-      Chance: 50
-    '42':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: ENCHANTED_GOLDEN_APPLE
-        amount: 16
-      Chance: 60
-    '43':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: ENCHANTED_GOLDEN_APPLE
-        amount: 32
-      Chance: 30
-    '44':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_BOOTS
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 5
-      Chance: 50
-    '45':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_HELMET
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 5
-      Chance: 50
-    '46':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_CHESTPLATE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 5
-      Chance: 50
-    '47':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_LEGGINGS
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 5
-      Chance: 50
-    '48':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: DIAMOND_SWORD
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            DAMAGE_ALL: 5
-            FIRE_ASPECT: 2
-            KNOCKBACK: 2
-      Chance: 50
-    '49':
-      ItemStack:
-        ==: org.bukkit.inventory.ItemStack
-        v: 1952
-        type: BOW
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            ARROW_DAMAGE: 4
-            ARROW_KNOCKBACK: 2
-            ARROW_FIRE: 1
-      Chance: 50
+Items:
+  - Chance: 50
+    Item:
+      AMOUNT: 4
+      MATERIAL: EGG
+  - Chance: 50
+    Item:
+      AMOUNT: 4
+      MATERIAL: SNOWBALL
+  - Chance: 50
+    Item:
+      AMOUNT: 1
+      MATERIAL: LAVA_BUCKET
+  - Chance: 50
+    Item:
+      AMOUNT: 1
+      MATERIAL: WATER_BUCKET
+  - Chance: 50
+    Item:
+      AMOUNT: 8
+      MATERIAL: BAKED_POTATO
+  - Chance: 50
+    Item:
+      AMOUNT: 8
+      MATERIAL: APPLE
+  - Chance: 50
+    Item:
+      AMOUNT: 8
+      MATERIAL: BREAD
+  - Chance: 50
+    Item:
+      AMOUNT: 16
+      MATERIAL: STONE
+  - Chance: 50
+    Item:
+      AMOUNT: 16
+      MATERIAL: OAK_PLANKS
+  - Chance: 30
+    Item:
+      AMOUNT: 32
+      MATERIAL: STONE
+  - Chance: 30
+    Item:
+      AMOUNT: 32
+      MATERIAL: OAK_PLANKS
+  - Chance: 30
+    Item:
+      AMOUNT: 6
+      MATERIAL: SNOWBALL
+  - Chance: 30
+    Item:
+      AMOUNT: 6
+      MATERIAL: COOKED_CHICKEN
+  - Chance: 30
+    Item:
+      AMOUNT: 6
+      MATERIAL: COOKED_BEEF
+  - Chance: 30
+    Item:
+      AMOUNT: 8
+      MATERIAL: ARROW
+  - Chance: 30
+    Item:
+      AMOUNT: 6
+      MATERIAL: EGG
+  - Chance: 60
+    Item:
+      AMOUNT: 1
+      MATERIAL: DIAMOND_HELMET
+  - Chance: 60
+    Item:
+      AMOUNT: 1
+      MATERIAL: DIAMOND_CHESTPLATE
+  - Chance: 60
+    Item:
+      AMOUNT: 1
+      MATERIAL: DIAMOND_LEGGINGS
+  - Chance: 60
+    Item:
+      AMOUNT: 1
+      MATERIAL: DIAMOND_BOOTS
+  - Chance: 60
+    Item:
+      AMOUNT: 4
+      MATERIAL: ENDER_PEARL
+  - Chance: 60
+    Item:
+      AMOUNT: 1
+      MATERIAL: DIAMOND_SWORD
+  - Chance: 60
+    Item:
+      AMOUNT: 1
+      MATERIAL: BOW
+  - Chance: 60
+    Item:
+      AMOUNT: 1
+      MATERIAL: DIAMOND_AXE
+Mid-Items:
+  - Chance: 50
+    Item:
+      AMOUNT: 4
+      MATERIAL: EGG
+  - Chance: 50
+    Item:
+      AMOUNT: 4
+      MATERIAL: SNOWBALL
+  - Chance: 50
+    Item:
+      AMOUNT: 1
+      MATERIAL: LAVA_BUCKET
+  - Chance: 50
+    Item:
+      AMOUNT: 1
+      MATERIAL: WATER_BUCKET
+  - Chance: 50
+    Item:
+      AMOUNT: 8
+      MATERIAL: BAKED_POTATO
+  - Chance: 50
+    Item:
+      AMOUNT: 8
+      MATERIAL: APPLE
+  - Chance: 50
+    Item:
+      AMOUNT: 8
+      MATERIAL: BREAD
+  - Chance: 50
+    Item:
+      AMOUNT: 16
+      MATERIAL: STONE
+  - Chance: 50
+    Item:
+      AMOUNT: 16
+      MATERIAL: OAK_PLANKS
+  - Chance: 30
+    Item:
+      AMOUNT: 32
+      MATERIAL: STONE
+  - Chance: 30
+    Item:
+      AMOUNT: 32
+      MATERIAL: OAK_PLANKS
+  - Chance: 30
+    Item:
+      AMOUNT: 6
+      MATERIAL: SNOWBALL
+  - Chance: 30
+    Item:
+      AMOUNT: 6
+      MATERIAL: COOKED_CHICKEN
+  - Chance: 30
+    Item:
+      AMOUNT: 6
+      MATERIAL: COOKED_BEEF
+  - Chance: 30
+    Item:
+      AMOUNT: 8
+      MATERIAL: ARROW
+  - Chance: 30
+    Item:
+      AMOUNT: 6
+      MATERIAL: EGG
+  - Chance: 60
+    Item:
+      ENCHANTMENTS: sharpness:1
+      AMOUNT: 1
+      MATERIAL: DIAMOND_SWORD
+  - Chance: 60
+    Item:
+      ENCHANTMENTS: protection:1
+      AMOUNT: 1
+      MATERIAL: DIAMOND_HELMET
+  - Chance: 60
+    Item:
+      ENCHANTMENTS: protection:1
+      AMOUNT: 1
+      MATERIAL: DIAMOND_BOOTS
+  - Chance: 60
+    Item:
+      ENCHANTMENTS: protection:1
+      AMOUNT: 1
+      MATERIAL: DIAMOND_CHESTPLATE
+  - Chance: 60
+    Item:
+      ENCHANTMENTS: protection:1
+      AMOUNT: 1
+      MATERIAL: DIAMOND_LEGGINGS
+  - Chance: 60
+    Item:
+      ENCHANTMENTS: power:3;punch:1
+      AMOUNT: 1
+      MATERIAL: BOW
+  - Chance: 60
+    Item:
+      ENCHANTMENTS: knockback:2;sharpness:3
+      AMOUNT: 1
+      MATERIAL: DIAMOND_SWORD
+  - Chance: 60
+    Item:
+      ENCHANTMENTS: protection:3
+      AMOUNT: 1
+      MATERIAL: DIAMOND_LEGGINGS
+  - Chance: 60
+    Item:
+      ENCHANTMENTS: protection:3
+      AMOUNT: 1
+      MATERIAL: DIAMOND_HELMET
+  - Chance: 60
+    Item:
+      ENCHANTMENTS: protection:3
+      AMOUNT: 1
+      MATERIAL: DIAMOND_CHESTPLATE
+  - Chance: 60
+    Item:
+      ENCHANTMENTS: protection:3
+      AMOUNT: 1
+      MATERIAL: DIAMOND_BOOTS
+  - Chance: 50
+    Item:
+      ENCHANTMENTS: fire_aspect:2;sharpness:4
+      AMOUNT: 1
+      MATERIAL: DIAMOND_SWORD
+  - Chance: 50
+    Item:
+      ENCHANTMENTS: protection:4
+      AMOUNT: 1
+      MATERIAL: DIAMOND_BOOTS
+  - Chance: 50
+    Item:
+      ENCHANTMENTS: protection:4
+      AMOUNT: 1
+      MATERIAL: DIAMOND_CHESTPLATE
+  - Chance: 50
+    Item:
+      ENCHANTMENTS: protection:4
+      AMOUNT: 1
+      MATERIAL: DIAMOND_HELMET
+  - Chance: 50
+    Item:
+      ENCHANTMENTS: protection:4
+      AMOUNT: 1
+      MATERIAL: DIAMOND_LEGGINGS
+  - Chance: 50
+    Item:
+      AMOUNT: 32
+      MATERIAL: GOLDEN_APPLE
+  - Chance: 60
+    Item:
+      AMOUNT: 16
+      MATERIAL: ENCHANTED_GOLDEN_APPLE
+  - Chance: 30
+    Item:
+      AMOUNT: 32
+      MATERIAL: ENCHANTED_GOLDEN_APPLE
+  - Chance: 50
+    Item:
+      ENCHANTMENTS: protection:5
+      AMOUNT: 1
+      MATERIAL: DIAMOND_BOOTS
+  - Chance: 50
+    Item:
+      ENCHANTMENTS: protection:5
+      AMOUNT: 1
+      MATERIAL: DIAMOND_HELMET
+  - Chance: 50
+    Item:
+      ENCHANTMENTS: protection:5
+      AMOUNT: 1
+      MATERIAL: DIAMOND_CHESTPLATE
+  - Chance: 50
+    Item:
+      ENCHANTMENTS: protection:5
+      AMOUNT: 1
+      MATERIAL: DIAMOND_LEGGINGS
+  - Chance: 50
+    Item:
+      ENCHANTMENTS: fire_aspect:2;knockback:2;sharpness:5
+      AMOUNT: 1
+      MATERIAL: DIAMOND_SWORD
+  - Chance: 50
+    Item:
+      ENCHANTMENTS: flame:1;power:4;punch:2
+      AMOUNT: 1
+      MATERIAL: BOW

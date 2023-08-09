@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.game.modes.teams;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.chests.SWChest;
@@ -25,8 +41,8 @@ public class Teams extends SWGameMode {
     private final int maxMembersTeam;
     private final List<Team> teams;
 
-    public Teams(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, List<Team> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, List<SWChest> chests, Boolean rankd, RealSkywars rs) {
-        super(nome, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, pos1, pos2, chests, rankd, rs);
+    public Teams(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, List<Team> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, List<SWChest> chests, Boolean rankd, RealSkywars rs) {
+        super(nome, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border, pos1, pos2, chests, rankd, rs);
 
         this.teams = teams;
         this.maxMembersTeam = teams.get(0).getMaxMembers();
@@ -35,22 +51,6 @@ public class Teams extends SWGameMode {
     @Override
     public boolean isPlaceHolder() {
         return false;
-    }
-
-    @Override
-    public String forceStart(RSWPlayer p) {
-        if (canStartGame()) {
-            return super.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.CMD_CANT_FORCESTART, true);
-        } else {
-            switch (super.getState()) {
-                case PLAYING:
-                case FINISHING:
-                    return super.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.ALREADY_STARTED, true);
-                default:
-                    this.startGameFunction();
-                    return super.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.CMD_MATCH_FORCESTART, true);
-            }
-        }
     }
 
     @Override
@@ -126,7 +126,6 @@ public class Teams extends SWGameMode {
                     }
 
                     //cage
-
                     for (Team c : this.teams) {
                         if (!c.isTeamFull()) {
                             c.addPlayer(p);
@@ -137,13 +136,13 @@ public class Teams extends SWGameMode {
                     p.setRoom(this);
                     p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.CAGE);
 
-                    for (RSWPlayer ws : super.getInRoom()) {
+                    for (RSWPlayer ws : super.getAllPlayers()) {
                         if (p.getPlayer() != null) {
                             ws.sendMessage(super.getRealSkywars().getLanguageManager().getString(ws, LanguageManager.TS.PLAYER_JOIN_ARENA, true).replace("%player%", p.getDisplayName()).replace("%players%", this.getPlayerCount() + "").replace("%maxplayers%", getMaxPlayers() + ""));
                         }
                     }
 
-                    super.getInRoom().add(p);
+                    super.getAllPlayers().add(p);
                     p.heal();
 
                     if (p.getPlayer() != null) {
@@ -188,13 +187,9 @@ public class Teams extends SWGameMode {
     }
 
     private int getAliveTeams() {
-        int al = 0;
-        for (Team t : this.teams) {
-            if (!t.isEliminated() && t.getMemberCount() > 0) {
-                al++;
-            }
-        }
-        return al;
+        return (int) this.teams.stream()
+                .filter(t -> !t.isEliminated() && t.getMemberCount() > 0)
+                .count();
     }
 
     @Override
@@ -229,7 +224,7 @@ public class Teams extends SWGameMode {
                         this.sendLog(p, true);
                     }
 
-                    for (RSWPlayer g : super.getInRoom()) {
+                    for (RSWPlayer g : super.getAllPlayers()) {
                         if (g.getPlayer() != null) {
                             g.sendMessage(super.getRealSkywars().getLanguageManager().getString(g, LanguageManager.TS.MATCH_END, true).replace("%time%", Text.formatSeconds(Config.file().getInt("Config.Time-EndGame"))));
                             g.getPlayer().sendTitle("", Text.color(super.getRealSkywars().getLanguageManager().getString(g, LanguageManager.TS.TITLE_WIN, true).replace("%player%", winTeam.getNames())), 10, 40, 10);
@@ -249,7 +244,7 @@ public class Teams extends SWGameMode {
                         super.getBossBar().setProgress(div);
                     }
 
-                    super.getInRoom().forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), Config.file().getInt("Config.Time-EndGame")));
+                    super.getAllPlayers().forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), Config.file().getInt("Config.Time-EndGame")));
                 }));
 
                 super.getWinTimer().scheduleTimer();

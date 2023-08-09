@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.database;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
@@ -21,11 +37,8 @@ import java.util.UUID;
 
 public class DatabaseManager {
 
-    private final ConnectionSource connectionSource;
-
     private final Dao<PlayerData, UUID> playerDataDao;
     private final HashMap<UUID, PlayerData> playerDataCache = new HashMap<>();
-
     private final JavaPlugin javaPlugin;
 
     public DatabaseManager(JavaPlugin javaPlugin) throws SQLException {
@@ -34,7 +47,7 @@ public class DatabaseManager {
         this.javaPlugin = javaPlugin;
         String databaseURL = getDatabaseURL();
 
-        connectionSource = new JdbcConnectionSource(
+        ConnectionSource connectionSource = new JdbcConnectionSource(
                 databaseURL,
                 SQL.file().getString("username"),
                 SQL.file().getString("password"),

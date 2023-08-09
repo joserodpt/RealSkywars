@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.game.modes;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.chests.SWChest;
@@ -25,30 +41,14 @@ public class Solo extends SWGameMode {
 
     private final List<Cage> cages;
 
-    public Solo(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, List<Cage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Location pos1, Location pos2, List<SWChest> chests, Boolean rankd, RealSkywars rs) {
-        super(nome, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, pos1, pos2, chests, rankd, rs);
+    public Solo(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, List<Cage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, List<SWChest> chests, Boolean rankd, RealSkywars rs) {
+        super(nome, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border,  pos1, pos2, chests, rankd, rs);
         this.cages = cages;
     }
 
     @Override
     public boolean isPlaceHolder() {
         return false;
-    }
-
-    @Override
-    public String forceStart(RSWPlayer p) {
-        if (canStartGame()) {
-            return super.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.CMD_CANT_FORCESTART, true);
-        } else {
-            switch (super.getState()) {
-                case PLAYING:
-                case FINISHING:
-                    return super.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.ALREADY_STARTED, true);
-                default:
-                    this.startGameFunction();
-                    return super.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.CMD_MATCH_FORCESTART, true);
-            }
-        }
     }
 
     @Override
@@ -132,7 +132,7 @@ public class Solo extends SWGameMode {
                     p.setRoom(this);
                     p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.CAGE);
 
-                    super.getInRoom().add(p);
+                    super.getAllPlayers().add(p);
 
                     if (p.getPlayer() != null) {
                         super.getBossBar().addPlayer(p.getPlayer());
@@ -141,7 +141,7 @@ public class Solo extends SWGameMode {
                         p.getPlayer().sendTitle(up.get(0), up.get(1), 10, 120, 10);
                     }
 
-                    for (RSWPlayer ws : this.getInRoom()) {
+                    for (RSWPlayer ws : this.getAllPlayers()) {
                         ws.sendMessage(super.getRealSkywars().getLanguageManager().getString(ws, LanguageManager.TS.PLAYER_JOIN_ARENA, true).replace("%player%", p.getDisplayName()).replace("%players%", getPlayerCount() + "").replace("%maxplayers%", getMaxPlayers() + ""));
                     }
 
@@ -209,7 +209,7 @@ public class Solo extends SWGameMode {
                         p.executeWinBlock(Config.file().getInt("Config.Time-EndGame") - 2);
                     }
 
-                    for (RSWPlayer g : super.getInRoom()) {
+                    for (RSWPlayer g : super.getAllPlayers()) {
                         g.delCage();
                         g.sendMessage(super.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.MATCH_END, true).replace("%time%", Text.formatSeconds(Config.file().getInt("Config.Time-EndGame"))));
                     }
@@ -224,7 +224,7 @@ public class Solo extends SWGameMode {
                         super.getBossBar().setProgress(div);
                     }
 
-                    super.getInRoom().forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), Config.file().getInt("Config.Time-EndGame")));
+                    super.getAllPlayers().forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), Config.file().getInt("Config.Time-EndGame")));
 
                     if (p.getPlayer() != null) {
                         FireworkUtils.spawnRandomFirework(p.getLocation());

@@ -1,43 +1,59 @@
 package josegamerpt.realskywars.configuration.chests;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
+import dev.dejvokep.boostedyaml.YamlDocument;
 import josegamerpt.realskywars.RealSkywars;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
 
-public class NormalChest implements Listener {
+public class NormalChest {
 
     private static String name = "normalchest.yml";
-    private static File file;
-    private static FileConfiguration customFile;
+    private static YamlDocument document;
 
-    public static void setup(Plugin p) {
-        file = new File(p.getDataFolder(), name);
-
-        if (!file.exists()) {
-            RealSkywars.getPlugin().saveResource(name, true);
+    public static void setup(final JavaPlugin rm) {
+        try {
+            document = YamlDocument.create(new File(rm.getDataFolder(), name), rm.getResource(name));
+        } catch (final IOException e) {
+            RealSkywars.getPlugin().severe("Couldn't setup " + name + "!");
+            RealSkywars.getPlugin().severe(e.getMessage());
         }
-        customFile = YamlConfiguration.loadConfiguration(file);
     }
 
-    public static FileConfiguration file() {
-        return customFile;
+    public static YamlDocument file() {
+        return document;
     }
 
     public static void save() {
         try {
-            customFile.save(file);
-        } catch (IOException e) {
-            RealSkywars.getPlugin().log("Couldn't save " + name + "!");
+            document.save();
+        } catch (final IOException e) {
+            RealSkywars.getPlugin().severe( "Couldn't save " + name + "!");
         }
     }
 
     public static void reload() {
-        customFile = YamlConfiguration.loadConfiguration(file);
+        try {
+            document.reload();
+        } catch (final IOException e) {
+            RealSkywars.getPlugin().severe( "Couldn't reload " + name + "!");
+        }
     }
-
 }

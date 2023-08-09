@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.cages;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.player.RSWPlayer;
 import org.bukkit.Bukkit;
@@ -13,23 +29,19 @@ import java.util.List;
 public class SoloCage implements Cage {
 
     private final int id;
-    private final int x;
-    private final int y;
-    private final int z;
-    private final int locx;
-    private final int locy;
-    private final int locz;
+    private final int x, y, z;
+    private final int specx, specy, specz;
     private final String worldName;
     private RSWPlayer p;
 
-    public SoloCage(int i, int x, int y, int z, String worldName, int locx, int locy, int locz) {
+    public SoloCage(int i, int x, int y, int z, String worldName, int specx, int specy, int specz) {
         this.id = i;
         this.x = x;
         this.y = y;
         this.z = z;
-        this.locx = locx;
-        this.locy = locy;
-        this.locz = locz;
+        this.specx = specx;
+        this.specy = specy;
+        this.specz = specz;
         this.worldName = worldName;
     }
 
@@ -69,12 +81,17 @@ public class SoloCage implements Cage {
         return loc;
     }
 
-    public int getID() {
-        return this.id;
-    }
-
     public Location getLoc() {
         return new Location(Bukkit.getWorld(this.worldName), this.x, this.y, this.z).add(0.5, 0, 0.5);
+    }
+
+    public void tpPlayer(RSWPlayer p) {
+        Location lookat = new Location(Bukkit.getWorld(this.worldName), this.specx, this.specy, this.specz);
+        p.teleport(lookAt(getLoc(), lookat));
+    }
+
+    public int getID() {
+        return this.id;
     }
 
     public boolean isEmpty() {
@@ -84,25 +101,18 @@ public class SoloCage implements Cage {
     public void setCage(Material m) {
         World w = Bukkit.getWorld(this.worldName);
 
-        w.getBlockAt(x, y - 1, z).setType(m);
-        w.getBlockAt(x, y, z + 1).setType(m);
-        w.getBlockAt(x, y, z - 1).setType(m);
-        w.getBlockAt(x, y + 3, z).setType(m);
-        w.getBlockAt(x, y + 1, z + 1).setType(m);
-        w.getBlockAt(x, y + 2, z + 1).setType(m);
-        w.getBlockAt(x, y + 2, z + 1).setType(m);
-        w.getBlockAt(x, y + 1, z - 1).setType(m);
-        w.getBlockAt(x, y + 2, z - 1).setType(m);
-        w.getBlockAt(x, y + 2, z - 1).setType(m);
-        w.getBlockAt(x - 1, y, z).setType(m);
-        w.getBlockAt(x - 1, y + 1, z).setType(m);
-        w.getBlockAt(x - 1, y + 2, z).setType(m);
-        w.getBlockAt(x - 1, y + 2, z).setType(m);
-        w.getBlockAt(x + 1, y, z).setType(m);
-        w.getBlockAt(x + 1, y + 1, z).setType(m);
-        w.getBlockAt(x + 1, y + 2, z).setType(m);
-        w.getBlockAt(x + 1, y + 2, z).setType(m);
+        int[][] positions = {
+                {0, -1, 0}, {0, 0, 1}, {0, 0, -1}, {0, 3, 0},
+                {0, 1, 1}, {0, 2, 1}, {0, 1, -1}, {0, 2, -1},
+                {-1, 0, 0}, {-1, 1, 0}, {-1, 2, 0},
+                {1, 0, 0}, {1, 1, 0}, {1, 2, 0}
+        };
+
+        for (int[] pos : positions) {
+            w.getBlockAt(x + pos[0], y + pos[1], z + pos[2]).setType(m);
+        }
     }
+
 
     public void setCage() {
         setCage((Material) this.p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK));
@@ -124,17 +134,8 @@ public class SoloCage implements Cage {
         this.p = null;
     }
 
-    public void tpPlayer(RSWPlayer p) {
-        Location lookat = new Location(Bukkit.getWorld(this.worldName), this.locx, this.locy, this.locz);
-        p.teleport(lookAt(getLoc(), lookat));
-    }
-
     public int getMaxPlayers() {
         return 1;
-    }
-
-    public int getPlayerCount() {
-        return isEmpty() ? 1 : 0;
     }
 
     public List<RSWPlayer> getPlayers() {
@@ -142,15 +143,12 @@ public class SoloCage implements Cage {
     }
 
     public void open() {
-        Material m = Material.AIR;
-
         World w = Bukkit.getWorld(this.worldName);
-        w.getBlockAt(x, y - 1, z).setType(m);
+        w.getBlockAt(x, y - 1, z).setType(Material.AIR);
 
         this.p.setInvincible(true);
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
             if (this.p != null) this.p.setInvincible(false);
         }, 200);
     }
-
 }

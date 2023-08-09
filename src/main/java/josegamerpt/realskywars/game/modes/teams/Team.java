@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.game.modes.teams;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.cages.Cage;
 import josegamerpt.realskywars.cages.TeamCage;
@@ -17,8 +33,7 @@ public class Team {
     private final int maxMembers;
     private final TeamCage tc;
     private final ArrayList<RSWPlayer> members = new ArrayList<>();
-    private Boolean eliminated = false;
-    private Boolean playing = false;
+    private Boolean eliminated = false, playing = false;
 
     public Team(int i, int maxMemb, Location c, String worldName) {
         this.id = i;

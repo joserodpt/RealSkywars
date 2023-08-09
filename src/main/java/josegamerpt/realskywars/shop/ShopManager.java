@@ -1,9 +1,24 @@
-package josegamerpt.realskywars.managers;
+package josegamerpt.realskywars.shop;
+
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
 
 import josegamerpt.realskywars.Debugger;
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Shops;
-import josegamerpt.realskywars.misc.DisplayItem;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Material;
@@ -18,9 +33,8 @@ public class ShopManager {
     public ShopManager(RealSkywars rs) {
         this.rs = rs;
     }
-
-    public ArrayList<DisplayItem> getCategoryContents(RSWPlayer p, ShopManager.Categories t) {
-        ArrayList<DisplayItem> items = new ArrayList<>();
+    public ArrayList<ShopDisplayItem> getCategoryContents(RSWPlayer p, ShopManager.Categories t) {
+        ArrayList<ShopDisplayItem> items = new ArrayList<>();
         int i = 1;
 
         String cat = null;
@@ -34,7 +48,7 @@ public class ShopManager {
                 break;
             case KITS:
                 items.addAll(rs.getKitManager().getKits().stream()
-                        .map(a -> new DisplayItem(
+                        .map(a -> new ShopDisplayItem(
                                 a.getName(),
                                 a.getDisplayName(),
                                 a.getIcon(),
@@ -84,7 +98,7 @@ public class ShopManager {
                     error = true;
                 }
 
-                DisplayItem s = new DisplayItem(name, displayName, m, price, p.boughtItem(name, t), perm, ShopManager.Categories.CAGE_BLOCKS);
+                ShopDisplayItem s = new ShopDisplayItem(name, displayName, m, price, p.boughtItem(name, t), perm, ShopManager.Categories.CAGE_BLOCKS);
                 if (material.equalsIgnoreCase("randomblock")) {
                     s.addInfo("RandomBlock", "RandomBlock");
                 }
@@ -108,7 +122,7 @@ public class ShopManager {
             }
 
             if (items.isEmpty()) {
-                items.add(new DisplayItem());
+                items.add(new ShopDisplayItem());
             }
 
             return items;

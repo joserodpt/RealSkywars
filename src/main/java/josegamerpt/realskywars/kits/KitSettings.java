@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.kits;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
@@ -24,12 +40,12 @@ import java.util.UUID;
 public class KitSettings {
 
     public Kit kt;
+    private static final Map<UUID, KitSettings> inventories = new HashMap<>();
     private Inventory inv;
     private ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     private ItemStack confirm = Itens.createItemLore(Material.CHEST, 1, "&9Save Settings", Collections.singletonList("&7Click here to save your settings."));
     private ItemStack ender_pearl = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&aON"));
     private ItemStack ender_pearl_off = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&cOFF"));
-    private static final Map<UUID, KitSettings> inventories = new HashMap<>();
     private final UUID uuid;
 
     public KitSettings(Kit k, UUID id) {
@@ -39,8 +55,6 @@ public class KitSettings {
         inv = Bukkit.getServer().createInventory(null, 27, Text.color(k.getDisplayName() + " Settings"));
 
         load();
-
-        this.register();
     }
 
     private void load() {

@@ -1,9 +1,24 @@
-package josegamerpt.realskywars.misc;
+package josegamerpt.realskywars.shop;
+
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.kits.Kit;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.managers.ShopManager;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
 import org.apache.commons.lang.WordUtils;
@@ -14,19 +29,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DisplayItem {
+public class ShopDisplayItem {
 
     private final Map<String, Object> info = new HashMap<>();
     private String name, displayName;
     private Material m;
-    private ItemStack i;
     private Double price;
     private Boolean bought = false;
     private String permission;
     private Boolean interactive;
     private ShopManager.Categories it;
 
-    public DisplayItem(String name, String displayName, Material ma, Double per, Boolean b, String perm, ShopManager.Categories t) {
+    public ShopDisplayItem(String name, String displayName, Material ma, Double per, Boolean b, String perm, ShopManager.Categories t) {
         this.name = name;
         this.displayName = displayName;
         this.price = per;
@@ -37,9 +51,8 @@ public class DisplayItem {
         this.m = ma;
     }
 
-    public DisplayItem() {
+    public ShopDisplayItem() {
         this.interactive = false;
-        this.i = Itens.createItem(Material.BUCKET, 1, RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SEARCH_NOTFOUND_NAME));
     }
 
     public void addInfo(String a, Object b) {
@@ -104,6 +117,10 @@ public class DisplayItem {
     }
 
     public ItemStack getItemStack() {
+        if (!this.interactive) {
+            return Itens.createItem(Material.BUCKET, 1, RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SEARCH_NOTFOUND_NAME));
+        }
+
         if (this.it == ShopManager.Categories.KITS) {
             Kit k = RealSkywars.getPlugin().getKitManager().getKit(name);
 

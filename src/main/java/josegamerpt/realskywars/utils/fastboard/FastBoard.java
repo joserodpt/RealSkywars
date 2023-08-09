@@ -323,7 +323,7 @@ public class FastBoard {
                 if (s != null && s.length() > 30) {
                     throw new IllegalArgumentException("Line " + lineCount + " is longer than 30 chars");
                 }
-                lineCount++;
+                ++lineCount;
             }
         }
 

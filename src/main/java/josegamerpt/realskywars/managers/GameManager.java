@@ -1,12 +1,27 @@
 package josegamerpt.realskywars.managers;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.game.modes.Placeholder;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.game.modes.SWGameMode.GameState;
 import josegamerpt.realskywars.game.modes.SWSign;
-import josegamerpt.realskywars.misc.Selections;
 import josegamerpt.realskywars.player.PlayerManager;
 import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Text;
@@ -18,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class GameManager {
@@ -31,28 +47,30 @@ public class GameManager {
     private Location lobbyLOC;
     private Boolean loginTP = true;
 
-    public SWGameMode getGame(String name) {
-        for (SWGameMode g : this.games) {
-            if (g.getName().equalsIgnoreCase(name)) {
-                return g;
-            }
-        }
-        return null;
+    public SWGameMode getMatch(World world) {
+        return this.games.stream()
+                .filter(sw -> sw.getSWWorld().getWorld().equals(world))
+                .findFirst()
+                .orElse(null);
     }
 
-    public int getLoadedInt() {
-        return games.size();
+    public SWGameMode getGame(String name) {
+        return this.games.stream()
+                .filter(g -> g.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
     }
 
     public void endGames() {
         this.endingGames = true;
-        for (SWGameMode g : this.games) {
+
+        this.games.parallelStream().forEach(g -> {
             g.kickPlayers(rs.getLanguageManager().getString(LanguageManager.TSsingle.ADMIN_SHUTDOWN));
             g.resetArena(SWGameMode.OperationReason.SHUTDOWN);
-        }
+        });
     }
 
-    public List<SWGameMode> getRoomsWithSelection(Selections.MapViewerPref t) {
+    public List<SWGameMode> getRoomsWithSelection(RSWPlayer.MapViewerPref t) {
         List<SWGameMode> f = new ArrayList<>();
         switch (t) {
             case MAPV_ALL:
@@ -178,9 +196,9 @@ public class GameManager {
     }
 
     public List<String> getRoomNames() {
-        List<String> sugests = new ArrayList<>();
-        this.games.forEach(gameRoom -> sugests.add(Text.strip(gameRoom.getName())));
-        return sugests;
+        return this.games.stream()
+                .map(gameRoom -> Text.strip(gameRoom.getName()))
+                .collect(Collectors.toList());
     }
 
     public boolean tpLobbyOnJoin() {
@@ -191,46 +209,48 @@ public class GameManager {
         return this.lobbyLOC != null && this.lobbyLOC.getWorld().equals(w);
     }
 
-    public void findGame(RSWPlayer p, SWGameMode.Mode type) {
-        if (!PlayerManager.teleporting.contains(p.getUUID())) {
-            PlayerManager.teleporting.add(p.getUUID());
-            Optional<SWGameMode> o = this.games.stream().filter(c -> c.getGameMode().equals(type) && c.getState().equals(GameState.AVAILABLE) || c.getState().equals(GameState.STARTING) || c.getState().equals(GameState.WAITING) && !c.isFull()).findFirst();
-            if (o.isPresent() && !o.get().isPlaceHolder()) {
-                p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.GAME_FOUND, true));
-                if (p.isInMatch()) {
-                    p.getMatch().removePlayer(p);
-                }
-                Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
-                    o.get().addPlayer(p);
-                    PlayerManager.teleporting.remove(p.getUUID());
-                }, 5);
+    public void findGame(RSWPlayer player, SWGameMode.Mode type) {
+        UUID playerUUID = player.getUUID();
+        if (!rs.getPlayerManager().getTeleporting().contains(playerUUID)) {
+            rs.getPlayerManager().getTeleporting().add(playerUUID);
+
+            Optional<SWGameMode> suitableGame = findSuitableGame(type);
+            if (suitableGame.isPresent()) {
+                joinSuitableGame(player, suitableGame.get());
             } else {
-                p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.NO_GAME_FOUND, true));
-                PlayerManager.teleporting.remove(p.getUUID());
-
-                if (this.getLobbyLocation().getWorld().equals(p.getWorld())) {
-                    this.tpToLobby(p);
-                }
+                handleNoGameFound(player);
             }
         }
     }
 
-    public boolean isInGame(World world) {
-        for (SWGameMode sw : this.games) {
-            if (sw.getSWWorld().getWorld().equals(world)) {
-                return true;
-            }
-        }
-        return false;
+    private Optional<SWGameMode> findSuitableGame(SWGameMode.Mode type) {
+        return this.games.stream()
+                .filter(game -> game.getGameMode().equals(type) &&
+                        (game.getState().equals(GameState.AVAILABLE) ||
+                                game.getState().equals(GameState.STARTING) ||
+                                game.getState().equals(GameState.WAITING)) &&
+                        !game.isFull())
+                .findFirst();
     }
 
-    public SWGameMode getMatch(World world) {
-        for (SWGameMode sw : this.games) {
-            if (sw.getSWWorld().getWorld().equals(world)) {
-                return sw;
-            }
+    private void joinSuitableGame(RSWPlayer player, SWGameMode gameMode) {
+        player.sendMessage(rs.getLanguageManager().getString(player, LanguageManager.TS.GAME_FOUND, true));
+        if (player.isInMatch()) {
+            player.getMatch().removePlayer(player);
         }
-        return null;
+        Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
+            gameMode.addPlayer(player);
+            rs.getPlayerManager().getTeleporting().remove(player.getUUID());
+        }, 5);
+    }
+
+    private void handleNoGameFound(RSWPlayer player) {
+        player.sendMessage(rs.getLanguageManager().getString(player, LanguageManager.TS.NO_GAME_FOUND, true));
+        rs.getPlayerManager().getTeleporting().remove(player.getUUID());
+
+        if (this.getLobbyLocation().getWorld().equals(player.getWorld())) {
+            this.tpToLobby(player);
+        }
     }
 
     public enum GameModes {SOLO, SOLO_RANKED, TEAMS, TEAMS_RANKED, RANKED, ALL}

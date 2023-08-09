@@ -1,8 +1,23 @@
-package josegamerpt.realskywars.gui.guis;
+package josegamerpt.realskywars.player;
+
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
 
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.managers.LanguageManager;
-import josegamerpt.realskywars.player.RSWPlayer;
 import josegamerpt.realskywars.utils.Itens;
 import josegamerpt.realskywars.utils.Text;
 import org.bukkit.Bukkit;
@@ -16,36 +31,34 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class PlayerGUI {
 
-    static Inventory inv;
-    static RSWPlayer gp;
+    private Inventory inv;
+    private RSWPlayer gp;
     private static final Map<UUID, PlayerGUI> inventories = new HashMap<>();
     private static final Map<UUID, Integer> refresh = new HashMap<>();
     private final UUID uuid;
 
     public PlayerGUI(RSWPlayer p, UUID id, RSWPlayer target) {
         this.uuid = id;
-        gp = p;
+        this.gp = p;
 
-        inv = Bukkit.getServer().createInventory(null, InventoryType.HOPPER, target.getName());
+        this.inv = Bukkit.getServer().createInventory(null, InventoryType.HOPPER, target.getName());
 
         // infoMap
-        ArrayList<String> lore = new ArrayList<>();
-        for (String s : RealSkywars.getPlugin().getLanguageManager().getList(p, LanguageManager.TL.STATS_ITEM_LORE)) {
-            lore.add(variables(s, target));
-        }
-        ItemStack infoMap = Itens.createItemLore(Material.MAP, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.STATS_ITEM_NAME, false).replace("%player%", target.getDisplayName()), lore);
-        inv.setItem(2, infoMap);
+        ArrayList<String> lore = RealSkywars.getPlugin().getLanguageManager().getList(p, LanguageManager.TL.STATS_ITEM_LORE)
+                .stream()
+                .map(s -> variables(s, target))
+                .collect(Collectors.toCollection(ArrayList::new));
 
-        inventories.put(id, this);
+        inv.setItem(2, Itens.createItemLore(Material.MAP, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.STATS_ITEM_NAME, false).replace("%player%", target.getDisplayName()), lore));
     }
 
     public static Listener getListener() {

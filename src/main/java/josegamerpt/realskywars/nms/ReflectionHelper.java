@@ -1,10 +1,22 @@
 package josegamerpt.realskywars.nms;
 
-import josegamerpt.realskywars.RealSkywars;
-import org.bukkit.Bukkit;
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import josegamerpt.realskywars.RealSkywars;
 
 public class ReflectionHelper
 {
@@ -21,8 +33,8 @@ public class ReflectionHelper
             return Class.forName(className);
         }
         catch (Exception ex) {
-            Bukkit.getLogger().severe("Error while executing reflection (getClass) for RealSkywars");
-            Bukkit.getLogger().severe(ex.toString());
+            RealSkywars.getPlugin().severe("Error while executing reflection (getClass) nms.");
+            RealSkywars.getPlugin().severe(ex.toString());
             return null;
         }
     }

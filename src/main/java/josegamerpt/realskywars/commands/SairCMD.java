@@ -1,5 +1,21 @@
 package josegamerpt.realskywars.commands;
 
+/*
+ *  _____            _  _____ _
+ * |  __ \          | |/ ____| |
+ * | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ * |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ * | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ * |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                 __/ |
+ *                                |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ */
+
 import josegamerpt.realskywars.RealSkywars;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.player.RSWPlayer;
@@ -32,8 +48,7 @@ public class SairCMD extends CommandBase {
                 p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.NO_MATCH, true));
             }
         } else {
-            String onlyPlayer = "[RealSkywars] Only players can run this command.";
-            commandSender.sendMessage(onlyPlayer);
+            commandSender.sendMessage("[RealSkywars] Only players can run this command.");
         }
     }
 }
