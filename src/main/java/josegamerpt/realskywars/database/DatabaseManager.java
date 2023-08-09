@@ -13,7 +13,7 @@ package josegamerpt.realskywars.database;
  * Licensed under the MIT License
  * @author José Rodrigues
  * @link https://github.com/joserodpt/RealSkywars
- * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
+ *
  */
 
 import com.j256.ormlite.dao.Dao;
