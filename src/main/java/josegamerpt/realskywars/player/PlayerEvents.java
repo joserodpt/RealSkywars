@@ -25,6 +25,7 @@ import josegamerpt.realskywars.effects.BowTrail;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.gui.GUIManager;
 import josegamerpt.realskywars.gui.guis.MapsViewer;
+import josegamerpt.realskywars.gui.guis.ShopViewer;
 import josegamerpt.realskywars.gui.guis.VoteGUI;
 import josegamerpt.realskywars.managers.LanguageManager;
 import josegamerpt.realskywars.shop.ShopManager;
@@ -170,6 +171,13 @@ public class PlayerEvents implements Listener {
                                     e.setCancelled(true);
                                     p.getMatch().removePlayer(p);
                                     break;
+                                case EMERALD:
+                                    e.setCancelled(true);
+                                    ShopViewer ss = new ShopViewer(p, ShopManager.Categories.SPEC_SHOP);
+                                    ss.openInventory(p);
+
+                                    e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                    break;
                                 default:
                                     e.setCancelled(true);
                                     break;
@@ -203,23 +211,23 @@ public class PlayerEvents implements Listener {
 
                 if (rs.getGameManager().isInLobby(p.getLocation().getWorld())) {
                     if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().hasItemMeta()) {
-
                         switch (e.getPlayer().getInventory().getItemInMainHand().getType()) {
                             case BOOK:
+                                e.setCancelled(true);
                                 GUIManager.openPlayerMenu(p);
                                 e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-                                e.setCancelled(true);
                                 break;
                             case NETHER_STAR:
+                                e.setCancelled(true);
                                 MapsViewer v = new MapsViewer(p, p.getMapViewerPref(), rs.getLanguageManager().getString(p, LanguageManager.TS.MAPS_NAME, false));
                                 v.openInventory(p);
                                 e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-                                e.setCancelled(true);
                                 break;
                             case EMERALD:
-                                GUIManager.openShopMenu(p);
-                                e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 e.setCancelled(true);
+                                GUIManager.openShopMenu(p);
+
+                                e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 break;
                         }
                     }

@@ -16,6 +16,7 @@ package josegamerpt.realskywars.player;
  */
 
 import josegamerpt.realskywars.RealSkywars;
+import josegamerpt.realskywars.configuration.Config;
 import josegamerpt.realskywars.database.PlayerData;
 import josegamerpt.realskywars.game.modes.SWGameMode;
 import josegamerpt.realskywars.managers.GameManager;
@@ -66,11 +67,14 @@ public class PlayerManager {
                     if (pg.getState() != RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
                         p.getInventory().setItem(2, getItem(pg, Items.PLAYAGAIN));
                     }
+                    if (Config.file().getBoolean("Config.Spectator-Shop")) {
+                        p.getInventory().setItem(4, getItem(pg, Items.SHOP));
+                    }
                     p.getInventory().setItem(7, getItem(pg, Items.LEAVE));
                     break;
                 case SETUP:
-                    p.getInventory().setItem(4, getItem(pg, Items.CAGESET));
                     p.getInventory().setItem(0, getItem(pg, Items.CHEST1));
+                    p.getInventory().setItem(4, getItem(pg, Items.CAGESET));
                     p.getInventory().setItem(8, getItem(pg, Items.CHEST2));
                     break;
                 default:

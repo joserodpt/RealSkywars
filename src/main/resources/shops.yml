@@ -1,4 +1,4 @@
-Version: 1
+Version: 2
 Main-Shop:
   #Data Structure:
   #MATERIAL>PRICE>NAME>PERMISSION
@@ -115,3 +115,13 @@ Main-Shop:
     - BEACON>10>&bBeacon &7Blocks>RealSkywars.Win-Block
     - BEDROCK>10>&8Bedrock &7Blocks>RealSkywars.Win-Block
     - IRON_BARS>10>&7Iron Bar &7Blocks>RealSkywars.Win-Block
+
+#Data Structure:
+#MATERIAL>AMOUNT>PRICE>NAME>PERMISSION
+Spectator-Shop:
+  - ENDER_PEARL>20>&dEnder Pearl>RealSkywars.Spec-Shop.Item
+  - GOLDEN_APPLE>100>&eGolden Apple>RealSkywars.Spec-Shop.Item
+  - DIAMOND_SWORD>50>&bSword>RealSkywars.Spec-Shop.Item
+  - STONE>10>&7Stone>RealSkywars.Spec-Shop.Item
+  - OAK_WOOD>12>&6Wood>RealSkywars.Spec-Shop.Item
+  - ARROW>15>&fArrow>RealSkywars.Spec-Shop.Item

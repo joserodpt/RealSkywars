@@ -24,8 +24,10 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ShopDisplayItem {
@@ -33,10 +35,11 @@ public class ShopDisplayItem {
     private final Map<String, Object> info = new HashMap<>();
     private String name, displayName;
     private Material m;
+    private int amount = 1;
     private Double price;
     private Boolean bought = false;
     private String permission;
-    private Boolean interactive;
+    private Boolean interactive = true;
     private ShopManager.Categories it;
 
     public ShopDisplayItem(String name, String displayName, Material ma, Double per, Boolean b, String perm, ShopManager.Categories t) {
@@ -45,9 +48,17 @@ public class ShopDisplayItem {
         this.price = per;
         this.bought = b;
         this.permission = perm;
-        this.interactive = true;
         this.it = t;
         this.m = ma;
+    }
+
+    public ShopDisplayItem(String name, String displayName, Material ma, Double price, String perm) {
+        this.name = name;
+        this.displayName = displayName;
+        this.price = price;
+        this.permission = perm;
+        this.m = ma;
+        this.it = ShopManager.Categories.SPEC_SHOP;
     }
 
     public ShopDisplayItem() {
@@ -112,24 +123,38 @@ public class ShopDisplayItem {
     }
 
     public Double getPrice() {
-        return this.price;
+        return this.it == ShopManager.Categories.SPEC_SHOP ? this.price * this.amount : this.price;
+    }
+
+    public int getAmount() {
+        return this.amount;
     }
 
     public ItemStack getItemStack() {
         if (!this.interactive) {
-            return Itens.createItem(Material.BUCKET, 1, RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SEARCH_NOTFOUND_NAME));
+            return Itens.createItem(Material.BUCKET, this.getAmount(), RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SEARCH_NOTFOUND_NAME));
         }
 
-        if (this.it == ShopManager.Categories.KITS) {
-            Kit k = RealSkywars.getPlugin().getKitManager().getKit(name);
-
-            return this.bought ? Itens.createItemLoreEnchanted(m, 1, "&r&f" + k.getDisplayName(), k.getDescription(false)) : Itens.createItemLore(m, 1, "&r&f" + k.getDisplayName(), k.getDescription(true));
-        } else {
-            return this.bought ? Itens.createItemLoreEnchanted(m, 1, formatName(this.getDisplayName()), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BOUGHT))) : Itens.createItemLore(m, 1, formatName(this.getDisplayName()), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BUY).replace("%price%", this.getPrice().toString())));
+        switch (this.it) {
+            case KITS:
+                Kit k = RealSkywars.getPlugin().getKitManager().getKit(name);
+                return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), "&r&f" + k.getDisplayName(), k.getDescription(false)) : Itens.createItemLore(m, 1, "&r&f" + k.getDisplayName(), k.getDescription(true));
+            case SPEC_SHOP:
+                return Itens.createItemLore(m, 1, "&f" + this.amount + "x " + this.getDisplayName(), makeSpecShopDescription());
+            default:
+                return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), formatName(this.getDisplayName()), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BOUGHT))) : Itens.createItemLore(m, 1, formatName(this.getDisplayName()), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BUY).replace("%price%", this.getPrice().toString())));
         }
+    }
+
+    private List<String> makeSpecShopDescription() {
+        return Arrays.asList(RealSkywars.getPlugin().getLanguageManager().getString(LanguageManager.TSsingle.SHOP_BUY).replace("%price%", this.getPrice().toString()), "","&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount.");
     }
 
     public Material getMaterial() {
         return this.m;
+    }
+
+    public void addAmount(int i) {
+        this.amount = Math.min(this.m.getMaxStackSize(), Math.max(1, this.amount + i));
     }
 }

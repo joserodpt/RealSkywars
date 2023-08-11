@@ -24,6 +24,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -32,40 +33,66 @@ public class ShopManager {
     public ShopManager(RealSkywars rs) {
         this.rs = rs;
     }
-    public ArrayList<ShopDisplayItem> getCategoryContents(RSWPlayer p, ShopManager.Categories t) {
-        ArrayList<ShopDisplayItem> items = new ArrayList<>();
-        int i = 1;
-
-        String cat = null;
-        boolean rapidReturn = false;
-        switch (t) {
-            case CAGE_BLOCKS:
-                cat = "Cage-Blocks";
-                break;
-            case WIN_BLOCKS:
-                cat = "Win-Blocks";
-                break;
-            case KITS:
-                items.addAll(rs.getKitManager().getKits().stream()
-                        .map(a -> new ShopDisplayItem(
-                                a.getName(),
-                                a.getDisplayName(),
-                                a.getIcon(),
-                                a.getPrice(),
-                                p.boughtItem(a.getName(), ShopManager.Categories.KITS),
-                                a.getPermission(),
-                                ShopManager.Categories.KITS))
-                        .collect(Collectors.toList()));
-                rapidReturn = true;
-                break;
-            case BOW_PARTICLES:
-                cat = "Bow-Particles";
-                break;
+    public List<ShopDisplayItem> getCategoryContents(RSWPlayer p, ShopManager.Categories t) {
+        if (t == Categories.KITS) {
+            return rs.getKitManager().getKits().stream()
+                    .map(a -> new ShopDisplayItem(
+                            a.getName(),
+                            a.getDisplayName(),
+                            a.getIcon(),
+                            a.getPrice(),
+                            p.boughtItem(a.getName(), ShopManager.Categories.KITS),
+                            a.getPermission(),
+                            ShopManager.Categories.KITS))
+                    .collect(Collectors.toList());
         }
 
-        if (rapidReturn) {
-            return items;
+        List<ShopDisplayItem> items = new ArrayList<>();
+        if (t == Categories.SPEC_SHOP) {
+            for (String sa : Shops.file().getStringList("Spectator-Shop")) {
+                // MATERIAL>AMOUNT>PRICE>NAME>PERMISSION
+                String[] parse = sa.split(">");
+                boolean error = false;
+                String displayName = Text.color(parse[2]);
+                String name = Text.strip(displayName);
+                String perm = parse[3];
+                String material = parse[0];
+
+                double price;
+                try {
+                    price = Double.parseDouble(parse[1]);
+                } catch (Exception e) {
+                    price = 999999D;
+                    error = true;
+                    RealSkywars.getPlugin().severe("Error while parsing price for Spectator Shop Item " + name);
+                }
+
+                Material m = Material.getMaterial(material);
+                if (m == null) {
+                    m = Material.STONE;
+                    RealSkywars.getPlugin().severe("[FATAL] Material: " + material + " isn't valid for this item shop! Changed to Stone.");
+                    error = true;
+                }
+
+                ShopDisplayItem s = new ShopDisplayItem(name, displayName, m, price, perm);
+                s.setInteractive(!error);
+
+                items.add(s);
+            }
         } else {
+            String cat = null;
+            switch (t) {
+                case CAGE_BLOCKS:
+                    cat = "Cage-Blocks";
+                    break;
+                case WIN_BLOCKS:
+                    cat = "Win-Blocks";
+                    break;
+                case BOW_PARTICLES:
+                    cat = "Bow-Particles";
+                    break;
+            }
+
             for (String sa : Shops.file().getStringList("Main-Shop." + cat)) {
                 String[] parse = sa.split(">");
 
@@ -81,6 +108,7 @@ public class ShopManager {
                 } catch (Exception e) {
                     price = 999999D;
                     error = true;
+                    RealSkywars.getPlugin().severe("Error while parsing price for Shop Item " + name);
                 }
 
                 Material m;
@@ -97,7 +125,7 @@ public class ShopManager {
                     error = true;
                 }
 
-                ShopDisplayItem s = new ShopDisplayItem(name, displayName, m, price, p.boughtItem(name, t), perm, ShopManager.Categories.CAGE_BLOCKS);
+                ShopDisplayItem s = new ShopDisplayItem(name, displayName, m, price, p.boughtItem(name, t), perm, Categories.CAGE_BLOCKS);
                 if (material.equalsIgnoreCase("randomblock")) {
                     s.addInfo("RandomBlock", "RandomBlock");
                 }
@@ -111,25 +139,21 @@ public class ShopManager {
                     }
                 }
 
-                if (error) {
-                    s.setInteractive(false);
-                    s.setName("&4Configuration Error. &cEnable debug for more info. Line &f" + i);
-                }
+                s.setInteractive(!error);
 
                 items.add(s);
-                ++i;
             }
 
             if (items.isEmpty()) {
                 items.add(new ShopDisplayItem());
             }
-
-            return items;
         }
+
+        return items;
 
     }
 
     public enum Categories {
-        CAGE_BLOCKS, BOW_PARTICLES, KITS, WIN_BLOCKS
+        CAGE_BLOCKS, BOW_PARTICLES, KITS, WIN_BLOCKS, SPEC_SHOP
     }
 }

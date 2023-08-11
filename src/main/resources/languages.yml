@@ -244,6 +244,7 @@ Languages:
           Title: "&4Reset Your Data"
           Alert: "&cProceed with caution. This action cannot be restored."
       Shop-Menu-Title: "&fShop &9Categories"
+      Spectator-Shop-Menu-Title: "&0Spectator &fShop"
     Itens:
       Profile:
         Name: "&9Your Profile &7(Right Click)"
@@ -544,6 +545,7 @@ Languages:
           Title: "&4Reiniciar Tus Datos"
           Alert: "&cProceda con precaución. Esta acción no se puede restaurar."
       Shop-Menu-Title: "&fTienda &9Categorías"
+      Spectator-Shop-Menu-Title: "&fTienda &0Espectador"
     Itens:
       Profile:
         Name: "&9Tu Perfil &7(Clic Derecho)"
@@ -844,6 +846,7 @@ Languages:
           Title: "&4Limpar Dados"
           Alert: "&cCUIDADO! Esta ação é irreversível."
       Shop-Menu-Title: "&9Categorias &fda &aLoja"
+      Spectator-Shop-Menu-Title: "&fLoja do &0Espectador"
     Itens:
       Profile:
         Name: "&9O teu Perfil &7(Right Click)"
