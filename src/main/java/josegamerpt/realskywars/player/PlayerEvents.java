@@ -195,7 +195,7 @@ public class PlayerEvents implements Listener {
                             SWGameMode game = rs.getGameManager().getGame(mapName);
 
                             if (game != null) {
-                                if (e.getPlayer().isSneaking() && (e.getPlayer().isOp() || e.getPlayer().hasPermission("RealSkywars.Admin"))) {
+                                if (e.getPlayer().isSneaking() && (e.getPlayer().isOp() || e.getPlayer().hasPermission("rs.admin"))) {
                                     //remove sign
                                     game.removeSign(e.getClickedBlock());
                                 } else {
