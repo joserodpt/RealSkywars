@@ -1,6 +1,6 @@
 name: RealSkywars
 version: ${project.version}
-main: josegamerpt.realskywars.RealSkywars
+main: joserodpt.realskywars.RealSkywars
 api-version: 1.14
 depend: [WorldEdit]
 softdepend: [RealRegions, My_Worlds, Multiverse-Core, HolographicDisplays, PlaceholderAPI, DecentHolograms]
