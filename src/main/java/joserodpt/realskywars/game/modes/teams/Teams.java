@@ -20,7 +20,7 @@ import joserodpt.realskywars.cages.Cage;
 import joserodpt.realskywars.chests.SWChest;
 import joserodpt.realskywars.configuration.Config;
 import joserodpt.realskywars.game.Countdown;
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.managers.LanguageManager;
 import joserodpt.realskywars.player.PlayerManager;
 import joserodpt.realskywars.player.RSWPlayer;
@@ -35,12 +35,12 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Teams extends SWGameMode {
+public class Teams extends SWGame {
 
     private final int maxMembersTeam;
     private final List<Team> teams;
 
-    public Teams(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, List<Team> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, List<SWChest> chests, Boolean rankd, RealSkywars rs) {
+    public Teams(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGame.GameState estado, List<Team> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, List<SWChest> chests, Boolean rankd, RealSkywars rs) {
         super(nome, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border, pos1, pos2, chests, rankd, rs);
 
         this.teams = teams;
@@ -193,7 +193,7 @@ public class Teams extends SWGameMode {
 
     @Override
     public void checkWin() {
-        if (this.getAliveTeams() == 1 && this.getState() != SWGameMode.GameState.FINISHING) {
+        if (this.getAliveTeams() == 1 && this.getState() != SWGame.GameState.FINISHING) {
             this.setState(GameState.FINISHING);
 
             Team winTeam = getPlayers().get(0).getTeam();

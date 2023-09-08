@@ -36,11 +36,11 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Solo extends SWGameMode {
+public class Solo extends SWGame {
 
     private final List<Cage> cages;
 
-    public Solo(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, List<Cage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, List<SWChest> chests, Boolean rankd, RealSkywars rs) {
+    public Solo(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGame.GameState estado, List<Cage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, List<SWChest> chests, Boolean rankd, RealSkywars rs) {
         super(nome, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border,  pos1, pos2, chests, rankd, rs);
         this.cages = cages;
     }
@@ -180,7 +180,7 @@ public class Solo extends SWGameMode {
 
     @Override
     public void checkWin() {
-        if (this.getPlayerCount() == 1 && super.getState() != SWGameMode.GameState.FINISHING) {
+        if (this.getPlayerCount() == 1 && super.getState() != SWGame.GameState.FINISHING) {
             this.setState(GameState.FINISHING);
 
             RSWPlayer p = getPlayers().get(0);

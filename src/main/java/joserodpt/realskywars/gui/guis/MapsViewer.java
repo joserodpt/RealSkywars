@@ -16,7 +16,7 @@ package joserodpt.realskywars.gui.guis;
  */
 
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.managers.LanguageManager;
 import joserodpt.realskywars.player.RSWPlayer;
 import joserodpt.realskywars.utils.Itens;
@@ -42,19 +42,19 @@ public class MapsViewer {
 
     private static final Map<UUID, MapsViewer> inventories = new HashMap<>();
     int pageNumber = 0;
-    private Pagination<SWGameMode> p;
+    private Pagination<SWGame> p;
     private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     private final Inventory inv;
     private final UUID uuid;
     private final RSWPlayer gp;
-    private final Map<Integer, SWGameMode> display = new HashMap<>();
+    private final Map<Integer, SWGame> display = new HashMap<>();
 
     public MapsViewer(RSWPlayer as, RSWPlayer.MapViewerPref t, String invName) {
         this.uuid = as.getUUID();
         this.inv = Bukkit.getServer().createInventory(null, 54, Text.color(invName) + ": " + RealSkywars.getPlugin().getLanguageManager().getString(as, select(t), false));
 
         this.gp = as;
-        List<SWGameMode> items = RealSkywars.getPlugin().getGameManager().getRoomsWithSelection(t);
+        List<SWGame> items = RealSkywars.getPlugin().getGameManager().getRoomsWithSelection(t);
 
         this.p = new Pagination<>(28, items);
         fillChest(p.getPage(pageNumber), as);
@@ -100,7 +100,7 @@ public class MapsViewer {
                         }
 
                         if (current.display.containsKey(e.getRawSlot())) {
-                            SWGameMode a = current.display.get(e.getRawSlot());
+                            SWGame a = current.display.get(e.getRawSlot());
                             if (!a.isPlaceHolder()) {
                                 a.addPlayer(p);
                             }
@@ -224,7 +224,7 @@ public class MapsViewer {
         }
     }
 
-    public void fillChest(List<SWGameMode> items, RSWPlayer p) {
+    public void fillChest(List<SWGame> items, RSWPlayer p) {
         inv.clear();
         display.clear();
 
@@ -252,7 +252,7 @@ public class MapsViewer {
         for (ItemStack i : inv.getContents()) {
             if (i == null) {
                 if (!items.isEmpty()) {
-                    SWGameMode s = items.get(0);
+                    SWGame s = items.get(0);
                     inv.setItem(slot, makeIcon(p,s));
                     display.put(slot, s);
                     items.remove(0);
@@ -276,7 +276,7 @@ public class MapsViewer {
         inventories.remove(this.uuid);
     }
 
-    private ItemStack makeIcon(RSWPlayer p, SWGameMode g) {
+    private ItemStack makeIcon(RSWPlayer p, SWGame g) {
         int count = 1;
         if (g.isPlaceHolder()) {
             return Itens.createItem(Material.BUCKET, count, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.ITEMS_MAP_NOTFOUND_TITLE, false));
@@ -293,14 +293,14 @@ public class MapsViewer {
         return ranked ? "&bRANKED" : "";
     }
 
-    private List<String> variableList(List<String> list, SWGameMode g) {
+    private List<String> variableList(List<String> list, SWGame g) {
         return list.stream()
                 .map(s -> s.replace("%players%", String.valueOf(g.getPlayerCount()))
                         .replace("%maxplayers%", String.valueOf(g.getMaxPlayers())))
                 .collect(Collectors.toList());
     }
 
-    private Material getStateMaterial(SWGameMode g) {
+    private Material getStateMaterial(SWGame g) {
         switch (g.getState()) {
             case WAITING:
                 return g.isRanked() ? Material.LIGHT_BLUE_CONCRETE : Material.LIGHT_BLUE_WOOL;

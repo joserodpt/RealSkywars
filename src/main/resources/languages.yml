@@ -177,6 +177,7 @@ Languages:
         Time:
           Day: "&e&LDay"
           Night: "&7&lNight"
+          Rain: "&9&lRain"
           Sunset: "&6&lSunset"
         Chests:
           Name: "&f&lChests"
@@ -478,6 +479,7 @@ Languages:
         Time:
           Day: "&e&LDía"
           Night: "&7&lNoche"
+          Rain: "&9&lLLuvia"
           Sunset: "&6&lAtardecer"
         Chests:
           Name: "&f&lCofres"
@@ -779,6 +781,7 @@ Languages:
         Time:
           Day: "&e&lDia"
           Night: "&7&lNoite"
+          Rain: "&9&lChuva"
           Sunset: "&6&lSunset"
         Chests:
           Name: "&f&lChests"
@@ -818,7 +821,7 @@ Languages:
           - "&fA &bpartida &fcomeçou!"
           - "&fChests selecionados: &b%chests%"
           - "&fProjéteis selecionado: &b%project%"
-          - "&fTempo selecionados: &b%time%"
+          - "&fTempo selecionado: &b%time%"
           - "&fKIT selecionado: &b%kit%"
           - "&7&m&l                                 "
         End-Log:

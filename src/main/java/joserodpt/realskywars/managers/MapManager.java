@@ -23,7 +23,7 @@ import joserodpt.realskywars.cages.SoloCage;
 import joserodpt.realskywars.chests.SWChest;
 import joserodpt.realskywars.configuration.Maps;
 import joserodpt.realskywars.game.SetupRoom;
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.game.modes.Solo;
 import joserodpt.realskywars.game.modes.teams.Team;
 import joserodpt.realskywars.game.modes.teams.Teams;
@@ -54,7 +54,7 @@ public class MapManager {
         rs.getGameManager().clearRooms();
 
         for (String s : this.getRegisteredMaps()) {
-            SWGameMode.Mode t = getGameType(s);
+            SWGame.Mode t = getGameType(s);
 
             if (t == null) {
                 RealSkywars.getPlugin().severe("Mode " + getGameType(s) + " doesnt exist! Skipping map: " + s);
@@ -72,8 +72,8 @@ public class MapManager {
                 Location specLoc = getSpecLoc(s);
                 switch (t) {
                     case SOLO:
-                        Solo gs = new Solo(s, w, Maps.file().getString(s + ".schematic"), wt, SWGameMode.GameState.AVAILABLE, getCages(s, specLoc), Maps.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s), rs);
-                        gs.resetArena(SWGameMode.OperationReason.LOAD);
+                        Solo gs = new Solo(s, w, Maps.file().getString(s + ".schematic"), wt, SWGame.GameState.AVAILABLE, getCages(s, specLoc), Maps.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s), rs);
+                        gs.resetArena(SWGame.OperationReason.LOAD);
                         rs.getGameManager().addRoom(gs);
                         break;
                     case TEAMS:
@@ -84,8 +84,8 @@ public class MapManager {
                             ts.add(new Team(tc, (Maps.file().getInt(s + ".number-of-players") / cgs.size()), c.getLoc(), worldName));
                             ++tc;
                         }
-                        Teams teas = new Teams(s, w, Maps.file().getString(s + ".schematic"), wt, SWGameMode.GameState.AVAILABLE, ts, Maps.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s), rs);
-                        teas.resetArena(SWGameMode.OperationReason.LOAD);
+                        Teams teas = new Teams(s, w, Maps.file().getString(s + ".schematic"), wt, SWGame.GameState.AVAILABLE, ts, Maps.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s), rs);
+                        teas.resetArena(SWGame.OperationReason.LOAD);
                         rs.getGameManager().addRoom(teas);
                         break;
                     default:
@@ -99,15 +99,15 @@ public class MapManager {
         Maps.reload();
         return new ArrayList<>(Maps.file().getRoot().getRoutesAsStrings(false));
     }
-    public void unregisterMap(SWGameMode map) {
+    public void unregisterMap(SWGame map) {
         map.getAllPlayers().forEach(map::removePlayer);
         rs.getGameManager().removeRoom(map);
         Maps.file().remove(map.getName());
-        rs.getGameManager().getGames(GameManager.GameModes.ALL).forEach(swGameMode -> swGameMode.save(SWGameMode.Data.ALL, true));
+        rs.getGameManager().getGames(GameManager.GameModes.ALL).forEach(swGameMode -> swGameMode.save(SWGame.Data.ALL, true));
         Maps.save();
     }
 
-    public SWGameMode getMap(String s) {
+    public SWGame getMap(String s) {
         return rs.getGameManager().getGames(GameManager.GameModes.ALL).stream()
                 .filter(g -> g.getName().equalsIgnoreCase(s))
                 .findFirst()
@@ -214,19 +214,19 @@ public class MapManager {
 
                 if (loaded) {
                     // Save Data
-                    SWGameMode.Mode gt = p.getSetupRoom().getGameType();
+                    SWGame.Mode gt = p.getSetupRoom().getGameType();
                     switch (gt) {
                         case SOLO:
-                            Solo gs = new Solo(p.getSetupRoom().getName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), SWGameMode.GameState.AVAILABLE, p.getSetupRoom().getCages(), p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), rs);
+                            Solo gs = new Solo(p.getSetupRoom().getName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), SWGame.GameState.AVAILABLE, p.getSetupRoom().getCages(), p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), rs);
 
                             if (p.getSetupRoom().getWorldType() == SWWorld.WorldType.DEFAULT) {
-                                gs.getSWWorld().resetWorld(SWGameMode.OperationReason.LOAD);
+                                gs.getSWWorld().resetWorld(SWGame.OperationReason.LOAD);
                             } else {
-                                gs.getSWWorld().resetWorld(SWGameMode.OperationReason.RESET);
+                                gs.getSWWorld().resetWorld(SWGame.OperationReason.RESET);
                             }
 
                             rs.getGameManager().addRoom(gs);
-                            gs.save(SWGameMode.Data.ALL, true);
+                            gs.save(SWGame.Data.ALL, true);
 
                             //set chests
                             gs.getChests().forEach(SWChest::setChest);
@@ -238,16 +238,16 @@ public class MapManager {
                                 ts.add(new Team(tc, p.getSetupRoom().getPlayersPerTeam(), c.getLoc(), p.getSetupRoom().getWorld().getName()));
                                 ++tc;
                             }
-                            Teams t = new Teams(p.getSetupRoom().getName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), SWGameMode.GameState.AVAILABLE, ts, p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), rs);
+                            Teams t = new Teams(p.getSetupRoom().getName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), SWGame.GameState.AVAILABLE, ts, p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), rs);
 
                             if (p.getSetupRoom().getWorldType() == SWWorld.WorldType.DEFAULT) {
-                                t.getSWWorld().resetWorld(SWGameMode.OperationReason.LOAD);
+                                t.getSWWorld().resetWorld(SWGame.OperationReason.LOAD);
                             } else {
-                                t.getSWWorld().resetWorld(SWGameMode.OperationReason.RESET);
+                                t.getSWWorld().resetWorld(SWGame.OperationReason.RESET);
                             }
 
                             rs.getGameManager().addRoom(t);
-                            t.save(SWGameMode.Data.ALL, true);
+                            t.save(SWGame.Data.ALL, true);
 
                             //set chests
                             t.getChests().forEach(SWChest::setChest);
@@ -265,8 +265,8 @@ public class MapManager {
         }
     }
 
-    private SWGameMode.Mode getGameType(String s) {
-        return (Maps.file().getString(s + ".Settings.GameType") == null) ? null : SWGameMode.Mode.valueOf(Maps.file().getString(s + ".Settings.GameType"));
+    private SWGame.Mode getGameType(String s) {
+        return (Maps.file().getString(s + ".Settings.GameType") == null) ? null : SWGame.Mode.valueOf(Maps.file().getString(s + ".Settings.GameType"));
     }
     private Boolean isInstantEndingEnabled(String s) {
         return Maps.file().getBoolean(s + ".Settings.Instant-End");

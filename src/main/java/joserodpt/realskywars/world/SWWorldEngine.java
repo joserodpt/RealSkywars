@@ -15,16 +15,16 @@ package joserodpt.realskywars.world;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import org.bukkit.World;
 
 public interface SWWorldEngine {
 
     World getWorld();
 
-    void resetWorld(SWGameMode.OperationReason rr);
+    void resetWorld(SWGame.OperationReason rr);
 
-    void deleteWorld(SWGameMode.OperationReason rr);
+    void deleteWorld(SWGame.OperationReason rr);
 
     void setTime(long l);
 

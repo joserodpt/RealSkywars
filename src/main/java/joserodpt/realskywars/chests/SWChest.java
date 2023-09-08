@@ -19,7 +19,7 @@ import joserodpt.realskywars.RealSkywars;
 import joserodpt.realskywars.configuration.Config;
 import joserodpt.realskywars.game.Countdown;
 import joserodpt.realskywars.game.SWEvent;
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.utils.holograms.SWHologram;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -141,7 +141,7 @@ public class SWChest {
         }
     }
 
-    public void startTasks(SWGameMode sgm) {
+    public void startTasks(SWGame sgm) {
         if (this.chestCTD == null && this.isChest()) {
             int time = Config.file().getInt("Config.Default-Refill-Time");
 
@@ -173,7 +173,7 @@ public class SWChest {
         }
     }
 
-    private Optional<SWEvent> getRefillTime(SWGameMode sgm) {
+    private Optional<SWEvent> getRefillTime(SWGame sgm) {
         return sgm.getEvents().stream().filter(c -> c.getEventType().equals(SWEvent.EventType.REFILL)).findFirst();
     }
 

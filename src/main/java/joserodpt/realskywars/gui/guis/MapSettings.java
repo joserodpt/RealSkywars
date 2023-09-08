@@ -16,7 +16,7 @@ package joserodpt.realskywars.gui.guis;
  */
 
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.managers.LanguageManager;
 import joserodpt.realskywars.player.RSWPlayer;
 import joserodpt.realskywars.utils.Itens;
@@ -59,9 +59,9 @@ public class MapSettings {
 
     private static int refreshTask;
     private final UUID uuid;
-    private SWGameMode game;
+    private SWGame game;
 
-    public MapSettings(SWGameMode g, UUID id) {
+    public MapSettings(SWGame g, UUID id) {
         this.uuid = id;
         this.game = g;
 
@@ -149,22 +149,22 @@ public class MapSettings {
                                 // arstat
                                 switch (current.game.getState()) {
                                     case AVAILABLE:
-                                        current.game.setState(SWGameMode.GameState.STARTING);
+                                        current.game.setState(SWGame.GameState.STARTING);
                                         break;
                                     case FINISHING:
-                                        current.game.setState(SWGameMode.GameState.RESETTING);
+                                        current.game.setState(SWGame.GameState.RESETTING);
                                         break;
                                     case PLAYING:
-                                        current.game.setState(SWGameMode.GameState.FINISHING);
+                                        current.game.setState(SWGame.GameState.FINISHING);
                                         break;
                                     case RESETTING:
-                                        current.game.setState(SWGameMode.GameState.AVAILABLE);
+                                        current.game.setState(SWGame.GameState.AVAILABLE);
                                         break;
                                     case STARTING:
-                                        current.game.setState(SWGameMode.GameState.WAITING);
+                                        current.game.setState(SWGame.GameState.WAITING);
                                         break;
                                     case WAITING:
-                                        current.game.setState(SWGameMode.GameState.PLAYING);
+                                        current.game.setState(SWGame.GameState.PLAYING);
                                         break;
                                 }
                                 current.loadInv();
@@ -174,24 +174,24 @@ public class MapSettings {
                             case 13:
                                 // settings
                                 current.game.setBorderEnabled(!current.game.isBorderEnabled());
-                                current.game.save(SWGameMode.Data.SETTINGS, true);
+                                current.game.save(SWGame.Data.SETTINGS, true);
                                 current.loadInv();
                                 break;
                             case 14:
                                 // settings
                                 current.game.setRanked(!current.game.isRanked());
-                                current.game.save(SWGameMode.Data.SETTINGS, true);
+                                current.game.save(SWGame.Data.SETTINGS, true);
                                 current.loadInv();
                                 break;
                             case 15:
                                 // settings
                                 current.game.setSpectator(!current.game.isSpectatorEnabled());
-                                current.game.save(SWGameMode.Data.SETTINGS, true);
+                                current.game.save(SWGame.Data.SETTINGS, true);
                                 current.loadInv();
                                 break;
                             case 16:
                                 current.game.setInstantEnd(!current.game.isInstantEndEnabled());
-                                current.game.save(SWGameMode.Data.SETTINGS, true);
+                                current.game.save(SWGame.Data.SETTINGS, true);
                                 current.loadInv();
                                 break;
                         }

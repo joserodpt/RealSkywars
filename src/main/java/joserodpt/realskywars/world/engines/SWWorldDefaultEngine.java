@@ -17,7 +17,7 @@ package joserodpt.realskywars.world.engines;
 
 import joserodpt.realskywars.Debugger;
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.game.modes.Solo;
 import joserodpt.realskywars.world.SWWorld;
 import joserodpt.realskywars.world.SWWorldEngine;
@@ -32,10 +32,10 @@ public class SWWorldDefaultEngine implements SWWorldEngine {
 
     private final WorldManager wm = RealSkywars.getPlugin().getWorldManager();
     private World world;
-    private final SWGameMode gameRoom;
+    private final SWGame gameRoom;
     private final String worldName;
 
-    public SWWorldDefaultEngine(World w, SWGameMode gameMode) {
+    public SWWorldDefaultEngine(World w, SWGame gameMode) {
         this.worldName = w.getName();
         this.world = w;
         this.world.setAutoSave(false);
@@ -48,13 +48,13 @@ public class SWWorldDefaultEngine implements SWWorldEngine {
     }
 
     @Override
-    public void resetWorld(SWGameMode.OperationReason rr) {
+    public void resetWorld(SWGame.OperationReason rr) {
         Debugger.print(SWWorldDefaultEngine.class, "Resetting " + this.getName() + " - type: " + this.getType().name());
 
-        if (Objects.requireNonNull(rr) == SWGameMode.OperationReason.SHUTDOWN) {//delete world
-            this.deleteWorld(SWGameMode.OperationReason.SHUTDOWN);
+        if (Objects.requireNonNull(rr) == SWGame.OperationReason.SHUTDOWN) {//delete world
+            this.deleteWorld(SWGame.OperationReason.SHUTDOWN);
         } else {
-            this.deleteWorld(SWGameMode.OperationReason.RESET);
+            this.deleteWorld(SWGame.OperationReason.RESET);
             //Copy world
             this.wm.copyWorld(this.getName(), WorldManager.CopyTo.ROOT);
 
@@ -66,7 +66,7 @@ public class SWWorldDefaultEngine implements SWWorldEngine {
                 wb.setCenter(this.gameRoom.getArena().getCenter());
                 wb.setSize(this.gameRoom.getBorderSize());
 
-                this.gameRoom.setState(SWGameMode.GameState.AVAILABLE);
+                this.gameRoom.setState(SWGame.GameState.AVAILABLE);
                 Debugger.print(Solo.class, "[ROOM " + this.gameRoom.getName() + "] sucessfully resetted.");
             } else {
                 RealSkywars.getPlugin().log(Level.SEVERE, "ERROR! Could not load " + this.getName());
@@ -75,7 +75,7 @@ public class SWWorldDefaultEngine implements SWWorldEngine {
     }
 
     @Override
-    public void deleteWorld(SWGameMode.OperationReason rr) {
+    public void deleteWorld(SWGame.OperationReason rr) {
         switch (rr) {
             case LOAD:
                 break;

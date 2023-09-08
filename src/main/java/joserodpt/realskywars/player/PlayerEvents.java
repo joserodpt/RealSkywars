@@ -22,7 +22,7 @@ import joserodpt.realskywars.cages.TeamCage;
 import joserodpt.realskywars.chests.SWChest;
 import joserodpt.realskywars.configuration.Config;
 import joserodpt.realskywars.effects.BowTrail;
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.gui.GUIManager;
 import joserodpt.realskywars.gui.guis.MapsViewer;
 import joserodpt.realskywars.gui.guis.ShopViewer;
@@ -192,7 +192,7 @@ public class PlayerEvents implements Listener {
                         Sign sign = (Sign) e.getClickedBlock().getState();
                         if (Text.strip(sign.getLine(0)).equals(Text.strip(rs.getLanguageManager().getPrefix()))) {
                             String mapName = Text.strip(sign.getLine(1));
-                            SWGameMode game = rs.getGameManager().getGame(mapName);
+                            SWGame game = rs.getGameManager().getGame(mapName);
 
                             if (game != null) {
                                 if (e.getPlayer().isSneaking() && (e.getPlayer().isOp() || e.getPlayer().hasPermission("rs.admin"))) {
@@ -352,12 +352,12 @@ public class PlayerEvents implements Listener {
                         return;
                     }
 
-                    if (damaged.getMatch().getState() == SWGameMode.GameState.PLAYING) {
+                    if (damaged.getMatch().getState() == SWGame.GameState.PLAYING) {
                         damaged.addStatistic(RSWPlayer.Statistic.DEATH, 1, damaged.getMatch().isRanked());
 
                         Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
                             damaged.getPlayer().spigot().respawn();
-                            damaged.getMatch().spectate(damaged, SWGameMode.SpectateType.GAME, damaged.getMatch().getSpectatorLocation());
+                            damaged.getMatch().spectate(damaged, SWGame.SpectateType.GAME, damaged.getMatch().getSpectatorLocation());
                         }, 1);
                     } else {
                         damaged.teleport(damaged.getMatch().getSpectatorLocation());
@@ -403,7 +403,7 @@ public class PlayerEvents implements Listener {
             return;
         }
 
-        if (killed.isInMatch() && killed.getMatch().getState().equals(SWGameMode.GameState.PLAYING)) {
+        if (killed.isInMatch() && killed.getMatch().getState().equals(SWGame.GameState.PLAYING)) {
             killed.addStatistic(RSWPlayer.Statistic.DEATH, 1, killed.getMatch().isRanked());
 
             Location finalDeathLoc = deathLoc;
@@ -413,10 +413,10 @@ public class PlayerEvents implements Listener {
                 }
                 if (finalDeathLoc == null) {
                     if (killed.getPlayer() != null)
-                        killed.getMatch().spectate(killed, SWGameMode.SpectateType.GAME, killed.getMatch().getSpectatorLocation());
+                        killed.getMatch().spectate(killed, SWGame.SpectateType.GAME, killed.getMatch().getSpectatorLocation());
                 } else {
                     if (killed.getPlayer() != null)
-                        killed.getMatch().spectate(killed, SWGameMode.SpectateType.GAME, finalDeathLoc);
+                        killed.getMatch().spectate(killed, SWGame.SpectateType.GAME, finalDeathLoc);
                 }
             }, 1);
         }
@@ -442,11 +442,13 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractEntityEvent event) {
         if (event.getRightClicked() instanceof Player) {
-            RSWPlayer click = rs.getPlayerManager().getPlayer(event.getPlayer());
-            RSWPlayer clicked = rs.getPlayerManager().getPlayer((Player) event.getRightClicked());
-            if (click != null && clicked != null && !clicked.isInMatch()) {
-                PlayerGUI playg = new PlayerGUI(click, click.getUUID(), clicked);
-                playg.openInventory(click);
+            if (Config.file().getBoolean("Config.Right-Click-Player-Info")) {
+                RSWPlayer click = rs.getPlayerManager().getPlayer(event.getPlayer());
+                RSWPlayer clicked = rs.getPlayerManager().getPlayer((Player) event.getRightClicked());
+                if (click != null && clicked != null && !clicked.isInMatch()) {
+                    PlayerGUI playg = new PlayerGUI(click, click.getUUID(), clicked);
+                    playg.openInventory(click);
+                }
             }
         }
     }

@@ -17,7 +17,7 @@ package joserodpt.realskywars.game;
 
 import joserodpt.realskywars.RealSkywars;
 import joserodpt.realskywars.configuration.Languages;
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.managers.LanguageManager;
 import joserodpt.realskywars.utils.Text;
 import org.bukkit.Sound;
@@ -27,10 +27,10 @@ import org.bukkit.entity.TNTPrimed;
 public class SWEvent {
 
     private final EventType et;
-    private final SWGameMode room;
+    private final SWGame room;
     private final int time;
 
-    public SWEvent(SWGameMode room, EventType et, int time) {
+    public SWEvent(SWGame room, EventType et, int time) {
         this.room = room;
         this.et = et;
         this.time = time;

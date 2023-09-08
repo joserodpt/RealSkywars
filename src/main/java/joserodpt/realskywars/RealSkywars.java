@@ -34,7 +34,7 @@ import joserodpt.realskywars.configuration.chests.EPICChest;
 import joserodpt.realskywars.configuration.chests.NormalChest;
 import joserodpt.realskywars.database.DatabaseManager;
 import joserodpt.realskywars.database.SQL;
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.gui.guis.VoteGUI;
 import joserodpt.realskywars.kits.KitSettings;
 import joserodpt.realskywars.player.PlayerGUI;
@@ -274,9 +274,9 @@ public class RealSkywars extends JavaPlugin {
                 return new TypeResult(null, argument);
             }
         });
-        commandManager.getParameterHandler().register(SWGameMode.Mode.class, argument -> {
+        commandManager.getParameterHandler().register(SWGame.Mode.class, argument -> {
             try {
-                SWGameMode.Mode tt = SWGameMode.Mode.valueOf(argument.toString().toUpperCase());
+                SWGame.Mode tt = SWGame.Mode.valueOf(argument.toString().toUpperCase());
                 return new TypeResult(tt, argument);
             } catch (Exception e) {
                 return new TypeResult(null, argument);
@@ -342,7 +342,7 @@ public class RealSkywars extends JavaPlugin {
 
     public void onDisable() {
         this.getGameManager().endGames();
-        this.getGameManager().getGames(GameManager.GameModes.ALL).forEach(SWGameMode::clear);
+        this.getGameManager().getGames(GameManager.GameModes.ALL).forEach(SWGame::clear);
 
         HandlerList.unregisterAll(this);
         Bukkit.getPluginManager().disablePlugin(this);

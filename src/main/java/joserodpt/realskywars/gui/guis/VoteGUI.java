@@ -16,7 +16,7 @@ package joserodpt.realskywars.gui.guis;
  */
 
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.managers.LanguageManager;
 import joserodpt.realskywars.player.RSWPlayer;
 import joserodpt.realskywars.utils.Itens;
@@ -61,8 +61,8 @@ public class VoteGUI {
 
         //selection items
         this.inv.setItem(10, Itens.createItem(Material.CHEST, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_CHESTS_TITLE, false)));
-        this.inv.setItem(19, Itens.createItem(Material.ARROW, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PROJECTILES_TITLE, false)));
-        this.inv.setItem(28, Itens.createItem(Material.CLOCK, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_TIME_TITLE, false)));
+        this.inv.setItem(19, Itens.createItem(Material.CLOCK, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_TIME_TITLE, false)));
+        this.inv.setItem(28, Itens.createItem(Material.ARROW, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PROJECTILES_TITLE, false)));
 
         this.inv.setItem(37, close);
 
@@ -76,6 +76,7 @@ public class VoteGUI {
                 this.inv.setItem(22, Itens.createItem(Material.YELLOW_CONCRETE, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.TIME_DAY, false)));
                 this.inv.setItem(23, Itens.createItem(Material.RED_CONCRETE, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.TIME_SUNSET, false)));
                 this.inv.setItem(24, Itens.createItem(Material.BLACK_CONCRETE, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.TIME_NIGHT, false)));
+                this.inv.setItem(25, Itens.createItem(Material.WATER_BUCKET, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.TIME_RAIN, false)));
                 break;
             case PROJECTILE:
                 this.inv.setItem(31, Itens.createItem(Material.EGG, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.PROJECTILE_NORMAL, false)));
@@ -138,12 +139,12 @@ public class VoteGUI {
 
                                 //Chest vote
                             case 13:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGameMode.VoteType.CHESTS, p.getUUID())) {
+                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGame.VoteType.CHESTS, p.getUUID())) {
                                     p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.ALREADY_VOTED, true));
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("RealSkywars.Basic")) {
-                                        p.getMatch().addVote(p.getUUID(), SWGameMode.VoteType.CHESTS, 1);
+                                        p.getMatch().addVote(p.getUUID(), SWGame.VoteType.CHESTS, 1);
                                         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.VOTE, true).replace("%thing%", RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.CHEST_BASIC, false)));
                                     } else {
                                         p.closeInventory();
@@ -152,12 +153,12 @@ public class VoteGUI {
                                 }
                                 break;
                             case 14:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGameMode.VoteType.CHESTS, p.getUUID())) {
+                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGame.VoteType.CHESTS, p.getUUID())) {
                                     p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.ALREADY_VOTED, true));
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("RealSkywars.Normal")) {
-                                        p.getMatch().addVote(p.getUUID(), SWGameMode.VoteType.CHESTS, 2);
+                                        p.getMatch().addVote(p.getUUID(), SWGame.VoteType.CHESTS, 2);
                                         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.VOTE, true).replace("%thing%", RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.CHEST_NORMAL, false)));
                                     } else {
                                         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.CMD_NOPERM, true));
@@ -166,12 +167,12 @@ public class VoteGUI {
                                 }
                                 break;
                             case 15:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGameMode.VoteType.CHESTS, p.getUUID())) {
+                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGame.VoteType.CHESTS, p.getUUID())) {
                                     p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.ALREADY_VOTED, true));
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("RealSkywars.Epic")) {
-                                        p.getMatch().addVote(p.getUUID(), SWGameMode.VoteType.CHESTS, 3);
+                                        p.getMatch().addVote(p.getUUID(), SWGame.VoteType.CHESTS, 3);
                                         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.VOTE, true).replace("%thing%", RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.CHEST_EPIC, false)));
 
                                     } else {
@@ -184,12 +185,12 @@ public class VoteGUI {
                                 //time vote
 
                             case 22:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGameMode.VoteType.TIME, p.getUUID())) {
+                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGame.VoteType.TIME, p.getUUID())) {
                                     p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.ALREADY_VOTED, true));
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("RealSkywars.Day")) {
-                                        p.getMatch().addVote(p.getUUID(), SWGameMode.VoteType.TIME, 1);
+                                        p.getMatch().addVote(p.getUUID(), SWGame.VoteType.TIME, 1);
                                         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.VOTE, true).replace("%thing%", RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.TIME_DAY, false)));
                                     } else {
                                         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.CMD_NOPERM, true));
@@ -199,12 +200,12 @@ public class VoteGUI {
                                 break;
 
                             case 23:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGameMode.VoteType.TIME, p.getUUID())) {
+                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGame.VoteType.TIME, p.getUUID())) {
                                     p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.ALREADY_VOTED, true));
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("RealSkywars.Sunset")) {
-                                        p.getMatch().addVote(p.getUUID(), SWGameMode.VoteType.TIME, 2);
+                                        p.getMatch().addVote(p.getUUID(), SWGame.VoteType.TIME, 2);
                                         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.VOTE, true).replace("%thing%", RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.TIME_SUNSET, false)));
                                     } else {
                                         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.CMD_NOPERM, true));
@@ -213,12 +214,26 @@ public class VoteGUI {
                                 }
                                 break;
                             case 24:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGameMode.VoteType.TIME, p.getUUID())) {
+                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGame.VoteType.TIME, p.getUUID())) {
                                     p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.ALREADY_VOTED, true));
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("RealSkywars.Night")) {
-                                        p.getMatch().addVote(p.getUUID(), SWGameMode.VoteType.TIME, 3);
+                                        p.getMatch().addVote(p.getUUID(), SWGame.VoteType.TIME, 3);
+                                        p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.VOTE, true).replace("%thing%", RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.TIME_NIGHT, false)));
+                                    } else {
+                                        p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.CMD_NOPERM, true));
+                                        p.closeInventory();
+                                    }
+                                }
+                                break;
+                            case 25:
+                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGame.VoteType.TIME, p.getUUID())) {
+                                    p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.ALREADY_VOTED, true));
+                                    p.closeInventory();
+                                } else {
+                                    if (p.getPlayer().hasPermission("RealSkywars.Rain")) {
+                                        p.getMatch().addVote(p.getUUID(), SWGame.VoteType.TIME, 4);
                                         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.VOTE, true).replace("%thing%", RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.TIME_NIGHT, false)));
                                     } else {
                                         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.CMD_NOPERM, true));
@@ -229,12 +244,12 @@ public class VoteGUI {
 
                                 //projectile vote
                             case 31:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGameMode.VoteType.PROJECTILES, p.getUUID())) {
+                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGame.VoteType.PROJECTILES, p.getUUID())) {
                                     p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.ALREADY_VOTED, true));
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("RealSkywars.Normal-Projectile")) {
-                                        p.getMatch().addVote(p.getUUID(), SWGameMode.VoteType.PROJECTILES, 1);
+                                        p.getMatch().addVote(p.getUUID(), SWGame.VoteType.PROJECTILES, 1);
                                         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.VOTE, true).replace("%thing%", RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.PROJECTILE_NORMAL, false)));
                                     } else {
                                         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.CMD_NOPERM, true));
@@ -243,12 +258,12 @@ public class VoteGUI {
                                 }
                                 break;
                             case 33:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGameMode.VoteType.PROJECTILES, p.getUUID())) {
+                                if (!p.isBot() && p.getMatch().hasVotedFor(SWGame.VoteType.PROJECTILES, p.getUUID())) {
                                     p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.ALREADY_VOTED, true));
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("RealSkywars.Break-Projectile")) {
-                                        p.getMatch().addVote(p.getUUID(), SWGameMode.VoteType.PROJECTILES, 2);
+                                        p.getMatch().addVote(p.getUUID(), SWGame.VoteType.PROJECTILES, 2);
                                         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.VOTE, true).replace("%thing%", RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.PROJECTILE_BREAK, false)));
                                     } else {
                                         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.CMD_NOPERM, true));

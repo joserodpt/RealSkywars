@@ -15,17 +15,17 @@ package joserodpt.realskywars.api.events;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class RSWAPIRoomStateChange extends Event implements Cancellable {
-    private final SWGameMode room;
+    private final SWGame room;
     private static final HandlerList HANDLERS_LIST = new HandlerList();
     private boolean isCancelled;
 
-    public RSWAPIRoomStateChange(SWGameMode gm){
+    public RSWAPIRoomStateChange(SWGame gm){
         this.room = gm;
     }
 
@@ -48,7 +48,7 @@ public class RSWAPIRoomStateChange extends Event implements Cancellable {
         return HANDLERS_LIST;
     }
 
-    public SWGameMode getRoom() {
+    public SWGame getRoom() {
         return this.room;
     }
 

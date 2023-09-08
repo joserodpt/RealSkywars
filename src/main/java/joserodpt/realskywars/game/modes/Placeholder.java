@@ -21,7 +21,7 @@ import joserodpt.realskywars.player.RSWPlayer;
 
 import java.util.ArrayList;
 
-public class Placeholder extends SWGameMode {
+public class Placeholder extends SWGame {
     public Placeholder(String nome) {
         super(nome);
     }

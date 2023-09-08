@@ -16,7 +16,7 @@ package joserodpt.realskywars.player;
  */
 
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.managers.LanguageManager;
 import joserodpt.realskywars.utils.Itens;
 import joserodpt.realskywars.utils.Text;
@@ -30,12 +30,12 @@ public class RSWGameLog {
     public String map;
     public int players, seconds;
     public boolean ranked, win;
-    public SWGameMode.Mode mode;
+    public SWGame.Mode mode;
     public String dayandtime;
 
     private boolean dummy = false;
 
-    public RSWGameLog(String map, SWGameMode.Mode mode, boolean ranked, int players, boolean win, int seconds, String dayandtime) {
+    public RSWGameLog(String map, SWGame.Mode mode, boolean ranked, int players, boolean win, int seconds, String dayandtime) {
         this.map = map;
         this.mode = mode;
         this.ranked = ranked;

@@ -18,7 +18,7 @@ package joserodpt.realskywars.player;
 import joserodpt.realskywars.RealSkywars;
 import joserodpt.realskywars.configuration.Config;
 import joserodpt.realskywars.database.PlayerData;
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.managers.GameManager;
 import joserodpt.realskywars.managers.LanguageManager;
 import joserodpt.realskywars.shop.ShopDisplayItem;
@@ -160,7 +160,7 @@ public class PlayerManager {
                 String[] data = obj.split(";");
                 if (data.length == 7) {
                     String mapa = data[0];
-                    SWGameMode.Mode mode = SWGameMode.Mode.valueOf(data[1]);
+                    SWGame.Mode mode = SWGame.Mode.valueOf(data[1]);
                     boolean ranked = Boolean.parseBoolean(data[2]);
                     int jogadores = Integer.parseInt(data[3]);
                     boolean win = Boolean.parseBoolean(data[4]);
@@ -263,7 +263,7 @@ public class PlayerManager {
     }
 
     public int getPlayingPlayers(GameManager.GameModes pt) {
-        return rs.getGameManager().getGames(pt).stream().mapToInt(SWGameMode::getPlayerCount).sum();
+        return rs.getGameManager().getGames(pt).stream().mapToInt(SWGame::getPlayerCount).sum();
     }
 
     public void stopScoreboards() {

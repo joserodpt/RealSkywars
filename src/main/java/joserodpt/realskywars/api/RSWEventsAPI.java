@@ -16,12 +16,12 @@ package joserodpt.realskywars.api;
  */
 
 import joserodpt.realskywars.api.events.RSWAPIRoomStateChange;
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import org.bukkit.Bukkit;
 
 public class RSWEventsAPI {
 
-    public void callRoomStateChange(SWGameMode g) {
+    public void callRoomStateChange(SWGame g) {
         Bukkit.getPluginManager().callEvent(new RSWAPIRoomStateChange(g));
     }
 }

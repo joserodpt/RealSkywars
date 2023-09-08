@@ -16,7 +16,7 @@ package joserodpt.realskywars.party;
  */
 
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.managers.LanguageManager;
 import joserodpt.realskywars.player.RSWPlayer;
 import org.bukkit.Bukkit;
@@ -63,7 +63,7 @@ public class PartyManager {
         inviteOwner.getParty().playerJoin(p);
     }
 
-    public boolean checkForParties(RSWPlayer p, SWGameMode swgm) {
+    public boolean checkForParties(RSWPlayer p, SWGame swgm) {
         int current, max, toAdd;
 
         boolean result;

@@ -17,7 +17,7 @@ package joserodpt.realskywars.game;
 
 import joserodpt.realskywars.cages.Cage;
 import joserodpt.realskywars.chests.SWChest;
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.world.SWWorld;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -25,7 +25,7 @@ import org.bukkit.World;
 import java.util.ArrayList;
 import java.util.List;
 
-import static joserodpt.realskywars.game.modes.SWGameMode.Mode.TEAMS;
+import static joserodpt.realskywars.game.modes.SWGame.Mode.TEAMS;
 
 public class SetupRoom {
 
@@ -33,7 +33,7 @@ public class SetupRoom {
     private final List<Cage> cages = new ArrayList<>();
     private final List<SWChest> chests = new ArrayList<>();
     private final int maxPlayers;
-    private final SWGameMode.Mode mode;
+    private final SWGame.Mode mode;
     private Boolean tpConfirm = false;
     private World worldMap;
     private Location spectatorLocation;
@@ -50,7 +50,7 @@ public class SetupRoom {
         this.worldMap = w;
         this.worldType = wt;
         this.maxPlayers = players;
-        this.mode = SWGameMode.Mode.SOLO;
+        this.mode = SWGame.Mode.SOLO;
     }
 
     public SetupRoom(String nome, World w, SWWorld.WorldType wt, int teams, int ppert) {
@@ -99,7 +99,7 @@ public class SetupRoom {
         this.speclocConfirm = b;
     }
 
-    public SWGameMode.Mode getGameType() {
+    public SWGame.Mode getGameType() {
         return this.mode;
     }
 

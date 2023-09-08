@@ -19,7 +19,7 @@ import joserodpt.realskywars.RealSkywars;
 import joserodpt.realskywars.chests.SWChest;
 import joserodpt.realskywars.chests.TierViewer;
 import joserodpt.realskywars.configuration.Config;
-import joserodpt.realskywars.game.modes.SWGameMode;
+import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.gui.GUIManager;
 import joserodpt.realskywars.kits.Kit;
 import joserodpt.realskywars.kits.KitInventory;
@@ -175,7 +175,7 @@ public class RealSkywarsCMD extends CommandBase {
 
     @SubCommand("play")
     @Completion("#enum")
-    public void playcmd(final CommandSender commandSender, SWGameMode.Mode type) {
+    public void playcmd(final CommandSender commandSender, SWGame.Mode type) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
             if (type != null && p != null && p.getPlayer() != null) {
@@ -408,7 +408,7 @@ public class RealSkywarsCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
             p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.CMD_MAPS, true).replace("%rooms%", "" + rs.getGameManager().getGames(GameManager.GameModes.ALL).size()));
-            for (SWGameMode s : rs.getGameManager().getGames(GameManager.GameModes.ALL)) {
+            for (SWGame s : rs.getGameManager().getGames(GameManager.GameModes.ALL)) {
                 TextComponent a = new TextComponent(Text.color("&7- &f" + s.getName()));
                 a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw map " + s.getName()));
                 a.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Text.color("&fClick to open &b" + s.getName() + "&f settings!")).create()));
@@ -444,7 +444,7 @@ public class RealSkywarsCMD extends CommandBase {
     public void map(final CommandSender commandSender, String name) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
-            SWGameMode sw = rs.getGameManager().getGame(name);
+            SWGame sw = rs.getGameManager().getGame(name);
             if (sw != null) {
                 MapSettings r = new MapSettings(sw, p.getUUID());
                 r.openInventory(p);

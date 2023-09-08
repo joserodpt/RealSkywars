@@ -27,10 +27,10 @@ import org.bukkit.block.data.type.WallSign;
 
 public class SWSign {
 
-    private final SWGameMode game;
+    private final SWGame game;
     private final Block b;
 
-    public SWSign(SWGameMode gm, Block b) {
+    public SWSign(SWGame gm, Block b) {
         this.game = gm;
         this.b = b;
 

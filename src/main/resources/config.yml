@@ -1,9 +1,11 @@
-Version: 1
+Version: 2
 Debug-Mode: false
 Config:
   Auto-Teleport-To-Lobby: true
   Scoreboard-In-Lobby: true
   Spectator-Shop: true
+  Right-Click-Player-Info: true
+  PlaceholderAPI-In-Scoreboard: false
   # Time in seconds
   Time:
     Formatting: dd-MM-yyyy HH:mm:ss

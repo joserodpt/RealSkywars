@@ -18,8 +18,8 @@ package joserodpt.realskywars.managers;
 import joserodpt.realskywars.RealSkywars;
 import joserodpt.realskywars.configuration.Config;
 import joserodpt.realskywars.game.modes.Placeholder;
-import joserodpt.realskywars.game.modes.SWGameMode;
-import joserodpt.realskywars.game.modes.SWGameMode.GameState;
+import joserodpt.realskywars.game.modes.SWGame;
+import joserodpt.realskywars.game.modes.SWGame.GameState;
 import joserodpt.realskywars.game.modes.SWSign;
 import joserodpt.realskywars.player.PlayerManager;
 import joserodpt.realskywars.player.RSWPlayer;
@@ -41,19 +41,19 @@ public class GameManager {
         this.rs = rs;
     }
 
-    private final ArrayList<SWGameMode> games = new ArrayList<>();
+    private final ArrayList<SWGame> games = new ArrayList<>();
     public Boolean endingGames = false;
     private Location lobbyLOC;
     private Boolean loginTP = true;
 
-    public SWGameMode getMatch(World world) {
+    public SWGame getMatch(World world) {
         return this.games.stream()
                 .filter(sw -> sw.getSWWorld().getWorld().equals(world))
                 .findFirst()
                 .orElse(null);
     }
 
-    public SWGameMode getGame(String name) {
+    public SWGame getGame(String name) {
         return this.games.stream()
                 .filter(g -> g.getName().equalsIgnoreCase(name))
                 .findFirst()
@@ -65,12 +65,12 @@ public class GameManager {
 
         this.games.parallelStream().forEach(g -> {
             g.kickPlayers(rs.getLanguageManager().getString(LanguageManager.TSsingle.ADMIN_SHUTDOWN));
-            g.resetArena(SWGameMode.OperationReason.SHUTDOWN);
+            g.resetArena(SWGame.OperationReason.SHUTDOWN);
         });
     }
 
-    public List<SWGameMode> getRoomsWithSelection(RSWPlayer.MapViewerPref t) {
-        List<SWGameMode> f = new ArrayList<>();
+    public List<SWGame> getRoomsWithSelection(RSWPlayer.MapViewerPref t) {
+        List<SWGame> f = new ArrayList<>();
         switch (t) {
             case MAPV_ALL:
                 f.addAll(this.games);
@@ -159,7 +159,7 @@ public class GameManager {
         return Config.file().getBoolean("Config.Scoreboard-In-Lobby");
     }
 
-    public void removeRoom(SWGameMode gr) {
+    public void removeRoom(SWGame gr) {
         gr.getSigns().forEach(SWSign::delete);
         this.games.remove(gr);
     }
@@ -168,25 +168,25 @@ public class GameManager {
         this.games.clear();
     }
 
-    public List<SWGameMode> getGames(GameModes pt) {
+    public List<SWGame> getGames(GameModes pt) {
         switch (pt) {
             case ALL:
                 return this.games;
             case SOLO:
-                return this.games.stream().filter(r -> r.getGameMode().equals(SWGameMode.Mode.SOLO)).collect(Collectors.toList());
+                return this.games.stream().filter(r -> r.getGameMode().equals(SWGame.Mode.SOLO)).collect(Collectors.toList());
             case TEAMS:
-                return this.games.stream().filter(r -> r.getGameMode().equals(SWGameMode.Mode.TEAMS)).collect(Collectors.toList());
+                return this.games.stream().filter(r -> r.getGameMode().equals(SWGame.Mode.TEAMS)).collect(Collectors.toList());
             case RANKED:
-                return this.games.stream().filter(SWGameMode::isRanked).collect(Collectors.toList());
+                return this.games.stream().filter(SWGame::isRanked).collect(Collectors.toList());
             case SOLO_RANKED:
-                return this.games.stream().filter(r -> r.isRanked() && r.getGameMode().equals(SWGameMode.Mode.SOLO)).collect(Collectors.toList());
+                return this.games.stream().filter(r -> r.isRanked() && r.getGameMode().equals(SWGame.Mode.SOLO)).collect(Collectors.toList());
             case TEAMS_RANKED:
-                return this.games.stream().filter(r -> r.isRanked() && r.getGameMode().equals(SWGameMode.Mode.TEAMS)).collect(Collectors.toList());
+                return this.games.stream().filter(r -> r.isRanked() && r.getGameMode().equals(SWGame.Mode.TEAMS)).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
 
-    public void addRoom(SWGameMode s) {
+    public void addRoom(SWGame s) {
         this.games.add(s);
     }
 
@@ -208,12 +208,12 @@ public class GameManager {
         return this.lobbyLOC != null && this.lobbyLOC.getWorld().equals(w);
     }
 
-    public void findGame(RSWPlayer player, SWGameMode.Mode type) {
+    public void findGame(RSWPlayer player, SWGame.Mode type) {
         UUID playerUUID = player.getUUID();
         if (!rs.getPlayerManager().getTeleporting().contains(playerUUID)) {
             rs.getPlayerManager().getTeleporting().add(playerUUID);
 
-            Optional<SWGameMode> suitableGame = findSuitableGame(type);
+            Optional<SWGame> suitableGame = findSuitableGame(type);
             if (suitableGame.isPresent()) {
                 joinSuitableGame(player, suitableGame.get());
             } else {
@@ -222,7 +222,7 @@ public class GameManager {
         }
     }
 
-    private Optional<SWGameMode> findSuitableGame(SWGameMode.Mode type) {
+    private Optional<SWGame> findSuitableGame(SWGame.Mode type) {
         return this.games.stream()
                 .filter(game -> game.getGameMode().equals(type) &&
                         (game.getState().equals(GameState.AVAILABLE) ||
@@ -232,7 +232,7 @@ public class GameManager {
                 .findFirst();
     }
 
-    private void joinSuitableGame(RSWPlayer player, SWGameMode gameMode) {
+    private void joinSuitableGame(RSWPlayer player, SWGame gameMode) {
         player.sendMessage(rs.getLanguageManager().getString(player, LanguageManager.TS.GAME_FOUND, true));
         if (player.isInMatch()) {
             player.getMatch().removePlayer(player);

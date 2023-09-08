@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public abstract class SWGameMode {
+public abstract class SWGame {
 
     private final SWWorld world;
     private final ArenaCuboid arenaCuboid;
@@ -67,7 +67,7 @@ public abstract class SWGameMode {
     private final HashMap<UUID, Integer> chestVotes = new HashMap<>();
     private final HashMap<UUID, Integer> projectileVotes = new HashMap<>();
     private final HashMap<UUID, Integer> timeVotes = new HashMap<>();
-    private SWGameMode.GameState state;
+    private SWGame.GameState state;
     private BossBar bossBar;
     private SWChest.Tier chestTier = SWChest.Tier.NORMAL;
     private int timePassed = 0;
@@ -82,7 +82,7 @@ public abstract class SWGameMode {
 
     private RealSkywars rs;
 
-    public SWGameMode(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGameMode.GameState estado, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean borderEnabled, Location pos1, Location pos2, List<SWChest> chests, Boolean rankd, RealSkywars rs) {
+    public SWGame(String nome, World w, String schematicName, SWWorld.WorldType wt, SWGame.GameState estado, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean borderEnabled, Location pos1, Location pos2, List<SWChest> chests, Boolean rankd, RealSkywars rs) {
         this.rs = rs;
 
         this.name = nome;
@@ -118,7 +118,7 @@ public abstract class SWGameMode {
         this.bossBar = Bukkit.createBossBar(Text.color(rs.getLanguageManager().getString(LanguageManager.TSsingle.BOSSBAR_ARENA_WAIT)), BarColor.WHITE, BarStyle.SOLID);
     }
 
-    public SWGameMode(String nome) {
+    public SWGame(String nome) {
         this.name = nome;
         this.world = null;
         this.arenaCuboid = null;
@@ -275,11 +275,11 @@ public abstract class SWGameMode {
         }
     }
 
-    public SWGameMode.GameState getState() {
+    public SWGame.GameState getState() {
         return this.state;
     }
 
-    public void setState(SWGameMode.GameState w) {
+    public void setState(SWGame.GameState w) {
         this.state = w;
         this.getRealSkywars().getEventsAPI().callRoomStateChange(this);
     }
@@ -301,6 +301,20 @@ public abstract class SWGameMode {
 
     public void setTime(TimeType tt) {
         this.timeType = tt;
+        switch (this.timeType) {
+            case DAY:
+                this.getSWWorld().getWorld().setTime(0);
+                break;
+            case NIGHT:
+                this.getSWWorld().getWorld().setTime(13000);
+                break;
+            case SUNSET:
+                this.getSWWorld().getWorld().setTime(11999);
+                break;
+            case RAIN:
+                this.getSWWorld().getWorld().setStorm(true);
+                break;
+        }
     }
 
     public void setProjectiles(ProjectileType pt) {
@@ -598,6 +612,9 @@ public abstract class SWGameMode {
             case 3:
                 this.setTime(TimeType.NIGHT);
                 break;
+            case 4:
+                this.setTime(TimeType.RAIN);
+                break;
             default:
                 this.setTime(TimeType.DAY);
                 break;
@@ -656,7 +673,7 @@ public abstract class SWGameMode {
             }
         }
 
-        if (this.getState() == SWGameMode.GameState.PLAYING || this.getState() == SWGameMode.GameState.FINISHING) {
+        if (this.getState() == SWGame.GameState.PLAYING || this.getState() == SWGame.GameState.FINISHING) {
             checkWin();
         }
 
@@ -892,7 +909,7 @@ public abstract class SWGameMode {
     }
 
     public enum TimeType {
-        DAY, NIGHT, SUNSET
+        DAY, NIGHT, RAIN, SUNSET
     }
 
     public enum SpectateType {GAME, EXTERNAL}
