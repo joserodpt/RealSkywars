@@ -720,7 +720,7 @@ public class RSWPlayer {
             }
 
             if (Config.file().getBoolean("Config.PlaceholderAPI-In-Scoreboard")) {
-                PlaceholderAPI.setPlaceholders(gp.getPlayer(), tmp);
+                tmp = PlaceholderAPI.setPlaceholders(gp.getPlayer(), tmp);
             }
 
             return tmp;

@@ -16,6 +16,7 @@ package joserodpt.realskywars.gui;
  */
 
 import joserodpt.realskywars.RealSkywars;
+import joserodpt.realskywars.configuration.Config;
 import joserodpt.realskywars.gui.guis.AchievementViewer;
 import joserodpt.realskywars.gui.guis.GameLogViewer;
 import joserodpt.realskywars.player.ProfileContent;
@@ -104,7 +105,7 @@ public class GUIManager {
         GUIBuilder inventory = new GUIBuilder(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_LANG_TITLE, false), 18, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         int i = 0;
-        for (String s : RealSkywars.getPlugin().getLanguageManager().getLanguages()) {
+        for (String s : RealSkywars.getPlugin().getLanguageManager().getLanguages().subList(0, 17)) {
             inventory.addItem(e -> RealSkywars.getPlugin().getPlayerManager().setLanguage(p, s), Itens.createItemLore(Material.BOOK, 1, "&b" + s, Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_LANG_SELECT, false))), i);
             ++i;
         }
@@ -173,18 +174,27 @@ public class GUIManager {
 
         //settings
         if (!p.isInMatch()) {
-            inventory.addItem(e -> {
-                p.closeInventory();
-                GUIManager.openLanguage(p);
-            }, Itens.createItemLore(Material.BOOK, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_LANG_TITLE, false), Collections.singletonList("&f> " + p.getLanguage())), 30);
+            if (Config.file().getBoolean("Config.Disable-Language-Selection")) {
+                inventory.addItem(e -> {
+                    p.closeInventory();
+                    GameLogViewer v = new GameLogViewer(p);
+                    v.openInventory(p);
+                }, Itens.createItemLore(Material.FILLED_MAP, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_GAME_HISTORY, false), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 31);
+            } else {
+                inventory.addItem(e -> {
+                    p.closeInventory();
+                    GameLogViewer v = new GameLogViewer(p);
+                    v.openInventory(p);
+                }, Itens.createItemLore(Material.FILLED_MAP, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_GAME_HISTORY, false), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 32);
+                inventory.addItem(e -> {
+                    p.closeInventory();
+                    GUIManager.openLanguage(p);
+                }, Itens.createItemLore(Material.BOOK, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_LANG_TITLE, false), Collections.singletonList("&f> " + p.getLanguage())), 30);
+            }
 
-            inventory.addItem(e -> p.resetData(), Itens.createItemLore(Material.BARRIER, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_RESET_TITLE, false), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_RESET_ALERT, false))), 44);
-
-            inventory.addItem(e -> {
-                p.closeInventory();
-                GameLogViewer v = new GameLogViewer(p);
-                v.openInventory(p);
-            }, Itens.createItemLore(Material.FILLED_MAP, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_GAME_HISTORY, false), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 32);
+            if (!Config.file().getBoolean("Config.Disable-Player-Reset")) {
+                inventory.addItem(e -> p.resetData(), Itens.createItemLore(Material.BARRIER, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_RESET_TITLE, false), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_RESET_ALERT, false))), 44);
+            }
         }
 
         inventory.openInventory(p.getPlayer());

@@ -1,4 +1,4 @@
-Version: 2
+Version: 3
 Debug-Mode: false
 Config:
   Auto-Teleport-To-Lobby: true
@@ -6,6 +6,8 @@ Config:
   Spectator-Shop: true
   Right-Click-Player-Info: true
   PlaceholderAPI-In-Scoreboard: false
+  Disable-Player-Reset: false
+  Disable-Language-Selection: false
   # Time in seconds
   Time:
     Formatting: dd-MM-yyyy HH:mm:ss
