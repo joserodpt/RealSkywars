@@ -385,6 +385,7 @@ public class RealSkywars extends JavaPlugin {
         getLogger().info("Your server is running version " + version);
 
         switch (version) {
+            case "v1_20_R2":
             case "v1_20_R1":
             case "v1_19_R3":
             case "v1_18_R2":
