@@ -7,7 +7,7 @@
 
     <groupId>pt.josegamerpt</groupId>
     <artifactId>RealSkywars</artifactId>
-    <version>0.3.1</version>
+    <version>0.4</version>
     <packaging>jar</packaging>
 
     <name>RealSkywars</name>
