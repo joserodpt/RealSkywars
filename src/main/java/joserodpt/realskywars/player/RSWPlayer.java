@@ -15,6 +15,7 @@ package joserodpt.realskywars.player;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import fr.mrmicky.fastboard.FastBoard;
 import joserodpt.realskywars.RealSkywars;
 import joserodpt.realskywars.achievements.Achievement;
 import joserodpt.realskywars.cages.Cage;
@@ -30,7 +31,6 @@ import joserodpt.realskywars.managers.LanguageManager;
 import joserodpt.realskywars.shop.ShopManager;
 import joserodpt.realskywars.party.Party;
 import joserodpt.realskywars.utils.Text;
-import joserodpt.realskywars.utils.fastboard.FastBoard;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
