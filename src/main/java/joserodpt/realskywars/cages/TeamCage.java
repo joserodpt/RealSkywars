@@ -52,49 +52,86 @@ public class TeamCage implements Cage {
 
     public void setCage(Material m) {
         World w = Bukkit.getWorld(this.worldName);
+
         int x = this.loc.getBlockX();
         int y = this.loc.getBlockY();
         int z = this.loc.getBlockZ();
 
-        int[] yOffset = {-1, 4};
-        int[] xOffset = {-1, 0, 1};
-        int[] zOffset = {-1, 0, 1};
+        // chao
+        w.getBlockAt(x + 1, y - 1, z).setType(m);
+        w.getBlockAt(x + 1, y - 1, z + 1).setType(m);
+        w.getBlockAt(x + 1, y - 1, z - 1).setType(m);
+        w.getBlockAt(x, y - 1, z + 1).setType(m);
+        w.getBlockAt(x, y - 1, z - 1).setType(m);
+        w.getBlockAt(x, y - 1, z).setType(m);
+        w.getBlockAt(x - 1, y - 1, z).setType(m);
+        w.getBlockAt(x - 1, y - 1, z - 1).setType(m);
+        w.getBlockAt(x - 1, y - 1, z + 1).setType(m);
 
-        for (int dy : yOffset) {
-            for (int dx : xOffset) {
-                for (int dz : zOffset) {
-                    w.getBlockAt(x + dx, y + dy, z + dz).setType(m);
-                }
-            }
-        }
+        y = y + 4;
 
-        x = this.loc.getBlockX() + 2;
-        for (int dx : xOffset) {
-            for (int dy = 0; dy <= 2; dy++) {
-                w.getBlockAt(x, y + dy, z + dx).setType(m);
-            }
-        }
+        // teto
+        w.getBlockAt(x + 1, y - 1, z).setType(m);
+        w.getBlockAt(x + 1, y - 1, z + 1).setType(m);
+        w.getBlockAt(x + 1, y - 1, z - 1).setType(m);
+        w.getBlockAt(x, y - 1, z + 1).setType(m);
+        w.getBlockAt(x, y - 1, z - 1).setType(m);
+        w.getBlockAt(x, y - 1, z).setType(m);
+        w.getBlockAt(x - 1, y - 1, z).setType(m);
+        w.getBlockAt(x - 1, y - 1, z - 1).setType(m);
+        w.getBlockAt(x - 1, y - 1, z + 1).setType(m);
 
-        x = this.loc.getBlockX() - 2;
-        for (int dx : xOffset) {
-            for (int dy = 0; dy <= 2; dy++) {
-                w.getBlockAt(x, y + dy, z + dx).setType(m);
-            }
-        }
+        // paredes 1 e 3
+        y = this.loc.getBlockY();
+        x = x + 2;
+        w.getBlockAt(x, y, z).setType(m);
+        w.getBlockAt(x, y + 1, z).setType(m);
+        w.getBlockAt(x, y + 2, z).setType(m);
+        w.getBlockAt(x, y, z - 1).setType(m);
+        w.getBlockAt(x, y + 1, z - 1).setType(m);
+        w.getBlockAt(x, y + 2, z - 1).setType(m);
+        w.getBlockAt(x, y, z + 1).setType(m);
+        w.getBlockAt(x, y + 1, z + 1).setType(m);
+        w.getBlockAt(x, y + 2, z + 1).setType(m);
 
-        z = this.loc.getBlockZ() + 2;
-        for (int dz : zOffset) {
-            for (int dy = 0; dy <= 2; dy++) {
-                w.getBlockAt(x + dz, y + dy, z).setType(m);
-            }
-        }
+        x = this.loc.getBlockX();
+        x = x - 2;
+        w.getBlockAt(x, y, z).setType(m);
+        w.getBlockAt(x, y + 1, z).setType(m);
+        w.getBlockAt(x, y + 2, z).setType(m);
+        w.getBlockAt(x, y, z - 1).setType(m);
+        w.getBlockAt(x, y + 1, z - 1).setType(m);
+        w.getBlockAt(x, y + 2, z - 1).setType(m);
+        w.getBlockAt(x, y, z + 1).setType(m);
+        w.getBlockAt(x, y + 1, z + 1).setType(m);
+        w.getBlockAt(x, y + 2, z + 1).setType(m);
 
-        z = this.loc.getBlockZ() - 2;
-        for (int dz : zOffset) {
-            for (int dy = 0; dy <= 2; dy++) {
-                w.getBlockAt(x + dz, y + dy, z).setType(m);
-            }
-        }
+        // paredes 3 e 4
+        x = this.loc.getBlockX();
+        z = this.loc.getBlockZ();
+        z = z - 2;
+        w.getBlockAt(x, y, z).setType(m);
+        w.getBlockAt(x - 1, y, z).setType(m);
+        w.getBlockAt(x + 1, y, z).setType(m);
+        w.getBlockAt(x, y + 1, z).setType(m);
+        w.getBlockAt(x - 1, y + 1, z).setType(m);
+        w.getBlockAt(x + 1, y + 1, z).setType(m);
+        w.getBlockAt(x, y + 2, z).setType(m);
+        w.getBlockAt(x - 1, y + 2, z).setType(m);
+        w.getBlockAt(x + 1, y + 2, z).setType(m);
+
+        z = this.loc.getBlockZ();
+        z = z + 2;
+        w.getBlockAt(x, y, z).setType(m);
+        w.getBlockAt(x - 1, y, z).setType(m);
+        w.getBlockAt(x + 1, y, z).setType(m);
+        w.getBlockAt(x, y + 1, z).setType(m);
+        w.getBlockAt(x - 1, y + 1, z).setType(m);
+        w.getBlockAt(x + 1, y + 1, z).setType(m);
+        w.getBlockAt(x, y + 2, z).setType(m);
+        w.getBlockAt(x - 1, y + 2, z).setType(m);
+        w.getBlockAt(x + 1, y + 2, z).setType(m);
+
     }
 
     public void addPlayer(RSWPlayer p) {
