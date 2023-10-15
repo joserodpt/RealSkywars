@@ -186,8 +186,6 @@ public class TeamCage implements Cage {
         }
 
         this.p.forEach(rswPlayer -> rswPlayer.setInvincible(true));
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
-            this.p.forEach(rswPlayer -> rswPlayer.setInvincible(false));
-        }, 200);
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> this.p.forEach(rswPlayer -> rswPlayer.setInvincible(false)), 200);
     }
 }
