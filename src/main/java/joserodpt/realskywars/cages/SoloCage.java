@@ -44,47 +44,12 @@ public class SoloCage implements Cage {
         this.worldName = worldName;
     }
 
-    //CREDIT open source spigot
-    public static Location lookAt(Location loc, Location lookat) {
-        //Clone the loc to prevent applied changes to the input loc
-        loc = loc.clone();
-
-        // Values of change in distance (make it relative)
-        double dx = lookat.getX() - loc.getX();
-        double dy = lookat.getY() - loc.getY();
-        double dz = lookat.getZ() - loc.getZ();
-
-        // Set yaw
-        if (dx != 0) {
-            // Set yaw start value based on dx
-            if (dx < 0) {
-                loc.setYaw((float) (1.5 * Math.PI));
-            } else {
-                loc.setYaw((float) (0.5 * Math.PI));
-            }
-            loc.setYaw(loc.getYaw() - (float) Math.atan(dz / dx));
-        } else if (dz < 0) {
-            loc.setYaw((float) Math.PI);
-        }
-
-        // Get the distance from dx/dz
-        double dxz = Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2));
-
-        // Set pitch
-        loc.setPitch((float) -Math.atan(dy / dxz));
-
-        // Set values, convert to degrees (invert the yaw since Bukkit uses a different yaw dimension format)
-        loc.setYaw(-loc.getYaw() * 180f / (float) Math.PI);
-        loc.setPitch(loc.getPitch() * 180f / (float) Math.PI);
-
-        return loc;
-    }
-
     public Location getLoc() {
         return new Location(Bukkit.getWorld(this.worldName), this.x, this.y, this.z).add(0.5, 0, 0.5);
     }
 
     public void tpPlayer(RSWPlayer p) {
+        this.p = p;
         Location lookat = new Location(Bukkit.getWorld(this.worldName), this.specx, this.specy, this.specz);
         p.teleport(lookAt(getLoc(), lookat));
     }
@@ -119,6 +84,7 @@ public class SoloCage implements Cage {
 
     public void clearCage() {
         setCage(Material.AIR);
+        this.p = null;
     }
 
     public void addPlayer(RSWPlayer pl) {
@@ -146,8 +112,42 @@ public class SoloCage implements Cage {
         w.getBlockAt(x, y - 1, z).setType(Material.AIR);
 
         this.p.setInvincible(true);
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {
-            if (this.p != null) this.p.setInvincible(false);
-        }, 200);
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RealSkywars.getPlugin(), () -> {this.p.setInvincible(false);}, 200);
+    }
+
+    //CREDIT open source spigot
+    public static Location lookAt(Location loc, Location lookat) {
+        //Clone the loc to prevent applied changes to the input loc
+        loc = loc.clone();
+
+        // Values of change in distance (make it relative)
+        double dx = lookat.getX() - loc.getX();
+        double dy = lookat.getY() - loc.getY();
+        double dz = lookat.getZ() - loc.getZ();
+
+        // Set yaw
+        if (dx != 0) {
+            // Set yaw start value based on dx
+            if (dx < 0) {
+                loc.setYaw((float) (1.5 * Math.PI));
+            } else {
+                loc.setYaw((float) (0.5 * Math.PI));
+            }
+            loc.setYaw(loc.getYaw() - (float) Math.atan(dz / dx));
+        } else if (dz < 0) {
+            loc.setYaw((float) Math.PI);
+        }
+
+        // Get the distance from dx/dz
+        double dxz = Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2));
+
+        // Set pitch
+        loc.setPitch((float) -Math.atan(dy / dxz));
+
+        // Set values, convert to degrees (invert the yaw since Bukkit uses a different yaw dimension format)
+        loc.setYaw(-loc.getYaw() * 180f / (float) Math.PI);
+        loc.setPitch(loc.getPitch() * 180f / (float) Math.PI);
+
+        return loc;
     }
 }
