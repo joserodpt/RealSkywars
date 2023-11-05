@@ -4,13 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,10 +26,10 @@ import org.bukkit.util.Vector;
  * A whole class to create Guardian Lasers and Ender Crystal Beams using packets and reflection.<br>
  * Inspired by the API
  * <a href="https://www.spigotmc.org/resources/guardianbeamapi.18329">GuardianBeamAPI</a><br>
- * <b>1.9 -> 1.20</b>
+ * <b>1.9 -> 1.20.2</b>
  *
  * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub repository</a>
- * @version 2.3.3
+ * @version 2.3.4
  * @author SkytAsul
  */
 public abstract class Laser {
@@ -798,7 +792,10 @@ public abstract class Laser {
                 getHandle = Class.forName(cpack + "entity.CraftPlayer").getDeclaredMethod("getHandle");
                 playerConnection = getNMSClass("server.level", "EntityPlayer")
                         .getDeclaredField(version < 17 ? "playerConnection" : (version < 20 ? "b" : "c"));
-                sendPacket = getNMSClass("server.network", "PlayerConnection").getMethod(version < 18 ? "sendPacket" : "a", getNMSClass("network.protocol", "Packet"));
+                playerConnection.setAccessible(true);
+                sendPacket = getNMSClass("server.network", "PlayerConnection").getMethod(
+                        version < 18 ? "sendPacket" : (version >= 20 && versionMinor >= 2 ? "b" : "a"),
+                        getNMSClass("network.protocol", "Packet"));
 
                 if (version >= 17) {
                     setLocation = entityClass.getDeclaredMethod(version < 18 ? "setLocation" : "a", double.class, double.class, double.class, float.class, float.class);
@@ -1069,7 +1066,12 @@ public abstract class Laser {
                         return "V";
                 }
             },
-            V1_20(20, "an", "b", "e", "c", "d", 89, 38, "V", "aT", "B", "a", "g"),
+            V1_20(20, null, "b", "e", "c", "d", 89, 38, "V", "aT", "B", "a", "g") {
+                @Override
+                public String getWatcherFlags() {
+                    return versionMinor < 2 ? "an" : "ao";
+                }
+            },
             ;
 
             private final int major;
@@ -1086,20 +1088,20 @@ public abstract class Laser {
             private final String teamSetCollision;
             private final String teamGetPlayers;
 
-            ProtocolMappings(int major, ProtocolMappings parent) {
+            private ProtocolMappings(int major, ProtocolMappings parent) {
                 this(major, parent.watcherFlags, parent.watcherSpikes, parent.watcherTargetEntity, parent.watcherTargetLocation, parent.watcherBasePlate, parent.squidID, parent.guardianID, parent.guardianTypeName, parent.squidTypeName, parent.crystalTypeName, parent.teamSetCollision, parent.teamGetPlayers);
             }
 
-            ProtocolMappings(int major,
-                             String watcherFlags, String watcherSpikes, String watcherTargetEntity, String watcherTargetLocation, String watcherBasePlate,
-                             int squidID, int guardianID) {
+            private ProtocolMappings(int major,
+                                     String watcherFlags, String watcherSpikes, String watcherTargetEntity, String watcherTargetLocation, String watcherBasePlate,
+                                     int squidID, int guardianID) {
                 this(major, watcherFlags, watcherSpikes, watcherTargetEntity, watcherTargetLocation, watcherBasePlate, squidID, guardianID, null, "SQUID", "END_CRYSTAL", null, null);
             }
 
-            ProtocolMappings(int major,
-                             String watcherFlags, String watcherSpikes, String watcherTargetEntity, String watcherTargetLocation, String watcherBasePlate,
-                             int squidID, int guardianID,
-                             String guardianTypeName, String squidTypeName, String crystalTypeName, String teamSetCollision, String teamGetPlayers) {
+            private ProtocolMappings(int major,
+                                     String watcherFlags, String watcherSpikes, String watcherTargetEntity, String watcherTargetLocation, String watcherBasePlate,
+                                     int squidID, int guardianID,
+                                     String guardianTypeName, String squidTypeName, String crystalTypeName, String teamSetCollision, String teamGetPlayers) {
                 this.major = major;
                 this.watcherFlags = watcherFlags;
                 this.watcherSpikes = watcherSpikes;
@@ -1177,8 +1179,7 @@ public abstract class Laser {
     }
 
     @FunctionalInterface
-    public static interface ReflectiveConsumer<T> {
+    public interface ReflectiveConsumer<T> {
         abstract void accept(T t) throws ReflectiveOperationException;
     }
-
 }
