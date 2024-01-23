@@ -17,7 +17,7 @@ package joserodpt.realskywars.achievements.types;
 
 import joserodpt.realskywars.RealSkywars;
 import joserodpt.realskywars.achievements.Achievement;
-import joserodpt.realskywars.managers.CurrencyManager;
+import joserodpt.realskywars.currency.CurrencyManager;
 import joserodpt.realskywars.managers.LanguageManager;
 import joserodpt.realskywars.player.RSWPlayer;
 
@@ -48,8 +48,8 @@ public class AchievementRCoin implements Achievement {
 
     @Override
     public void giveAchievement(RSWPlayer p) {
+        new CurrencyManager(RealSkywars.getPlugin().getCurrencyAdapter(), p, (Double) this.getReward(), CurrencyManager.Operations.ADD, true);
         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.ACHIEVEMENT_GET, true).replace("%achievement%", this.goal + " - " + this.getAchievementName()).replace("%reward%", this.getRewardName()));
-        new CurrencyManager(p, (Double) this.getReward(), CurrencyManager.Operations.ADD, true);
     }
 
     @Override

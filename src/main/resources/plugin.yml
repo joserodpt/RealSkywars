@@ -5,5 +5,5 @@ api-version: 1.14
 depend: [WorldEdit]
 softdepend: [RealRegions, My_Worlds, Multiverse-Core, HolographicDisplays, PlaceholderAPI, DecentHolograms]
 authors: [JoseGamer_PT]
-description: Simple Skywars plugin coded on the 1.14 API
+description: Smart and Configurable Skywars plugin coded on the 1.14 API
 load: POSTWORLD

@@ -25,12 +25,7 @@ public class NMS118R2andUP implements RSWnms {
     @Override
     public void playChestAnimation(Block block, boolean open) {
         final Chest chest = (Chest) block.getState();
-        if (open) {
-            chest.open();
-        } else {
-            chest.close();
-        }
-
+        if (open) { chest.open(); } else { chest.close(); }
         chest.update();
     }
     @Override

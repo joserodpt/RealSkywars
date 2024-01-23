@@ -24,7 +24,7 @@ import joserodpt.realskywars.gui.GUIManager;
 import joserodpt.realskywars.kits.Kit;
 import joserodpt.realskywars.kits.KitInventory;
 import joserodpt.realskywars.kits.KitSettings;
-import joserodpt.realskywars.managers.CurrencyManager;
+import joserodpt.realskywars.currency.CurrencyManager;
 import joserodpt.realskywars.managers.GameManager;
 import joserodpt.realskywars.managers.LanguageManager;
 import joserodpt.realskywars.shop.ShopManager;
@@ -200,7 +200,7 @@ public class RealSkywarsCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
 
-            p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.CMD_COINS, true).replace("%coins%", p.getCoins() + ""));
+            p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.CMD_COINS, true).replace("%coins%", rs.getCurrencyAdapter().getCoins(p) + ""));
         } else {
             commandSender.sendMessage(onlyPlayer);
         }
@@ -226,14 +226,14 @@ public class RealSkywarsCMD extends CommandBase {
                 return;
             }
 
-            new CurrencyManager(search, p, coins, o, true);
+            new CurrencyManager(rs.getCurrencyAdapter(), search, p, coins, o, true);
         } else {
             if (search == null) {
                 Text.send(commandSender, rs.getLanguageManager().getString(LanguageManager.TS.NO_PLAYER_FOUND, true));
                 return;
             }
 
-            new CurrencyManager(search, coins, o, true);
+            new CurrencyManager(rs.getCurrencyAdapter(), search, coins, o, true);
         }
     }
 

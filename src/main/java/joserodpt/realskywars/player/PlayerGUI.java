@@ -40,14 +40,12 @@ import java.util.stream.Collectors;
 public class PlayerGUI {
 
     private Inventory inv;
-    private RSWPlayer gp;
     private static final Map<UUID, PlayerGUI> inventories = new HashMap<>();
     private static final Map<UUID, Integer> refresh = new HashMap<>();
     private final UUID uuid;
 
     public PlayerGUI(RSWPlayer p, UUID id, RSWPlayer target) {
         this.uuid = id;
-        this.gp = p;
 
         this.inv = Bukkit.getServer().createInventory(null, InventoryType.HOPPER, target.getName());
 
@@ -104,7 +102,7 @@ public class PlayerGUI {
     }
 
     protected String variables(String s, RSWPlayer gp) {
-        return s.replace("%space%", Text.makeSpace()).replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false) + "").replace("%coins%", gp.getCoins() + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false) + "").replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false) + "");
+        return s.replace("%space%", Text.makeSpace()).replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false) + "").replace("%coins%", RealSkywars.getPlugin().getCurrencyAdapter().getCoins(gp) + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false) + "").replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false) + "");
     }
 
     public void openInventory(RSWPlayer player) {

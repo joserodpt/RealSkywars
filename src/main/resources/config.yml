@@ -1,6 +1,7 @@
-Version: 3
+Version: 4
 Debug-Mode: false
 Config:
+  Use-Vault-As-Currency: false
   Auto-Teleport-To-Lobby: true
   Scoreboard-In-Lobby: true
   Spectator-Shop: true

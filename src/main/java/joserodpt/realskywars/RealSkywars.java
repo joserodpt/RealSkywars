@@ -32,6 +32,9 @@ import joserodpt.realskywars.configuration.Shops;
 import joserodpt.realskywars.configuration.chests.BasicChest;
 import joserodpt.realskywars.configuration.chests.EPICChest;
 import joserodpt.realskywars.configuration.chests.NormalChest;
+import joserodpt.realskywars.currency.adapters.CurrencyAdapter;
+import joserodpt.realskywars.currency.adapters.LocalCurrencyAdapter;
+import joserodpt.realskywars.currency.adapters.VaultCurrencyAdapter;
 import joserodpt.realskywars.database.DatabaseManager;
 import joserodpt.realskywars.database.SQL;
 import joserodpt.realskywars.game.modes.SWGame;
@@ -63,15 +66,17 @@ import joserodpt.realskywars.gui.guis.MapSettings;
 import joserodpt.realskywars.gui.guis.MapsViewer;
 import joserodpt.realskywars.gui.guis.SetupRoomSettings;
 import joserodpt.realskywars.gui.guis.ShopViewer;
-import joserodpt.realskywars.managers.CurrencyManager;
+import joserodpt.realskywars.currency.CurrencyManager;
 import joserodpt.realskywars.managers.GameManager;
 import joserodpt.realskywars.managers.LanguageManager;
 import joserodpt.realskywars.managers.MapManager;
 import me.mattstudios.mf.base.CommandManager;
 import me.mattstudios.mf.base.components.TypeResult;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
@@ -105,6 +110,7 @@ public class RealSkywars extends JavaPlugin {
     private ChestManager chestManager;
     private DatabaseManager databaseManager;
     private HologramManager hologramManager;
+    private CurrencyAdapter currencyAdapter;
     private final PluginManager pm = Bukkit.getPluginManager();
     public RSWnms getNMS() { return nms; }
     public WorldManager getWorldManager() {
@@ -150,6 +156,7 @@ public class RealSkywars extends JavaPlugin {
     public HologramManager getHologramManager() {
         return hologramManager;
     }
+    public CurrencyAdapter getCurrencyAdapter() { return currencyAdapter; }
 
     public void onEnable() {
         long start = System.currentTimeMillis();
@@ -321,6 +328,21 @@ public class RealSkywars extends JavaPlugin {
             new RealSkywarsPlaceholderAPI(this).register();
         }
 
+        //hook into vault
+        if (setupEconomy()) {
+            getLogger().info("Vault found and Hooked into!");
+            if (Config.file().getBoolean("Config.Use-Vault-As-Currency")) {
+                currencyAdapter = new VaultCurrencyAdapter();
+                getLogger().info("Currency via Vault has been enabled.");
+            } else {
+                currencyAdapter = new LocalCurrencyAdapter();
+                getLogger().info("Local currency has been enabled, as specified in the config file.");
+            }
+        } else {
+            currencyAdapter = new LocalCurrencyAdapter();
+            getLogger().warning("Vault not found. Local currency will be used.");
+        }
+
         //refresh leaderboards
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, lbm::refreshLeaderboards, Config.file().getInt("Config.Refresh-Leaderboards"), Config.file().getInt("Config.Refresh-Leaderboards"));
 
@@ -385,6 +407,7 @@ public class RealSkywars extends JavaPlugin {
         getLogger().info("Your server is running version " + version);
 
         switch (version) {
+            case "v1_20_R3":
             case "v1_20_R2":
             case "v1_20_R1":
             case "v1_19_R3":
@@ -400,6 +423,24 @@ public class RealSkywars extends JavaPlugin {
                 break;
         }
         return nms != null;
+    }
+
+    private static Economy vaultEconomy = null;
+
+    public static Economy getVaultEconomy() {
+        return vaultEconomy;
+    }
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        vaultEconomy = rsp.getProvider();
+        return vaultEconomy != null;
     }
 
     public void warning(String s) {

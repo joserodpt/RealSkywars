@@ -105,8 +105,13 @@ public class GUIManager {
         GUIBuilder inventory = new GUIBuilder(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_LANG_TITLE, false), 18, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         int i = 0;
-        for (String s : RealSkywars.getPlugin().getLanguageManager().getLanguages().subList(0, 17)) {
-            inventory.addItem(e -> RealSkywars.getPlugin().getPlayerManager().setLanguage(p, s), Itens.createItemLore(Material.BOOK, 1, "&b" + s, Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_LANG_SELECT, false))), i);
+
+        for (String language : RealSkywars.getPlugin().getLanguageManager().getLanguages()) {
+            if (i == 17) {
+                break;
+            } else {
+                inventory.addItem(e -> RealSkywars.getPlugin().getPlayerManager().setLanguage(p, language), Itens.createItemLore(Material.BOOK, 1, "&b" + language, Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_LANG_SELECT, false))), i);
+            }
             ++i;
         }
 

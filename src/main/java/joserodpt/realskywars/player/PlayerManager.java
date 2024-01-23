@@ -206,7 +206,7 @@ public class PlayerManager {
                     playerData.setCageBlock(((Material) p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK)).name());
                     break;
                 case COINS:
-                    playerData.setCoins(p.getCoins());
+                    playerData.setCoins(rs.getCurrencyAdapter().getCoins(p));
                     break;
                 case GAME:
                     playerData.setWinsSolo(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false), false);

@@ -17,7 +17,7 @@ package joserodpt.realskywars.gui.guis;
 
 import joserodpt.realskywars.RealSkywars;
 import joserodpt.realskywars.gui.GUIManager;
-import joserodpt.realskywars.managers.CurrencyManager;
+import joserodpt.realskywars.currency.CurrencyManager;
 import joserodpt.realskywars.managers.LanguageManager;
 import joserodpt.realskywars.shop.ShopManager;
 import joserodpt.realskywars.shop.ShopDisplayItem;
@@ -167,7 +167,7 @@ public class ShopViewer {
                                         break;
                                     default:
                                         if (p.getPlayer().hasPermission(a.getPermission())) {
-                                            CurrencyManager cm = new CurrencyManager(p, a.getPrice(), CurrencyManager.Operations.REMOVE, false);
+                                            CurrencyManager cm = new CurrencyManager(RealSkywars.getPlugin().getCurrencyAdapter(), p, a.getPrice(), CurrencyManager.Operations.REMOVE, false);
                                             p.closeInventory();
 
                                             if (cm.removeCoins()) {
@@ -175,7 +175,7 @@ public class ShopViewer {
 
                                                 p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.SHOP_BUY, true).replace("%name%", a.getName()).replace("%coins%", a.getPrice() + ""));
                                             } else {
-                                                p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.INSUFICIENT_COINS, true).replace("%coins%", p.getCoins() + ""));
+                                                p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.INSUFICIENT_COINS, true).replace("%coins%", RealSkywars.getPlugin().getCurrencyAdapter().getCoins(p) + ""));
                                             }
                                         } else {
                                             p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.SHOP_NO_PERM, true));
@@ -199,7 +199,7 @@ public class ShopViewer {
                                     if (a.isBought()) {
                                         p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.SHOP_ALREADY_BOUGHT, true).replace("%name%", a.getName()));
                                     } else {
-                                        CurrencyManager cm = new CurrencyManager(p, a.getPrice(), CurrencyManager.Operations.REMOVE, false);
+                                        CurrencyManager cm = new CurrencyManager(RealSkywars.getPlugin().getCurrencyAdapter(), p, a.getPrice(), CurrencyManager.Operations.REMOVE, false);
                                         if (cm.removeCoins()) {
                                             p.buyItem(a.getName() + "|" + current.cat.name());
 
@@ -207,7 +207,7 @@ public class ShopViewer {
                                             current.inv.setItem(e.getRawSlot(), Itens.createItemLoreEnchanted(e.getCurrentItem().getType(), 1, e.getCurrentItem().getItemMeta().getDisplayName(), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.SHOP_ALREADY_BOUGHT, false).replace("%name%", a.getName()))));
                                             p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.SHOP_BUY, true).replace("%name%", a.getName()).replace("%coins%", a.getPrice() + ""));
                                         } else {
-                                            p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.INSUFICIENT_COINS, true).replace("%coins%", p.getCoins() + ""));
+                                            p.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.INSUFICIENT_COINS, true).replace("%coins%", RealSkywars.getPlugin().getCurrencyAdapter().getCoins(p) + ""));
                                         }
                                     }
                                 } else {
