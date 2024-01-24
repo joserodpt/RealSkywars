@@ -37,7 +37,7 @@ public class SairCMD extends CommandBase {
     }
 
     @Default
-    @Permission("RealSkywars.leave")
+    @Permission("rsw.leave")
     public void defaultCommand(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);

@@ -15,6 +15,9 @@ package joserodpt.realskywars;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realpermissions.api.RealPermissionsAPI;
+import joserodpt.realpermissions.api.pluginhookup.ExternalPlugin;
+import joserodpt.realpermissions.api.pluginhookup.ExternalPluginPermission;
 import joserodpt.realskywars.achievements.AchievementsManager;
 import joserodpt.realskywars.api.RSWEventsAPI;
 import joserodpt.realskywars.chests.ChestManager;
@@ -74,6 +77,7 @@ import me.mattstudios.mf.base.CommandManager;
 import me.mattstudios.mf.base.components.TypeResult;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -82,6 +86,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -356,6 +361,31 @@ public class RealSkywars extends JavaPlugin {
                 this.getLogger().warning("There is a new update available! Version: " + version + " https://www.spigotmc.org/resources/105115/");
             }
         });
+
+        if (getServer().getPluginManager().getPlugin("RealPermissions") != null) {
+            //register RealSkywars permissions onto RealPermissions
+            RealPermissionsAPI.getInstance().getHookupAPI().addHookup(new ExternalPlugin("RealSkywars", "&fReal&bSkywars", this.getDescription().getDescription(), Material.PAINTING, Arrays.asList(
+                    new ExternalPluginPermission("rsw.basic", "Permission for voting on the Basic Chest Tier."),
+                    new ExternalPluginPermission("rsw.normal", "Permission for voting on the Normal Chest Tier."),
+                    new ExternalPluginPermission("rsw.epic", "Permission for voting on the Epic Chest Tier."),
+                    new ExternalPluginPermission("rsw.day", "Permission for voting on the Game Time Day."),
+                    new ExternalPluginPermission("rsw.sunset", "Permission for voting on the Game Time Sunset."),
+                    new ExternalPluginPermission("rsw.night", "Permission for voting on the Game Time Night."),
+                    new ExternalPluginPermission("rsw.normal-projectile", "Permission for voting on the Game Normal Projectiles."),
+                    new ExternalPluginPermission("rsw.break-projectile", "Permission for voting the on Game Break Projectiles."),
+                    new ExternalPluginPermission("rsw.join", "Allow access to the maps menu.", List.of("/rsw list")),
+                    new ExternalPluginPermission("rsw.kits", "Allow access to the kits menu.", List.of("/rsw kits")),
+                    new ExternalPluginPermission("rsw.shop", "Allow access to the shop menu.", List.of("/rsw shop")),
+                    new ExternalPluginPermission("rsw.coins", "Allow checking the player's current balance.", List.of("/rsw coins")),
+                    new ExternalPluginPermission("rsw.lobby", "Allow teleportation to the lobby.", List.of("/rsw lobby")),
+                    new ExternalPluginPermission("rsw.forcestart", "Allow force starting the current match.", List.of("/rsw forcestart")),
+                    new ExternalPluginPermission("rsw.leave", "Allow leaving the current match.", List.of("/rsw leave")),
+                    new ExternalPluginPermission("rsw.party.owner", "Allow party owner commands.", Arrays.asList("/party create", "/party disband", "/party kick")),
+                    new ExternalPluginPermission("rsw.party.invite", "Allow party invite commands.", List.of("/party invite")),
+                    new ExternalPluginPermission("rsw.party.accept", "Allow accepting a party invite.", List.of("/party accept")),
+                    new ExternalPluginPermission("rsw.party.leave", "Allow leaving a party.", List.of("/party leave"))
+            ), this.getDescription().getVersion()));
+        }
 
         float elapsedTimeSec = elapsedTimeMillis / 1000F;
         log("Finished loading in " + elapsedTimeSec + " seconds.");

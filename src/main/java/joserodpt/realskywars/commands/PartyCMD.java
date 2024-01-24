@@ -47,7 +47,7 @@ public class PartyCMD extends CommandBase {
     }
 
     @SubCommand("create")
-    @Permission("RealSkywars.Party.Owner")
+    @Permission("rsw.party.owner")
     public void createcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer(((Player) commandSender));
@@ -63,7 +63,7 @@ public class PartyCMD extends CommandBase {
     }
 
     @SubCommand("disband")
-    @Permission("RealSkywars.Party.Owner")
+    @Permission("rsw.party.owner")
     public void disbandcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer(((Player) commandSender));
@@ -82,7 +82,7 @@ public class PartyCMD extends CommandBase {
     }
 
     @SubCommand("invite")
-    @Permission("RealSkywars.Party.Invite")
+    @Permission("rsw.party.invite")
     public void invitecmd(final CommandSender commandSender, final Player player) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer(((Player) commandSender));
@@ -97,7 +97,7 @@ public class PartyCMD extends CommandBase {
     }
 
     @SubCommand("accept")
-    @Permission("RealSkywars.Party.Accept")
+    @Permission("rsw.party.accept")
     public void acceptcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer(((Player) commandSender));
@@ -116,7 +116,7 @@ public class PartyCMD extends CommandBase {
     }
 
     @SubCommand("kick")
-    @Permission("RealSkywars.Party.Owner")
+    @Permission("rsw.party.owner")
     public void kickcmd(final CommandSender commandSender, final Player player) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer(((Player) commandSender));
@@ -139,7 +139,7 @@ public class PartyCMD extends CommandBase {
     }
 
     @SubCommand("leave")
-    @Permission("RealSkywars.Party.Leave")
+    @Permission("rsw.party.leave")
     public void leavecmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer(((Player) commandSender));

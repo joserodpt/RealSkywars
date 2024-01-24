@@ -54,7 +54,7 @@ public class Kit {
         this.price = cost;
         this.icon = Material.LEATHER_CHESTPLATE;
         this.kitInventory = kitInventory;
-        this.permission = "RealSkywars.Kit";
+        this.permission = "rs.kit";
     }
 
     public Kit() {
