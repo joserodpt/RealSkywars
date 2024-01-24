@@ -62,54 +62,54 @@ Default Kits have the permission: **RealSkywars.Kit**
 Permissions to vote:
 |What is the player voting for?|Permission|
 |--|--|
-| Basic Chest Tier |RealSkywars.Basic |
-| Normal Chest Tier |RealSkywars.Normal|
-| Epic Chest Tier |RealSkywars.Epic|
-| Game Time Day |RealSkywars.Day|
-| Game Time Sunset|RealSkywars.Sunset|
-| Game Time Night|RealSkywars.Night|
-| Game Normal Projectiles |RealSkywars.Normal-Projectile|
-| Game Break Projectiles |RealSkywars.Break-Projectile|
+| Basic Chest Tier |rs.basic|
+| Normal Chest Tier |rs.normal|
+| Epic Chest Tier |rs.epic|
+| Game Time Day |rs.day|
+| Game Time Sunset|rs.sunset|
+| Game Time Night|rs.night|
+| Game Normal Projectiles |rs.normal-projectile|
+| Game Break Projectiles |rs.break-projectile|
 ## Commands
 
 **/rsw list** - Opens the maps menu
- Permission: RealSkywars.join
+ Permission: rs.join
 
 **/rsw kits** - Opens the kits menu
- Permission: RealSkywars.kits
+ Permission: rs.kits
 
 **/rsw shop** - Opens the shop menu
- Permission: RealSkywars.shop
+ Permission: rs.shop
 
 **/rsw coins** - Sends the players current balance.
- Permission: RealSkywars.coins
+ Permission: rs.coins
 
 **/rsw lobby** - Teleport to the lobby.
- Permission: RealSkywars.lobby
+ Permission: rs.lobby
 
 **/rsw forcestart** - Force starts the current match.
- Permission: RealSkywars.forcestart
+ Permission: rs.forcestart
 
 **/rsw leave** - Leaves the current match.
- Permission: RealSkywars.leave
+ Permission: rs.leave
 
 **/party create** - Creates a party.
- Permission: RealSkywars.Party.Owner
+ Permission: rs.party.owner
 
 **/party disband** - Disbands a party.
- Permission: RealSkywars.Party.Owner
+ Permission: rs.party.owner
 
 **/party kick** - Disbands a party.
- Permission: RealSkywars.Party.Owner
+ Permission: rs.party.owner
 
 **/party invite** - Disbands a party.
- Permission: RealSkywars.Party.Invite
+ Permission: rs.party.invite
 
 **/party accept** - Accepts a party invite.
- Permission: RealSkywars.Party.Accept
+ Permission: rs.party.accept
 
 **/party leave** - Accepts a party invite.
- Permission: RealSkywars.Party.Leave
+ Permission: rs.party.leave
  
 ## Creating an Arena
 
