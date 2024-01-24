@@ -364,7 +364,7 @@ public class RealSkywars extends JavaPlugin {
 
         if (getServer().getPluginManager().getPlugin("RealPermissions") != null) {
             //register RealSkywars permissions onto RealPermissions
-            RealPermissionsAPI.getInstance().getHookupAPI().addHookup(new ExternalPlugin("RealSkywars", "&fReal&bSkywars", this.getDescription().getDescription(), Material.PAINTING, Arrays.asList(
+            RealPermissionsAPI.getInstance().getHookupAPI().addHookup(new ExternalPlugin(this.getDescription().getName(), "&fReal&bSkywars", this.getDescription().getDescription(), Material.BOW, Arrays.asList(
                     new ExternalPluginPermission("rsw.basic", "Permission for voting on the Basic Chest Tier."),
                     new ExternalPluginPermission("rsw.normal", "Permission for voting on the Normal Chest Tier."),
                     new ExternalPluginPermission("rsw.epic", "Permission for voting on the Epic Chest Tier."),
