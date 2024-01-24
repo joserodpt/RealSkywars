@@ -40,7 +40,7 @@ A New SkyWars plugin that's been coded on the **1.14 API**.
  - GUI based management and interaction system.
  - Sign maps supported.
  - Configurable messages.
- - 3 configurable tiers.
+ - 3 configurable tiersw.
  - Game history logging.
  - Chest, Time and Projectile voting per arena.
  - SQLLite, MySQL, MariaDB and other database solutions supported.
@@ -57,59 +57,59 @@ RealSkywars softdepends on: **Multiverse-Core, My_Worlds, HolographicDisplays, D
 
 ## Permissions
 
-All major and admin related permissions are assigned to: **rs.admin**
-Default Kits have the permission: **RealSkywars.Kit**
+All major and admin related permissions are assigned to: **rsw.admin**
+Default Kits have the permission: **rsw.kit**
 Permissions to vote:
 |What is the player voting for?|Permission|
 |--|--|
-| Basic Chest Tier |rs.basic|
-| Normal Chest Tier |rs.normal|
-| Epic Chest Tier |rs.epic|
-| Game Time Day |rs.day|
-| Game Time Sunset|rs.sunset|
-| Game Time Night|rs.night|
-| Game Normal Projectiles |rs.normal-projectile|
-| Game Break Projectiles |rs.break-projectile|
+| Basic Chest Tier |rsw.basic|
+| Normal Chest Tier |rsw.normal|
+| Epic Chest Tier |rsw.epic|
+| Game Time Day |rsw.day|
+| Game Time Sunset|rsw.sunset|
+| Game Time Night|rsw.night|
+| Game Normal Projectiles |rsw.normal-projectile|
+| Game Break Projectiles |rsw.break-projectile|
 ## Commands
 
 **/rsw list** - Opens the maps menu
- Permission: rs.join
+ Permission: rsw.join
 
 **/rsw kits** - Opens the kits menu
- Permission: rs.kits
+ Permission: rsw.kits
 
 **/rsw shop** - Opens the shop menu
- Permission: rs.shop
+ Permission: rsw.shop
 
 **/rsw coins** - Sends the players current balance.
- Permission: rs.coins
+ Permission: rsw.coins
 
 **/rsw lobby** - Teleport to the lobby.
- Permission: rs.lobby
+ Permission: rsw.lobby
 
 **/rsw forcestart** - Force starts the current match.
- Permission: rs.forcestart
+ Permission: rsw.forcestart
 
 **/rsw leave** - Leaves the current match.
- Permission: rs.leave
+ Permission: rsw.leave
 
 **/party create** - Creates a party.
- Permission: rs.party.owner
+ Permission: rsw.party.owner
 
 **/party disband** - Disbands a party.
- Permission: rs.party.owner
+ Permission: rsw.party.owner
 
 **/party kick** - Disbands a party.
- Permission: rs.party.owner
+ Permission: rsw.party.owner
 
 **/party invite** - Disbands a party.
- Permission: rs.party.invite
+ Permission: rsw.party.invite
 
 **/party accept** - Accepts a party invite.
- Permission: rs.party.accept
+ Permission: rsw.party.accept
 
 **/party leave** - Accepts a party invite.
- Permission: rs.party.leave
+ Permission: rsw.party.leave
  
 ## Creating an Arena
 
