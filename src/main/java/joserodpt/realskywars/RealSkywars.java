@@ -373,17 +373,17 @@ public class RealSkywars extends JavaPlugin {
                     new ExternalPluginPermission("rsw.night", "Permission for voting on the Game Time Night."),
                     new ExternalPluginPermission("rsw.normal-projectile", "Permission for voting on the Game Normal Projectiles."),
                     new ExternalPluginPermission("rsw.break-projectile", "Permission for voting the on Game Break Projectiles."),
-                    new ExternalPluginPermission("rsw.join", "Allow access to the maps menu.", List.of("/rsw list")),
-                    new ExternalPluginPermission("rsw.kits", "Allow access to the kits menu.", List.of("/rsw kits")),
-                    new ExternalPluginPermission("rsw.shop", "Allow access to the shop menu.", List.of("/rsw shop")),
-                    new ExternalPluginPermission("rsw.coins", "Allow checking the player's current balance.", List.of("/rsw coins")),
-                    new ExternalPluginPermission("rsw.lobby", "Allow teleportation to the lobby.", List.of("/rsw lobby")),
-                    new ExternalPluginPermission("rsw.forcestart", "Allow force starting the current match.", List.of("/rsw forcestart")),
-                    new ExternalPluginPermission("rsw.leave", "Allow leaving the current match.", List.of("/rsw leave")),
-                    new ExternalPluginPermission("rsw.party.owner", "Allow party owner commands.", Arrays.asList("/party create", "/party disband", "/party kick")),
-                    new ExternalPluginPermission("rsw.party.invite", "Allow party invite commands.", List.of("/party invite")),
-                    new ExternalPluginPermission("rsw.party.accept", "Allow accepting a party invite.", List.of("/party accept")),
-                    new ExternalPluginPermission("rsw.party.leave", "Allow leaving a party.", List.of("/party leave"))
+                    new ExternalPluginPermission("rsw.join", "Allow access to the maps menu.", List.of("rsw list")),
+                    new ExternalPluginPermission("rsw.kits", "Allow access to the kits menu.", List.of("rsw kits")),
+                    new ExternalPluginPermission("rsw.shop", "Allow access to the shop menu.", List.of("rsw shop")),
+                    new ExternalPluginPermission("rsw.coins", "Allow checking the player's current balance.", List.of("rsw coins")),
+                    new ExternalPluginPermission("rsw.lobby", "Allow teleportation to the lobby.", List.of("rsw lobby")),
+                    new ExternalPluginPermission("rsw.forcestart", "Allow force starting the current match.", List.of("rsw forcestart")),
+                    new ExternalPluginPermission("rsw.leave", "Allow leaving the current match.", List.of("rsw leave")),
+                    new ExternalPluginPermission("rsw.party.owner", "Allow party owner commands.", Arrays.asList("party create", "party disband", "party kick")),
+                    new ExternalPluginPermission("rsw.party.invite", "Allow party invite commands.", List.of("party invite")),
+                    new ExternalPluginPermission("rsw.party.accept", "Allow accepting a party invite.", List.of("party accept")),
+                    new ExternalPluginPermission("rsw.party.leave", "Allow leaving a party.", List.of("party leave"))
             ), this.getDescription().getVersion()));
         }
 
