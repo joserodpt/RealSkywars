@@ -33,7 +33,7 @@ public class Debugger {
 
     private static void print(Level l, Class a, String b) {
         if (debug) {
-            Bukkit.getLogger().log(l, "[RSW:DEBUG] " + getName(a).replace("josegamerpt.realskywars.", "") + " > " + b);
+            Bukkit.getLogger().log(l, "[RSW:DEBUG] " + getName(a).replace("joserodpt.realskywars.", "") + " > " + b);
         }
     }
 

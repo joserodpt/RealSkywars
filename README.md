@@ -4,9 +4,9 @@
 ## RealSkywars
 ### A New SkyWars plugin that's been coded on the 1.14 API
 
-[![Build](https://img.shields.io/github/actions/workflow/status/joserodpt/RealSkywars/maven.yml?branch=master)](https://github.com/JoseGamerPT/RealSkywars/actions)
-![Issues](https://img.shields.io/github/issues-raw/JoseGamerPT/RealSkywars)
-[![Stars](https://img.shields.io/github/stars/JoseGamerPT/RealSkywars)](https://github.com/JoseGamerPT/RealSkywars/stargazers)
+[![Build](https://img.shields.io/github/actions/workflow/status/joserodpt/RealSkywars/maven.yml?branch=master)](https://github.com/joserodpt/RealSkywars/actions)
+![Issues](https://img.shields.io/github/issues-raw/joserodpt/RealSkywars)
+[![Stars](https://img.shields.io/github/stars/joserodpt/RealSkywars)](https://github.com/joserodpt/RealSkywars/stargazers)
 [![Chat)](https://img.shields.io/discord/817810368649887744?logo=discord&logoColor=white)](https://discord.gg/t7gfnYZKy8)
 
 <a href="/#"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/v2/assets/compact/supported/spigot_46h.png" height="35"></a>

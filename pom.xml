@@ -5,9 +5,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>pt.josegamerpt</groupId>
+    <groupId>joserodpt.realskywars</groupId>
     <artifactId>RealSkywars</artifactId>
-    <version>0.6</version>
+    <version>0.6.1</version>
     <packaging>jar</packaging>
 
     <name>RealSkywars</name>
@@ -73,12 +73,12 @@
                     <relocations>
                         <relocation>
                             <pattern>me.mattstudios.mf</pattern>
-                            <shadedPattern>josegamerpt.realskywars.mf</shadedPattern> <!-- Replace package here here -->
+                            <shadedPattern>joserodpt.realskywars.mf</shadedPattern> <!-- Replace package here here -->
                         </relocation>
                         <relocation>
                             <pattern>dev.dejvokep.boostedyaml</pattern>
                             <!-- Replace this -->
-                            <shadedPattern>josegamerpt.realskywars.yaml</shadedPattern>
+                            <shadedPattern>joserodpt.realskywars.yaml</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

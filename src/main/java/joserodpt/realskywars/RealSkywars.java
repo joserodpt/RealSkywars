@@ -164,11 +164,10 @@ public class RealSkywars extends JavaPlugin {
     public CurrencyAdapter getCurrencyAdapter() { return currencyAdapter; }
 
     public void onEnable() {
-        long start = System.currentTimeMillis();
-        pl = this;
+        printASCII();
 
-        String star = "<------------- RealSkywars PT ------------->".replace("PT", "| " + this.getDescription().getVersion());
-        log(star);
+        final long start = System.currentTimeMillis();
+        pl = this;
 
         //setup metrics
         new Metrics(this, 16365);
@@ -177,12 +176,10 @@ public class RealSkywars extends JavaPlugin {
         if (!setupNMS()) {
             getLogger().severe("Your server version is not currently supported by RealSkywars.");
             getLogger().severe("If you think this is a bug, contact JoseGamer_PT.");
-            log(star);
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
-        log("Loading languages.");
         Languages.setup(this);
 
         lm.loadLanguages();
@@ -245,7 +242,6 @@ public class RealSkywars extends JavaPlugin {
         kitm.loadKits();
         log("Loaded " + kitm.getKits().size() + " kits.");
 
-        log("Loading maps.");
         mapm.loadMaps();
         log("Loaded " + this.getGameManager().getGames(GameManager.GameModes.ALL).size() + " maps.");
         playerm.loadPlayers();
@@ -351,8 +347,6 @@ public class RealSkywars extends JavaPlugin {
         //refresh leaderboards
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, lbm::refreshLeaderboards, Config.file().getInt("Config.Refresh-Leaderboards"), Config.file().getInt("Config.Refresh-Leaderboards"));
 
-        long elapsedTimeMillis = System.currentTimeMillis() - start;
-
         new UpdateChecker(this, 105115).getVersion(version -> {
             if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
                 this.getLogger().info("The plugin is updated to the latest version.");
@@ -387,9 +381,23 @@ public class RealSkywars extends JavaPlugin {
             ), this.getDescription().getVersion()));
         }
 
-        float elapsedTimeSec = elapsedTimeMillis / 1000F;
-        log("Finished loading in " + elapsedTimeSec + " seconds.");
-        log(star);
+        log("Finished loading in " + ((System.currentTimeMillis() - start) / 1000F) + " seconds.");
+        log( "<------------- RealSkywars vPT ------------->".replace("PT", this.getDescription().getVersion()));
+    }
+
+    private void printASCII() {
+        logWithColor("&b   _____            _  _____ _ ");
+        logWithColor("&b  |  __ \\          | |/ ____| |");
+        logWithColor("&b  | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___");
+        logWithColor("&b  |  _  // _ \\/ _` | |\\___ \\| |/ / | | \\ \\ /\\ / / _` | '__/ __|");
+        logWithColor("&b  | | \\ \\  __/ (_| | |____) |   <| |_| |\\ V  V / (_| | |  \\__ \\");
+        logWithColor("&b  |_|  \\_\\___|\\__,_|_|_____/|_|\\_\\\\__, | \\_/\\_/ \\__,_|_|  |___/");
+        logWithColor("&b   &8Made by: &9JoseGamer_PT           &b__/ |      &8Version: &9" + this.getDescription().getVersion());
+        logWithColor("&b                                  |___/");
+    }
+
+    public void logWithColor(String s) {
+        getServer().getConsoleSender().sendMessage("[" + this.getDescription().getName() + "] " + Text.color(s));
     }
 
     public void onDisable() {
@@ -434,7 +442,7 @@ public class RealSkywars extends JavaPlugin {
 
     private boolean setupNMS() {
         String version = getServerVersion();
-        getLogger().info("Your server is running version " + version);
+        getLogger().info("Server version: " + version);
 
         switch (version) {
             case "v1_20_R3":
