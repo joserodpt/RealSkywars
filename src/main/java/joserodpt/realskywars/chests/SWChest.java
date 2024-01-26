@@ -16,7 +16,7 @@ package joserodpt.realskywars.chests;
  */
 
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.configuration.Config;
+import joserodpt.realskywars.config.RSWConfig;
 import joserodpt.realskywars.game.Countdown;
 import joserodpt.realskywars.game.SWEvent;
 import joserodpt.realskywars.game.modes.SWGame;
@@ -123,7 +123,7 @@ public class SWChest {
                 tmp = tmp.subList(0, this.maxItemsPerChest);
             }
 
-            if (Config.file().getBoolean("Config.Shuffle-Items-In-Chest")) {
+            if (RSWConfig.file().getBoolean("Config.Shuffle-Items-In-Chest")) {
                 boolean[] chosen = new boolean[inv.getSize()];
                 for (ItemStack itemStack : tmp) {
                     int slot;
@@ -143,7 +143,7 @@ public class SWChest {
 
     public void startTasks(SWGame sgm) {
         if (this.chestCTD == null && this.isChest()) {
-            int time = Config.file().getInt("Config.Default-Refill-Time");
+            int time = RSWConfig.file().getInt("Config.Default-Refill-Time");
 
             Optional<SWEvent> e = getRefillTime(sgm);
             if (e.isPresent()) {

@@ -26,15 +26,15 @@ import joserodpt.realskywars.chests.TierViewer;
 import joserodpt.realskywars.commands.PartyCMD;
 import joserodpt.realskywars.commands.RealSkywarsCMD;
 import joserodpt.realskywars.commands.SairCMD;
-import joserodpt.realskywars.configuration.Achievements;
-import joserodpt.realskywars.configuration.Config;
-import joserodpt.realskywars.configuration.Kits;
-import joserodpt.realskywars.configuration.Languages;
-import joserodpt.realskywars.configuration.Maps;
-import joserodpt.realskywars.configuration.Shops;
-import joserodpt.realskywars.configuration.chests.BasicChest;
-import joserodpt.realskywars.configuration.chests.EPICChest;
-import joserodpt.realskywars.configuration.chests.NormalChest;
+import joserodpt.realskywars.config.RSWConfigAchievements;
+import joserodpt.realskywars.config.RSWConfig;
+import joserodpt.realskywars.config.RSWConfigKits;
+import joserodpt.realskywars.config.RSWConfigLanguages;
+import joserodpt.realskywars.config.RSWConfigMaps;
+import joserodpt.realskywars.config.RSWConfigShops;
+import joserodpt.realskywars.config.chests.BasicChest;
+import joserodpt.realskywars.config.chests.EPICChest;
+import joserodpt.realskywars.config.chests.NormalChest;
 import joserodpt.realskywars.currency.adapters.CurrencyAdapter;
 import joserodpt.realskywars.currency.adapters.LocalCurrencyAdapter;
 import joserodpt.realskywars.currency.adapters.VaultCurrencyAdapter;
@@ -180,7 +180,7 @@ public class RealSkywars extends JavaPlugin {
             return;
         }
 
-        Languages.setup(this);
+        RSWConfigLanguages.setup(this);
 
         lm.loadLanguages();
         if (lm.areLanguagesEmpty()) {
@@ -191,19 +191,19 @@ public class RealSkywars extends JavaPlugin {
         }
 
         log("Setting up configuration.");
-        Config.setup(this);
+        RSWConfig.setup(this);
 
-        Debugger.debug = Config.file().getBoolean("Debug-Mode");
+        Debugger.debug = RSWConfig.file().getBoolean("Debug-Mode");
         Debugger.print(RealSkywars.class, "DEBUG MODE ENABLED");
         Debugger.execute();
         this.getGameManager().loadLobby();
 
         //config
-        Achievements.setup(this);
-        Maps.setup(this);
+        RSWConfigAchievements.setup(this);
+        RSWConfigMaps.setup(this);
         SQL.setup(this);
-        Shops.setup(this);
-        Kits.setup(this);
+        RSWConfigShops.setup(this);
+        RSWConfigKits.setup(this);
 
         hologramManager = new HologramManager();
 
@@ -332,7 +332,7 @@ public class RealSkywars extends JavaPlugin {
         //hook into vault
         if (setupEconomy()) {
             getLogger().info("Vault found and Hooked into!");
-            if (Config.file().getBoolean("Config.Use-Vault-As-Currency")) {
+            if (RSWConfig.file().getBoolean("Config.Use-Vault-As-Currency")) {
                 currencyAdapter = new VaultCurrencyAdapter();
                 getLogger().info("Currency via Vault has been enabled.");
             } else {
@@ -345,7 +345,7 @@ public class RealSkywars extends JavaPlugin {
         }
 
         //refresh leaderboards
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, lbm::refreshLeaderboards, Config.file().getInt("Config.Refresh-Leaderboards"), Config.file().getInt("Config.Refresh-Leaderboards"));
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, lbm::refreshLeaderboards, RSWConfig.file().getInt("Config.Refresh-Leaderboards"), RSWConfig.file().getInt("Config.Refresh-Leaderboards"));
 
         new UpdateChecker(this, 105115).getVersion(version -> {
             if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
@@ -411,22 +411,22 @@ public class RealSkywars extends JavaPlugin {
     public void reload() {
         gamem.endGames();
 
-        Config.reload();
-        Maps.reload();
-        Languages.reload();
+        RSWConfig.reload();
+        RSWConfigMaps.reload();
+        RSWConfigLanguages.reload();
 
         //chests
         BasicChest.reload();
         NormalChest.reload();
         EPICChest.reload();
 
-        Debugger.debug = Config.file().getBoolean("Debug-Mode");
+        Debugger.debug = RSWConfig.file().getBoolean("Debug-Mode");
 
         lm.loadLanguages();
         playerm.stopScoreboards();
         playerm.loadPlayers();
-        Shops.reload();
-        Kits.reload();
+        RSWConfigShops.reload();
+        RSWConfigKits.reload();
         kitm.loadKits();
 
         am.loadAchievements();

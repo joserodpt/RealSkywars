@@ -16,7 +16,7 @@ package joserodpt.realskywars.gui;
  */
 
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.configuration.Config;
+import joserodpt.realskywars.config.RSWConfig;
 import joserodpt.realskywars.gui.guis.AchievementViewer;
 import joserodpt.realskywars.gui.guis.GameLogViewer;
 import joserodpt.realskywars.player.ProfileContent;
@@ -179,7 +179,7 @@ public class GUIManager {
 
         //settings
         if (!p.isInMatch()) {
-            if (Config.file().getBoolean("Config.Disable-Language-Selection")) {
+            if (RSWConfig.file().getBoolean("Config.Disable-Language-Selection")) {
                 inventory.addItem(e -> {
                     p.closeInventory();
                     GameLogViewer v = new GameLogViewer(p);
@@ -197,7 +197,7 @@ public class GUIManager {
                 }, Itens.createItemLore(Material.BOOK, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_LANG_TITLE, false), Collections.singletonList("&f> " + p.getLanguage())), 30);
             }
 
-            if (!Config.file().getBoolean("Config.Disable-Player-Reset")) {
+            if (!RSWConfig.file().getBoolean("Config.Disable-Player-Reset")) {
                 inventory.addItem(e -> p.resetData(), Itens.createItemLore(Material.BARRIER, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_RESET_TITLE, false), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_RESET_ALERT, false))), 44);
             }
         }

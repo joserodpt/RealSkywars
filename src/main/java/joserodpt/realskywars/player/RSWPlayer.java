@@ -19,7 +19,7 @@ import fr.mrmicky.fastboard.FastBoard;
 import joserodpt.realskywars.RealSkywars;
 import joserodpt.realskywars.achievements.Achievement;
 import joserodpt.realskywars.cages.Cage;
-import joserodpt.realskywars.configuration.Config;
+import joserodpt.realskywars.config.RSWConfig;
 import joserodpt.realskywars.effects.BlockWinTrail;
 import joserodpt.realskywars.effects.Trail;
 import joserodpt.realskywars.game.SetupRoom;
@@ -140,8 +140,8 @@ public class RSWPlayer {
                 }
 
                 this.addStatistic(RSWPlayer.Statistic.GAMES_PLAYED, 1, ranked);
-                this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Win"));
-                this.sendMessage("&e+ &6" + Config.file().getDouble("Config.Coins.Per-Win") + "&e coins");
+                this.balanceGame = (this.balanceGame + RSWConfig.file().getDouble("Config.Coins.Per-Win"));
+                this.sendMessage("&e+ &6" + RSWConfig.file().getDouble("Config.Coins.Per-Win") + "&e coins");
                 break;
             case TEAM_WIN:
                 if (ranked) {
@@ -156,13 +156,13 @@ public class RSWPlayer {
                     }
                 }
                 this.addStatistic(RSWPlayer.Statistic.GAMES_PLAYED, 1, ranked);
-                this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Win"));
-                this.sendMessage("&e+ &6" + Config.file().getDouble("Config.Coins.Per-Win") + "&e coins");
+                this.balanceGame = (this.balanceGame + RSWConfig.file().getDouble("Config.Coins.Per-Win"));
+                this.sendMessage("&e+ &6" + RSWConfig.file().getDouble("Config.Coins.Per-Win") + "&e coins");
                 break;
             case KILL:
                 this.gamekills += i;
-                this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Kill"));
-                this.sendMessage("&e+ &6" + Config.file().getDouble("Config.Coins.Per-Kill") + "&e coins");
+                this.balanceGame = (this.balanceGame + RSWConfig.file().getDouble("Config.Coins.Per-Kill"));
+                this.sendMessage("&e+ &6" + RSWConfig.file().getDouble("Config.Coins.Per-Kill") + "&e coins");
 
                 break;
             case LOSE:
@@ -180,8 +180,8 @@ public class RSWPlayer {
                 }
                 this.addStatistic(RSWPlayer.Statistic.LOSE, 1, ranked);
                 this.addStatistic(RSWPlayer.Statistic.GAMES_PLAYED, 1, ranked);
-                this.balanceGame = (this.balanceGame + Config.file().getDouble("Config.Coins.Per-Death"));
-                this.sendMessage("&e- &6" + Config.file().getDouble("Config.Coins.Per-Death") + "&e coins");
+                this.balanceGame = (this.balanceGame + RSWConfig.file().getDouble("Config.Coins.Per-Death"));
+                this.sendMessage("&e- &6" + RSWConfig.file().getDouble("Config.Coins.Per-Death") + "&e coins");
                 break;
             case GAMES_PLAYED:
                 if (ranked) {
@@ -717,7 +717,7 @@ public class RSWPlayer {
                 tmp = s.replace("%space%", Text.makeSpace()).replace("%coins%", RealSkywars.getPlugin().getCurrencyAdapter().getCoins(gp) + "").replace("%playing%", "" + RealSkywars.getPlugin().getPlayerManager().getPlayingPlayers(GameManager.GameModes.ALL)).replace("%kills%", gp.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false) + "").replace("%deaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false) + "").replace("%solowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false) + "").replace("%teamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false) + "").replace("%loses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false) + "").replace("%gamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false) + "").replace("%playing%", "" + RealSkywars.getPlugin().getPlayerManager().getPlayingPlayers(GameManager.GameModes.ALL)).replace("%rankedkills%", gp.getStatistics(RSWPlayer.PlayerStatistics.KILLS, true) + "").replace("%rankeddeaths%", gp.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, true) + "").replace("%rankedsolowins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true) + "").replace("%rankedteamwins%", gp.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true) + "").replace("%rankedloses%", gp.getStatistics(RSWPlayer.PlayerStatistics.LOSES, true) + "").replace("%rankedgamesplayed%", gp.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true) + "");
             }
 
-            if (Config.file().getBoolean("Config.PlaceholderAPI-In-Scoreboard")) {
+            if (RSWConfig.file().getBoolean("Config.PlaceholderAPI-In-Scoreboard")) {
                 tmp = PlaceholderAPI.setPlaceholders(gp.getPlayer(), tmp);
             }
 

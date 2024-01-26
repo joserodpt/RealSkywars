@@ -16,7 +16,7 @@ package joserodpt.realskywars.player;
  */
 
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.configuration.Config;
+import joserodpt.realskywars.config.RSWConfig;
 import joserodpt.realskywars.database.PlayerData;
 import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.managers.GameManager;
@@ -39,7 +39,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class PlayerManager {
-    private RealSkywars rs;
+    private final RealSkywars rs;
     public PlayerManager(RealSkywars rs) {
         this.rs = rs;
     }
@@ -67,7 +67,7 @@ public class PlayerManager {
                     if (pg.getState() != RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
                         p.getInventory().setItem(2, getItem(pg, Items.PLAYAGAIN));
                     }
-                    if (Config.file().getBoolean("Config.Spectator-Shop")) {
+                    if (RSWConfig.file().getBoolean("Config.Spectator-Shop")) {
                         p.getInventory().setItem(4, getItem(pg, Items.SHOP));
                     }
                     p.getInventory().setItem(7, getItem(pg, Items.LEAVE));

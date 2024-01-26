@@ -1,4 +1,4 @@
-package joserodpt.realskywars.configuration;
+package joserodpt.realskywars.config;
 
 /*
  *   _____            _  _____ _
@@ -22,7 +22,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 
-public class Maps {
+public class RSWConfigMaps {
 
     private static final String name = "maps.yml";
     private static YamlDocument document;

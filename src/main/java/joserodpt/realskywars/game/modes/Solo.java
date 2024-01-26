@@ -18,7 +18,7 @@ package joserodpt.realskywars.game.modes;
 import joserodpt.realskywars.RealSkywars;
 import joserodpt.realskywars.cages.Cage;
 import joserodpt.realskywars.chests.SWChest;
-import joserodpt.realskywars.configuration.Config;
+import joserodpt.realskywars.config.RSWConfig;
 import joserodpt.realskywars.game.Countdown;
 import joserodpt.realskywars.game.modes.teams.Team;
 import joserodpt.realskywars.managers.LanguageManager;
@@ -86,7 +86,7 @@ public class Solo extends SWGame {
 
     @Override
     public boolean canStartGame() {
-        return super.getPlayerCount() < Config.file().getInt("Config.Min-Players-ToStart");
+        return super.getPlayerCount() < RSWConfig.file().getInt("Config.Min-Players-ToStart");
     }
 
     @Override
@@ -159,7 +159,7 @@ public class Solo extends SWGame {
                         }
                     }
 
-                    if (getPlayerCount() == Config.file().getInt("Config.Min-Players-ToStart")) {
+                    if (getPlayerCount() == RSWConfig.file().getInt("Config.Min-Players-ToStart")) {
                         startRoom();
                     }
                     break;
@@ -201,16 +201,16 @@ public class Solo extends SWGame {
                 this.kickPlayers(null);
                 this.resetArena(OperationReason.RESET);
             } else {
-                super.setWinTimer(new Countdown(RealSkywars.getPlugin(RealSkywars.class), Config.file().getInt("Config.Time-EndGame"), () -> {
+                super.setWinTimer(new Countdown(RealSkywars.getPlugin(RealSkywars.class), RSWConfig.file().getInt("Config.Time-EndGame"), () -> {
                     if (p.getPlayer() != null) {
                         p.setInvincible(true);
                         p.addStatistic(RSWPlayer.Statistic.SOLO_WIN, 1, this.isRanked());
-                        p.executeWinBlock(Config.file().getInt("Config.Time-EndGame") - 2);
+                        p.executeWinBlock(RSWConfig.file().getInt("Config.Time-EndGame") - 2);
                     }
 
                     for (RSWPlayer g : super.getAllPlayers()) {
                         g.delCage();
-                        g.sendMessage(super.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.MATCH_END, true).replace("%time%", Text.formatSeconds(Config.file().getInt("Config.Time-EndGame"))));
+                        g.sendMessage(super.getRealSkywars().getLanguageManager().getString(p, LanguageManager.TS.MATCH_END, true).replace("%time%", Text.formatSeconds(RSWConfig.file().getInt("Config.Time-EndGame"))));
                     }
                 }, () -> {
                     super.getBossBar().removeAll();
@@ -218,12 +218,12 @@ public class Solo extends SWGame {
                     this.kickPlayers(null);
                     this.resetArena(OperationReason.RESET);
                 }, (t) -> {
-                    double div = (double) t.getSecondsLeft() / (double) Config.file().getInt("Config.Time-EndGame");
+                    double div = (double) t.getSecondsLeft() / (double) RSWConfig.file().getInt("Config.Time-EndGame");
                     if (div <= 1 && div >= 0) {
                         super.getBossBar().setProgress(div);
                     }
 
-                    super.getAllPlayers().forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), Config.file().getInt("Config.Time-EndGame")));
+                    super.getAllPlayers().forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), RSWConfig.file().getInt("Config.Time-EndGame")));
 
                     if (p.getPlayer() != null) {
                         FireworkUtils.spawnRandomFirework(p.getLocation());
@@ -260,11 +260,11 @@ public class Solo extends SWGame {
 
     @Override
     public int getMaxTime() {
-        return Config.file().getInt("Config.Maximum-Game-Time.Solo");
+        return RSWConfig.file().getInt("Config.Maximum-Game-Time.Solo");
     }
 
     @Override
     public int minimumPlayersToStartGame() {
-        return Config.file().getInt("Config.Min-Players-ToStart");
+        return RSWConfig.file().getInt("Config.Min-Players-ToStart");
     }
 }

@@ -1,4 +1,4 @@
-package joserodpt.realskywars.configuration;
+package joserodpt.realskywars.config;
 
 /*
  *   _____            _  _____ _
@@ -22,9 +22,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 
-public class Kits {
+public class RSWConfigKits {
 
-    private static String name = "kits.yml";
+    private static final String name = "kits.yml";
     private static YamlDocument document;
 
     public static void setup(final JavaPlugin rm) {

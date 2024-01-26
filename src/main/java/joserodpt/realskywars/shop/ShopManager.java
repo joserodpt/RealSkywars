@@ -17,7 +17,7 @@ package joserodpt.realskywars.shop;
 
 import joserodpt.realskywars.Debugger;
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.configuration.Shops;
+import joserodpt.realskywars.config.RSWConfigShops;
 import joserodpt.realskywars.player.RSWPlayer;
 import joserodpt.realskywars.utils.Text;
 import org.bukkit.Material;
@@ -29,7 +29,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class ShopManager {
-    private RealSkywars rs;
+    private final RealSkywars rs;
     public ShopManager(RealSkywars rs) {
         this.rs = rs;
     }
@@ -49,7 +49,7 @@ public class ShopManager {
 
         List<ShopDisplayItem> items = new ArrayList<>();
         if (t == Categories.SPEC_SHOP) {
-            for (String sa : Shops.file().getStringList("Spectator-Shop")) {
+            for (String sa : RSWConfigShops.file().getStringList("Spectator-Shop")) {
                 // MATERIAL>AMOUNT>PRICE>NAME>PERMISSION
                 String[] parse = sa.split(">");
                 boolean error = false;
@@ -93,7 +93,7 @@ public class ShopManager {
                     break;
             }
 
-            for (String sa : Shops.file().getStringList("Main-Shop." + cat)) {
+            for (String sa : RSWConfigShops.file().getStringList("Main-Shop." + cat)) {
                 String[] parse = sa.split(">");
 
                 boolean error = false;

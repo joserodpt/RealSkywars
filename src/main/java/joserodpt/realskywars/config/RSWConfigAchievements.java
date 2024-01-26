@@ -1,4 +1,4 @@
-package joserodpt.realskywars.configuration;
+package joserodpt.realskywars.config;
 
 /*
  *   _____            _  _____ _
@@ -27,7 +27,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 
-public class Achievements {
+public class RSWConfigAchievements {
 
     private static final String name = "achievements.yml";
     private static YamlDocument document;

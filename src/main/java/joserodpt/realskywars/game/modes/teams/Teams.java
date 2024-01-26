@@ -18,7 +18,7 @@ package joserodpt.realskywars.game.modes.teams;
 import joserodpt.realskywars.RealSkywars;
 import joserodpt.realskywars.cages.Cage;
 import joserodpt.realskywars.chests.SWChest;
-import joserodpt.realskywars.configuration.Config;
+import joserodpt.realskywars.config.RSWConfig;
 import joserodpt.realskywars.game.Countdown;
 import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.managers.LanguageManager;
@@ -213,19 +213,19 @@ public class Teams extends SWGame {
                 this.kickPlayers(null);
                 this.resetArena(OperationReason.RESET);
             } else {
-                super.setWinTimer(new Countdown(RealSkywars.getPlugin(RealSkywars.class), Config.file().getInt("Config.Time-EndGame"), () -> {
+                super.setWinTimer(new Countdown(RealSkywars.getPlugin(RealSkywars.class), RSWConfig.file().getInt("Config.Time-EndGame"), () -> {
                     for (RSWPlayer p : winTeam.getMembers()) {
                         if (p.getPlayer() != null) {
                             p.setInvincible(true);
                             p.addStatistic(RSWPlayer.Statistic.TEAM_WIN, 1, this.isRanked());
-                            p.executeWinBlock(Config.file().getInt("Config.Time-EndGame") - 2);
+                            p.executeWinBlock(RSWConfig.file().getInt("Config.Time-EndGame") - 2);
                         }
                         this.sendLog(p, true);
                     }
 
                     for (RSWPlayer g : super.getAllPlayers()) {
                         if (g.getPlayer() != null) {
-                            g.sendMessage(super.getRealSkywars().getLanguageManager().getString(g, LanguageManager.TS.MATCH_END, true).replace("%time%", Text.formatSeconds(Config.file().getInt("Config.Time-EndGame"))));
+                            g.sendMessage(super.getRealSkywars().getLanguageManager().getString(g, LanguageManager.TS.MATCH_END, true).replace("%time%", Text.formatSeconds(RSWConfig.file().getInt("Config.Time-EndGame"))));
                             g.getPlayer().sendTitle("", Text.color(super.getRealSkywars().getLanguageManager().getString(g, LanguageManager.TS.TITLE_WIN, true).replace("%player%", winTeam.getNames())), 10, 40, 10);
                         }
                     }
@@ -238,12 +238,12 @@ public class Teams extends SWGame {
                     // if (Players.get(0).p != null) {
                     //     firework(Players.get(0));
                     // }
-                    double div = (double) t.getSecondsLeft() / (double) Config.file().getInt("Config.Time-EndGame");
+                    double div = (double) t.getSecondsLeft() / (double) RSWConfig.file().getInt("Config.Time-EndGame");
                     if (div <= 1 && div >= 0) {
                         super.getBossBar().setProgress(div);
                     }
 
-                    super.getAllPlayers().forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), Config.file().getInt("Config.Time-EndGame")));
+                    super.getAllPlayers().forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), RSWConfig.file().getInt("Config.Time-EndGame")));
                 }));
 
                 super.getWinTimer().scheduleTimer();
@@ -276,7 +276,7 @@ public class Teams extends SWGame {
 
     @Override
     public int getMaxTime() {
-        return Config.file().getInt("Config.Maximum-Game-Time.Teams");
+        return RSWConfig.file().getInt("Config.Maximum-Game-Time.Teams");
     }
 
     @Override

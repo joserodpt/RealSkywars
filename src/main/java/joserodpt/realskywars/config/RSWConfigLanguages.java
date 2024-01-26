@@ -1,4 +1,4 @@
-package joserodpt.realskywars.configuration;
+package joserodpt.realskywars.config;
 
 /*
  *   _____            _  _____ _
@@ -27,9 +27,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 
-public class Shops {
-    private static final String name = "shops.yml";
+public class RSWConfigLanguages {
 
+    private static final String name = "languages.yml";
     private static YamlDocument document;
 
     public static void setup(final JavaPlugin rm) {
@@ -40,7 +40,7 @@ public class Shops {
                     DumperSettings.DEFAULT,
                     UpdaterSettings.builder().setVersioning(new BasicVersioning("Version")).build());
         } catch (final IOException e) {
-            RealSkywars.getPlugin().severe( "Couldn't setup " + name + "!");
+            RealSkywars.getPlugin().severe("Couldn't setup " + name + "!");
             RealSkywars.getPlugin().severe(e.getMessage());
         }
     }

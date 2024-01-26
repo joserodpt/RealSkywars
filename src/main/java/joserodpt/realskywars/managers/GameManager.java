@@ -16,7 +16,7 @@ package joserodpt.realskywars.managers;
  */
 
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.configuration.Config;
+import joserodpt.realskywars.config.RSWConfig;
 import joserodpt.realskywars.game.modes.Placeholder;
 import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.game.modes.SWGame.GameState;
@@ -36,7 +36,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class GameManager {
-    private RealSkywars rs;
+    private final RealSkywars rs;
     public GameManager(RealSkywars rs) {
         this.rs = rs;
     }
@@ -129,14 +129,14 @@ public class GameManager {
     }
 
     public void loadLobby() {
-        this.loginTP = Config.file().getBoolean("Config.Auto-Teleport-To-Lobby");
-        if (Config.file().isSection("Config.Lobby")) {
-            double x = Config.file().getDouble("Config.Lobby.X");
-            double y = Config.file().getDouble("Config.Lobby.Y");
-            double z = Config.file().getDouble("Config.Lobby.Z");
-            float yaw = Config.file().getFloat("Config.Lobby.Yaw");
-            float pitch = Config.file().getFloat("Config.Lobby.Pitch");
-            World world = Bukkit.getServer().getWorld(Config.file().getString("Config.Lobby.World"));
+        this.loginTP = RSWConfig.file().getBoolean("Config.Auto-Teleport-To-Lobby");
+        if (RSWConfig.file().isSection("Config.Lobby")) {
+            double x = RSWConfig.file().getDouble("Config.Lobby.X");
+            double y = RSWConfig.file().getDouble("Config.Lobby.Y");
+            double z = RSWConfig.file().getDouble("Config.Lobby.Z");
+            float yaw = RSWConfig.file().getFloat("Config.Lobby.Yaw");
+            float pitch = RSWConfig.file().getFloat("Config.Lobby.Pitch");
+            World world = Bukkit.getServer().getWorld(RSWConfig.file().getString("Config.Lobby.World"));
             this.lobbyLOC = new Location(world, x, y, z, yaw, pitch);
         }
     }
@@ -156,7 +156,7 @@ public class GameManager {
     }
 
     public boolean scoreboardInLobby() {
-        return Config.file().getBoolean("Config.Scoreboard-In-Lobby");
+        return RSWConfig.file().getBoolean("Config.Scoreboard-In-Lobby");
     }
 
     public void removeRoom(SWGame gr) {

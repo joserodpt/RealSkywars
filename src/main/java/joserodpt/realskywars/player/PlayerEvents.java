@@ -20,7 +20,7 @@ import joserodpt.realskywars.RealSkywars;
 import joserodpt.realskywars.cages.SoloCage;
 import joserodpt.realskywars.cages.TeamCage;
 import joserodpt.realskywars.chests.SWChest;
-import joserodpt.realskywars.configuration.Config;
+import joserodpt.realskywars.config.RSWConfig;
 import joserodpt.realskywars.effects.BowTrail;
 import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.gui.GUIManager;
@@ -62,7 +62,7 @@ public class PlayerEvents implements Listener {
         if (rsw != null && rsw.getPlayer() != null && rsw.isInMatch() && !player.isOp()) {
             String command = event.getMessage();
             boolean block = true;
-            for (String s : Config.file().getStringList("Config.Allowed-Commands")) {
+            for (String s : RSWConfig.file().getStringList("Config.Allowed-Commands")) {
                 if (command.startsWith("/" + s)) {
                     block = false;
                     break;
@@ -141,7 +141,7 @@ public class PlayerEvents implements Listener {
                                     e.setCancelled(true);
 
                                     if (p.getMatch().getStartRoomTimer() != null) {
-                                        if (p.getMatch().getStartRoomTimer().getSecondsLeft() > Config.file().getInt("Config.Vote-Before-Seconds")) {
+                                        if (p.getMatch().getStartRoomTimer().getSecondsLeft() > RSWConfig.file().getInt("Config.Vote-Before-Seconds")) {
                                             VoteGUI vg = new VoteGUI(p);
                                             vg.openInventory(p.getPlayer());
                                         } else {
@@ -442,7 +442,7 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractEntityEvent event) {
         if (event.getRightClicked() instanceof Player) {
-            if (Config.file().getBoolean("Config.Right-Click-Player-Info")) {
+            if (RSWConfig.file().getBoolean("Config.Right-Click-Player-Info")) {
                 RSWPlayer click = rs.getPlayerManager().getPlayer(event.getPlayer());
                 RSWPlayer clicked = rs.getPlayerManager().getPlayer((Player) event.getRightClicked());
                 if (click != null && clicked != null && !clicked.isInMatch()) {

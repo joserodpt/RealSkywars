@@ -16,7 +16,7 @@ package joserodpt.realskywars.utils;
  */
 
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.configuration.Config;
+import joserodpt.realskywars.config.RSWConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -29,15 +29,15 @@ import java.util.stream.Collectors;
 public class Text {
 
     public static String anonName() {
-        List<String> nicks = Config.file().getStringList("Config.Random-Nicknames");
+        List<String> nicks = RSWConfig.file().getStringList("Config.Random-Nicknames");
         return nicks.get(RealSkywars.getPlugin().getRandom().nextInt(nicks.size())) + " #" + RealSkywars.getPlugin().getRandom().nextInt(99);
     }
 
     public static String getDayAndTime() {
-        DateFormat dateFormat = new SimpleDateFormat(Config.file().getString("Config.Time.Formatting"));
+        DateFormat dateFormat = new SimpleDateFormat(RSWConfig.file().getString("Config.Time.Formatting"));
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
-        cal.add(Calendar.HOUR_OF_DAY, Config.file().getInt("Config.Time.Offset"));
+        cal.add(Calendar.HOUR_OF_DAY, RSWConfig.file().getInt("Config.Time.Offset"));
         cal.getTime();
         return dateFormat.format(cal.getTime());
     }

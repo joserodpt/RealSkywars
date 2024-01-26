@@ -17,9 +17,9 @@ package joserodpt.realskywars.chests;
 
 import com.google.common.collect.ImmutableMap;
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.configuration.chests.BasicChest;
-import joserodpt.realskywars.configuration.chests.EPICChest;
-import joserodpt.realskywars.configuration.chests.NormalChest;
+import joserodpt.realskywars.config.chests.BasicChest;
+import joserodpt.realskywars.config.chests.EPICChest;
+import joserodpt.realskywars.config.chests.NormalChest;
 import joserodpt.realskywars.utils.ItemStackSpringer;
 import org.bukkit.inventory.ItemStack;
 

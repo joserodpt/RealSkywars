@@ -16,7 +16,7 @@ package joserodpt.realskywars.kits;
  */
 
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.configuration.Config;
+import joserodpt.realskywars.config.RSWConfig;
 import joserodpt.realskywars.managers.LanguageManager;
 import joserodpt.realskywars.player.RSWPlayer;
 import org.bukkit.Bukkit;
@@ -177,7 +177,7 @@ public class Kit {
                 } else {
                     Bukkit.getScheduler().cancelTask(enderTask);
                 }
-            }, Config.file().getInt("Config.Kits.Ender-Pearl-Perk-Give-Interval"));
+            }, RSWConfig.file().getInt("Config.Kits.Ender-Pearl-Perk-Give-Interval"));
         }
     }
 

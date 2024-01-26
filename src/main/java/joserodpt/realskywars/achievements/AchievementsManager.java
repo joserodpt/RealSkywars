@@ -17,7 +17,7 @@ package joserodpt.realskywars.achievements;
 
 import joserodpt.realskywars.RealSkywars;
 import joserodpt.realskywars.achievements.types.AchievementRCoin;
-import joserodpt.realskywars.configuration.Achievements;
+import joserodpt.realskywars.config.RSWConfigAchievements;
 import joserodpt.realskywars.player.RSWPlayer;
 import joserodpt.realskywars.utils.Itens;
 import org.bukkit.Material;
@@ -27,7 +27,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class AchievementsManager {
-    private RealSkywars rs;
+    private final RealSkywars rs;
     public AchievementsManager(RealSkywars rs) {
         this.rs = rs;
     }
@@ -38,7 +38,7 @@ public class AchievementsManager {
         int cats = 0, achi = 0;
         this.achievements.clear();
         //load coin achievements
-        for (String dir : Achievements.file().getSection("Coins").getRoutesAsStrings(false).stream()
+        for (String dir : RSWConfigAchievements.file().getSection("Coins").getRoutesAsStrings(false).stream()
                 .map(Object::toString)
                 .collect(Collectors.toSet())) {
             ++cats;
@@ -62,9 +62,9 @@ public class AchievementsManager {
             List<Achievement> achiv = new ArrayList<>();
 
             String path = "Coins." + dir;
-            for (String meta : Achievements.file().getSection(path).getRoutesAsStrings(false)) {
+            for (String meta : RSWConfigAchievements.file().getSection(path).getRoutesAsStrings(false)) {
                 ++achi;
-                Double value = Achievements.file().getDouble(path + "." + meta);
+                Double value = RSWConfigAchievements.file().getDouble(path + "." + meta);
                 achiv.add(new AchievementRCoin(t, Integer.parseInt(meta), value));
             }
 

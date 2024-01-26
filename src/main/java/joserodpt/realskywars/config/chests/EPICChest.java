@@ -1,4 +1,4 @@
-package joserodpt.realskywars.configuration.chests;
+package joserodpt.realskywars.config.chests;
 
 /*
  *   _____            _  _____ _
@@ -22,9 +22,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 
-public class BasicChest {
+public class EPICChest {
 
-    private static String name = "basicchest.yml";
+    private static final String name = "epicchest.yml";
     private static YamlDocument document;
 
     public static void setup(final JavaPlugin rm) {

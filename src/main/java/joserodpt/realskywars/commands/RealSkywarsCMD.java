@@ -18,7 +18,7 @@ package joserodpt.realskywars.commands;
 import joserodpt.realskywars.RealSkywars;
 import joserodpt.realskywars.chests.SWChest;
 import joserodpt.realskywars.chests.TierViewer;
-import joserodpt.realskywars.configuration.Config;
+import joserodpt.realskywars.config.RSWConfig;
 import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.gui.GUIManager;
 import joserodpt.realskywars.kits.Kit;
@@ -354,13 +354,13 @@ public class RealSkywarsCMD extends CommandBase {
     public void setlobby(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
-            Config.file().set("Config.Lobby.World", p.getLocation().getWorld().getName());
-            Config.file().set("Config.Lobby.X", p.getLocation().getX());
-            Config.file().set("Config.Lobby.Y", p.getLocation().getY());
-            Config.file().set("Config.Lobby.Z", p.getLocation().getZ());
-            Config.file().set("Config.Lobby.Yaw", p.getLocation().getYaw());
-            Config.file().set("Config.Lobby.Pitch", p.getLocation().getPitch());
-            Config.save();
+            RSWConfig.file().set("Config.Lobby.World", p.getLocation().getWorld().getName());
+            RSWConfig.file().set("Config.Lobby.X", p.getLocation().getX());
+            RSWConfig.file().set("Config.Lobby.Y", p.getLocation().getY());
+            RSWConfig.file().set("Config.Lobby.Z", p.getLocation().getZ());
+            RSWConfig.file().set("Config.Lobby.Yaw", p.getLocation().getYaw());
+            RSWConfig.file().set("Config.Lobby.Pitch", p.getLocation().getPitch());
+            RSWConfig.save();
             rs.getGameManager().setLobbyLoc(p.getLocation());
             p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.LOBBY_SET, true));
         } else {
@@ -533,7 +533,7 @@ public class RealSkywarsCMD extends CommandBase {
                 return;
             }
 
-            if (Config.file().isSection("Config.Lobby")) {
+            if (RSWConfig.file().isSection("Config.Lobby")) {
                 if (teamPlayers == null) {
                     //solo
                     if (rs.getMapManager().getRegisteredMaps().contains(mapname)) {
