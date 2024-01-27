@@ -69,6 +69,7 @@ public class MapManager extends MapManagerAPI {
                 RSWMapsConfig.save();
                 displayName = s;
             }
+            displayName = Text.color(displayName);
 
             RSWWorld.WorldType wt = getWorldType(RSWMapsConfig.file().getString(s + ".type"));
 
