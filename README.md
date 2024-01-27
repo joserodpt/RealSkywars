@@ -138,3 +138,37 @@ Line 2: -map name-
  3. //schem save name
  4. It will be saved to the shematics directory of WorldEdit.
 5. If you want to use this schematic, you have to copy the .schem file to the RealSkywars/maps folder.
+
+----
+
+## API
+You can access the RealSkywars API via the [RealSkywarsAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2FRealSkywarsAPI.java) API class:
+
+```java
+var rswAPI = RealSkywarsAPI.getInstance();
+```
+
+You can access the plugin managers that are responsible for varios tasks in the plugin like this:
+
+```java
+var rswAPI = RealSkywarsAPI.getInstance();
+rswAPI.getPlayerManagerAPI() and others.
+```
+
+The managers on the API are:
+[AchievementsManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FAchievementsManagerAPI.java)
+[ChestManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FChestManagerAPI.java)
+[CurrencyManager.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FCurrencyManager.java)
+[DatabaseManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FDatabaseManagerAPI.java)
+[GameManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FGameManagerAPI.java)
+[HologramManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FHologramManagerAPI.java)
+[KitManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FKitManagerAPI.java)
+[LanguageManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FLanguageManagerAPI.java)
+[LeaderboardManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FLeaderboardManagerAPI.java)
+[MapManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FMapManagerAPI.java)
+[PartiesManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FPartiesManagerAPI.java)
+[PlayerManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FPlayerManagerAPI.java)
+[ShopManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FShopManagerAPI.java)
+[WorldManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FWorldManagerAPI.java)
+
+----
