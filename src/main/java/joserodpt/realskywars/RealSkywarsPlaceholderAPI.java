@@ -15,7 +15,7 @@ package joserodpt.realskywars;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.leaderboards.LeaderboardManager;
+import joserodpt.realskywars.managers.LeaderboardManager;
 import joserodpt.realskywars.managers.GameManager;
 import org.bukkit.OfflinePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;

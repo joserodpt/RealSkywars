@@ -38,21 +38,13 @@ public class Placeholder extends SWGame {
         return false;
     }
     @Override
-    public void removePlayer(RSWPlayer p) {
-
-    }
+    public void removePlayer(RSWPlayer p) {}
     @Override
-    public void addPlayer(RSWPlayer gp) {
-
-    }
+    public void addPlayer(RSWPlayer gp) {}
     @Override
-    public void resetArena(OperationReason rr) {
-
-    }
+    public void resetArena(OperationReason rr) {}
     @Override
-    public void checkWin() {
-
-    }
+    public void checkWin() {}
     @Override
     public Mode getGameMode() {
         return null;

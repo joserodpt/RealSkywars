@@ -38,7 +38,7 @@ import java.util.UUID;
 
 public class KitSettings {
 
-    public Kit kt;
+    public SWKit kt;
     private static final Map<UUID, KitSettings> inventories = new HashMap<>();
     private Inventory inv;
     private ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
@@ -47,7 +47,7 @@ public class KitSettings {
     private ItemStack ender_pearl_off = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&cOFF"));
     private final UUID uuid;
 
-    public KitSettings(Kit k, UUID id) {
+    public KitSettings(SWKit k, UUID id) {
         this.uuid = id;
         this.kt = k;
 
@@ -75,7 +75,7 @@ public class KitSettings {
         inv.setItem(9, placeholder);
         inv.setItem(17, placeholder);
 
-        inv.setItem(13, this.kt.hasPerk(Kit.Perks.ENDER) ? ender_pearl : ender_pearl_off);
+        inv.setItem(13, this.kt.hasPerk(SWKit.Perks.ENDER) ? ender_pearl : ender_pearl_off);
 
         inv.setItem(22, confirm);
     }
@@ -113,10 +113,10 @@ public class KitSettings {
 
                             // settings
                             if (e.getRawSlot() == 13) {
-                                if (current.kt.hasPerk(Kit.Perks.ENDER)) {
-                                    current.kt.removePerk(Kit.Perks.ENDER);
+                                if (current.kt.hasPerk(SWKit.Perks.ENDER)) {
+                                    current.kt.removePerk(SWKit.Perks.ENDER);
                                 } else {
-                                    current.kt.addPerk(Kit.Perks.ENDER);
+                                    current.kt.addPerk(SWKit.Perks.ENDER);
                                 }
                                 current.load();
                             }

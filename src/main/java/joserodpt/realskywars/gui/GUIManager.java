@@ -17,13 +17,13 @@ package joserodpt.realskywars.gui;
 
 import joserodpt.realskywars.RealSkywars;
 import joserodpt.realskywars.config.RSWConfig;
-import joserodpt.realskywars.gui.guis.AchievementViewer;
-import joserodpt.realskywars.gui.guis.GameLogViewer;
-import joserodpt.realskywars.player.ProfileContent;
-import joserodpt.realskywars.gui.guis.ShopViewer;
-import joserodpt.realskywars.kits.Kit;
+import joserodpt.realskywars.gui.guis.AchievementViewerGUI;
+import joserodpt.realskywars.gui.guis.GameHistoryGUI;
+import joserodpt.realskywars.kits.SWKit;
+import joserodpt.realskywars.gui.guis.PlayerProfileContentsGUI;
+import joserodpt.realskywars.gui.guis.ShopGUI;
 import joserodpt.realskywars.managers.LanguageManager;
-import joserodpt.realskywars.shop.ShopManager;
+import joserodpt.realskywars.managers.ShopManager;
 import joserodpt.realskywars.player.RSWPlayer;
 import joserodpt.realskywars.utils.GUIBuilder;
 import joserodpt.realskywars.utils.Itens;
@@ -43,7 +43,7 @@ public class GUIManager {
 
             new BukkitRunnable() {
                 public void run() {
-                    ShopViewer v = new ShopViewer(p, ShopManager.Categories.CAGE_BLOCKS);
+                    ShopGUI v = new ShopGUI(p, ShopManager.Categories.CAGE_BLOCKS);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywars.getPlugin(), 1);
@@ -54,7 +54,7 @@ public class GUIManager {
 
             new BukkitRunnable() {
                 public void run() {
-                    ShopViewer v = new ShopViewer(p, ShopManager.Categories.KITS);
+                    ShopGUI v = new ShopGUI(p, ShopManager.Categories.KITS);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywars.getPlugin(), 1);
@@ -65,7 +65,7 @@ public class GUIManager {
 
             new BukkitRunnable() {
                 public void run() {
-                    ShopViewer v = new ShopViewer(p, ShopManager.Categories.WIN_BLOCKS);
+                    ShopGUI v = new ShopGUI(p, ShopManager.Categories.WIN_BLOCKS);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywars.getPlugin(), 1);
@@ -76,7 +76,7 @@ public class GUIManager {
 
             new BukkitRunnable() {
                 public void run() {
-                    ShopViewer v = new ShopViewer(p, ShopManager.Categories.BOW_PARTICLES);
+                    ShopGUI v = new ShopGUI(p, ShopManager.Categories.BOW_PARTICLES);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywars.getPlugin(), 1);
@@ -130,7 +130,7 @@ public class GUIManager {
             p.closeInventory();
             new BukkitRunnable() {
                 public void run() {
-                    ProfileContent v = new ProfileContent(p, ShopManager.Categories.KITS);
+                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManager.Categories.KITS);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywars.getPlugin(), 1);
@@ -142,7 +142,7 @@ public class GUIManager {
 
             new BukkitRunnable() {
                 public void run() {
-                    ProfileContent v = new ProfileContent(p, ShopManager.Categories.CAGE_BLOCKS);
+                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManager.Categories.CAGE_BLOCKS);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywars.getPlugin(), 1);
@@ -154,7 +154,7 @@ public class GUIManager {
 
             new BukkitRunnable() {
                 public void run() {
-                    ProfileContent v = new ProfileContent(p, ShopManager.Categories.WIN_BLOCKS);
+                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManager.Categories.WIN_BLOCKS);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywars.getPlugin(), 1);
@@ -165,7 +165,7 @@ public class GUIManager {
 
             new BukkitRunnable() {
                 public void run() {
-                    ProfileContent v = new ProfileContent(p, ShopManager.Categories.BOW_PARTICLES);
+                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManager.Categories.BOW_PARTICLES);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywars.getPlugin(), 1);
@@ -182,13 +182,13 @@ public class GUIManager {
             if (RSWConfig.file().getBoolean("Config.Disable-Language-Selection")) {
                 inventory.addItem(e -> {
                     p.closeInventory();
-                    GameLogViewer v = new GameLogViewer(p);
+                    GameHistoryGUI v = new GameHistoryGUI(p);
                     v.openInventory(p);
                 }, Itens.createItemLore(Material.FILLED_MAP, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_GAME_HISTORY, false), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 31);
             } else {
                 inventory.addItem(e -> {
                     p.closeInventory();
-                    GameLogViewer v = new GameLogViewer(p);
+                    GameHistoryGUI v = new GameHistoryGUI(p);
                     v.openInventory(p);
                 }, Itens.createItemLore(Material.FILLED_MAP, 1, RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_GAME_HISTORY, false), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 32);
                 inventory.addItem(e -> {
@@ -210,25 +210,25 @@ public class GUIManager {
 
         inventory.addItem(e -> {
             p.closeInventory();
-            AchievementViewer v = new AchievementViewer(p, RSWPlayer.PlayerStatistics.KILLS);
+            AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.KILLS);
             v.openInventory(p);
         }, Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&b&l" + RSWPlayer.PlayerStatistics.KILLS.name(), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 10);
 
         inventory.addItem(e -> {
             p.closeInventory();
-            AchievementViewer v = new AchievementViewer(p, RSWPlayer.PlayerStatistics.WINS_SOLO);
+            AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.WINS_SOLO);
             v.openInventory(p);
         }, Itens.createItemLore(Material.LEATHER_BOOTS, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_SOLO.name().replace("_", " "), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 12);
 
         inventory.addItem(e -> {
             p.closeInventory();
-            AchievementViewer v = new AchievementViewer(p, RSWPlayer.PlayerStatistics.WINS_TEAMS);
+            AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.WINS_TEAMS);
             v.openInventory(p);
         }, Itens.createItemLore(Material.CHAINMAIL_CHESTPLATE, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_TEAMS.name().replace("_", " "), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 14);
 
         inventory.addItem(e -> {
             p.closeInventory();
-            AchievementViewer v = new AchievementViewer(p, RSWPlayer.PlayerStatistics.GAMES_PLAYED);
+            AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.GAMES_PLAYED);
             v.openInventory(p);
         }, Itens.createItemLore(Material.FILLED_MAP, 1, "&b&l" + RSWPlayer.PlayerStatistics.GAMES_PLAYED.name().replace("_", " "), Collections.singletonList(RealSkywars.getPlugin().getLanguageManager().getString(p, LanguageManager.TS.MENU_PLAYERP_VIEWITEM, false))), 16);
 
@@ -240,17 +240,17 @@ public class GUIManager {
         inventory.openInventory(p.getPlayer());
     }
 
-    public static void openKitPreview(RSWPlayer p, Kit kit, int id) {
-        if (!kit.hasItems()) {
+    public static void openKitPreview(RSWPlayer p, SWKit SWKit, int id) {
+        if (!SWKit.hasItems()) {
             return;
         }
 
         p.closeInventory();
 
-        GUIBuilder inventory = new GUIBuilder(kit.getDisplayName(), 54, p.getUUID());
+        GUIBuilder inventory = new GUIBuilder(SWKit.getDisplayName(), 54, p.getUUID());
 
         int i = 0;
-        for (ItemStack content : kit.getKitInventory().getInventory()) {
+        for (ItemStack content : SWKit.getKitInventory().getInventory()) {
             if (content != null) {
                 inventory.addItem(event -> {
                 }, content, i);
@@ -261,11 +261,11 @@ public class GUIManager {
         inventory.setItem(event -> {
             if (id == 0) {
                 p.closeInventory();
-                ProfileContent pc = new ProfileContent(p, ShopManager.Categories.KITS);
+                PlayerProfileContentsGUI pc = new PlayerProfileContentsGUI(p, ShopManager.Categories.KITS);
                 pc.openInventory(p);
             } else {
                 p.closeInventory();
-                ShopViewer s = new ShopViewer(p, ShopManager.Categories.KITS);
+                ShopGUI s = new ShopGUI(p, ShopManager.Categories.KITS);
                 s.openInventory(p);
             }
         }, Itens.createItem(Material.BIRCH_DOOR, 1, ""), 53);

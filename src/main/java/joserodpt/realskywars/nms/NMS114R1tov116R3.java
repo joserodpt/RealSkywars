@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 
 public class NMS114R1tov116R3 implements RSWnms {
     private final Class<?> world = ReflectionHelper.getNMSClass("World");
-    private final Class<?> craft_world = ReflectionHelper.getCraftClass("CraftWorld");
+    private final Class<?> craft_world = ReflectionHelper.getCraftBukkitClass("CraftWorld");
     private final Class<?> block_pos = ReflectionHelper.getNMSClass("BlockPosition");
     private final Class<?> i_block_data  = ReflectionHelper.getNMSClass("IBlockData");
     private final Class<?> block_class = ReflectionHelper.getNMSClass("Block");
@@ -47,7 +47,7 @@ public class NMS114R1tov116R3 implements RSWnms {
         }
     }
 
-    private final Class<?> craft_item_stack = ReflectionHelper.getCraftClass("inventory.CraftItemStack");
+    private final Class<?> craft_item_stack = ReflectionHelper.getCraftBukkitClass("inventory.CraftItemStack");
     private final Class<?> nms_item_stack = ReflectionHelper.getNMSClass("ItemStack");
     private final Class<?> locale_language = ReflectionHelper.getNMSClass("LocaleLanguage");
     private final Class<?> i_chat_base_component = ReflectionHelper.getNMSClass("IChatBaseComponent");

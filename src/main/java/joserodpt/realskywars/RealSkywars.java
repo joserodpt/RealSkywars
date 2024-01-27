@@ -18,58 +18,58 @@ package joserodpt.realskywars;
 import joserodpt.realpermissions.api.RealPermissionsAPI;
 import joserodpt.realpermissions.api.pluginhookup.ExternalPlugin;
 import joserodpt.realpermissions.api.pluginhookup.ExternalPluginPermission;
-import joserodpt.realskywars.achievements.AchievementsManager;
+import joserodpt.realskywars.managers.AchievementsManager;
 import joserodpt.realskywars.api.RSWEventsAPI;
-import joserodpt.realskywars.chests.ChestManager;
+import joserodpt.realskywars.managers.ChestManager;
 import joserodpt.realskywars.chests.SWChest;
 import joserodpt.realskywars.chests.TierViewer;
 import joserodpt.realskywars.commands.PartyCMD;
 import joserodpt.realskywars.commands.RealSkywarsCMD;
 import joserodpt.realskywars.commands.SairCMD;
-import joserodpt.realskywars.config.RSWConfigAchievements;
+import joserodpt.realskywars.config.RSWAchievementsConfig;
 import joserodpt.realskywars.config.RSWConfig;
-import joserodpt.realskywars.config.RSWConfigKits;
-import joserodpt.realskywars.config.RSWConfigLanguages;
-import joserodpt.realskywars.config.RSWConfigMaps;
-import joserodpt.realskywars.config.RSWConfigShops;
-import joserodpt.realskywars.config.chests.BasicChest;
-import joserodpt.realskywars.config.chests.EPICChest;
-import joserodpt.realskywars.config.chests.NormalChest;
-import joserodpt.realskywars.currency.adapters.CurrencyAdapter;
-import joserodpt.realskywars.currency.adapters.LocalCurrencyAdapter;
-import joserodpt.realskywars.currency.adapters.VaultCurrencyAdapter;
-import joserodpt.realskywars.database.DatabaseManager;
-import joserodpt.realskywars.database.SQL;
+import joserodpt.realskywars.config.RSWKitsConfig;
+import joserodpt.realskywars.config.RSWLanguagesConfig;
+import joserodpt.realskywars.config.RSWMapsConfig;
+import joserodpt.realskywars.config.RSWShopsConfig;
+import joserodpt.realskywars.config.chests.BasicChestConfig;
+import joserodpt.realskywars.config.chests.EPICChestConfig;
+import joserodpt.realskywars.config.chests.NormalChestConfig;
+import joserodpt.realskywars.currency.CurrencyAdapter;
+import joserodpt.realskywars.currency.LocalCurrencyAdapter;
+import joserodpt.realskywars.currency.VaultCurrencyAdapter;
+import joserodpt.realskywars.managers.DatabaseManager;
+import joserodpt.realskywars.config.RSWSQLConfig;
 import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.gui.guis.VoteGUI;
 import joserodpt.realskywars.kits.KitSettings;
-import joserodpt.realskywars.player.PlayerGUI;
-import joserodpt.realskywars.player.ProfileContent;
-import joserodpt.realskywars.shop.ShopManager;
-import joserodpt.realskywars.utils.holograms.HologramManager;
+import joserodpt.realskywars.gui.guis.PlayerGUI;
+import joserodpt.realskywars.gui.guis.PlayerProfileContentsGUI;
+import joserodpt.realskywars.managers.ShopManager;
+import joserodpt.realskywars.managers.holograms.HologramManager;
 import joserodpt.realskywars.kits.KitManager;
-import joserodpt.realskywars.leaderboards.LeaderboardManager;
+import joserodpt.realskywars.managers.LeaderboardManager;
 import joserodpt.realskywars.listeners.EventListener;
 import joserodpt.realskywars.listeners.GameRoomListeners;
 import joserodpt.realskywars.nms.NMS114R1tov116R3;
 import joserodpt.realskywars.nms.NMS117R1;
 import joserodpt.realskywars.nms.NMS118R2andUP;
 import joserodpt.realskywars.nms.RSWnms;
-import joserodpt.realskywars.party.PartyManager;
-import joserodpt.realskywars.player.PlayerEvents;
-import joserodpt.realskywars.player.PlayerManager;
+import joserodpt.realskywars.managers.PartyManager;
+import joserodpt.realskywars.listeners.PlayerListener;
+import joserodpt.realskywars.managers.PlayerManager;
 import joserodpt.realskywars.utils.GUIBuilder;
 import joserodpt.realskywars.utils.PlayerInput;
 import joserodpt.realskywars.utils.Text;
-import joserodpt.realskywars.world.SWWorld;
-import joserodpt.realskywars.world.WorldManager;
-import joserodpt.realskywars.gui.guis.AchievementViewer;
-import joserodpt.realskywars.gui.guis.GameLogViewer;
-import joserodpt.realskywars.gui.guis.MapSettings;
-import joserodpt.realskywars.gui.guis.MapsViewer;
-import joserodpt.realskywars.gui.guis.SetupRoomSettings;
-import joserodpt.realskywars.gui.guis.ShopViewer;
-import joserodpt.realskywars.currency.CurrencyManager;
+import joserodpt.realskywars.managers.world.SWWorld;
+import joserodpt.realskywars.managers.world.WorldManager;
+import joserodpt.realskywars.gui.guis.AchievementViewerGUI;
+import joserodpt.realskywars.gui.guis.GameHistoryGUI;
+import joserodpt.realskywars.gui.guis.MapSettingsGUI;
+import joserodpt.realskywars.gui.guis.MapsListGUI;
+import joserodpt.realskywars.gui.guis.SetupRoomSettingsGUI;
+import joserodpt.realskywars.gui.guis.ShopGUI;
+import joserodpt.realskywars.managers.CurrencyManager;
 import joserodpt.realskywars.managers.GameManager;
 import joserodpt.realskywars.managers.LanguageManager;
 import joserodpt.realskywars.managers.MapManager;
@@ -180,7 +180,7 @@ public class RealSkywars extends JavaPlugin {
             return;
         }
 
-        RSWConfigLanguages.setup(this);
+        RSWLanguagesConfig.setup(this);
 
         lm.loadLanguages();
         if (lm.areLanguagesEmpty()) {
@@ -199,18 +199,18 @@ public class RealSkywars extends JavaPlugin {
         this.getGameManager().loadLobby();
 
         //config
-        RSWConfigAchievements.setup(this);
-        RSWConfigMaps.setup(this);
-        SQL.setup(this);
-        RSWConfigShops.setup(this);
-        RSWConfigKits.setup(this);
+        RSWAchievementsConfig.setup(this);
+        RSWMapsConfig.setup(this);
+        RSWSQLConfig.setup(this);
+        RSWShopsConfig.setup(this);
+        RSWKitsConfig.setup(this);
 
         hologramManager = new HologramManager();
 
         //chests
-        BasicChest.setup(this);
-        NormalChest.setup(this);
-        EPICChest.setup(this);
+        BasicChestConfig.setup(this);
+        NormalChestConfig.setup(this);
+        EPICChestConfig.setup(this);
 
         try {
             databaseManager = new DatabaseManager(this);
@@ -221,22 +221,22 @@ public class RealSkywars extends JavaPlugin {
         chestManager = new ChestManager();
 
         log("Setting up events.");
-        pm.registerEvents(new PlayerEvents(this), this);
+        pm.registerEvents(new PlayerListener(this), this);
         pm.registerEvents(new EventListener(this), this);
         pm.registerEvents(new GameRoomListeners(), this);
         pm.registerEvents(PlayerInput.getListener(), this);
         pm.registerEvents(GUIBuilder.getListener(), this);
-        pm.registerEvents(GameLogViewer.getListener(), this);
-        pm.registerEvents(SetupRoomSettings.getListener(), this);
-        pm.registerEvents(MapSettings.getListener(), this);
+        pm.registerEvents(GameHistoryGUI.getListener(), this);
+        pm.registerEvents(SetupRoomSettingsGUI.getListener(), this);
+        pm.registerEvents(MapSettingsGUI.getListener(), this);
         pm.registerEvents(PlayerGUI.getListener(), this);
-        pm.registerEvents(ShopViewer.getListener(), this);
-        pm.registerEvents(ProfileContent.getListener(), this);
+        pm.registerEvents(ShopGUI.getListener(), this);
+        pm.registerEvents(PlayerProfileContentsGUI.getListener(), this);
         pm.registerEvents(KitSettings.getListener(), this);
-        pm.registerEvents(MapsViewer.getListener(), this);
+        pm.registerEvents(MapsListGUI.getListener(), this);
         pm.registerEvents(TierViewer.getListener(), this);
-        pm.registerEvents(AchievementViewer.getListener(), this);
-        pm.registerEvents(GameLogViewer.getListener(), this);
+        pm.registerEvents(AchievementViewerGUI.getListener(), this);
+        pm.registerEvents(GameHistoryGUI.getListener(), this);
         pm.registerEvents(VoteGUI.getListener(), this);
 
         kitm.loadKits();
@@ -412,21 +412,21 @@ public class RealSkywars extends JavaPlugin {
         gamem.endGames();
 
         RSWConfig.reload();
-        RSWConfigMaps.reload();
-        RSWConfigLanguages.reload();
+        RSWMapsConfig.reload();
+        RSWLanguagesConfig.reload();
 
         //chests
-        BasicChest.reload();
-        NormalChest.reload();
-        EPICChest.reload();
+        BasicChestConfig.reload();
+        NormalChestConfig.reload();
+        EPICChestConfig.reload();
 
         Debugger.debug = RSWConfig.file().getBoolean("Debug-Mode");
 
         lm.loadLanguages();
         playerm.stopScoreboards();
         playerm.loadPlayers();
-        RSWConfigShops.reload();
-        RSWConfigKits.reload();
+        RSWShopsConfig.reload();
+        RSWKitsConfig.reload();
         kitm.loadKits();
 
         am.loadAchievements();

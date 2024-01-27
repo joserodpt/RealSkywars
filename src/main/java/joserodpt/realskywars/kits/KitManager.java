@@ -17,7 +17,7 @@ package joserodpt.realskywars.kits;
 
 import joserodpt.realskywars.Debugger;
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.config.RSWConfigKits;
+import joserodpt.realskywars.config.RSWKitsConfig;
 import joserodpt.realskywars.utils.ItemStackSpringer;
 import joserodpt.realskywars.utils.Text;
 import org.bukkit.Material;
@@ -30,22 +30,22 @@ import java.util.stream.Collectors;
 
 public class KitManager {
 
-    private final ArrayList<Kit> kits = new ArrayList<>();
+    private final ArrayList<SWKit> SWKits = new ArrayList<>();
 
     public void loadKits() {
-        this.kits.clear();
+        this.SWKits.clear();
 
-        if (RSWConfigKits.file().isSection("Kits")) {
-            Debugger.print(KitManager.class, "KITS: " + RSWConfigKits.file().getSection("Kits").getRoutesAsStrings(false));
+        if (RSWKitsConfig.file().isSection("Kits")) {
+            Debugger.print(KitManager.class, "KITS: " + RSWKitsConfig.file().getSection("Kits").getRoutesAsStrings(false));
 
-            for (String name : RSWConfigKits.file().getSection("Kits").getRoutesAsStrings(false)) {
+            for (String name : RSWKitsConfig.file().getSection("Kits").getRoutesAsStrings(false)) {
                 Debugger.print(KitManager.class, "Loading KIT " + name);
-                String displayName = Text.color(RSWConfigKits.file().getString("Kits." + name + ".Display-Name"));
-                Double price = RSWConfigKits.file().getDouble("Kits." + name + ".Price");
+                String displayName = Text.color(RSWKitsConfig.file().getString("Kits." + name + ".Display-Name"));
+                Double price = RSWKitsConfig.file().getDouble("Kits." + name + ".Price");
 
-                String matString = RSWConfigKits.file().getString("Kits." + name + ".Icon");
+                String matString = RSWKitsConfig.file().getString("Kits." + name + ".Icon");
                 Material mat;
-                Kit kit;
+                SWKit SWKit;
                 try {
                     mat = Material.getMaterial(matString);
                 } catch (Exception e) {
@@ -53,54 +53,54 @@ public class KitManager {
                     RealSkywars.getPlugin().log(Level.WARNING, matString + " isn't a valid material [KIT]");
                 }
 
-                List<Map<String, Object>> inv = (List<Map<String, Object>>) RSWConfigKits.file().getList("Kits." + name + ".Contents");
+                List<Map<String, Object>> inv = (List<Map<String, Object>>) RSWKitsConfig.file().getList("Kits." + name + ".Contents");
 
                 if (inv.isEmpty()) {
                     Debugger.printerr(KitManager.class, "Inventory Itens on " + "Kits." + name + ".Contents" + " are empty! Skipping kit.");
                     continue;
                 }
 
-                kit = new Kit(name, displayName, price, mat, new KitInventory(ItemStackSpringer.getItemsDeSerialized(inv)), RSWConfigKits.file().getString("Kits." + name + ".Permission"));
+                SWKit = new SWKit(name, displayName, price, mat, new KitInventory(ItemStackSpringer.getItemsDeSerialized(inv)), RSWKitsConfig.file().getString("Kits." + name + ".Permission"));
 
-                if (RSWConfigKits.file().isList("Kits." + name + ".Perks")) {
-                    RSWConfigKits.file().getStringList("Kits." + name + ".Perks")
-                            .forEach(kit::addPerk);
+                if (RSWKitsConfig.file().isList("Kits." + name + ".Perks")) {
+                    RSWKitsConfig.file().getStringList("Kits." + name + ".Perks")
+                            .forEach(SWKit::addPerk);
                 }
 
-                this.getKits().add(kit);
+                this.getKits().add(SWKit);
 
-                Debugger.print(KitManager.class, "Loaded " + kit);
+                Debugger.print(KitManager.class, "Loaded " + SWKit);
             }
         }
     }
 
-    public void registerKit(Kit k) {
-        RSWConfigKits.file().set("Kits." + k.getName() + ".Display-Name", k.getDisplayName());
-        RSWConfigKits.file().set("Kits." + k.getName() + ".Price", k.getPrice());
-        RSWConfigKits.file().set("Kits." + k.getName() + ".Icon", k.getIcon().name());
-        RSWConfigKits.file().set("Kits." + k.getName() + ".Permission", k.getPermission());
+    public void registerKit(SWKit k) {
+        RSWKitsConfig.file().set("Kits." + k.getName() + ".Display-Name", k.getDisplayName());
+        RSWKitsConfig.file().set("Kits." + k.getName() + ".Price", k.getPrice());
+        RSWKitsConfig.file().set("Kits." + k.getName() + ".Icon", k.getIcon().name());
+        RSWKitsConfig.file().set("Kits." + k.getName() + ".Permission", k.getPermission());
 
         if (!k.getKitPerks().isEmpty()) {
-            RSWConfigKits.file().set("Kits." + k.getName() + ".Perks", k.getKitPerks().stream().map(Enum::name).collect(Collectors.toList()));
+            RSWKitsConfig.file().set("Kits." + k.getName() + ".Perks", k.getKitPerks().stream().map(Enum::name).collect(Collectors.toList()));
         }
 
-        RSWConfigKits.file().set("Kits." + k.getName() + ".Contents", k.getKitInventory().getSerialized());
-        RSWConfigKits.save();
+        RSWKitsConfig.file().set("Kits." + k.getName() + ".Contents", k.getKitInventory().getSerialized());
+        RSWKitsConfig.save();
     }
 
-    public void unregisterKit(Kit k) {
+    public void unregisterKit(SWKit k) {
         this.getKits().remove(k);
-        RSWConfigKits.file().set("Kits", null);
+        RSWKitsConfig.file().set("Kits", null);
         this.getKits().forEach(this::registerKit);
-        RSWConfigKits.save();
+        RSWKitsConfig.save();
     }
 
-    public ArrayList<Kit> getKits() {
-        return this.kits;
+    public ArrayList<SWKit> getKits() {
+        return this.SWKits;
     }
 
-    public Kit getKit(String string) {
-        return this.kits.stream()
+    public SWKit getKit(String string) {
+        return this.SWKits.stream()
                 .filter(k -> k.getName().equalsIgnoreCase(string))
                 .findFirst()
                 .orElse(null);

@@ -21,7 +21,6 @@ import joserodpt.realskywars.game.modes.Placeholder;
 import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.game.modes.SWGame.GameState;
 import joserodpt.realskywars.game.modes.SWSign;
-import joserodpt.realskywars.player.PlayerManager;
 import joserodpt.realskywars.player.RSWPlayer;
 import joserodpt.realskywars.utils.Text;
 import org.bukkit.Bukkit;
@@ -40,7 +39,6 @@ public class GameManager {
     public GameManager(RealSkywars rs) {
         this.rs = rs;
     }
-
     private final ArrayList<SWGame> games = new ArrayList<>();
     public Boolean endingGames = false;
     private Location lobbyLOC;

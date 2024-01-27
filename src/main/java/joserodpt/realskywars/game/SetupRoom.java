@@ -18,7 +18,7 @@ package joserodpt.realskywars.game;
 import joserodpt.realskywars.cages.Cage;
 import joserodpt.realskywars.chests.SWChest;
 import joserodpt.realskywars.game.modes.SWGame;
-import joserodpt.realskywars.world.SWWorld;
+import joserodpt.realskywars.managers.world.SWWorld;
 import org.bukkit.Location;
 import org.bukkit.World;
 

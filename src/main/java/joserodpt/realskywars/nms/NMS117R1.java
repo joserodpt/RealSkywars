@@ -25,7 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class NMS117R1 implements RSWnms {
     private final Class<?> world = ReflectionHelper.getClass("net.minecraft.world.level.World");
-    private final Class<?> craft_world = ReflectionHelper.getCraftClass("CraftWorld");
+    private final Class<?> craft_world = ReflectionHelper.getCraftBukkitClass("CraftWorld");
     private final Class<?> block_pos = ReflectionHelper.getClass("net.minecraft.core.BlockPosition");
     private final Class<?> i_block_data  = ReflectionHelper.getClass("net.minecraft.world.level.block.state.IBlockData");
     private final Class<?> block_class = ReflectionHelper.getClass("net.minecraft.world.level.block.Block");

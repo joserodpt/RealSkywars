@@ -16,8 +16,9 @@ package joserodpt.realskywars.shop;
  */
 
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.kits.Kit;
+import joserodpt.realskywars.kits.SWKit;
 import joserodpt.realskywars.managers.LanguageManager;
+import joserodpt.realskywars.managers.ShopManager;
 import joserodpt.realskywars.utils.Itens;
 import joserodpt.realskywars.utils.Text;
 import org.apache.commons.lang.WordUtils;
@@ -137,7 +138,7 @@ public class ShopDisplayItem {
 
         switch (this.it) {
             case KITS:
-                Kit k = RealSkywars.getPlugin().getKitManager().getKit(name);
+                SWKit k = RealSkywars.getPlugin().getKitManager().getKit(name);
                 return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), "&r&f" + k.getDisplayName(), k.getDescription(false)) : Itens.createItemLore(m, 1, "&r&f" + k.getDisplayName(), k.getDescription(true));
             case SPEC_SHOP:
                 return Itens.createItemLore(m, 1, "&f" + this.amount + "x " + this.getDisplayName(), makeSpecShopDescription());

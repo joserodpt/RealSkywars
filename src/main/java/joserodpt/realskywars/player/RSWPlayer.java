@@ -17,19 +17,19 @@ package joserodpt.realskywars.player;
 
 import fr.mrmicky.fastboard.FastBoard;
 import joserodpt.realskywars.RealSkywars;
-import joserodpt.realskywars.achievements.Achievement;
+import joserodpt.realskywars.achievements.RSWAchievement;
 import joserodpt.realskywars.cages.Cage;
 import joserodpt.realskywars.config.RSWConfig;
-import joserodpt.realskywars.effects.BlockWinTrail;
-import joserodpt.realskywars.effects.Trail;
+import joserodpt.realskywars.effects.RSWBlockWinTrail;
+import joserodpt.realskywars.effects.RSWTrail;
 import joserodpt.realskywars.game.SetupRoom;
 import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.game.modes.teams.Team;
-import joserodpt.realskywars.kits.Kit;
+import joserodpt.realskywars.kits.SWKit;
 import joserodpt.realskywars.managers.GameManager;
 import joserodpt.realskywars.managers.LanguageManager;
-import joserodpt.realskywars.shop.ShopManager;
-import joserodpt.realskywars.party.Party;
+import joserodpt.realskywars.managers.ShopManager;
+import joserodpt.realskywars.party.RSWParty;
 import joserodpt.realskywars.utils.Text;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatMessageType;
@@ -49,7 +49,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class RSWPlayer {
-    private final List<Trail> trails = new ArrayList<>();
+    private final List<RSWTrail> RSWTrails = new ArrayList<>();
     private ArrayList<RSWGameLog> gamesList = new ArrayList<>();
     private RoomTAB rt;
     private String anonName = "?";
@@ -60,7 +60,7 @@ public class RSWPlayer {
     private SetupRoom setup;
     private Team team;
     private Cage cage;
-    private Party party;
+    private RSWParty RSWParty;
 
     //statistics
     private int gamekills, kills, deaths, winsSolo, winsTEAMS, loses, gamesPlayed;
@@ -71,7 +71,7 @@ public class RSWPlayer {
     private Material cageBlock = Material.GLASS;
     private ArrayList<String> bought = new ArrayList<>();
     private MapViewerPref mapViewerPref;
-    private Kit kit;
+    private SWKit SWKit;
     private Particle bowParticle;
     private Material winblockMaterial;
     private Boolean invincible = false, bot = false, winblockRandom = false;
@@ -133,7 +133,7 @@ public class RSWPlayer {
                     this.winsSolo += i;
 
                     //achievement
-                    Achievement a = RealSkywars.getPlugin().getAchievementsManager().getAchievement(PlayerStatistics.WINS_SOLO, this.winsSolo);
+                    RSWAchievement a = RealSkywars.getPlugin().getAchievementsManager().getAchievement(PlayerStatistics.WINS_SOLO, this.winsSolo);
                     if (a != null) {
                         a.giveAchievement(this);
                     }
@@ -150,7 +150,7 @@ public class RSWPlayer {
                     this.winsTEAMS += i;
 
                     //achievement
-                    Achievement a = RealSkywars.getPlugin().getAchievementsManager().getAchievement(PlayerStatistics.WINS_TEAMS, this.winsTEAMS);
+                    RSWAchievement a = RealSkywars.getPlugin().getAchievementsManager().getAchievement(PlayerStatistics.WINS_TEAMS, this.winsTEAMS);
                     if (a != null) {
                         a.giveAchievement(this);
                     }
@@ -189,7 +189,7 @@ public class RSWPlayer {
                 } else {
                     this.gamesPlayed += i;
                     //achievement
-                    Achievement a = RealSkywars.getPlugin().getAchievementsManager().getAchievement(PlayerStatistics.GAMES_PLAYED, this.gamesPlayed);
+                    RSWAchievement a = RealSkywars.getPlugin().getAchievementsManager().getAchievement(PlayerStatistics.GAMES_PLAYED, this.gamesPlayed);
                     if (a != null) {
                         a.giveAchievement(this);
                     }
@@ -202,7 +202,7 @@ public class RSWPlayer {
         if (pd == PlayerData.GAME) {
             this.kills += this.gamekills;
 
-            Achievement a = RealSkywars.getPlugin().getAchievementsManager().getAchievement(PlayerStatistics.KILLS, this.kills);
+            RSWAchievement a = RealSkywars.getPlugin().getAchievementsManager().getAchievement(PlayerStatistics.KILLS, this.kills);
             if (a != null) {
                 a.giveAchievement(this);
             }
@@ -240,15 +240,15 @@ public class RSWPlayer {
     }
 
     public void stopTrails() {
-        this.trails.forEach(Trail::cancelTask);
+        this.RSWTrails.forEach(RSWTrail::cancelTask);
     }
 
-    public void addTrail(Trail t) {
-        this.trails.add(t);
+    public void addTrail(RSWTrail t) {
+        this.RSWTrails.add(t);
     }
 
-    public void removeTrail(Trail t) {
-        this.trails.remove(t);
+    public void removeTrail(RSWTrail t) {
+        this.RSWTrails.remove(t);
     }
 
     public Location getLocation() {
@@ -270,10 +270,10 @@ public class RSWPlayer {
             return;
         }
         if (this.winblockRandom) {
-            addTrail(new BlockWinTrail(this, t));
+            addTrail(new RSWBlockWinTrail(this, t));
         } else {
             if (this.winblockMaterial != null) {
-                addTrail(new BlockWinTrail(this, t, winblockMaterial));
+                addTrail(new RSWBlockWinTrail(this, t, winblockMaterial));
             }
         }
     }
@@ -312,7 +312,7 @@ public class RSWPlayer {
                 this.saveData(PlayerData.MAPVIEWER_PREF);
                 break;
             case KIT:
-                this.kit = (Kit) o;
+                this.SWKit = (SWKit) o;
                 break;
             case BOW_PARTICLES:
                 this.bowParticle = (Particle) o;
@@ -411,8 +411,8 @@ public class RSWPlayer {
         return this.playerscoreboard;
     }
 
-    public Kit getKit() {
-        return this.kit == null ? new Kit() : this.kit;
+    public SWKit getKit() {
+        return this.SWKit == null ? new SWKit() : this.SWKit;
     }
 
     public Team getTeam() {
@@ -494,7 +494,7 @@ public class RSWPlayer {
     }
 
     public boolean hasKit() {
-        return this.kit != null;
+        return this.SWKit != null;
     }
 
     public boolean hasCage() {
@@ -548,28 +548,28 @@ public class RSWPlayer {
     }
 
     public boolean hasParty() {
-        return this.party != null;
+        return this.RSWParty != null;
     }
 
     public void createParty() {
-        this.party = new Party(this);
+        this.RSWParty = new RSWParty(this);
     }
 
     public void disbandParty() {
-        this.party.disband();
+        this.RSWParty.disband();
     }
 
-    public Party getParty() {
-        return this.party;
+    public RSWParty getParty() {
+        return this.RSWParty;
     }
 
     public void joinParty(RSWPlayer player) {
-        this.party = player.getParty();
+        this.RSWParty = player.getParty();
     }
 
     public void leaveParty() {
-        this.party.playerLeave(this);
-        this.party = null;
+        this.RSWParty.playerLeave(this);
+        this.RSWParty = null;
         this.sendMessage(RealSkywars.getPlugin().getLanguageManager().getString(this, LanguageManager.TS.PARTY_LEAVE, true).replace("%player%", this.getDisplayName()));
     }
 

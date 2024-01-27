@@ -20,7 +20,7 @@ import joserodpt.realskywars.config.RSWConfig;
 import joserodpt.realskywars.game.Countdown;
 import joserodpt.realskywars.game.SWEvent;
 import joserodpt.realskywars.game.modes.SWGame;
-import joserodpt.realskywars.utils.holograms.SWHologram;
+import joserodpt.realskywars.managers.holograms.SWHologram;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

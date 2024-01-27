@@ -21,21 +21,21 @@ import joserodpt.realskywars.chests.TierViewer;
 import joserodpt.realskywars.config.RSWConfig;
 import joserodpt.realskywars.game.modes.SWGame;
 import joserodpt.realskywars.gui.GUIManager;
-import joserodpt.realskywars.kits.Kit;
+import joserodpt.realskywars.kits.SWKit;
 import joserodpt.realskywars.kits.KitInventory;
 import joserodpt.realskywars.kits.KitSettings;
-import joserodpt.realskywars.currency.CurrencyManager;
+import joserodpt.realskywars.managers.CurrencyManager;
 import joserodpt.realskywars.managers.GameManager;
 import joserodpt.realskywars.managers.LanguageManager;
-import joserodpt.realskywars.shop.ShopManager;
-import joserodpt.realskywars.player.PlayerGUI;
-import joserodpt.realskywars.player.ProfileContent;
+import joserodpt.realskywars.managers.ShopManager;
+import joserodpt.realskywars.gui.guis.PlayerGUI;
+import joserodpt.realskywars.gui.guis.PlayerProfileContentsGUI;
 import joserodpt.realskywars.player.RSWPlayer;
 import joserodpt.realskywars.utils.Text;
 import joserodpt.realskywars.utils.WorldEditUtils;
-import joserodpt.realskywars.world.SWWorld;
-import joserodpt.realskywars.gui.guis.MapSettings;
-import joserodpt.realskywars.gui.guis.MapsViewer;
+import joserodpt.realskywars.managers.world.SWWorld;
+import joserodpt.realskywars.gui.guis.MapSettingsGUI;
+import joserodpt.realskywars.gui.guis.MapsListGUI;
 import me.mattstudios.mf.annotations.*;
 import me.mattstudios.mf.base.CommandBase;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -91,7 +91,7 @@ public class RealSkywarsCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
             if (p.getMatch() == null) {
-                MapsViewer v = new MapsViewer(p, p.getMapViewerPref(), rs.getLanguageManager().getString(p, LanguageManager.TS.MAPS_NAME, false));
+                MapsListGUI v = new MapsListGUI(p, p.getMapViewerPref(), rs.getLanguageManager().getString(p, LanguageManager.TS.MAPS_NAME, false));
                 v.openInventory(p);
             } else {
                 p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.ALREADY_IN_MATCH, true));
@@ -106,7 +106,7 @@ public class RealSkywarsCMD extends CommandBase {
     public void kitscmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
-            ProfileContent ds = new ProfileContent(p, ShopManager.Categories.KITS);
+            PlayerProfileContentsGUI ds = new PlayerProfileContentsGUI(p, ShopManager.Categories.KITS);
             ds.openInventory(p);
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -132,7 +132,7 @@ public class RealSkywarsCMD extends CommandBase {
                     }
 
                     if (rs.getKitManager().getKit(name) == null) {
-                        Kit k = new Kit(Text.strip(Text.color(name)), name, cost, new KitInventory(p.getPlayer().getInventory().getContents()));
+                        SWKit k = new SWKit(Text.strip(Text.color(name)), name, cost, new KitInventory(p.getPlayer().getInventory().getContents()));
                         KitSettings m = new KitSettings(k, p.getUUID());
                         m.openInventory(p);
                     } else {
@@ -140,7 +140,7 @@ public class RealSkywarsCMD extends CommandBase {
                     }
                     break;
                 case DELETE:
-                    Kit k2 = rs.getKitManager().getKit(name);
+                    SWKit k2 = rs.getKitManager().getKit(name);
                     if (k2 != null) {
                         rs.getKitManager().unregisterKit(k2);
                         commandSender.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.DELETEKIT_DONE, true));
@@ -149,7 +149,7 @@ public class RealSkywarsCMD extends CommandBase {
                     }
                     break;
                 case GIVE:
-                    Kit k3 = rs.getKitManager().getKit(name);
+                    SWKit k3 = rs.getKitManager().getKit(name);
                     if (k3 != null) {
                         k3.give(p);
                         p.playSound(Sound.ENTITY_VILLAGER_YES, 50, 50);
@@ -446,7 +446,7 @@ public class RealSkywarsCMD extends CommandBase {
             RSWPlayer p = rs.getPlayerManager().getPlayer((Player) commandSender);
             SWGame sw = rs.getGameManager().getGame(name);
             if (sw != null) {
-                MapSettings r = new MapSettings(sw, p.getUUID());
+                MapSettingsGUI r = new MapSettingsGUI(sw, p.getUUID());
                 r.openInventory(p);
             } else {
                 p.sendMessage(rs.getLanguageManager().getString(p, LanguageManager.TS.NO_GAME_FOUND, true));

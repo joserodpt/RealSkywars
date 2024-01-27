@@ -23,7 +23,7 @@ public class ReflectionHelper
         return getClass("net.minecraft.server." + RealSkywars.getPlugin().getServerVersion() + "." + str);
     }
     
-    public static Class<?> getCraftClass(final String str) {
+    public static Class<?> getCraftBukkitClass(final String str) {
         return getClass("org.bukkit.craftbukkit." + RealSkywars.getPlugin().getServerVersion() + "." + str);
     }
     
