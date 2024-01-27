@@ -1,4 +1,4 @@
-Version: 4
+Version: 5
 Debug-Mode: false
 Config:
   Use-Vault-As-Currency: false
@@ -9,6 +9,24 @@ Config:
   PlaceholderAPI-In-Scoreboard: false
   Disable-Player-Reset: false
   Disable-Language-Selection: false
+  Item-Slots:
+    Lobby:
+      Profile: 0
+      Maps: 4
+      Shop: 8
+    Cage:
+      Kit: 1
+      Vote: 4
+      Leave: 7
+    Spectator:
+      Spectate: 1
+      Play-Again: 2
+      Shop: 4
+      Leave: 7
+    Setup:
+      Chest1: 0
+      Cage: 4
+      Chest2: 8
   # Time in seconds
   Time:
     Formatting: dd-MM-yyyy HH:mm:ss

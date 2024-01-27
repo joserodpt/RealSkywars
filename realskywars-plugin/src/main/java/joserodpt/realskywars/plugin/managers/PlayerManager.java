@@ -54,29 +54,29 @@ public class PlayerManager extends PlayerManagerAPI {
             RSWPlayer pg = this.getPlayer(p);
             switch (i) {
                 case LOBBY:
-                    p.getInventory().setItem(0, getItem(pg, Items.PROFILE));
-                    p.getInventory().setItem(4, getItem(pg, Items.MAPS));
-                    p.getInventory().setItem(8, getItem(pg, Items.SHOP));
+                    p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Lobby.Profile"), getItem(pg, Items.PROFILE));
+                    p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Lobby.Maps"), getItem(pg, Items.MAPS));
+                    p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Lobby.SHop"), getItem(pg, Items.SHOP));
                     break;
                 case CAGE:
-                    p.getInventory().setItem(1, getItem(pg, Items.KIT));
-                    p.getInventory().setItem(4, getItem(pg, Items.VOTE));
-                    p.getInventory().setItem(7, getItem(pg, Items.LEAVE));
+                    p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Cage.Kit"), getItem(pg, Items.KIT));
+                    p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Cage.Vote"), getItem(pg, Items.VOTE));
+                    p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Cage.Leave"), getItem(pg, Items.LEAVE));
                     break;
                 case SPECTATOR:
-                    p.getInventory().setItem(1, getItem(pg, Items.SPECTATE));
+                    p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Spectator.Spectate"), getItem(pg, Items.SPECTATE));
                     if (pg.getState() != RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
-                        p.getInventory().setItem(2, getItem(pg, Items.PLAYAGAIN));
+                        p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Spectator.Play-Again"), getItem(pg, Items.PLAYAGAIN));
                     }
                     if (RSWConfig.file().getBoolean("Config.Spectator-Shop")) {
-                        p.getInventory().setItem(4, getItem(pg, Items.SHOP));
+                        p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Spectator.Shop"), getItem(pg, Items.SHOP));
                     }
-                    p.getInventory().setItem(7, getItem(pg, Items.LEAVE));
+                    p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Spectator.Leave"), getItem(pg, Items.LEAVE));
                     break;
                 case SETUP:
-                    p.getInventory().setItem(0, getItem(pg, Items.CHEST1));
-                    p.getInventory().setItem(4, getItem(pg, Items.CAGESET));
-                    p.getInventory().setItem(8, getItem(pg, Items.CHEST2));
+                    p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest1"), getItem(pg, Items.CHEST1));
+                    p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Setup.Cage"), getItem(pg, Items.CAGESET));
+                    p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest2"), getItem(pg, Items.CHEST2));
                     break;
                 default:
                     rs.getLogger().warning(i.name() + " not registered in PlayerManager");
