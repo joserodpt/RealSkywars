@@ -40,8 +40,8 @@ public class Solo extends RSWGame {
 
     private final List<RSWCage> cages;
 
-    public Solo(String nome, World w, String schematicName, RSWWorld.WorldType wt, RSWGame.GameState estado, List<RSWCage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, List<RSWChest> chests, Boolean rankd, RealSkywarsAPI rs) {
-        super(nome, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border,  pos1, pos2, chests, rankd, rs);
+    public Solo(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, RSWGame.GameState estado, List<RSWCage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, List<RSWChest> chests, Boolean rankd, RealSkywarsAPI rs) {
+        super(nome, displayName, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border,  pos1, pos2, chests, rankd, rs);
         this.cages = cages;
     }
 
@@ -193,7 +193,7 @@ public class Solo extends RSWGame {
             super.getBossBar().setProgress(0);
             super.getBossBar().setColor(BarColor.BLUE);
 
-            super.getRealSkywarsAPI().getPlayerManagerAPI().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(super.getRealSkywarsAPI().getLanguageManagerAPI().getString(gamePlayer, LanguageManagerAPI.TS.WINNER_BROADCAST, true).replace("%winner%", p.getDisplayName()).replace("%map%", super.getName())));
+            super.getRealSkywarsAPI().getPlayerManagerAPI().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(super.getRealSkywarsAPI().getLanguageManagerAPI().getString(gamePlayer, LanguageManagerAPI.TS.WINNER_BROADCAST, true).replace("%winner%", p.getDisplayName()).replace("%map%", super.getMapName()).replace("%displayname%", super.getDisplayName())));
 
             if (this.isInstantEndEnabled()) {
                 super.getBossBar().removeAll();

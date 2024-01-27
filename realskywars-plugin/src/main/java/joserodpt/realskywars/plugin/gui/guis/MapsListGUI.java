@@ -285,7 +285,7 @@ public class MapsListGUI {
                 count = g.getPlayerCount();
             }
 
-            return Itens.createItemLore(getStateMaterial(g), count, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(g.isRanked()), variableList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getList(p, LanguageManagerAPI.TL.ITEMS_MAP_DESCRIPTION), g));
+            return Itens.createItemLore(getStateMaterial(g), count, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getMapName()).replace("%displayname%", g.getDisplayName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(g.isRanked()), variableList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getList(p, LanguageManagerAPI.TL.ITEMS_MAP_DESCRIPTION), g));
         }
     }
 

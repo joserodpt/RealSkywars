@@ -77,7 +77,7 @@ Languages:
               - "&f"
               - " &f&lReal&b&lSkywars"
               - " &fYou are playing on:"
-              - " &b%map%"
+              - " &b%displayname%"
               - "&f"
             Footer:
               - "%space%"
@@ -138,7 +138,7 @@ Languages:
           Room-Full: "&fThis room is &cfull&f."
           Tracker-Found: "&fNow tracking &b%player%"
           No-Tracker-Found: "&fThere is no player to track."
-          Winner-Broadcast: "&b%winner% &fwon on the map &a%map%"
+          Winner-Broadcast: "&b%winner% &fwon on the map &a%displayname%"
           Leave: "&eYou left the match."
           Already-Started: "&fThis match has &calready &fstarted."
           Init-Setup:
@@ -285,7 +285,7 @@ Languages:
           - "%space%"
       Map:
         Not-Found: "&9No Maps Found"
-        Title: "&9&l%map% &7| &f&l%mode%"
+        Title: "&9&l%displayname% &7| &f&l%mode%"
         Description:
           - ""
           - "&fPlayers: &b%players%&f/&b%maxplayers%"
@@ -316,7 +316,7 @@ Languages:
           - " &fPlayers: &b%players%"
           - " &fState: &b%state%"
           - "%space%"
-        Title: "&fMapa: &b%map% &7- &b%mode%"
+        Title: "&fMapa: &b%displayname% &7- &b%mode%"
       Game:
         Lines:
           - "%space%"
@@ -328,7 +328,7 @@ Languages:
           - "%space%"
           - " &fRuntime: &b%runtime%"
           - "%space%"
-        Title: "&fMapa: &b%map% &7- &b%mode%"
+        Title: "&fMapa: &b%displayname% &7- &b%mode%"
       Spectate:
         Lines:
           - "%space%"
@@ -339,7 +339,7 @@ Languages:
           - "%space%"
           - " &fRuntime: &b%runtime%"
           - "%space%"
-        Title: "&fMap: &b%map%"
+        Title: "&fMap: &b%displayname%"
   ES:
     Messages:
       Maps: "Mapas"
@@ -379,7 +379,7 @@ Languages:
               - "&f"
               - " &f&lReal&b&lSkywars"
               - " &fEstás jugando en"
-              - " &b%map%"
+              - " &b%displayname%"
               - "&f"
             Footer:
               - "%space%"
@@ -440,7 +440,7 @@ Languages:
           Room-Full: "&fEsta sala está &cllena&f."
           Tracker-Found: "&fRastreando ahora &b%player%"
           No-Tracker-Found: "&fNo hay jugador que rastrear."
-          Winner-Broadcast: "&b%winner% &fganó en el mapa &a%map%"
+          Winner-Broadcast: "&b%winner% &fganó en el mapa &a%displayname%"
           Leave: "&eHas dejado la partida."
           Already-Started: "&fEsta partida &cya &fha empezado."
           Init-Setup:
@@ -587,7 +587,7 @@ Languages:
           - "%space%"
       Map:
         Not-Found: "&9Ningun Mapa Encontrado"
-        Title: "&9&l%map% &7| &f&l%mode%"
+        Title: "&9&l%displayname% &7| &f&l%mode%"
         Description:
           - ""
           - "&fJugadores: &b%players%&f/&b%maxplayers%"
@@ -618,7 +618,7 @@ Languages:
           - " &fJugadores: &b%players%"
           - " &fEstado: &b%state%"
           - "%space%"
-        Title: "&fMapa: &b%map% &7- &b%mode%"
+        Title: "&fMapa: &b%displayname% &7- &b%mode%"
       Game:
         Lines:
           - "%space%"
@@ -630,7 +630,7 @@ Languages:
           - "%space%"
           - " &fTiempo transcurrido: &b%runtime%"
           - "%space%"
-        Title: "&fMapa: &b%map% &7- &b%mode%"
+        Title: "&fMapa: &b%displayname% &7- &b%mode%"
       Spectate:
         Lines:
           - "%space%"
@@ -641,7 +641,7 @@ Languages:
           - "%space%"
           - " &fTiempo transcurrido: &b%runtime%"
           - "%space%"
-        Title: "&fMapa: &b%map%"
+        Title: "&fMapa: &b%displayname%"
   PT:
     Messages:
       Maps: "Mapas"
@@ -681,7 +681,7 @@ Languages:
               - "&f"
               - " &f&lReal&b&lSkywars"
               - " &fEstás a jogar em: "
-              - " &b%map%"
+              - " &b%displayname%"
               - "&f"
             Footer:
               - "&f"
@@ -742,7 +742,7 @@ Languages:
           Room-Full: "&fEsta partida está &ccheia&f."
           Tracker-Found: "&fAgora a mirar &b%player%"
           No-Tracker-Found: "&fNão há ninguém para mirar."
-          Winner-Broadcast: "&b%winner% &fganhou no mapa &a%map%"
+          Winner-Broadcast: "&b%winner% &fganhou no mapa &a%displayname%"
           Leave: "&eSaíste da partida."
           Already-Started: "&fEsta partida &cjá &ffoi iniciada."
           Init-Setup:
@@ -889,7 +889,7 @@ Languages:
           - "%space%"
       Map:
         Not-Found: "&9Nenhuma partida encontrada"
-        Title: "&9&l%map% &7| &f&l%mode%"
+        Title: "&9&l%displayname% &7| &f&l%mode%"
         Description:
           - ""
           - "&fJogadores: &b%players%&f/&b%maxplayers%"
@@ -920,7 +920,7 @@ Languages:
           - " &fJogadores: &b%players%"
           - " &fEstado: &b%state%"
           - "%space%"
-        Title: "&fMapa: &b%map% &7- &b%mode%"
+        Title: "&fMapa: &b%displayname% &7- &b%mode%"
       Game:
         Lines:
           - "%space%"
@@ -932,7 +932,7 @@ Languages:
           - "%space%"
           - " &fTempo decorrido: &b%runtime%"
           - "%space%"
-        Title: "&fMapa: &b%map% &7- &b%mode%"
+        Title: "&fMapa: &b%displayname% &7- &b%mode%"
       Spectate:
         Lines:
           - "%space%"
@@ -943,4 +943,4 @@ Languages:
           - "%space%"
           - " &fTempo decorrido: &b%runtime%"
           - "%space%"
-        Title: "&fMapa: &b%map%"
+        Title: "&fMapa: &b%displayname%"

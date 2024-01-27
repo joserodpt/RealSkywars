@@ -21,9 +21,9 @@ public abstract class MapManagerAPI {
 
     public abstract List<RSWCage> getCages(String s, Location specLoc);
 
-    public abstract void setupSolo(RSWPlayer p, String mapname, RSWWorld.WorldType wt, int maxP);
+    public abstract void setupSolo(RSWPlayer p, String mapname, String displayName, RSWWorld.WorldType wt, int maxP);
 
-    public abstract void setupTeams(RSWPlayer p, String mapname, RSWWorld.WorldType wt, int teams, int pperteam);
+    public abstract void setupTeams(RSWPlayer p, String mapname, String displayName, RSWWorld.WorldType wt, int teams, int pperteam);
 
     public abstract void cancelSetup(RSWPlayer p);
 
@@ -50,4 +50,6 @@ public abstract class MapManagerAPI {
     protected abstract Boolean isRanked(String s);
 
     protected abstract List<RSWChest> getChests(String worldName, String section);
+
+    public abstract void renameMap(String map, String displayName);
 }

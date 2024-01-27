@@ -28,6 +28,8 @@ import java.util.List;
 public class SetupRoom {
 
     private final String name;
+    private final String displayName;
+
     private final List<RSWCage> cages = new ArrayList<>();
     private final List<RSWChest> chests = new ArrayList<>();
     private final int maxPlayers;
@@ -43,16 +45,18 @@ public class SetupRoom {
 
     private Boolean cagesConfirmed = false, speclocConfirm = false, instantEnding = false,  borderEnabled = true, ranked = false;
 
-    public SetupRoom(String nome, World w, RSWWorld.WorldType wt, int players) {
+    public SetupRoom(String nome, String displayName, World w, RSWWorld.WorldType wt, int players) {
         this.name = nome.replace(".schematic", "").replace(".schem", "");
+        this.displayName = displayName.replace(".schematic", "").replace(".schem", "");
         this.worldMap = w;
         this.worldType = wt;
         this.maxPlayers = players;
         this.mode = RSWGame.Mode.SOLO;
     }
 
-    public SetupRoom(String nome, World w, RSWWorld.WorldType wt, int teams, int ppert) {
+    public SetupRoom(String nome, String displayName, World w, RSWWorld.WorldType wt, int teams, int ppert) {
         this.name = nome.replace(".schematic", "").replace(".schem", "");
+        this.displayName = displayName.replace(".schematic", "").replace(".schem", "");
         this.worldMap = w;
         this.worldType = wt;
         this.teams = teams;
@@ -179,6 +183,10 @@ public class SetupRoom {
 
     public void setBorderEnabled(boolean b) {
         this.borderEnabled = b;
+    }
+
+    public String getDisplayName() {
+        return this.displayName;
     }
 
     @Override

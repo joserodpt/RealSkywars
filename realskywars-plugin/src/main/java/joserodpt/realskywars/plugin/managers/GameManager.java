@@ -55,7 +55,7 @@ public class GameManager extends GameManagerAPI {
     @Override
     public RSWGame getGame(String name) {
         return this.games.stream()
-                .filter(g -> g.getName().equalsIgnoreCase(name))
+                .filter(g -> g.getMapName().equalsIgnoreCase(name))
                 .findFirst()
                 .orElse(null);
     }
@@ -209,7 +209,7 @@ public class GameManager extends GameManagerAPI {
     @Override
     public List<String> getRoomNames() {
         return this.games.stream()
-                .map(gameRoom -> Text.strip(gameRoom.getName()))
+                .map(gameRoom -> Text.strip(gameRoom.getMapName()))
                 .collect(Collectors.toList());
     }
 

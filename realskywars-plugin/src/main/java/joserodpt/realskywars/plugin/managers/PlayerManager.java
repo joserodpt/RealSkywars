@@ -56,7 +56,7 @@ public class PlayerManager extends PlayerManagerAPI {
                 case LOBBY:
                     p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Lobby.Profile"), getItem(pg, Items.PROFILE));
                     p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Lobby.Maps"), getItem(pg, Items.MAPS));
-                    p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Lobby.SHop"), getItem(pg, Items.SHOP));
+                    p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Lobby.Shop"), getItem(pg, Items.SHOP));
                     break;
                 case CAGE:
                     p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Cage.Kit"), getItem(pg, Items.KIT));

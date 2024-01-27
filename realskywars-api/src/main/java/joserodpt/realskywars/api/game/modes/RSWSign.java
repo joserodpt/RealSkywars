@@ -43,7 +43,7 @@ public class RSWSign {
                 Sign s = (Sign) b.getState();
 
                 s.setLine(0, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix());
-                s.setLine(1, Text.color("&b" + game.getName()));
+                s.setLine(1, Text.color("&b" + game.getMapName()));
                 s.setLine(2, Text.color("&f" + game.getGameMode().name() + " | &f" + game.getPlayerCount() + "&7/&f" + game.getMaxPlayers()));
                 s.setLine(3, Text.color("&b&l" + game.getState().name()));
                 s.update();

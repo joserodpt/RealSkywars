@@ -44,6 +44,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
@@ -410,9 +411,9 @@ public class RealSkywarsCMD extends CommandBase {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
             p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CMD_MAPS, true).replace("%rooms%", "" + rs.getGameManagerAPI().getGames(GameManagerAPI.GameModes.ALL).size()));
             for (RSWGame s : rs.getGameManagerAPI().getGames(GameManagerAPI.GameModes.ALL)) {
-                TextComponent a = new TextComponent(Text.color("&7- &f" + s.getName()));
-                a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw map " + s.getName()));
-                a.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Text.color("&fClick to open &b" + s.getName() + "&f settings!")).create()));
+                TextComponent a = new TextComponent(Text.color("&7- &f" + s.getDisplayName()));
+                a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw map " + s.getMapName()));
+                a.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Text.color("&fClick to open &b" + s.getDisplayName() + "&f settings!")).create()));
                 p.getPlayer().spigot().sendMessage(a);
             }
         } else {
@@ -543,7 +544,7 @@ public class RealSkywarsCMD extends CommandBase {
                         if (p.getSetupRoom() != null) {
                             p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.SETUP_NOT_FINISHED, true));
                         } else {
-                            rs.getMapManagerAPI().setupSolo(p, mapname, wt, maxPlayersandTeams);
+                            rs.getMapManagerAPI().setupSolo(p, Text.strip(mapname), mapname, wt, maxPlayersandTeams);
                         }
                     }
                 } else {
@@ -552,7 +553,7 @@ public class RealSkywarsCMD extends CommandBase {
                         if (p.getSetupRoom() != null) {
                             p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.SETUP_NOT_FINISHED, true));
                         } else {
-                            rs.getMapManagerAPI().setupTeams(p, mapname, wt, maxPlayersandTeams, teamPlayers);
+                            rs.getMapManagerAPI().setupTeams(p, Text.strip(mapname), mapname, wt, maxPlayersandTeams, teamPlayers);
                         }
                     } else {
                         p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAP_EXISTS, true));
@@ -575,6 +576,20 @@ public class RealSkywarsCMD extends CommandBase {
         if (rs.getMapManagerAPI().getRegisteredMaps().contains(map)) {
             rs.getMapManagerAPI().unregisterMap(rs.getMapManagerAPI().getMap(map));
             commandSender.sendMessage(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.MAP_UNREGISTERED, true));
+        } else {
+            commandSender.sendMessage(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.NO_GAME_FOUND, true));
+        }
+    }
+
+    @SubCommand("rename")
+    @Completion("#maps")
+    @Alias("ren")
+    @Permission("rsw.admin")
+    @WrongUsage("&c/rsw rename <map> ")
+    public void renamecmd(final CommandSender commandSender, final String map, final String displayName) {
+        if (rs.getMapManagerAPI().getRegisteredMaps().contains(map)) {
+            rs.getMapManagerAPI().renameMap(map, displayName);
+            Text.send(commandSender, "&aOK");
         } else {
             commandSender.sendMessage(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.NO_GAME_FOUND, true));
         }
