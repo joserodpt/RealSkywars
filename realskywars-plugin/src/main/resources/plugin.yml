@@ -1,0 +1,9 @@
+name: RealSkywars
+version: '${project.version}'
+main: joserodpt.realskywars.plugin.RealSkywarsPlugin
+api-version: '1.14'
+depend: [WorldEdit]
+softdepend: [My_Worlds, Multiverse-Core, HolographicDisplays, PlaceholderAPI, DecentHolograms, RealRegions, RealPermissions]
+authors: [JoseGamer_PT]
+description: Responsive and Efficient GUI Based Skywars Minigame Plugin
+load: POSTWORLD

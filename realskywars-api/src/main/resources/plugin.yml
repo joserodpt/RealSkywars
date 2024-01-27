@@ -1,0 +1,4 @@
+name: RealSkywarsAPI
+version: '${project.version}'
+main: joserodpt.realskywars.api.RealSkywarsAPI
+api-version: '1.14'

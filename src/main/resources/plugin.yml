@@ -1,9 +1,0 @@
-name: RealSkywars
-version: ${project.version}
-main: joserodpt.realskywars.RealSkywars
-api-version: 1.14
-depend: [WorldEdit]
-softdepend: [My_Worlds, Multiverse-Core, HolographicDisplays, PlaceholderAPI, DecentHolograms, RealRegions, RealPermissions]
-authors: [JoseGamer_PT]
-description: Smart and Configurable Skywars plugin coded on the 1.14 API
-load: POSTWORLD
