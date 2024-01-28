@@ -15,6 +15,7 @@ package joserodpt.realskywars.plugin.gui;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realpermissions.api.utils.Items;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.kits.RSWKit;
@@ -25,7 +26,9 @@ import joserodpt.realskywars.api.utils.GUIBuilder;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.plugin.gui.guis.AchievementViewerGUI;
 import joserodpt.realskywars.plugin.gui.guis.GameHistoryGUI;
+import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerProfileContentsGUI;
+import joserodpt.realskywars.plugin.gui.guis.SettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.ShopGUI;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -114,6 +117,36 @@ public class GUIManager {
             }
             ++i;
         }
+
+        inventory.openInventory(p.getPlayer());
+    }
+
+    public static void openPluginMenu(RSWPlayer p, RealSkywarsAPI rsa) {
+        GUIBuilder inventory = new GUIBuilder("&f&lReal&b&lSkywars &r&8v" + rsa.getVersion(), 27, p.getUUID());
+
+        inventory.addItem(e -> {
+            p.closeInventory();
+            new BukkitRunnable() {
+                public void run() {
+                    MapsListGUI v = new MapsListGUI(p, p.getMapViewerPref(), rsa.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAPS_NAME, false));
+                    v.openInventory(p);
+                }
+            }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
+        }, Itens.createItem(Material.NETHER_STAR, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ITEM_MAPS_NAME, false)), 12);
+
+        inventory.addItem(e -> {
+            p.closeInventory();
+            new BukkitRunnable() {
+                public void run() {
+                    SettingsGUI v = new SettingsGUI(p, rsa);
+                    v.openInventory(p);
+                }
+            }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
+        }, Itens.createItem(Material.COMPARATOR, 1, "&e&lSettings"), 14);
+
+        inventory.addItem(e -> p.closeInventory(), Items.createItem(Material.OAK_DOOR, 1, "&cClose",
+                Collections.singletonList("&fClick here to close this menu.")), 26);
+
 
         inventory.openInventory(p.getPlayer());
     }

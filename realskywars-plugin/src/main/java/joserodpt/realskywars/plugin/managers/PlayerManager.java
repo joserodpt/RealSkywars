@@ -253,6 +253,7 @@ public class PlayerManager extends PlayerManagerAPI {
     public void setLanguage(RSWPlayer player, String s) {
         player.setProperty(RSWPlayer.PlayerProperties.LANGUAGE, s);
         player.sendMessage(rs.getLanguageManagerAPI().getString(player, LanguageManagerAPI.TS.LANGUAGE_SET, true).replace("%language%", s));
+        player.closeInventory();
     }
 
     @Override

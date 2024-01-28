@@ -54,6 +54,7 @@ import joserodpt.realskywars.plugin.gui.guis.MapSettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerProfileContentsGUI;
+import joserodpt.realskywars.plugin.gui.guis.SettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.SetupRoomSettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.ShopGUI;
 import joserodpt.realskywars.plugin.gui.guis.VoteGUI;
@@ -157,6 +158,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
         pm.registerEvents(AchievementViewerGUI.getListener(), this);
         pm.registerEvents(GameHistoryGUI.getListener(), this);
         pm.registerEvents(VoteGUI.getListener(), this);
+        pm.registerEvents(SettingsGUI.getListener(), this);
 
         realSkywars.getKitManagerAPI().loadKits();
         getLogger().info("Loaded " + realSkywars.getKitManagerAPI().getKits().size() + " kits.");

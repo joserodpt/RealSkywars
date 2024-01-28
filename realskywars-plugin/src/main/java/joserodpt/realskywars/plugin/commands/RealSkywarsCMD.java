@@ -35,6 +35,7 @@ import joserodpt.realskywars.plugin.gui.guis.MapSettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerProfileContentsGUI;
+import joserodpt.realskywars.plugin.gui.guis.SettingsGUI;
 import joserodpt.realskywars.plugin.managers.LanguageManager;
 import joserodpt.realskywars.plugin.managers.ShopManager;
 import me.mattstudios.mf.annotations.*;
@@ -44,7 +45,6 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
@@ -70,7 +70,17 @@ public class RealSkywarsCMD extends CommandBase {
 
     @Default
     public void defaultCommand(final CommandSender commandSender) {
-        Text.send(commandSender, "&f&lReal&B&LSkywars &r&aVersion &e" + rs.getPlugin().getDescription().getVersion());
+        if (commandSender instanceof Player) {
+            RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
+            if (p.getPlayer().isOp() || p.getPlayer().hasPermission("rsw.admin")) {
+                GUIManager.openPluginMenu(p, rs);
+            } else {
+                MapsListGUI v = new MapsListGUI(p, p.getMapViewerPref(), rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAPS_NAME, false));
+                v.openInventory(p);
+            }
+        } else {
+            Text.send(commandSender, "&f&lReal&B&LSkywars &r&aVersion &e" + rs.getPlugin().getDescription().getVersion());
+        }
     }
 
     @SubCommand("reload")
@@ -92,11 +102,12 @@ public class RealSkywarsCMD extends CommandBase {
     public void listcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            if (p.getMatch() == null) {
-                MapsListGUI v = new MapsListGUI(p, p.getMapViewerPref(), rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAPS_NAME, false));
-                v.openInventory(p);
-            } else {
-                p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ALREADY_IN_MATCH, true));
+            p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CMD_MAPS, true).replace("%rooms%", "" + rs.getGameManagerAPI().getGames(GameManagerAPI.GameModes.ALL).size()));
+            for (RSWGame s : rs.getGameManagerAPI().getGames(GameManagerAPI.GameModes.ALL)) {
+                TextComponent a = new TextComponent(Text.color("&7- &f" + s.getDisplayName()));
+                a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw map " + s.getMapName()));
+                a.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Text.color("&fClick to open &b" + s.getDisplayName() + "&f settings!")).create()));
+                p.getPlayer().spigot().sendMessage(a);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -290,6 +301,19 @@ public class RealSkywarsCMD extends CommandBase {
         }
     }
 
+    @SubCommand("settings")
+    @Alias("s")
+    @Permission("rsw.admin")
+    public void settings(final CommandSender commandSender) {
+        if (commandSender instanceof Player) {
+            RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
+            SettingsGUI v = new SettingsGUI(p, rs);
+            v.openInventory(p);
+        } else {
+            commandSender.sendMessage(onlyPlayer);
+        }
+    }
+
     @SubCommand("lobby")
     @Permission("rsw.lobby")
     public void lobbycmd(final CommandSender commandSender) {
@@ -406,15 +430,14 @@ public class RealSkywarsCMD extends CommandBase {
 
     @SubCommand("maps")
     @Permission("rsw.admin")
-    public void maps(final CommandSender commandSender) {
+    public void mapscmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CMD_MAPS, true).replace("%rooms%", "" + rs.getGameManagerAPI().getGames(GameManagerAPI.GameModes.ALL).size()));
-            for (RSWGame s : rs.getGameManagerAPI().getGames(GameManagerAPI.GameModes.ALL)) {
-                TextComponent a = new TextComponent(Text.color("&7- &f" + s.getDisplayName()));
-                a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw map " + s.getMapName()));
-                a.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Text.color("&fClick to open &b" + s.getDisplayName() + "&f settings!")).create()));
-                p.getPlayer().spigot().sendMessage(a);
+            if (p.getMatch() == null) {
+                MapsListGUI v = new MapsListGUI(p, p.getMapViewerPref(), rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAPS_NAME, false));
+                v.openInventory(p);
+            } else {
+                p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ALREADY_IN_MATCH, true));
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
