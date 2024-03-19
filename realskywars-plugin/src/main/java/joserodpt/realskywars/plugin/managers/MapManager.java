@@ -16,6 +16,7 @@ package joserodpt.realskywars.plugin.managers;
  */
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldedit.regions.Region;
 import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.cages.RSWCage;
@@ -185,7 +186,7 @@ public class MapManager extends MapManagerAPI {
 
                     p.teleport(loc);
 
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> WorldEditUtils.pasteSchematic(p.getSetupRoom().getSchematic(), new Location(p.getWorld(), 0, 64, 0)), 3 * 20);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> WorldEditUtils.pasteSchematic(p.getSetupRoom().getSchematic(), new Location(p.getWorld(), 0, 64, 0), p.getSetupRoom()), 3 * 20);
                 } else {
                     w.setAutoSave(true);
                     p.teleport(loc);
@@ -193,92 +194,108 @@ public class MapManager extends MapManagerAPI {
 
                 p.getSetupRoom().setWorld(w);
             } else {
-                 rs.getLogger().warning("Could not create setup world for " + p.getSetupRoom().getName());
+                rs.getLogger().warning("Could not create setup world for " + p.getSetupRoom().getName());
             }
         }
     }
     @Override
     public void finishSetup(RSWPlayer p) {
-        WorldEditPlugin w = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
-        try {
-            com.sk89q.worldedit.regions.Region r = w.getSession(p.getPlayer()).getSelection(w.getSession(p.getPlayer()).getSelectionWorld());
+        Location pos1 = null;
+        Location pos2 = null;
 
-            if (r != null) {
-                rs.getGameManagerAPI().tpToLobby(p);
+        if (p.getSetupRoom().getL1() != null && p.getSetupRoom().getL2() != null) {
+            pos1 = p.getSetupRoom().getL1();
+            pos2 = p.getSetupRoom().getL2();
+        } else {
+            WorldEditPlugin w = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
+            try {
+                assert w != null;
+                Region r = w.getSession(p.getPlayer()).getSelection(w.getSession(p.getPlayer()).getSelectionWorld());
 
-                Location pos2 = new Location(p.getSetupRoom().getWorld(), r.getMinimumPoint().getBlockX(), r.getMinimumPoint().getBlockY(), r.getMinimumPoint().getBlockZ());
-                Location pos1 = new Location(p.getSetupRoom().getWorld(), r.getMaximumPoint().getBlockX(), r.getMaximumPoint().getBlockY(), r.getMaximumPoint().getBlockZ());
+                if (r != null) {
+                    rs.getGameManagerAPI().tpToLobby(p);
 
-                p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.SAVING_ARENA, true));
-
-                // Beacon Remove
-                p.getSetupRoom().getCages().forEach(cage -> p.getSetupRoom().getWorld().getBlockAt(cage.getLoc()).setType(Material.AIR));
-
-                //Remove dropped items
-                rs.getWorldManagerAPI().clearItems(p.getSetupRoom().getWorld());
-
-                //worldType
-                if (p.getSetupRoom().getWorldType() == RSWWorld.WorldType.DEFAULT) {
-                    //Unload world
-                    rs.getWorldManagerAPI().unloadWorld(p.getSetupRoom().getWorld().getName(), true);
-
-                    //Copy world
-                    rs.getWorldManagerAPI().copyWorld(p.getSetupRoom().getWorld().getName(), WorldManager.CopyTo.RSW_FOLDER);
+                    pos2 = new Location(p.getSetupRoom().getWorld(), r.getMinimumPoint().getBlockX(), r.getMinimumPoint().getBlockY(), r.getMinimumPoint().getBlockZ());
+                    pos1 = new Location(p.getSetupRoom().getWorld(), r.getMaximumPoint().getBlockX(), r.getMaximumPoint().getBlockY(), r.getMaximumPoint().getBlockZ());
                 }
+            } catch (Exception e) {
+                p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.NO_ARENA_BOUNDARIES, true));
+            }
+        }
 
-                //Load world again
-                boolean loaded = rs.getWorldManagerAPI().loadWorld(p.getSetupRoom().getWorld().getName(), World.Environment.NORMAL);
+        if (pos1 == null || pos2 == null) {
+            p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.NO_ARENA_BOUNDARIES, true));
+            return;
+        }
 
-                if (loaded) {
-                    // Save Data
-                    RSWGame.Mode gt = p.getSetupRoom().getGameType();
-                    switch (gt) {
-                        case SOLO:
-                            Solo gs = new Solo(p.getSetupRoom().getName(), p.getSetupRoom().getDisplayName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), RSWGame.GameState.AVAILABLE, p.getSetupRoom().getCages(), p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), rs);
+        p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.SAVING_ARENA, true));
 
-                            if (p.getSetupRoom().getWorldType() == RSWWorld.WorldType.DEFAULT) {
-                                gs.getRSWWorld().resetWorld(RSWGame.OperationReason.LOAD);
-                            } else {
-                                gs.getRSWWorld().resetWorld(RSWGame.OperationReason.RESET);
-                            }
+        // Beacon Remove
+        p.getSetupRoom().getCages().forEach(cage -> p.getSetupRoom().getWorld().getBlockAt(cage.getLoc()).setType(Material.AIR));
 
-                            rs.getGameManagerAPI().addRoom(gs);
-                            gs.save(RSWGame.Data.ALL, true);
+        //Remove dropped items
+        rs.getWorldManagerAPI().clearItems(p.getSetupRoom().getWorld());
 
-                            //set chests
-                            gs.getChests().forEach(RSWChest::setChest);
-                            break;
-                        case TEAMS:
-                            List<Team> ts = new ArrayList<>();
-                            int tc = 1;
-                            for (RSWCage c : p.getSetupRoom().getCages()) {
-                                ts.add(new Team(tc, p.getSetupRoom().getPlayersPerTeam(), c.getLoc(), p.getSetupRoom().getWorld().getName()));
-                                ++tc;
-                            }
-                            Teams t = new Teams(p.getSetupRoom().getName(), p.getSetupRoom().getDisplayName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), RSWGame.GameState.AVAILABLE, ts, p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), rs);
+        //worldType
+        if (p.getSetupRoom().getWorldType() == RSWWorld.WorldType.DEFAULT) {
+            //Unload world
+            rs.getWorldManagerAPI().unloadWorld(p.getSetupRoom().getWorld().getName(), true);
 
-                            if (p.getSetupRoom().getWorldType() == RSWWorld.WorldType.DEFAULT) {
-                                t.getRSWWorld().resetWorld(RSWGame.OperationReason.LOAD);
-                            } else {
-                                t.getRSWWorld().resetWorld(RSWGame.OperationReason.RESET);
-                            }
+            //Copy world
+            rs.getWorldManagerAPI().copyWorld(p.getSetupRoom().getWorld().getName(), WorldManager.CopyTo.RSW_FOLDER);
+        }
 
-                            rs.getGameManagerAPI().addRoom(t);
-                            t.save(RSWGame.Data.ALL, true);
+        //Load world again
+        boolean loaded = rs.getWorldManagerAPI().loadWorld(p.getSetupRoom().getWorld().getName(), World.Environment.NORMAL);
 
-                            //set chests
-                            t.getChests().forEach(RSWChest::setChest);
-                            break;
-                        default:
-                            throw new IllegalStateException("Forbiden Mode !! " + gt.name());
+        if (loaded) {
+            // Save Data
+            RSWGame.Mode gt = p.getSetupRoom().getGameType();
+            switch (gt) {
+                case SOLO:
+                    Solo gs = new Solo(p.getSetupRoom().getName(), p.getSetupRoom().getDisplayName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), RSWGame.GameState.AVAILABLE, p.getSetupRoom().getCages(), p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), rs);
+
+                    if (p.getSetupRoom().getWorldType() == RSWWorld.WorldType.DEFAULT) {
+                        gs.getRSWWorld().resetWorld(RSWGame.OperationReason.LOAD);
+                    } else {
+                        gs.getRSWWorld().resetWorld(RSWGame.OperationReason.RESET);
                     }
 
-                    p.setSetup(null);
-                    p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_REGISTERED, true));
-                }
+                    rs.getGameManagerAPI().addRoom(gs);
+                    gs.save(RSWGame.Data.ALL, true);
+
+                    //set chests
+                    gs.getChests().forEach(RSWChest::setChest);
+                    break;
+                case TEAMS:
+                    List<Team> ts = new ArrayList<>();
+                    int tc = 1;
+                    for (RSWCage c : p.getSetupRoom().getCages()) {
+                        ts.add(new Team(tc, p.getSetupRoom().getPlayersPerTeam(), c.getLoc(), p.getSetupRoom().getWorld().getName()));
+                        ++tc;
+                    }
+                    Teams t = new Teams(p.getSetupRoom().getName(), p.getSetupRoom().getDisplayName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), RSWGame.GameState.AVAILABLE, ts, p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), rs);
+
+                    if (p.getSetupRoom().getWorldType() == RSWWorld.WorldType.DEFAULT) {
+                        t.getRSWWorld().resetWorld(RSWGame.OperationReason.LOAD);
+                    } else {
+                        t.getRSWWorld().resetWorld(RSWGame.OperationReason.RESET);
+                    }
+
+                    rs.getGameManagerAPI().addRoom(t);
+                    t.save(RSWGame.Data.ALL, true);
+
+                    //set chests
+                    t.getChests().forEach(RSWChest::setChest);
+                    break;
+                default:
+                    throw new IllegalStateException("Forbiden Mode !! " + gt.name());
             }
-        } catch (Exception e) {
-            p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.NO_ARENA_BOUNDARIES, true));
+
+            p.setSetup(null);
+            p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_REGISTERED, true));
+        } else {
+            p.sendMessage("Error while loading world for: " + p.getSetupRoom().getName() + " (possibly a bug?)");
         }
     }
 

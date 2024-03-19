@@ -60,7 +60,7 @@ public class SWWorldSchematicEngine implements SWWorldEngine {
             case LOAD:
                 if (this.world != null) {
                     //place schematic
-                    WorldEditUtils.pasteSchematic(this.schematicName, new Location(this.world, 0, 64, 0));
+                    WorldEditUtils.pasteSchematic(this.schematicName, new Location(this.world, 0, 64, 0), null);
 
                     WorldBorder wb = this.world.getWorldBorder();
 

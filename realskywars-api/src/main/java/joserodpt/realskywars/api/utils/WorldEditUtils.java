@@ -26,7 +26,9 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BaseBlock;
@@ -34,7 +36,9 @@ import com.sk89q.worldedit.world.block.BlockState;
 import com.sk89q.worldedit.world.block.BlockType;
 import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.game.SetupRoom;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -72,7 +76,7 @@ public class WorldEditUtils {
         }
     }
 
-    public static void pasteSchematic(String name, Location location) {
+    public static void pasteSchematic(String name, Location location, SetupRoom sr) {
         Debugger.print(WorldEditUtils.class, "Pasting schematic named " + name);
         File folder = new File(RealSkywarsAPI.getInstance().getPlugin().getDataFolder(), "maps");
         File file = new File(folder, name);
@@ -80,37 +84,55 @@ public class WorldEditUtils {
         ClipboardFormat clipboardFormat = ClipboardFormats.findByFile(file);
         Clipboard clipboard;
 
-        BlockVector3 blockVector3 = BlockVector3.at(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-
         if (clipboardFormat != null) {
             try (ClipboardReader clipboardReader = clipboardFormat.getReader(Files.newInputStream(file.toPath()))) {
 
                 if (location.getWorld() == null)
                     throw new NullPointerException("Failed to paste schematic due to world being null");
 
-                World world = BukkitAdapter.adapt(location.getWorld());
-
-                EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder().world(world).build();
-
                 clipboard = clipboardReader.read();
 
-                Operation operation = new ClipboardHolder(clipboard).createPaste(editSession).to(blockVector3).ignoreAirBlocks(true).build();
+                if (clipboard != null) {
+                    try (final EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(location.getWorld()))) {
+                        ClipboardHolder holder = new ClipboardHolder(clipboard);
+                        Region region = clipboard.getRegion();
 
-                try {
-                    Operations.complete(operation);
-                    editSession.close();
+                        BlockVector3 to = BlockVector3.at(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+                        Operation operation = holder
+                                .createPaste(editSession)
+                                .to(to)
+                                .ignoreAirBlocks(false)
+                                .copyBiomes(false)
+                                .copyEntities(false)
+                                .build();
+                        Operations.completeLegacy(operation);
 
-                    Debugger.print(WorldEditUtils.class, "Pasted!");
+                        if (sr != null) {
+                            BlockVector3 clipboardOffset = clipboard.getRegion().getMinimumPoint().subtract(clipboard.getOrigin());
+                            Vector3 min = to.toVector3().add(holder.getTransform().apply(clipboardOffset.toVector3()));
+                            Vector3 max = min.add(holder.getTransform().apply(region.getMaximumPoint().subtract(region.getMinimumPoint()).toVector3()));
 
-                    location.getWorld().getPlayers().forEach(player -> player.sendMessage("[RealSkywars] Schematic pasted with success!"));
-                } catch (Exception e) {
-                    RealSkywarsAPI.getInstance().getLogger().severe("Error while pasting schematic!");
-                    RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());
+                            sr.setBoundaries(toLocation(min, location.getWorld()), WorldEditUtils.toLocation(max, location.getWorld()));
+
+                            for (Player p : location.getWorld().getPlayers()) {
+                                p.sendMessage("&aThe boundaries have been set automatically using the schematic boundaries!");
+                                p.sendMessage("&fIf you want to change them, use WorldEdit to select the area and type /rsw setbounds");
+                            }
+                        }
+                    } catch (final WorldEditException e) {
+                        RealSkywarsAPI.getInstance().getLogger().severe("Error while pasting schematic: " + name);
+                        RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());
+                    }
                 }
+
             } catch (Exception e) {
                 RealSkywarsAPI.getInstance().getLogger().severe("Error while pasting schematic!");
                 RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());
             }
         }
+    }
+
+    public static Location toLocation(com.sk89q.worldedit.math.Vector3 vector, org.bukkit.World world) {
+        return new Location(world, vector.getX(), vector.getY(), vector.getZ());
     }
 }

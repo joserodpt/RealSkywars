@@ -43,6 +43,8 @@ public class SetupRoom {
     private final RSWWorld.WorldType worldType;
     private String schematic = "none";
 
+    private Location l1, l2;
+
     private Boolean cagesConfirmed = false, speclocConfirm = false, instantEnding = false,  borderEnabled = true, ranked = false;
 
     public SetupRoom(String nome, String displayName, World w, RSWWorld.WorldType wt, int players) {
@@ -64,6 +66,10 @@ public class SetupRoom {
         this.mode = RSWGame.Mode.SOLO;
         this.maxPlayers = teams * ppert;
     }
+
+    public Location getL1() { return this.l1; }
+
+    public Location getL2() { return this.l2; }
 
     public int getPlayersPerTeam() {
         return this.playersPerTeam;
@@ -211,5 +217,10 @@ public class SetupRoom {
                 ", borderEnabled=" + borderEnabled +
                 ", ranked=" + ranked +
                 '}';
+    }
+
+    public void setBoundaries(Location location, Location location1) {
+        this.l1 = location;
+        this.l2 = location1;
     }
 }
