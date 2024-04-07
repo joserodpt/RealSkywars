@@ -13,8 +13,6 @@ import java.util.List;
 public abstract class MapManagerAPI {
     public abstract void loadMaps();
 
-    public abstract List<String> getRegisteredMaps();
-
     public abstract void unregisterMap(RSWGame map);
 
     public abstract RSWGame getMap(String s);
@@ -50,6 +48,4 @@ public abstract class MapManagerAPI {
     protected abstract Boolean isRanked(String s);
 
     protected abstract List<RSWChest> getChests(String worldName, String section);
-
-    public abstract void renameMap(String map, String displayName);
 }

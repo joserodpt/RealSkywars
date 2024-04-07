@@ -62,6 +62,6 @@ public class RSWGameLog {
 
     public String getSerializedData() {
         //mapa-modo-ranked-jogadores-ganhou-tempo-dia
-        return this.map + ";" + this.mode.name() + ";" + this.ranked + ";" + this.players + ";" + this.win + ";" + this.seconds + ";" + this.dayandtime;
+        return this.map + ";" + (this.mode == null ? "Unknown" : this.mode.name()) + ";" + this.ranked + ";" + this.players + ";" + this.win + ";" + this.seconds + ";" + this.dayandtime;
     }
 }

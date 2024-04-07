@@ -559,28 +559,19 @@ public class RealSkywarsCMD extends CommandBase {
             }
 
             if (RSWConfig.file().isSection("Config.Lobby")) {
-                if (teamPlayers == null) {
-                    //solo
-                    if (rs.getMapManagerAPI().getRegisteredMaps().contains(mapname)) {
-                        p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAP_EXISTS, true));
+                RSWGame map = rs.getMapManagerAPI().getMap(mapname);
+                if (map == null) {
+                    if (p.getSetupRoom() != null) {
+                        p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.SETUP_NOT_FINISHED, true));
                     } else {
-                        if (p.getSetupRoom() != null) {
-                            p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.SETUP_NOT_FINISHED, true));
-                        } else {
+                        if (teamPlayers == null) {
                             rs.getMapManagerAPI().setupSolo(p, Text.strip(mapname), mapname, wt, maxPlayersandTeams);
-                        }
-                    }
-                } else {
-                    //teams
-                    if (!rs.getMapManagerAPI().getRegisteredMaps().contains(mapname)) {
-                        if (p.getSetupRoom() != null) {
-                            p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.SETUP_NOT_FINISHED, true));
                         } else {
                             rs.getMapManagerAPI().setupTeams(p, Text.strip(mapname), mapname, wt, maxPlayersandTeams, teamPlayers);
                         }
-                    } else {
-                        p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAP_EXISTS, true));
                     }
+                } else {
+                    p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAP_EXISTS, true));
                 }
             } else {
                 p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.LOBBYLOC_NOT_SET, true));
@@ -595,9 +586,10 @@ public class RealSkywarsCMD extends CommandBase {
     @Alias("del")
     @Permission("rsw.admin")
     @WrongUsage("&c/rsw unregister <map>")
-    public void delete(final CommandSender commandSender, String map) {
-        if (rs.getMapManagerAPI().getRegisteredMaps().contains(map)) {
-            rs.getMapManagerAPI().unregisterMap(rs.getMapManagerAPI().getMap(map));
+    public void delete(final CommandSender commandSender, String mapName) {
+        RSWGame map = rs.getMapManagerAPI().getMap(mapName);
+        if (map != null) {
+            rs.getMapManagerAPI().unregisterMap(map);
             commandSender.sendMessage(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.MAP_UNREGISTERED, true));
         } else {
             commandSender.sendMessage(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.NO_GAME_FOUND, true));
@@ -609,10 +601,12 @@ public class RealSkywarsCMD extends CommandBase {
     @Alias("ren")
     @Permission("rsw.admin")
     @WrongUsage("&c/rsw rename <map> ")
-    public void renamecmd(final CommandSender commandSender, final String map, final String displayName) {
-        if (rs.getMapManagerAPI().getRegisteredMaps().contains(map)) {
-            rs.getMapManagerAPI().renameMap(map, displayName);
-            Text.send(commandSender, "&aOK");
+    public void renamecmd(final CommandSender commandSender, final String mapName, final String displayName) {
+        RSWGame map = rs.getMapManagerAPI().getMap(mapName);
+        if (map != null) {
+            map.setDisplayName(displayName);
+            map.save(RSWGame.Data.SETTINGS, true);
+            Text.send(commandSender, "&aMap renamed to &f" + displayName);
         } else {
             commandSender.sendMessage(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.NO_GAME_FOUND, true));
         }
@@ -622,11 +616,12 @@ public class RealSkywarsCMD extends CommandBase {
     @Completion("#maps")
     @Permission("rsw.admin")
     @WrongUsage("&c/rsw reset <map>")
-    public void reset(final CommandSender commandSender, String map) {
+    public void reset(final CommandSender commandSender, String mapSTR) {
         RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-        if (rs.getMapManagerAPI().getRegisteredMaps().contains(map)) {
+        RSWGame map = rs.getMapManagerAPI().getMap(mapSTR);
+        if (map != null) {
             p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_RESET, true));
-            rs.getMapManagerAPI().getMap(map).reset();
+            map.reset();
             p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAP_RESET_DONE, true));
         } else {
             p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.NO_GAME_FOUND, true));

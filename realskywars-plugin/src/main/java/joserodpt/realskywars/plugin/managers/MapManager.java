@@ -55,7 +55,7 @@ public class MapManager extends MapManagerAPI {
     public void loadMaps() {
         rs.getGameManagerAPI().clearRooms();
 
-        for (String s : this.getRegisteredMaps()) {
+        for (String s : RSWMapsConfig.file().getRoot().getRoutesAsStrings(false)) {
             RSWGame.Mode t = getGameType(s);
 
             if (t == null) {
@@ -104,11 +104,6 @@ public class MapManager extends MapManagerAPI {
         }
     }
 
-    @Override
-    public List<String> getRegisteredMaps() {
-        RSWMapsConfig.reload();
-        return new ArrayList<>(RSWMapsConfig.file().getRoot().getRoutesAsStrings(false));
-    }
     @Override
     public void unregisterMap(RSWGame map) {
         map.getAllPlayers().forEach(map::removePlayer);
@@ -369,14 +364,5 @@ public class MapManager extends MapManagerAPI {
             Debugger.print(MapManager.class, "There are no chests in " + worldName + " (possibly a bug? Check config pls!)");
         }
         return chests;
-    }
-
-    @Override
-    public void renameMap(String map, String displayName) {
-        RSWGame g = this.getMap(map);
-        if (g != null) {
-            g.setDisplayName(displayName);
-            g.save(RSWGame.Data.SETTINGS, true);
-        }
     }
 }
