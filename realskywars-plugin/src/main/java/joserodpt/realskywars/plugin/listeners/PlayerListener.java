@@ -110,7 +110,7 @@ public class PlayerListener implements Listener {
             case RIGHT_CLICK_BLOCK:
             case RIGHT_CLICK_AIR:
                 RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(e.getPlayer());
-                if (p.isInMatch()) {
+                if (p != null && p.isInMatch()) {
                     switch (p.getState()) {
                         case PLAYING:
                             //fill chests
