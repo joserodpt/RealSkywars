@@ -52,7 +52,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 
 public class PlayerListener implements Listener {
-    private RealSkywarsAPI rs;
+    private final RealSkywarsAPI rs;
     public PlayerListener(RealSkywarsAPI rs) {
         this.rs = rs;
     }
@@ -334,7 +334,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         RSWPlayer rswPlayer = rs.getPlayerManagerAPI().getPlayer(event.getPlayer());
-        if (rswPlayer.getState() != RSWPlayer.PlayerState.PLAYING) {
+        if (rswPlayer != null && rswPlayer.getState() != RSWPlayer.PlayerState.PLAYING) {
             event.setCancelled(true);
         }
     }
@@ -344,6 +344,10 @@ public class PlayerListener implements Listener {
         if (e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();
             RSWPlayer damaged = rs.getPlayerManagerAPI().getPlayer(p);
+            if (damaged == null) {
+                return;
+            }
+
             if (e.getCause() == EntityDamageEvent.DamageCause.VOID) {
                 if (damaged.isInMatch()) {
                     e.setDamage(0);
