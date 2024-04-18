@@ -1,4 +1,4 @@
-package joserodpt.realskywars.api.kits;
+package joserodpt.realskywars.plugin.gui.guis;
 
 /*
  *   _____            _  _____ _
@@ -16,6 +16,7 @@ package joserodpt.realskywars.api.kits;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Text;
@@ -36,10 +37,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class KitSettings {
+public class KitSettingsGUI {
 
     public RSWKit kt;
-    private static final Map<UUID, KitSettings> inventories = new HashMap<>();
+    private static final Map<UUID, KitSettingsGUI> inventories = new HashMap<>();
     private Inventory inv;
     private ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     private ItemStack confirm = Itens.createItemLore(Material.CHEST, 1, "&9Save Settings", Collections.singletonList("&7Click here to save your settings."));
@@ -47,7 +48,7 @@ public class KitSettings {
     private ItemStack ender_pearl_off = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&cOFF"));
     private final UUID uuid;
 
-    public KitSettings(RSWKit k, UUID id) {
+    public KitSettingsGUI(RSWKit k, UUID id) {
         this.uuid = id;
         this.kt = k;
 
@@ -93,7 +94,7 @@ public class KitSettings {
                     if (p != null) {
                         UUID uuid = p.getUniqueId();
                         if (inventories.containsKey(uuid)) {
-                            KitSettings current = inventories.get(uuid);
+                            KitSettingsGUI current = inventories.get(uuid);
                             if (e.getInventory().getHolder() != current.getInventory().getHolder()) {
                                 return;
                             }
@@ -109,6 +110,8 @@ public class KitSettings {
                                 RealSkywarsAPI.getInstance().getKitManagerAPI().registerKit(current.kt);
 
                                 p.closeInventory();
+
+                                p.sendMessage(Text.color("&aKit has been created!"));
                             }
 
                             // settings
@@ -152,6 +155,7 @@ public class KitSettings {
                 player.getPlayer().openInventory(inv);
             }
         }
+        register();
     }
 
     private Inventory getInventory() {

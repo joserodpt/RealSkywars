@@ -33,7 +33,7 @@ import joserodpt.realskywars.api.config.chests.BasicChestConfig;
 import joserodpt.realskywars.api.config.chests.EPICChestConfig;
 import joserodpt.realskywars.api.config.chests.NormalChestConfig;
 import joserodpt.realskywars.api.game.modes.RSWGame;
-import joserodpt.realskywars.api.kits.KitSettings;
+import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
 import joserodpt.realskywars.api.managers.CurrencyManager;
 import joserodpt.realskywars.api.managers.GameManagerAPI;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
@@ -152,7 +152,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
         pm.registerEvents(PlayerGUI.getListener(), this);
         pm.registerEvents(ShopGUI.getListener(), this);
         pm.registerEvents(PlayerProfileContentsGUI.getListener(), this);
-        pm.registerEvents(KitSettings.getListener(), this);
+        pm.registerEvents(KitSettingsGUI.getListener(), this);
         pm.registerEvents(MapsListGUI.getListener(), this);
         pm.registerEvents(TierViewer.getListener(), this);
         pm.registerEvents(AchievementViewerGUI.getListener(), this);

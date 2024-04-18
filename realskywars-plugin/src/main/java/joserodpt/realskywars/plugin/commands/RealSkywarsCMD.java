@@ -21,7 +21,7 @@ import joserodpt.realskywars.api.chests.TierViewer;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.game.modes.RSWGame;
 import joserodpt.realskywars.api.kits.KitInventory;
-import joserodpt.realskywars.api.kits.KitSettings;
+import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
 import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.managers.CurrencyManager;
 import joserodpt.realskywars.api.managers.GameManagerAPI;
@@ -146,7 +146,7 @@ public class RealSkywarsCMD extends CommandBase {
 
                     if (rs.getKitManagerAPI().getKit(name) == null) {
                         RSWKit k = new RSWKit(Text.strip(Text.color(name)), name, cost, new KitInventory(p.getPlayer().getInventory().getContents()));
-                        KitSettings m = new KitSettings(k, p.getUUID());
+                        KitSettingsGUI m = new KitSettingsGUI(k, p.getUUID());
                         m.openInventory(p);
                     } else {
                         commandSender.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.KIT_EXISTS, true));

@@ -453,12 +453,17 @@ public class ItemStackSpringer {
 
     public static ItemStack[] getItemsDeSerialized(List<Map<String, Object>> l) {
         Optional<Map<String, Object>> maxSlotItem = l.stream()
-                .max(Comparator.comparingInt(map -> map.containsKey("SLOT") ? (int) map.get("SLOT") : -1));
+                .max(Comparator.comparingInt(map -> map.containsKey("SLOT") ? ((int) map.get("SLOT")) : -1));
 
         return maxSlotItem.map(maxSLOT -> {
             ItemStack[] arr;
 
-            int slot = (int) maxSLOT.get("SLOT");
+            int slot;
+            if (maxSLOT.containsKey("SLOT")) {
+                slot = (int) maxSLOT.get("SLOT");
+            } else {
+                slot = -1;
+            }
 
             if (slot == -1) {
                 arr = l.stream()

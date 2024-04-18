@@ -23,6 +23,7 @@ import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.managers.KitManagerAPI;
 import joserodpt.realskywars.api.utils.ItemStackSpringer;
 import joserodpt.realskywars.api.utils.Text;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
@@ -43,36 +44,43 @@ public class KitManager extends KitManagerAPI {
 
             for (String name : RSWKitsConfig.file().getSection("Kits").getRoutesAsStrings(false)) {
                 Debugger.print(KitManager.class, "Loading KIT " + name);
-                String displayName = Text.color(RSWKitsConfig.file().getString("Kits." + name + ".Display-Name"));
-                Double price = RSWKitsConfig.file().getDouble("Kits." + name + ".Price");
 
-                String matString = RSWKitsConfig.file().getString("Kits." + name + ".Icon");
-                Material mat;
-                RSWKit rswKit;
                 try {
-                    mat = Material.getMaterial(matString);
+                    String displayName = Text.color(RSWKitsConfig.file().getString("Kits." + name + ".Display-Name"));
+                    Double price = RSWKitsConfig.file().getDouble("Kits." + name + ".Price");
+
+                    String matString = RSWKitsConfig.file().getString("Kits." + name + ".Icon");
+                    Material mat;
+                    RSWKit rswKit;
+                    try {
+                        mat = Material.getMaterial(matString);
+                    } catch (Exception e) {
+                        mat = Material.BARRIER;
+                        RealSkywarsAPI.getInstance().getLogger().warning(matString + " isn't a valid material [KIT]");
+                    }
+
+                    List<Map<String, Object>> inv = (List<Map<String, Object>>) RSWKitsConfig.file().getList("Kits." + name + ".Contents");
+
+                    if (inv.isEmpty()) {
+                        Debugger.printerr(KitManager.class, "Inventory Itens on " + "Kits." + name + ".Contents" + " are empty! Skipping kit.");
+                        continue;
+                    }
+
+                    rswKit = new RSWKit(name, displayName, price, mat, new KitInventory(ItemStackSpringer.getItemsDeSerialized(inv)), RSWKitsConfig.file().getString("Kits." + name + ".Permission"));
+
+                    if (RSWKitsConfig.file().isList("Kits." + name + ".Perks")) {
+                        RSWKitsConfig.file().getStringList("Kits." + name + ".Perks")
+                                .forEach(rswKit::addPerk);
+                    }
+
+                    this.getKits().add(rswKit);
+
+                    Debugger.print(KitManager.class, "Loaded " + rswKit);
                 } catch (Exception e) {
-                    mat = Material.BARRIER;
-                    RealSkywarsAPI.getInstance().getLogger().warning(matString + " isn't a valid material [KIT]");
-                }
-
-                List<Map<String, Object>> inv = (List<Map<String, Object>>) RSWKitsConfig.file().getList("Kits." + name + ".Contents");
-
-                if (inv.isEmpty()) {
-                    Debugger.printerr(KitManager.class, "Inventory Itens on " + "Kits." + name + ".Contents" + " are empty! Skipping kit.");
+                    Bukkit.getLogger().warning("Error loading kit: " + name + "! Skipping kit.");
+                    e.printStackTrace();
                     continue;
                 }
-
-                rswKit = new RSWKit(name, displayName, price, mat, new KitInventory(ItemStackSpringer.getItemsDeSerialized(inv)), RSWKitsConfig.file().getString("Kits." + name + ".Permission"));
-
-                if (RSWKitsConfig.file().isList("Kits." + name + ".Perks")) {
-                    RSWKitsConfig.file().getStringList("Kits." + name + ".Perks")
-                            .forEach(rswKit::addPerk);
-                }
-
-                this.getKits().add(rswKit);
-
-                Debugger.print(KitManager.class, "Loaded " + rswKit);
             }
         }
     }
