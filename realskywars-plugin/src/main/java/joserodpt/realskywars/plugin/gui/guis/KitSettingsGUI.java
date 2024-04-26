@@ -43,9 +43,9 @@ public class KitSettingsGUI {
     private static final Map<UUID, KitSettingsGUI> inventories = new HashMap<>();
     private Inventory inv;
     private ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
-    private ItemStack confirm = Itens.createItemLore(Material.CHEST, 1, "&9Save Settings", Collections.singletonList("&7Click here to save your settings."));
-    private ItemStack ender_pearl = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&aON"));
-    private ItemStack ender_pearl_off = Itens.createItemLore(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&cOFF"));
+    private ItemStack confirm = Itens.createItem(Material.CHEST, 1, "&9Save Settings", Collections.singletonList("&7Click here to save your settings."));
+    private ItemStack ender_pearl = Itens.createItem(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&aON"));
+    private ItemStack ender_pearl_off = Itens.createItem(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&cOFF"));
     private final UUID uuid;
 
     public KitSettingsGUI(RSWKit k, UUID id) {

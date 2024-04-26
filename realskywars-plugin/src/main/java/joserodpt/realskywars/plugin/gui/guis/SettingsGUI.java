@@ -74,9 +74,9 @@ public class SettingsGUI {
         public ItemStack getItem() {
             if (entryType == 0) {
                 boolean val = RSWConfig.file().getBoolean(configPath);
-                return Itens.createItemLore(val ? Material.REDSTONE_TORCH : Material.LEVER, 1, this.getName() + " &f- " + (val ? "&a&lON" : "&c&lOFF"), Collections.singletonList("&7Click here to toggle this setting."));
+                return Itens.createItem(val ? Material.REDSTONE_TORCH : Material.LEVER, 1, this.getName() + " &f- " + (val ? "&a&lON" : "&c&lOFF"), Collections.singletonList("&7Click here to toggle this setting."));
             } else {
-                return Itens.createItemLore(Material.OAK_BUTTON, Math.min(64, Math.max(1, RSWConfig.file().getInt(configPath))), this.getName() + ": " + RSWConfig.file().getInt(configPath), Collections.singletonList("&7Click here to change this value."));
+                return Itens.createItem(Material.OAK_BUTTON, Math.min(64, Math.max(1, RSWConfig.file().getInt(configPath))), this.getName() + ": " + RSWConfig.file().getInt(configPath), Collections.singletonList("&7Click here to change this value."));
             }
         }
     }
@@ -85,7 +85,7 @@ public class SettingsGUI {
     int pageNumber = 0;
     private Pagination<SettingEntry> p;
     private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
-    private ItemStack close = Itens.createItemLore(Material.OAK_DOOR, 1, "&cClose", Collections.singletonList("&fClick here to close this menu."));
+    private ItemStack close = Itens.createItem(Material.OAK_DOOR, 1, "&cClose", Collections.singletonList("&fClick here to close this menu."));
     private final Inventory inv;
     private final UUID uuid;
     private final RealSkywarsAPI rsa;
@@ -286,16 +286,16 @@ public class SettingsGUI {
             inv.setItem(18, placeholder);
             inv.setItem(27, placeholder);
         } else {
-            inv.setItem(18, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_BACK_TITLE), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_BACK_DESC))));
-            inv.setItem(27, Itens.createItemLore(Material.YELLOW_STAINED_GLASS, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_BACK_TITLE), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_BACK_DESC))));
+            inv.setItem(18, Itens.createItem(Material.YELLOW_STAINED_GLASS, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_BACK_TITLE), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_BACK_DESC))));
+            inv.setItem(27, Itens.createItem(Material.YELLOW_STAINED_GLASS, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_BACK_TITLE), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_BACK_DESC))));
         }
 
         if (lastPage()) {
             inv.setItem(26, placeholder);
             inv.setItem(35, placeholder);
         } else {
-            inv.setItem(26, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_NEXT_TITLE), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_NEXT_DESC))));
-            inv.setItem(35, Itens.createItemLore(Material.GREEN_STAINED_GLASS, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_NEXT_TITLE), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_NEXT_DESC))));
+            inv.setItem(26, Itens.createItem(Material.GREEN_STAINED_GLASS, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_NEXT_TITLE), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_NEXT_DESC))));
+            inv.setItem(35, Itens.createItem(Material.GREEN_STAINED_GLASS, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_NEXT_TITLE), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_NEXT_DESC))));
         }
 
         this.inv.setItem(49, close);

@@ -139,11 +139,11 @@ public class RSWShopDisplayItem {
         switch (this.it) {
             case KITS:
                 RSWKit k = RealSkywarsAPI.getInstance().getKitManagerAPI().getKit(name);
-                return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), "&r&f" + k.getDisplayName(), k.getDescription(false)) : Itens.createItemLore(m, 1, "&r&f" + k.getDisplayName(), k.getDescription(true));
+                return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), "&r&f" + k.getDisplayName(), k.getDescription(false)) : Itens.createItem(m, 1, "&r&f" + k.getDisplayName(), k.getDescription(true));
             case SPEC_SHOP:
-                return Itens.createItemLore(m, 1, "&f" + this.amount + "x " + this.getDisplayName(), makeSpecShopDescription());
+                return Itens.createItem(m, 1, "&f" + this.amount + "x " + this.getDisplayName(), makeSpecShopDescription());
             default:
-                return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), formatName(this.getDisplayName()), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.SHOP_BOUGHT))) : Itens.createItemLore(m, 1, formatName(this.getDisplayName()), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.SHOP_BUY).replace("%price%", this.getPrice().toString())));
+                return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), formatName(this.getDisplayName()), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.SHOP_BOUGHT))) : Itens.createItem(m, 1, formatName(this.getDisplayName()), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.SHOP_BUY).replace("%price%", this.getPrice().toString())));
         }
     }
 

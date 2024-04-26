@@ -76,7 +76,7 @@ public class Itens {
         return item;
     }
 
-    public static ItemStack createItemLore(Material material, int quantidade, String nome, List<String> desc) {
+    public static ItemStack createItem(Material material, int quantidade, String nome, List<String> desc) {
         ItemStack item = new ItemStack(material, quantidade);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', nome));

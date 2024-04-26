@@ -57,7 +57,7 @@ public class PlayerGUI {
                 .map(s -> variables(s, target))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        inv.setItem(2, Itens.createItemLore(Material.MAP, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.STATS_ITEM_NAME, false).replace("%player%", target.getDisplayName()), lore));
+        inv.setItem(2, Itens.createItem(Material.MAP, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.STATS_ITEM_NAME, false).replace("%player%", target.getDisplayName()), lore));
     }
 
     public static Listener getListener() {

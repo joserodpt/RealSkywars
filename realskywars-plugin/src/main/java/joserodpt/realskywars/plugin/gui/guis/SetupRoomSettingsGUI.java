@@ -42,16 +42,16 @@ public class SetupRoomSettingsGUI {
     private static final Map<UUID, SetupRoomSettingsGUI> inventories = new HashMap<>();
     private Inventory inv;
     private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
-    private final ItemStack confirm = Itens.createItemLore(Material.CHEST, 1, "&9Save Settings", Collections.singletonList("&7Click here to confirm your settings."));
+    private final ItemStack confirm = Itens.createItem(Material.CHEST, 1, "&9Save Settings", Collections.singletonList("&7Click here to confirm your settings."));
     // settings
-    private final ItemStack specon = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &aON &7for dead players."));
-    private final ItemStack specoff = Itens.createItemLore(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &cOFF &7for dead players."));
-    private final ItemStack ieon = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &aON&7."));
-    private final ItemStack ieoff = Itens.createItemLore(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &cOFF&7."));
-    private final ItemStack rankedon = Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked Mode is turned &aON&7."));
-    private final ItemStack rankedoff = Itens.createItemLore(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked Mode is turned &cOFF&7."));
-    private final ItemStack borderon = Itens.createItemLore(Material.ITEM_FRAME, 1, "&9Border", Collections.singletonList("&7Border is turned &aON&7."));
-    private final ItemStack borderoff = Itens.createItemLore(Material.ITEM_FRAME, 1, "&9Border", Collections.singletonList("&7Border is turned &cOFF&7."));
+    private final ItemStack specon = Itens.createItem(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &aON &7for dead players."));
+    private final ItemStack specoff = Itens.createItem(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &cOFF &7for dead players."));
+    private final ItemStack ieon = Itens.createItem(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &aON&7."));
+    private final ItemStack ieoff = Itens.createItem(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &cOFF&7."));
+    private final ItemStack rankedon = Itens.createItem(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked Mode is turned &aON&7."));
+    private final ItemStack rankedoff = Itens.createItem(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked Mode is turned &cOFF&7."));
+    private final ItemStack borderon = Itens.createItem(Material.ITEM_FRAME, 1, "&9Border", Collections.singletonList("&7Border is turned &aON&7."));
+    private final ItemStack borderoff = Itens.createItem(Material.ITEM_FRAME, 1, "&9Border", Collections.singletonList("&7Border is turned &cOFF&7."));
 
     private final UUID uuid;
     private RSWPlayer p;

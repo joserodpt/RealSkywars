@@ -98,7 +98,7 @@ public class AchievementsManager extends AchievementsManagerAPI {
     public ItemStack getItem(RSWAchievement s, UUID uuid) {
         RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(uuid);
 
-        return Itens.createItemLore(getColor(s, p), 1, "&b&l" + s.getGoal(), Collections.singletonList("&aReward: &e" + s.getReward() + " coins"));
+        return Itens.createItem(getColor(s, p), 1, "&b&l" + s.getGoal(), Collections.singletonList("&aReward: &e" + s.getReward() + " coins"));
     }
 
     @Override

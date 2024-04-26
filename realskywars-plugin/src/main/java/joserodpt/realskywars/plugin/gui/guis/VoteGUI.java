@@ -42,7 +42,7 @@ public class VoteGUI {
 
     private static Map<UUID, VoteGUI> inventories = new HashMap<>();
     private Inventory inv;
-    private ItemStack close = Itens.createItemLore(Material.OAK_DOOR, 1, "&cClose", Collections.singletonList("&fClick here to close this menu."));
+    private ItemStack close = Itens.createItem(Material.OAK_DOOR, 1, "&cClose", Collections.singletonList("&fClick here to close this menu."));
     private final UUID uuid;
     private final RSWPlayer p;
     public enum VoteSetting { CHESTS, TIME, PROJECTILE }
