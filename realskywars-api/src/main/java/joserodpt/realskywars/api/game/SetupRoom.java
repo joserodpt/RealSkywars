@@ -231,5 +231,6 @@ public class SetupRoom {
     }
 
     public void removeChest(Location location) {
+        this.chests.remove(location);
     }
 }
