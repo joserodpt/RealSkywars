@@ -23,15 +23,17 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SetupRoom {
 
     private final String name;
     private final String displayName;
 
-    private final List<RSWCage> cages = new ArrayList<>();
-    private final List<RSWChest> chests = new ArrayList<>();
+    private final Map<Location, RSWCage> cages = new HashMap<>();
+    private final Map<Location, RSWChest> chests = new HashMap<>();
     private final int maxPlayers;
     private final RSWGame.Mode mode;
     private Boolean tpConfirm = false;
@@ -80,7 +82,7 @@ public class SetupRoom {
     }
 
     public List<RSWCage> getCages() {
-        return this.cages;
+        return new ArrayList<>(this.cages.values());
     }
 
     public void confirmCages(boolean b) {
@@ -111,8 +113,8 @@ public class SetupRoom {
         return this.mode;
     }
 
-    public void addCage(RSWCage c) {
-        this.cages.add(c);
+    public void addCage(Location l, RSWCage c) {
+        this.cages.put(l, c);
     }
 
     public World getWorld() {
@@ -156,11 +158,11 @@ public class SetupRoom {
     }
 
     public void addChest(RSWChest swChest) {
-        this.chests.add(swChest);
+        this.chests.put(swChest.getLocation(), swChest);
     }
 
     public List<RSWChest> getChests() {
-        return this.chests;
+        return new ArrayList<>(this.chests.values());
     }
 
     public Boolean isRanked() {
@@ -222,5 +224,12 @@ public class SetupRoom {
     public void setBoundaries(Location location, Location location1) {
         this.l1 = location;
         this.l2 = location1;
+    }
+
+    public void removeCage(Location location) {
+        this.cages.remove(location);
+    }
+
+    public void removeChest(Location location) {
     }
 }

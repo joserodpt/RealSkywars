@@ -253,6 +253,15 @@ public class PlayerListener implements Listener {
                     break;
             }
         }
+        if (event.getBlock().getType() == Material.BEACON && p.getSetupRoom() != null) {
+            Location loc = event.getBlock().getLocation().add(0.5, 0, 0.5);
+            p.getSetupRoom().removeCage(loc);
+            p.getPlayer().sendMessage(ChatColor.RED + "You removed this cage.");
+        }
+        if (event.getBlock().getType() == Material.CHEST && p.getSetupRoom() != null) {
+            p.getSetupRoom().removeChest(event.getBlock().getLocation());
+            p.getPlayer().sendMessage(ChatColor.RED + "You removed this chest.");
+        }
         if (rs.getGameManagerAPI().isInLobby(event.getBlock().getWorld()) && !p.getPlayer().isOp()) {
             event.setCancelled(true);
         }
@@ -319,11 +328,11 @@ public class PlayerListener implements Listener {
         switch (p.getSetupRoom().getGameType()) {
             case SOLO:
                 RSWSoloCage c = new RSWSoloCage(i, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getWorld().getName(), 0, 64, 0);
-                p.getSetupRoom().addCage(c);
+                p.getSetupRoom().addCage(loc, c);
                 break;
             case TEAMS:
                 RSWTeamCage tc = new RSWTeamCage(i, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getWorld().getName(), p.getSetupRoom().getPlayersPerTeam());
-                p.getSetupRoom().addCage(tc);
+                p.getSetupRoom().addCage(loc, tc);
                 break;
         }
         e.getPlayer().sendMessage(ChatColor.GREEN + "You placed cage number " + i);
