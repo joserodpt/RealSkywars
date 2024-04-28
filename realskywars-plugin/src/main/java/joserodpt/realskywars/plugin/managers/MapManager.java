@@ -155,7 +155,7 @@ public class MapManager extends MapManagerAPI {
     public void cancelSetup(RSWPlayer p) {
         rs.getGameManagerAPI().tpToLobby(p);
         rs.getPlayerManagerAPI().giveItems(p.getPlayer(), PlayerManager.Items.LOBBY);
-        RSWMapsConfig.file().set(p.getSetupRoom().getName(), null);
+        RSWMapsConfig.file().remove(p.getSetupRoom().getName());
         RSWMapsConfig.save();
         p.setSetup(null);
     }

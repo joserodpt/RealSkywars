@@ -122,7 +122,6 @@ public class RealSkywarsPlugin extends JavaPlugin {
         Debugger.print(RealSkywars.class, "DEBUG MODE ENABLED");
         Debugger.execute();
         realSkywars.getGameManagerAPI().loadLobby();
-        realSkywars.getGameManagerAPI().loadLobby();
 
         //config
         RSWAchievementsConfig.setup(this);

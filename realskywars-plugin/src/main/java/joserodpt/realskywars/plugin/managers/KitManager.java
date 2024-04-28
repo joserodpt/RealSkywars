@@ -103,7 +103,7 @@ public class KitManager extends KitManagerAPI {
     @Override
     public void unregisterKit(RSWKit k) {
         this.getKits().remove(k);
-        RSWKitsConfig.file().set("Kits", null);
+        RSWKitsConfig.file().remove("Kits");
         this.getKits().forEach(this::registerKit);
         RSWKitsConfig.save();
     }
