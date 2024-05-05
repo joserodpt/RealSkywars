@@ -302,7 +302,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
                         new ExternalPluginPermission("rsw.party.leave", "Allow leaving a party.", List.of("party leave"))
                 ), this.getDescription().getVersion()));
             } catch (Exception e) {
-                getLogger().warning("Error while trying to register RealScoreboard permissions onto RealPermissions.");
+                getLogger().warning("Error while trying to register RealSkywars permissions onto RealPermissions.");
                 e.printStackTrace();
             }
         }
