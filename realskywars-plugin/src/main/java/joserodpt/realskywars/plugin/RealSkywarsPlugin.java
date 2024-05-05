@@ -16,8 +16,8 @@ package joserodpt.realskywars.plugin;
  */
 
 import joserodpt.realpermissions.api.RealPermissionsAPI;
-import joserodpt.realpermissions.api.pluginhookup.ExternalPlugin;
-import joserodpt.realpermissions.api.pluginhookup.ExternalPluginPermission;
+import joserodpt.realpermissions.api.pluginhook.ExternalPlugin;
+import joserodpt.realpermissions.api.pluginhook.ExternalPluginPermission;
 import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.chests.RSWChest;
@@ -74,6 +74,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -277,28 +278,33 @@ public class RealSkywarsPlugin extends JavaPlugin {
         });
 
         if (getServer().getPluginManager().getPlugin("RealPermissions") != null) {
-            //register RealSkywars permissions onto RealPermissions
-            RealPermissionsAPI.getInstance().getHookupAPI().addHookup(new ExternalPlugin(this.getDescription().getName(), "&fReal&bSkywars", this.getDescription().getDescription(), Material.BOW, Arrays.asList(
-                    new ExternalPluginPermission("rsw.basic", "Permission for voting on the Basic Chest Tier."),
-                    new ExternalPluginPermission("rsw.normal", "Permission for voting on the Normal Chest Tier."),
-                    new ExternalPluginPermission("rsw.epic", "Permission for voting on the Epic Chest Tier."),
-                    new ExternalPluginPermission("rsw.day", "Permission for voting on the Game Time Day."),
-                    new ExternalPluginPermission("rsw.sunset", "Permission for voting on the Game Time Sunset."),
-                    new ExternalPluginPermission("rsw.night", "Permission for voting on the Game Time Night."),
-                    new ExternalPluginPermission("rsw.normal-projectile", "Permission for voting on the Game Normal Projectiles."),
-                    new ExternalPluginPermission("rsw.break-projectile", "Permission for voting the on Game Break Projectiles."),
-                    new ExternalPluginPermission("rsw.join", "Allow access to the maps menu.", List.of("rsw list")),
-                    new ExternalPluginPermission("rsw.kits", "Allow access to the kits menu.", List.of("rsw kits")),
-                    new ExternalPluginPermission("rsw.shop", "Allow access to the shop menu.", List.of("rsw shop")),
-                    new ExternalPluginPermission("rsw.coins", "Allow checking the player's current balance.", List.of("rsw coins")),
-                    new ExternalPluginPermission("rsw.lobby", "Allow teleportation to the lobby.", List.of("rsw lobby")),
-                    new ExternalPluginPermission("rsw.forcestart", "Allow force starting the current match.", List.of("rsw forcestart")),
-                    new ExternalPluginPermission("rsw.leave", "Allow leaving the current match.", List.of("rsw leave")),
-                    new ExternalPluginPermission("rsw.party.owner", "Allow party owner commands.", Arrays.asList("party create", "party disband", "party kick")),
-                    new ExternalPluginPermission("rsw.party.invite", "Allow party invite commands.", List.of("party invite")),
-                    new ExternalPluginPermission("rsw.party.accept", "Allow accepting a party invite.", List.of("party accept")),
-                    new ExternalPluginPermission("rsw.party.leave", "Allow leaving a party.", List.of("party leave"))
-            ), this.getDescription().getVersion()));
+            //register RealMines permissions onto RealPermissions
+            try {
+                RealPermissionsAPI.getInstance().getHooksAPI().addHook(new ExternalPlugin(this.getDescription().getName(), "&fReal&bSkywars", this.getDescription().getDescription(), Material.BOW, Arrays.asList(
+                        new ExternalPluginPermission("rsw.basic", "Permission for voting on the Basic Chest Tier."),
+                        new ExternalPluginPermission("rsw.normal", "Permission for voting on the Normal Chest Tier."),
+                        new ExternalPluginPermission("rsw.epic", "Permission for voting on the Epic Chest Tier."),
+                        new ExternalPluginPermission("rsw.day", "Permission for voting on the Game Time Day."),
+                        new ExternalPluginPermission("rsw.sunset", "Permission for voting on the Game Time Sunset."),
+                        new ExternalPluginPermission("rsw.night", "Permission for voting on the Game Time Night."),
+                        new ExternalPluginPermission("rsw.normal-projectile", "Permission for voting on the Game Normal Projectiles."),
+                        new ExternalPluginPermission("rsw.break-projectile", "Permission for voting the on Game Break Projectiles."),
+                        new ExternalPluginPermission("rsw.join", "Allow access to the maps menu.", List.of("rsw list")),
+                        new ExternalPluginPermission("rsw.kits", "Allow access to the kits menu.", List.of("rsw kits")),
+                        new ExternalPluginPermission("rsw.shop", "Allow access to the shop menu.", List.of("rsw shop")),
+                        new ExternalPluginPermission("rsw.coins", "Allow checking the player's current balance.", List.of("rsw coins")),
+                        new ExternalPluginPermission("rsw.lobby", "Allow teleportation to the lobby.", List.of("rsw lobby")),
+                        new ExternalPluginPermission("rsw.forcestart", "Allow force starting the current match.", List.of("rsw forcestart")),
+                        new ExternalPluginPermission("rsw.leave", "Allow leaving the current match.", List.of("rsw leave")),
+                        new ExternalPluginPermission("rsw.party.owner", "Allow party owner commands.", Arrays.asList("party create", "party disband", "party kick")),
+                        new ExternalPluginPermission("rsw.party.invite", "Allow party invite commands.", List.of("party invite")),
+                        new ExternalPluginPermission("rsw.party.accept", "Allow accepting a party invite.", List.of("party accept")),
+                        new ExternalPluginPermission("rsw.party.leave", "Allow leaving a party.", List.of("party leave"))
+                ), this.getDescription().getVersion()));
+            } catch (Exception e) {
+                getLogger().warning("Error while trying to register RealScoreboard permissions onto RealPermissions.");
+                e.printStackTrace();
+            }
         }
 
         getLogger().info("Finished loading in " + ((System.currentTimeMillis() - start) / 1000F) + " seconds.");
