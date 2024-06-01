@@ -56,12 +56,12 @@ public abstract class RSWGame {
     private final RSWWorld world;
     private final ArenaCuboid arenaCuboid;
     private final List<RSWChest> chests;
-    private List<RSWSign> signs;
+    private final List<RSWSign> signs;
     private final String name;
     private String displayName;
-    private final int maxPlayers;
+    private final int maxPlayers, borderSize;
+    private int timePassed;
     private final WorldBorder border;
-    private final int borderSize;
     private final Location spectatorLocation;
     private final String schematicName;
     private final List<RSWPlayer> inRoom = new ArrayList<>();
@@ -71,16 +71,14 @@ public abstract class RSWGame {
     private RSWGame.GameState state;
     private BossBar bossBar;
     private RSWChest.Tier chestTier = RSWChest.Tier.NORMAL;
-    private int timePassed = 0;
     private Boolean specEnabled, instantEnding, ranked, borderEnabled;
-    private RSWCountdown startTimer;
-    private RSWCountdown startRoomTimer;
-    private RSWCountdown winTimer;
+    private RSWCountdown startTimer, startRoomTimer, winTimer;
     private BukkitTask timeCounterTask;
     private ProjectileType projectileType = ProjectileType.NORMAL;
     private TimeType timeType = TimeType.DAY;
     private List<SWEvent> events;
     private RealSkywarsAPI rs;
+    private boolean registered = true;
 
     public RSWGame(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, RSWGame.GameState estado, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean borderEnabled, Location pos1, Location pos2, List<RSWChest> chests, Boolean rankd, RealSkywarsAPI rs) {
         this.rs = rs;
@@ -796,6 +794,14 @@ public abstract class RSWGame {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public void setRegistered(boolean b) {
+        this.registered = b;
+    }
+
+    public boolean isRegistered() {
+        return registered;
     }
 
     public enum Data {

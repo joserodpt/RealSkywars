@@ -17,7 +17,7 @@ public abstract class GameManagerAPI {
 
     public abstract void endGames();
 
-    public abstract List<RSWGame> getRoomsWithSelection(RSWPlayer.MapViewerPref t);
+    public abstract List<RSWGame> getRoomsWithSelection(RSWPlayer rswPlayer);
 
     public abstract String getStateString(RSWPlayer gp, RSWGame.GameState t);
 

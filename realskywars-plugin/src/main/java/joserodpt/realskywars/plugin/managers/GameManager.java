@@ -71,23 +71,23 @@ public class GameManager extends GameManagerAPI {
     }
 
     @Override
-    public List<RSWGame> getRoomsWithSelection(RSWPlayer.MapViewerPref t) {
+    public List<RSWGame> getRoomsWithSelection(RSWPlayer rswPlayer) {
         List<RSWGame> f = new ArrayList<>();
-        switch (t) {
+        switch (rswPlayer.getMapViewerPref()) {
             case MAPV_ALL:
-                f.addAll(this.games);
+                f.addAll(rswPlayer.getPlayer().hasPermission("rsw.admin") || rswPlayer.getPlayer().isOp() ? this.games : this.games.stream().filter(RSWGame::isRegistered).collect(Collectors.toList()));
                 break;
             case MAPV_WAITING:
-                f.addAll(this.games.stream().filter(r -> r.getState().equals(RSWGame.GameState.WAITING)).collect(Collectors.toList()));
+                f.addAll(this.games.stream().filter(r -> r.getState().equals(RSWGame.GameState.WAITING) && r.isRegistered()).collect(Collectors.toList()));
                 break;
             case MAPV_STARTING:
-                f.addAll(this.games.stream().filter(r -> r.getState().equals(RSWGame.GameState.STARTING)).collect(Collectors.toList()));
+                f.addAll(this.games.stream().filter(r -> r.getState().equals(RSWGame.GameState.STARTING) && r.isRegistered()).collect(Collectors.toList()));
                 break;
             case MAPV_AVAILABLE:
-                f.addAll(this.games.stream().filter(r -> r.getState().equals(RSWGame.GameState.AVAILABLE)).collect(Collectors.toList()));
+                f.addAll(this.games.stream().filter(r -> r.getState().equals(RSWGame.GameState.AVAILABLE) && r.isRegistered()).collect(Collectors.toList()));
                 break;
             case MAPV_SPECTATE:
-                f.addAll(this.games.stream().filter(r -> r.getState().equals(RSWGame.GameState.PLAYING) || r.getState().equals(RSWGame.GameState.FINISHING)).collect(Collectors.toList()));
+                f.addAll(this.games.stream().filter(r -> (r.getState().equals(RSWGame.GameState.PLAYING) || r.getState().equals(RSWGame.GameState.FINISHING) && r.isRegistered())).collect(Collectors.toList()));
                 break;
             case SOLO:
                 f.addAll(this.getGames(GameModes.SOLO));
@@ -104,11 +104,26 @@ public class GameManager extends GameManagerAPI {
             default:
                 break;
         }
-        if (f.isEmpty()) {
-            Placeholder g = new Placeholder("No Maps Found");
-            f.add(g);
+        return f.isEmpty() ? Collections.singletonList(new Placeholder("No Maps Found")) : f;
+    }
+
+    @Override
+    public List<RSWGame> getGames(GameModes pt) {
+        switch (pt) {
+            case ALL:
+                return this.games;
+            case SOLO:
+                return this.games.stream().filter(r -> r.getGameMode().equals(RSWGame.Mode.SOLO) && r.isRegistered()).collect(Collectors.toList());
+            case TEAMS:
+                return this.games.stream().filter(r -> r.getGameMode().equals(RSWGame.Mode.TEAMS) && r.isRegistered()).collect(Collectors.toList());
+            case RANKED:
+                return this.games.stream().filter(rswGame -> rswGame.isRanked() && rswGame.isRegistered()).collect(Collectors.toList());
+            case SOLO_RANKED:
+                return this.games.stream().filter(r -> r.isRanked() && r.isRegistered() && r.getGameMode().equals(RSWGame.Mode.SOLO)).collect(Collectors.toList());
+            case TEAMS_RANKED:
+                return this.games.stream().filter(r -> r.isRanked() && r.isRegistered() && r.getGameMode().equals(RSWGame.Mode.TEAMS)).collect(Collectors.toList());
         }
-        return f;
+        return Collections.emptyList();
     }
 
     @Override
@@ -175,25 +190,6 @@ public class GameManager extends GameManagerAPI {
     @Override
     public void clearRooms() {
         this.games.clear();
-    }
-
-    @Override
-    public List<RSWGame> getGames(GameModes pt) {
-        switch (pt) {
-            case ALL:
-                return this.games;
-            case SOLO:
-                return this.games.stream().filter(r -> r.getGameMode().equals(RSWGame.Mode.SOLO)).collect(Collectors.toList());
-            case TEAMS:
-                return this.games.stream().filter(r -> r.getGameMode().equals(RSWGame.Mode.TEAMS)).collect(Collectors.toList());
-            case RANKED:
-                return this.games.stream().filter(RSWGame::isRanked).collect(Collectors.toList());
-            case SOLO_RANKED:
-                return this.games.stream().filter(r -> r.isRanked() && r.getGameMode().equals(RSWGame.Mode.SOLO)).collect(Collectors.toList());
-            case TEAMS_RANKED:
-                return this.games.stream().filter(r -> r.isRanked() && r.getGameMode().equals(RSWGame.Mode.TEAMS)).collect(Collectors.toList());
-        }
-        return Collections.emptyList();
     }
 
     @Override

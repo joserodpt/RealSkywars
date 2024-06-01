@@ -15,6 +15,10 @@ public abstract class MapManagerAPI {
 
     public abstract void unregisterMap(RSWGame map);
 
+    public abstract void registerMap(RSWGame map);
+
+    public abstract void deleteMap(RSWGame map);
+
     public abstract RSWGame getMap(String s);
 
     public abstract List<RSWCage> getCages(String s, Location specLoc);

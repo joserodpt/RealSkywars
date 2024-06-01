@@ -42,19 +42,19 @@ public class MapsListGUI {
 
     private static final Map<UUID, MapsListGUI> inventories = new HashMap<>();
     int pageNumber = 0;
-    private Pagination<RSWGame> p;
+    private final Pagination<RSWGame> p;
     private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     private final Inventory inv;
     private final UUID uuid;
     private final RSWPlayer gp;
     private final Map<Integer, RSWGame> display = new HashMap<>();
 
-    public MapsListGUI(RSWPlayer as, RSWPlayer.MapViewerPref t, String invName) {
+    public MapsListGUI(RSWPlayer as, String invName) {
         this.uuid = as.getUUID();
-        this.inv = Bukkit.getServer().createInventory(null, 54, Text.color(invName) + ": " + RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(as, select(t), false));
+        this.inv = Bukkit.getServer().createInventory(null, 54, Text.color(invName) + ": " + RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(as, select(as.getMapViewerPref()), false));
 
         this.gp = as;
-        List<RSWGame> items = RealSkywarsAPI.getInstance().getGameManagerAPI().getRoomsWithSelection(t);
+        List<RSWGame> items = RealSkywarsAPI.getInstance().getGameManagerAPI().getRoomsWithSelection(as);
 
         this.p = new Pagination<>(28, items);
         fillChest(p.getPage(pageNumber), as);
@@ -141,7 +141,7 @@ public class MapsListGUI {
                 }
 
                 gp.closeInventory();
-                MapsListGUI v = new MapsListGUI(gp, gp.getMapViewerPref(), RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(gp, LanguageManagerAPI.TS.MAPS_NAME, false));
+                MapsListGUI v = new MapsListGUI(gp, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(gp, LanguageManagerAPI.TS.MAPS_NAME, false));
                 v.openInventory(gp);
                 gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
             }

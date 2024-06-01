@@ -75,7 +75,7 @@ public class RealSkywarsCMD extends CommandBase {
             if (p.getPlayer().isOp() || p.getPlayer().hasPermission("rsw.admin")) {
                 GUIManager.openPluginMenu(p, rs);
             } else {
-                MapsListGUI v = new MapsListGUI(p, p.getMapViewerPref(), rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAPS_NAME, false));
+                MapsListGUI v = new MapsListGUI(p, rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAPS_NAME, false));
                 v.openInventory(p);
             }
         } else {
@@ -434,7 +434,7 @@ public class RealSkywarsCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
             if (p.getMatch() == null) {
-                MapsListGUI v = new MapsListGUI(p, p.getMapViewerPref(), rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAPS_NAME, false));
+                MapsListGUI v = new MapsListGUI(p, rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAPS_NAME, false));
                 v.openInventory(p);
             } else {
                 p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ALREADY_IN_MATCH, true));
@@ -583,13 +583,43 @@ public class RealSkywarsCMD extends CommandBase {
 
     @SubCommand("unregister")
     @Completion("#maps")
-    @Alias("del")
+    @Alias("unreg")
     @Permission("rsw.admin")
     @WrongUsage("&c/rsw unregister <map>")
-    public void delete(final CommandSender commandSender, String mapName) {
+    public void unregister(final CommandSender commandSender, String mapName) {
         RSWGame map = rs.getMapManagerAPI().getMap(mapName);
         if (map != null) {
             rs.getMapManagerAPI().unregisterMap(map);
+            commandSender.sendMessage(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.MAP_UNREGISTERED, true));
+        } else {
+            commandSender.sendMessage(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.NO_GAME_FOUND, true));
+        }
+    }
+
+    @SubCommand("register")
+    @Completion("#maps")
+    @Alias("reg")
+    @Permission("rsw.admin")
+    @WrongUsage("&c/rsw register <map>")
+    public void register(final CommandSender commandSender, String mapName) {
+        RSWGame map = rs.getMapManagerAPI().getMap(mapName);
+        if (map != null) {
+            rs.getMapManagerAPI().registerMap(map);
+            commandSender.sendMessage(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.MAP_UNREGISTERED, true));
+        } else {
+            commandSender.sendMessage(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.NO_GAME_FOUND, true));
+        }
+    }
+
+    @SubCommand("delete")
+    @Completion("#maps")
+    @Alias("del")
+    @Permission("rsw.admin")
+    @WrongUsage("&c/rsw delete <map>")
+    public void delete(final CommandSender commandSender, String mapName) {
+        RSWGame map = rs.getMapManagerAPI().getMap(mapName);
+        if (map != null) {
+            rs.getMapManagerAPI().deleteMap(map);
             commandSender.sendMessage(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.MAP_UNREGISTERED, true));
         } else {
             commandSender.sendMessage(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.NO_GAME_FOUND, true));

@@ -127,7 +127,7 @@ public class GUIManager {
             p.closeInventory();
             new BukkitRunnable() {
                 public void run() {
-                    MapsListGUI v = new MapsListGUI(p, p.getMapViewerPref(), rsa.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAPS_NAME, false));
+                    MapsListGUI v = new MapsListGUI(p, rsa.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAPS_NAME, false));
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);

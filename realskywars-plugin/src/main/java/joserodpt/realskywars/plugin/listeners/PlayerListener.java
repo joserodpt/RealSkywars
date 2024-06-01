@@ -222,7 +222,7 @@ public class PlayerListener implements Listener {
                                 break;
                             case NETHER_STAR:
                                 e.setCancelled(true);
-                                MapsListGUI v = new MapsListGUI(p, p.getMapViewerPref(), rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAPS_NAME, false));
+                                MapsListGUI v = new MapsListGUI(p, rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAPS_NAME, false));
                                 v.openInventory(p);
                                 e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 break;

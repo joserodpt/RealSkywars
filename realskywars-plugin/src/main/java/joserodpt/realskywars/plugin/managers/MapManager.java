@@ -47,6 +47,7 @@ import java.util.List;
 
 public class MapManager extends MapManagerAPI {
     private RealSkywarsAPI rs;
+
     public MapManager(RealSkywarsAPI rs) {
         this.rs = rs;
     }
@@ -106,10 +107,20 @@ public class MapManager extends MapManagerAPI {
 
     @Override
     public void unregisterMap(RSWGame map) {
+        map.kickPlayers(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.ADMIN_SHUTDOWN));
+        map.setRegistered(false);
+    }
+
+    @Override
+    public void registerMap(RSWGame map) {
+        map.setRegistered(true);
+    }
+
+    @Override
+    public void deleteMap(RSWGame map) {
         map.getAllPlayers().forEach(map::removePlayer);
         rs.getGameManagerAPI().removeRoom(map);
         RSWMapsConfig.file().remove(map.getMapName());
-        rs.getGameManagerAPI().getGames(GameManager.GameModes.ALL).forEach(swGameMode -> swGameMode.save(RSWGame.Data.ALL, true));
         RSWMapsConfig.save();
     }
 
@@ -120,6 +131,7 @@ public class MapManager extends MapManagerAPI {
                 .findFirst()
                 .orElse(null);
     }
+
     @Override
     public List<RSWCage> getCages(String s, Location specLoc) {
         List<RSWCage> locs = new ArrayList<>();
@@ -133,6 +145,7 @@ public class MapManager extends MapManagerAPI {
         }
         return locs;
     }
+
     @Override
     public void setupSolo(RSWPlayer p, String mapname, String displayName, RSWWorld.WorldType wt, int maxP) {
         SetupRoom s = new SetupRoom(mapname, displayName, null, wt, maxP);
@@ -142,15 +155,17 @@ public class MapManager extends MapManagerAPI {
         SetupRoomSettingsGUI m = new SetupRoomSettingsGUI(p, s);
         m.openInventory(p);
     }
+
     @Override
     public void setupTeams(RSWPlayer p, String mapname, String displayName, RSWWorld.WorldType wt, int teams, int pperteam) {
-        SetupRoom s = new SetupRoom(mapname, displayName,null, wt, teams, pperteam);
+        SetupRoom s = new SetupRoom(mapname, displayName, null, wt, teams, pperteam);
         s.setSchematic(mapname);
         p.setSetup(s);
 
         SetupRoomSettingsGUI m = new SetupRoomSettingsGUI(p, s);
         m.openInventory(p);
     }
+
     @Override
     public void cancelSetup(RSWPlayer p) {
         rs.getGameManagerAPI().tpToLobby(p);
@@ -159,6 +174,7 @@ public class MapManager extends MapManagerAPI {
         RSWMapsConfig.save();
         p.setSetup(null);
     }
+
     @Override
     public void continueSetup(RSWPlayer p) {
         if (!p.getSetupRoom().isTPConfirmed()) {
@@ -193,6 +209,7 @@ public class MapManager extends MapManagerAPI {
             }
         }
     }
+
     @Override
     public void finishSetup(RSWPlayer p) {
         Location pos1 = null;
@@ -298,14 +315,17 @@ public class MapManager extends MapManagerAPI {
     protected RSWGame.Mode getGameType(String s) {
         return (RSWMapsConfig.file().getString(s + ".Settings.GameType") == null) ? null : RSWGame.Mode.valueOf(RSWMapsConfig.file().getString(s + ".Settings.GameType"));
     }
+
     @Override
     protected Boolean isInstantEndingEnabled(String s) {
         return RSWMapsConfig.file().getBoolean(s + ".Settings.Instant-End");
     }
+
     @Override
     protected Boolean isBorderEnabled(String s) {
         return RSWMapsConfig.file().getBoolean(s + ".Settings.Border");
     }
+
     @Override
     protected Location getPOS1(World w, String s) {
         double hx = RSWMapsConfig.file().getDouble(s + ".World.Border.POS1-X");
@@ -314,6 +334,7 @@ public class MapManager extends MapManagerAPI {
 
         return new Location(w, hx, hy, hz);
     }
+
     @Override
     protected Location getPOS2(World w, String s) {
         double hx = RSWMapsConfig.file().getDouble(s + ".World.Border.POS2-X");
@@ -322,10 +343,12 @@ public class MapManager extends MapManagerAPI {
 
         return new Location(w, hx, hy, hz);
     }
+
     @Override
     public Boolean isSpecEnabled(String s) {
         return RSWMapsConfig.file().getBoolean(s + ".Settings.Spectator");
     }
+
     @Override
     public Location getSpecLoc(String nome) {
         double x = RSWMapsConfig.file().getDouble(nome + ".Locations.Spectator.X");
@@ -335,14 +358,17 @@ public class MapManager extends MapManagerAPI {
         float yaw = RSWMapsConfig.file().getFloat(nome + ".Locations.Spectator.Yaw");
         return new Location(Bukkit.getWorld(nome), x, y, z, pitch, yaw);
     }
+
     @Override
     protected RSWWorld.WorldType getWorldType(String s) {
         return RSWWorld.WorldType.valueOf(s);
     }
+
     @Override
     protected Boolean isRanked(String s) {
         return RSWMapsConfig.file().getBoolean(s + ".ranked");
     }
+
     @Override
     protected List<RSWChest> getChests(String worldName, String section) {
         List<RSWChest> chests = new ArrayList<>();
