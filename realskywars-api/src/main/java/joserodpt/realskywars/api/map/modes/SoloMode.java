@@ -19,7 +19,6 @@ import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
-import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.PlayerManagerAPI;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
@@ -32,7 +31,6 @@ import joserodpt.realskywars.api.utils.Text;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -188,17 +186,12 @@ public class SoloMode extends RSWMap {
             RSWPlayer p = getPlayers().get(0);
             p.setInvincible(true);
 
-            super.getStartTimer().killTask();
+            super.getMapTimer().killTask();
             super.getTimeCounterTask().cancel();
-
-            super.getBossBar().setTitle(TranslatableLine.BOSSBAR_ARENA_END.get());
-            super.getBossBar().setProgress(0);
-            super.getBossBar().setColor(BarColor.BLUE);
 
             super.getRealSkywarsAPI().getPlayerManagerAPI().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(super.getRealSkywarsAPI().getLanguageManagerAPI().getString(gamePlayer, LanguageManagerAPI.TS.WINNER_BROADCAST, true).replace("%winner%", p.getDisplayName()).replace("%map%", super.getMapName()).replace("%displayname%", super.getDisplayName())));
 
             if (this.isInstantEndEnabled()) {
-                super.getBossBar().removeAll();
                 this.sendLog(p, true);
                 this.kickPlayers(null);
                 this.resetArena(OperationReason.RESET);
@@ -215,7 +208,6 @@ public class SoloMode extends RSWMap {
                         g.sendMessage(super.getRealSkywarsAPI().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MATCH_END, true).replace("%time%", Text.formatSeconds(RSWConfig.file().getInt("Config.Time-EndGame"))));
                     }
                 }, () -> {
-                    super.getBossBar().removeAll();
                     this.sendLog(p, true);
                     this.kickPlayers(null);
                     this.resetArena(OperationReason.RESET);

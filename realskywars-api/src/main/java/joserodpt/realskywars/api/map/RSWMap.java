@@ -20,7 +20,6 @@ import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.RSWMapsConfig;
-import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.PlayerManagerAPI;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
@@ -43,9 +42,6 @@ import org.bukkit.WorldBorder;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -74,10 +70,10 @@ public abstract class RSWMap {
     private final HashMap<UUID, Integer> projectileVotes = new HashMap<>();
     private final HashMap<UUID, Integer> timeVotes = new HashMap<>();
     private MapState state;
-    private BossBar bossBar;
+    private RSWBossbar bossbar;
     private RSWChest.Tier chestTier = RSWChest.Tier.NORMAL;
     private Boolean specEnabled, instantEnding, ranked, borderEnabled;
-    private RSWCountdown startTimer, startRoomTimer, winTimer;
+    private RSWCountdown mapTimer, startRoomTimer, winTimer;
     private BukkitTask timeCounterTask;
     private ProjectileType projectileType = ProjectileType.NORMAL;
     private TimeType timeType = TimeType.DAY;
@@ -118,8 +114,6 @@ public abstract class RSWMap {
 
         //load signs
         this.signs = loadSigns();
-
-        this.bossBar = Bukkit.createBossBar(TranslatableLine.BOSSBAR_ARENA_WAIT.get(), BarColor.WHITE, BarStyle.SOLID);
     }
 
     public RSWMap(String nome) {
@@ -152,16 +146,14 @@ public abstract class RSWMap {
     }
 
     public void startTimers() {
-        this.startTimer = new RSWCountdown(rs.getPlugin(), this.getMaxTime(), () -> {
+        this.mapTimer = new RSWCountdown(rs.getPlugin(), this.getMaxTime(), () -> {
             //
         }, () -> {
             //
         }, (t) -> {
-            this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_RUNTIME.get().replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
-            double div = (double) t.getSecondsLeft() / (double) this.getMaxTime();
-            this.bossBar.setProgress(div);
+            this.bossbar.tick();
         });
-        this.startTimer.scheduleTimer();
+        this.mapTimer.scheduleTimer();
 
         this.timeCounterTask = new BukkitRunnable() {
             public void run() {
@@ -180,8 +172,8 @@ public abstract class RSWMap {
         return this.timeCounterTask;
     }
 
-    public RSWCountdown getStartTimer() {
-        return this.startTimer;
+    public RSWCountdown getMapTimer() {
+        return this.mapTimer;
     }
 
     public RSWCountdown getStartRoomTimer() {
@@ -232,8 +224,8 @@ public abstract class RSWMap {
         return this.maxPlayers;
     }
 
-    public BossBar getBossBar() {
-        return this.bossBar;
+    public RSWBossbar getBossBar() {
+        return this.bossbar;
     }
 
     public WorldBorder getBorder() {
@@ -293,6 +285,7 @@ public abstract class RSWMap {
     public void setState(MapState w) {
         this.state = w;
         this.getRealSkywarsAPI().getEventsAPI().callRoomStateChange(this);
+        this.bossbar.setState(w);
     }
 
     abstract public boolean isPlaceHolder();
@@ -405,10 +398,7 @@ public abstract class RSWMap {
             case EXTERNAL:
                 this.inRoom.add(p);
                 p.setRoom(this);
-
-                if (p.getPlayer() != null) {
-                    this.bossBar.addPlayer(p.getPlayer());
-                }
+                this.getBossBar().addPlayer(p.getPlayer());
 
                 p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.EXTERNAL_SPECTATOR);
                 p.teleport(this.getSpectatorLocation());
@@ -580,7 +570,7 @@ public abstract class RSWMap {
     public void sendLog(RSWPlayer p, boolean winner) {
         if (p.getPlayer() != null) {
             for (String s : Text.color(rs.getLanguageManagerAPI().getList(p, LanguageManagerAPI.TL.ARENA_END))) {
-                p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE, this.isRanked()) + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, this.isRanked()) + "").replace("%time%", Text.formatSeconds(this.startTimer.getPassedSeconds())));
+                p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE, this.isRanked()) + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, this.isRanked()) + "").replace("%time%", Text.formatSeconds(this.mapTimer.getPassedSeconds())));
             }
 
             p.addGameLog(new RSWGameLog(this.getMapName(), this.getGameMode(), this.isRanked(), this.getMaxPlayers(), winner, this.getTimePassed(), Text.getDayAndTime()));
@@ -639,15 +629,12 @@ public abstract class RSWMap {
             p.sendActionbar(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_CANCEL, false));
             p.setBarNumber(0);
         }
-        getBossBar().setTitle(TranslatableLine.BOSSBAR_ARENA_WAIT.get());
-        getBossBar().setProgress(0D);
+
         this.setState(MapState.WAITING);
     }
 
     protected void commonRemovePlayer(RSWPlayer p) {
-        if (this.bossBar != null && !p.isBot()) {
-            this.bossBar.removePlayer(p.getPlayer());
-        }
+        this.getBossBar().removePlayer(p.getPlayer());
 
         p.setBarNumber(0);
         p.setInvincible(false);
@@ -705,8 +692,6 @@ public abstract class RSWMap {
                     p.sendActionbar(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_CANCEL, false));
                     p.setBarNumber(0);
                 }
-                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_WAIT.get());
-                this.bossBar.setProgress(0D);
                 this.setState(MapState.WAITING);
             } else {
                 this.setState(MapState.STARTING);
@@ -715,9 +700,6 @@ public abstract class RSWMap {
                     p.sendActionbar(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_START_COUNTDOWN, false).replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
                     p.setBarNumber(t.getSecondsLeft(), RSWConfig.file().getInt("Config.Time-To-Start"));
                 }
-                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_STARTING.get().replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
-                double div = (double) t.getSecondsLeft() / (double) RSWConfig.file().getInt("Config.Time-To-Start");
-                this.bossBar.setProgress(div);
             }
         });
 
@@ -730,8 +712,8 @@ public abstract class RSWMap {
         if (this.timeCounterTask != null) {
             this.timeCounterTask.cancel();
         }
-        if (this.startTimer != null) {
-            this.startTimer.killTask();
+        if (this.mapTimer != null) {
+            this.mapTimer.killTask();
         }
         if (this.winTimer != null) {
             this.winTimer.killTask();
@@ -754,7 +736,7 @@ public abstract class RSWMap {
         this.projectileVotes.put(UUID.randomUUID(), 1);
         this.timeVotes.put(UUID.randomUUID(), 1);
 
-        this.bossBar = Bukkit.createBossBar(TranslatableLine.BOSSBAR_ARENA_WAIT.get(), BarColor.WHITE, BarStyle.SOLID);
+        this.bossbar.reset();
 
         this.events = parseEvents();
 
