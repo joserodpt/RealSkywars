@@ -17,6 +17,7 @@ package joserodpt.realskywars.plugin.gui;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.ShopManagerAPI;
@@ -267,7 +268,7 @@ public class GUIManager {
         inventory.addItem(e -> {
             p.closeInventory();
             GUIManager.openPlayerMenu(p);
-        }, Itens.createItem(Material.BIRCH_DOOR, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_MENU_TITLE), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BUTTONS_MENU_DESC))), 26);
+        }, Itens.createItem(Material.BIRCH_DOOR, 1, TranslatableLine.BUTTONS_MENU_TITLE.get(), Collections.singletonList(TranslatableLine.BUTTONS_MENU_DESC.get())), 26);
 
         inventory.openInventory(p.getPlayer());
     }

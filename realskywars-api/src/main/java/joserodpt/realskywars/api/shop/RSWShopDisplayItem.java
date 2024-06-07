@@ -16,8 +16,8 @@ package joserodpt.realskywars.api.shop;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.kits.RSWKit;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Text;
@@ -133,7 +133,7 @@ public class RSWShopDisplayItem {
 
     public ItemStack getItemStack() {
         if (!this.interactive) {
-            return Itens.createItem(Material.BUCKET, this.getAmount(), RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.SEARCH_NOTFOUND_NAME));
+            return Itens.createItem(Material.BUCKET, this.getAmount(), TranslatableLine.SEARCH_NOTFOUND_NAME.get());
         }
 
         switch (this.it) {
@@ -143,12 +143,12 @@ public class RSWShopDisplayItem {
             case SPEC_SHOP:
                 return Itens.createItem(m, 1, "&f" + this.amount + "x " + this.getDisplayName(), makeSpecShopDescription());
             default:
-                return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), formatName(this.getDisplayName()), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.SHOP_BOUGHT))) : Itens.createItem(m, 1, formatName(this.getDisplayName()), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.SHOP_BUY).replace("%price%", this.getPrice().toString())));
+                return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), formatName(this.getDisplayName()), Collections.singletonList(TranslatableLine.SHOP_BOUGHT.get())) : Itens.createItem(m, 1, formatName(this.getDisplayName()), Collections.singletonList(TranslatableLine.SHOP_BUY.get().replace("%price%", this.getPrice().toString())));
         }
     }
 
     private List<String> makeSpecShopDescription() {
-        return Arrays.asList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.SHOP_BUY).replace("%price%", this.getPrice().toString()), "","&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount.");
+        return Arrays.asList(TranslatableLine.SHOP_BUY.get().replace("%price%", this.getPrice().toString()), "", "&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount.");
     }
 
     public Material getMaterial() {

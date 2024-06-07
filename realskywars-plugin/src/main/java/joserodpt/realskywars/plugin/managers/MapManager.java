@@ -23,6 +23,7 @@ import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.cages.RSWSoloCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWMapsConfig;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.game.SetupRoom;
 import joserodpt.realskywars.api.game.modes.RSWGame;
 import joserodpt.realskywars.api.game.modes.Solo;
@@ -107,7 +108,7 @@ public class MapManager extends MapManagerAPI {
 
     @Override
     public void unregisterMap(RSWGame map) {
-        map.kickPlayers(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.ADMIN_SHUTDOWN));
+        map.kickPlayers(TranslatableLine.ADMIN_SHUTDOWN.get());
         map.setRegistered(false);
     }
 

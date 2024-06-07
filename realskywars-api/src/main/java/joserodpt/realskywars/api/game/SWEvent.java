@@ -17,6 +17,7 @@ package joserodpt.realskywars.api.game;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWLanguagesConfig;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.game.modes.RSWGame;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.utils.Text;
@@ -71,7 +72,7 @@ public class SWEvent {
                 this.room.getPlayers().forEach(player -> player.spawnAbovePlayer(TNTPrimed.class));
                 break;
             case BORDERSHRINK:
-                this.room.getBossBar().setTitle(Text.color(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BOSSBAR_ARENA_DEATHMATCH)));
+                this.room.getBossBar().setTitle(TranslatableLine.BOSSBAR_ARENA_DEATHMATCH.get());
                 this.room.getBossBar().setProgress(0);
                 this.room.getBossBar().setColor(BarColor.RED);
 

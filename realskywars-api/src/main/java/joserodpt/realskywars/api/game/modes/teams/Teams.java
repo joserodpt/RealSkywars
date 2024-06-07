@@ -20,6 +20,7 @@ import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.game.RSWCountdown;
 import joserodpt.realskywars.api.game.modes.RSWGame;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
@@ -202,7 +203,7 @@ public class Teams extends RSWGame {
             super.getStartTimer().killTask();
             super.getTimeCounterTask().cancel();
 
-            super.getBossBar().setTitle(super.getRealSkywarsAPI().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.BOSSBAR_ARENA_END));
+            super.getBossBar().setTitle(TranslatableLine.BOSSBAR_ARENA_END.get());
             super.getBossBar().setProgress(0);
             super.getBossBar().setColor(BarColor.BLUE);
 

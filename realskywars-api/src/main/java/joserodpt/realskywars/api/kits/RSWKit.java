@@ -17,7 +17,7 @@ package joserodpt.realskywars.api.kits;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -70,15 +70,15 @@ public class RSWKit {
 
         List<String> desc = new ArrayList<>();
 
-        desc.add(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.KIT_PRICE).replace("%price%", this.price.toString()));
+        desc.add(TranslatableLine.KIT_PRICE.get().replace("%price%", this.price.toString()));
 
         //contents
         if (this.hasItems()) {
             desc.add("");
-            desc.add(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.KIT_CONTAINS));
+            desc.add(TranslatableLine.KIT_CONTAINS.get());
 
             for (ItemStack s : this.getKitInventory().getListInventory()) {
-                desc.add(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.KIT_ITEM).replace("%amount%", s.getAmount() + "").replace("%item%", RealSkywarsAPI.getInstance().getNMS().getItemName(s)));
+                desc.add(TranslatableLine.KIT_ITEM.get().replace("%amount%", s.getAmount() + "").replace("%item%", RealSkywarsAPI.getInstance().getNMS().getItemName(s)));
             }
         }
 
@@ -87,7 +87,7 @@ public class RSWKit {
         }
 
         desc.add("");
-        desc.add(shop ? RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.KIT_BUY) : RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.KIT_SELECT));
+        desc.add(shop ? TranslatableLine.KIT_BUY.get() : TranslatableLine.KIT_SELECT.get());
 
         return desc;
     }

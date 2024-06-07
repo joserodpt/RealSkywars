@@ -17,6 +17,7 @@ package joserodpt.realskywars.plugin.managers;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.game.modes.Placeholder;
 import joserodpt.realskywars.api.game.modes.RSWGame;
 import joserodpt.realskywars.api.game.modes.RSWSign;
@@ -66,7 +67,7 @@ public class GameManager extends GameManagerAPI {
         this.endingGames = true;
 
         this.games.parallelStream().forEach(g -> {
-            g.kickPlayers(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.ADMIN_SHUTDOWN));
+            g.kickPlayers(TranslatableLine.ADMIN_SHUTDOWN.get());
             g.resetArena(RSWGame.OperationReason.SHUTDOWN);
         });
     }

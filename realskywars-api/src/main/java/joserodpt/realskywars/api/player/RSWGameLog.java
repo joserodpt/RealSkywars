@@ -15,9 +15,8 @@ package joserodpt.realskywars.api.player;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.game.modes.RSWGame;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Material;
@@ -50,7 +49,7 @@ public class RSWGameLog {
     }
 
     public ItemStack getItem() {
-        return this.dummy ? Itens.createItem(Material.BUCKET, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(LanguageManagerAPI.TSsingle.SEARCH_NOTFOUND_NAME)) :
+        return this.dummy ? Itens.createItem(Material.BUCKET, 1, TranslatableLine.SEARCH_NOTFOUND_NAME.get()) :
                 Itens.createItem(Material.FILLED_MAP, 1, "&f&l" + this.dayandtime, Arrays.asList("&fMap: &b" + this.map + " &f| Win: " + getWin(),
                         "&fPlayers: &b" + this.players,
                         "&fTime: &b" + Text.formatSeconds(this.seconds)));

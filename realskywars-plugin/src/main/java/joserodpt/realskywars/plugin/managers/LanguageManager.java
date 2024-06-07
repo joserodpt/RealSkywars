@@ -65,63 +65,6 @@ public class LanguageManager extends LanguageManagerAPI {
     }
 
     @Override
-    public String getString(TSsingle ts) {
-        try {
-            switch (ts) {
-                default:
-                    return "String not found (" + ts.name() + ")";
-                case BOSSBAR_ARENA_END:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Boss-Bar.End"));
-                case BOSSBAR_ARENA_WAIT:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Boss-Bar.Wait"));
-                case BOSSBAR_ARENA_RUNTIME:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Boss-Bar.Run-Time"));
-                case BOSSBAR_ARENA_STARTING:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Boss-Bar.Starting"));
-                case BOSSBAR_ARENA_DEATHMATCH:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Boss-Bar.DeathMatch"));
-                case SEARCH_NOTFOUND_NAME:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Search.Not-Found"));
-                case SHOP_BUY:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Shop.Buy"));
-                case SHOP_BOUGHT:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Shop.Already-Bought"));
-                case ADMIN_SHUTDOWN:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Admin-Shutdown"));
-                case KIT_BUY:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Kit.Buy"));
-                case KIT_ITEM:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Kit.Items"));
-                case KIT_PRICE:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Kit.Price"));
-                case KIT_SELECT:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Kit.Select"));
-                case KIT_CONTAINS:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Kit.Contains"));
-                case BUTTONS_BACK_DESC:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Menus.Back-Button.Description"));
-                case BUTTONS_FILTER_DESC:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Menus.Filter-Button.Description"));
-                case BUTTONS_NEXT_DESC:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Menus.Next-Button.Description"));
-                case BUTTONS_BACK_TITLE:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Menus.Back-Button.Title"));
-                case BUTTONS_FILTER_TITLE:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Menus.Filter-Button.Title"));
-                case BUTTONS_NEXT_TITLE:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Menus.Next-Button.Title"));
-                case BUTTONS_MENU_DESC:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Menus.Main-Menu-Button.Description"));
-                case BUTTONS_MENU_TITLE:
-                    return Text.color(RSWLanguagesConfig.file().getString("Strings.Menus.Main-Menu-Button.Title"));
-            }
-        } catch (Exception e) {
-            RealSkywarsAPI.getInstance().getLogger().severe("Error finding translation for RealSkywars: " + e.getMessage());
-            return "Error finding translation (" + ts.name() + ") check console";
-        }
-    }
-
-    @Override
     public List<String> getLanguages() {
         return langList;
     }

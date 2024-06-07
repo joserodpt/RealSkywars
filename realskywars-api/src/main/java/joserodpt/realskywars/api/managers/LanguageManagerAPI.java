@@ -14,8 +14,6 @@ public abstract class LanguageManagerAPI {
 
     public abstract boolean areLanguagesEmpty();
 
-    public abstract String getString(TSsingle ts);
-
     public abstract List<String> getLanguages();
 
     public abstract String getString(TS ts, boolean b);
