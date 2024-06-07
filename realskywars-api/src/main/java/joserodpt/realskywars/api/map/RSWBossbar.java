@@ -24,24 +24,32 @@ public class RSWBossbar {
     }
 
     public void tick() {
+        if (this.bossBar == null) {
+            return;
+        }
+
         this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_RUNTIME.get().replace("%time%", Text.formatSeconds(map.getMapTimer().getSecondsLeft())));
         double div = (double) map.getMapTimer().getSecondsLeft() / (double) map.getMaxTime();
         this.bossBar.setProgress(div);
     }
 
     public void addPlayer(Player player) {
-        if (player != null) {
+        if (player != null && this.bossBar != null) {
             this.bossBar.addPlayer(player);
         }
     }
 
     public void removePlayer(Player player) {
-        if (player != null) {
+        if (player != null && this.bossBar != null) {
             this.bossBar.removePlayer(player);
         }
     }
 
     public void setState(RSWMap.MapState w) {
+        if (this.bossBar == null) {
+            return;
+        }
+
         switch (w) {
             case WAITING:
                 this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_WAIT.get());
@@ -64,10 +72,16 @@ public class RSWBossbar {
     }
 
     public void setProgress(double div) {
+        if (this.bossBar == null) {
+            return;
+        }
         this.bossBar.setProgress(div);
     }
 
     public void setDeathmatch() {
+        if (this.bossBar == null) {
+            return;
+        }
         this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_DEATHMATCH.get());
         this.bossBar.setColor(BarColor.RED);
         this.bossBar.setProgress(0);
