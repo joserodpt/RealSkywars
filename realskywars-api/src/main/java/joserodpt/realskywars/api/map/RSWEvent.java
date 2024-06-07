@@ -1,4 +1,4 @@
-package joserodpt.realskywars.api.game;
+package joserodpt.realskywars.api.map;
 
 /*
  *   _____            _  _____ _
@@ -18,20 +18,19 @@ package joserodpt.realskywars.api.game;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWLanguagesConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.game.modes.RSWGame;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.entity.TNTPrimed;
 
-public class SWEvent {
+public class RSWEvent {
 
     private final EventType et;
-    private final RSWGame room;
+    private final RSWMap room;
     private final int time;
 
-    public SWEvent(RSWGame room, EventType et, int time) {
+    public RSWEvent(RSWMap room, EventType et, int time) {
         this.room = room;
         this.et = et;
         this.time = time;

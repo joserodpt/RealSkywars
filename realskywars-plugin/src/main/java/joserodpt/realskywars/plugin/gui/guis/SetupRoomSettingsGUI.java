@@ -16,7 +16,7 @@ package joserodpt.realskywars.plugin.gui.guis;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.game.SetupRoom;
+import joserodpt.realskywars.api.map.RSWSetupMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Text;
@@ -55,9 +55,9 @@ public class SetupRoomSettingsGUI {
 
     private final UUID uuid;
     private RSWPlayer p;
-    private SetupRoom sr;
+    private RSWSetupMap sr;
 
-    public SetupRoomSettingsGUI(RSWPlayer p, SetupRoom sr) {
+    public SetupRoomSettingsGUI(RSWPlayer p, RSWSetupMap sr) {
         this.uuid = p.getUUID();
         this.p = p;
         this.sr = sr;

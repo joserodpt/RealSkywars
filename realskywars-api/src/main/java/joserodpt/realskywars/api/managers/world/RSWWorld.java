@@ -15,7 +15,7 @@ package joserodpt.realskywars.api.managers.world;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.game.modes.RSWGame;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.world.engines.SWWorldDefaultEngine;
 import joserodpt.realskywars.api.managers.world.engines.SWWorldSchematicEngine;
 import org.bukkit.GameRule;
@@ -26,7 +26,7 @@ public class RSWWorld {
 
     private final SWWorldEngine engine;
 
-    public RSWWorld(RSWGame gameRoom, World w, WorldType wt) {
+    public RSWWorld(RSWMap gameRoom, World w, WorldType wt) {
         this.engine = (wt == WorldType.DEFAULT ? new SWWorldDefaultEngine(w, gameRoom) : new SWWorldSchematicEngine(w, gameRoom.getShematicName(), gameRoom));
         this.getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         this.getWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
@@ -36,12 +36,12 @@ public class RSWWorld {
         return this.engine.getWorld();
     }
 
-    public void resetWorld(RSWGame.OperationReason rr) {
+    public void resetWorld(RSWMap.OperationReason rr) {
         this.engine.getWorld().getEntities().forEach(Entity::remove);
         this.engine.resetWorld(rr);
     }
 
-    public void deleteWorld(RSWGame.OperationReason rr) {
+    public void deleteWorld(RSWMap.OperationReason rr) {
         this.engine.deleteWorld(rr);
     }
 

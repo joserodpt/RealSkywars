@@ -1,4 +1,4 @@
-package joserodpt.realskywars.api.game;
+package joserodpt.realskywars.api.map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -75,6 +75,7 @@ public class RSWCountdown implements Runnable {
     public int getTotalSeconds() {
         return this.seconds;
     }
+
     public int getPassedSeconds() {
         return this.getTotalSeconds() - this.secondsLeft;
     }

@@ -16,7 +16,7 @@ package joserodpt.realskywars.plugin;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.managers.GameManagerAPI;
+import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.LeaderboardManagerAPI;
 import org.bukkit.OfflinePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -33,10 +33,9 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
      * can simply use this method here to get an instance of our
      * plugin.
      *
-     * @param rsa
-     *        The instance of our plugin.
+     * @param rsa The instance of our plugin.
      */
-    public RealSkywarsPlaceholderAPI(RealSkywarsAPI rsa){
+    public RealSkywarsPlaceholderAPI(RealSkywarsAPI rsa) {
         this.rsa = rsa;
     }
 
@@ -48,7 +47,7 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
      * @return true to persist through reloads
      */
     @Override
-    public boolean persist(){
+    public boolean persist() {
         return true;
     }
 
@@ -59,7 +58,7 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
      * @return Always true since it's an internal class.
      */
     @Override
-    public boolean canRegister(){
+    public boolean canRegister() {
         return true;
     }
 
@@ -71,7 +70,7 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
      */
     @NotNull
     @Override
-    public String getAuthor(){
+    public String getAuthor() {
         return rsa.getPlugin().getDescription().getAuthors().toString();
     }
 
@@ -86,7 +85,7 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
      */
     @NotNull
     @Override
-    public String getIdentifier(){
+    public String getIdentifier() {
         return "realskywars";
     }
 
@@ -99,23 +98,22 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
      */
     @NotNull
     @Override
-    public String getVersion(){
+    public String getVersion() {
         return rsa.getPlugin().getDescription().getVersion();
     }
 
     @Override
-    public String onRequest(OfflinePlayer player, String identifier){
-        switch (identifier.toLowerCase(Locale.ROOT))
-        {
+    public String onRequest(OfflinePlayer player, String identifier) {
+        switch (identifier.toLowerCase(Locale.ROOT)) {
             case "playing":
-                return rsa.getPlayerManagerAPI().getPlayingPlayers(GameManagerAPI.GameModes.ALL) + "";
+                return rsa.getPlayerManagerAPI().getPlayingPlayers(GamesManagerAPI.GameModes.ALL) + "";
             case "playing_solo":
-                return rsa.getPlayerManagerAPI().getPlayingPlayers(GameManagerAPI.GameModes.SOLO) + "";
+                return rsa.getPlayerManagerAPI().getPlayingPlayers(GamesManagerAPI.GameModes.SOLO) + "";
             case "playing_teams":
-                return rsa.getPlayerManagerAPI().getPlayingPlayers(GameManagerAPI.GameModes.TEAMS) + "";
+                return rsa.getPlayerManagerAPI().getPlayingPlayers(GamesManagerAPI.GameModes.TEAMS) + "";
             case "playing_ranked":
-                return rsa.getPlayerManagerAPI().getPlayingPlayers(GameManagerAPI.GameModes.RANKED) + "";
-                //SOLO
+                return rsa.getPlayerManagerAPI().getPlayingPlayers(GamesManagerAPI.GameModes.RANKED) + "";
+            //SOLO
             case "solo_wins_1":
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_WINS).getIndex(1);
             case "solo_wins_2":
@@ -136,7 +134,7 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_WINS).getIndex(9);
             case "solo_wins_10":
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_WINS).getIndex(10);
-                //TEAMS
+            //TEAMS
             case "teams_wins_1":
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_WINS).getIndex(1);
             case "teams_wins_2":
@@ -157,7 +155,7 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_WINS).getIndex(9);
             case "teams_wins_10":
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_WINS).getIndex(10);
-                //SOLO RANKED
+            //SOLO RANKED
             case "solo_ranked_wins_1":
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_RANKED_WINS).getIndex(1);
             case "solo_ranked_wins_2":
@@ -178,7 +176,7 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_RANKED_WINS).getIndex(9);
             case "solo_ranked_wins_10":
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_RANKED_WINS).getIndex(10);
-                //TEAMS RANKED
+            //TEAMS RANKED
             case "teams_ranked_wins_1":
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_RANKED_WINS).getIndex(1);
             case "teams_ranked_wins_2":
@@ -199,7 +197,7 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_RANKED_WINS).getIndex(9);
             case "teams_ranked_wins_10":
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_RANKED_WINS).getIndex(10);
-                //KILLS
+            //KILLS
             case "kills_1":
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS).getIndex(1);
             case "kills_2":
@@ -220,7 +218,7 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS).getIndex(9);
             case "kills_10":
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS).getIndex(10);
-                //KILLS RANKED
+            //KILLS RANKED
             case "kills_ranked_1":
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS_RANKED).getIndex(1);
             case "kills_ranked_2":

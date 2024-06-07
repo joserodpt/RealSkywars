@@ -36,7 +36,7 @@ import com.sk89q.worldedit.world.block.BlockState;
 import com.sk89q.worldedit.world.block.BlockType;
 import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.game.SetupRoom;
+import joserodpt.realskywars.api.map.RSWSetupMap;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -76,7 +76,7 @@ public class WorldEditUtils {
         }
     }
 
-    public static void pasteSchematic(String name, Location location, SetupRoom sr) {
+    public static void pasteSchematic(String name, Location location, RSWSetupMap sr) {
         Debugger.print(WorldEditUtils.class, "Pasting schematic named " + name);
         File folder = new File(RealSkywarsAPI.getInstance().getPlugin().getDataFolder(), "maps");
         File file = new File(folder, name);

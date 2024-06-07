@@ -32,10 +32,10 @@ import joserodpt.realskywars.api.config.RSWShopsConfig;
 import joserodpt.realskywars.api.config.chests.BasicChestConfig;
 import joserodpt.realskywars.api.config.chests.EPICChestConfig;
 import joserodpt.realskywars.api.config.chests.NormalChestConfig;
-import joserodpt.realskywars.api.game.modes.RSWGame;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
 import joserodpt.realskywars.api.managers.CurrencyManager;
-import joserodpt.realskywars.api.managers.GameManagerAPI;
+import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.nms.NMS114R1tov116R3;
 import joserodpt.realskywars.api.nms.NMS117R1;
@@ -74,16 +74,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class RealSkywarsPlugin extends JavaPlugin {
     private static RealSkywarsPlugin pl;
+
     public static RealSkywarsPlugin getPlugin() {
         return pl;
     }
+
     private RealSkywars realSkywars;
 
     private boolean newUpdate;
@@ -164,7 +165,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
         getLogger().info("Loaded " + realSkywars.getKitManagerAPI().getKits().size() + " kits.");
 
         realSkywars.getMapManagerAPI().loadMaps();
-        getLogger().info("Loaded " + realSkywars.getGameManagerAPI().getGames(GameManagerAPI.GameModes.ALL).size() + " maps.");
+        getLogger().info("Loaded " + realSkywars.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL).size() + " maps.");
         realSkywars.getPlayerManagerAPI().loadPlayers();
 
         realSkywars.getAchievementsManagerAPI().loadAchievements();
@@ -203,9 +204,9 @@ public class RealSkywarsPlugin extends JavaPlugin {
                 return new TypeResult(null, argument);
             }
         });
-        commandManager.getParameterHandler().register(RSWGame.Mode.class, argument -> {
+        commandManager.getParameterHandler().register(RSWMap.Mode.class, argument -> {
             try {
-                RSWGame.Mode tt = RSWGame.Mode.valueOf(argument.toString().toUpperCase());
+                RSWMap.Mode tt = RSWMap.Mode.valueOf(argument.toString().toUpperCase());
                 return new TypeResult(tt, argument);
             } catch (Exception e) {
                 return new TypeResult(null, argument);
@@ -328,7 +329,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
 
     public void onDisable() {
         realSkywars.getGameManagerAPI().endGames();
-        realSkywars.getGameManagerAPI().getGames(GameManagerAPI.GameModes.ALL).forEach(RSWGame::clear);
+        realSkywars.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL).forEach(RSWMap::clear);
 
         HandlerList.unregisterAll(this);
         Bukkit.getPluginManager().disablePlugin(this);

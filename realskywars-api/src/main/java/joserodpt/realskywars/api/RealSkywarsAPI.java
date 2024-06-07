@@ -5,7 +5,7 @@ import joserodpt.realskywars.api.currency.CurrencyAdapter;
 import joserodpt.realskywars.api.managers.AchievementsManagerAPI;
 import joserodpt.realskywars.api.managers.ChestManagerAPI;
 import joserodpt.realskywars.api.managers.DatabaseManagerAPI;
-import joserodpt.realskywars.api.managers.GameManagerAPI;
+import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.HologramManagerAPI;
 import joserodpt.realskywars.api.managers.KitManagerAPI;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
@@ -63,7 +63,7 @@ public abstract class RealSkywarsAPI {
 
     public abstract MapManagerAPI getMapManagerAPI();
 
-    public abstract GameManagerAPI getGameManagerAPI();
+    public abstract GamesManagerAPI getGameManagerAPI();
 
     public abstract ShopManagerAPI getShopManagerAPI();
 
@@ -84,6 +84,7 @@ public abstract class RealSkywarsAPI {
     public abstract HologramManagerAPI getHologramManagerAPI();
 
     public abstract CurrencyAdapter getCurrencyAdapter();
+
     public abstract JavaPlugin getPlugin();
 
     public abstract String getServerVersion();

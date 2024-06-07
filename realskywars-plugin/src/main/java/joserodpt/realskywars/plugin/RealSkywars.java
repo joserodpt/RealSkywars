@@ -29,7 +29,7 @@ import joserodpt.realskywars.api.config.chests.NormalChestConfig;
 import joserodpt.realskywars.api.managers.AchievementsManagerAPI;
 import joserodpt.realskywars.api.managers.ChestManagerAPI;
 import joserodpt.realskywars.api.managers.DatabaseManagerAPI;
-import joserodpt.realskywars.api.managers.GameManagerAPI;
+import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.HologramManagerAPI;
 import joserodpt.realskywars.api.currency.CurrencyAdapter;
 import joserodpt.realskywars.api.managers.KitManagerAPI;
@@ -58,7 +58,7 @@ public class RealSkywars extends RealSkywarsAPI {
     private final LanguageManagerAPI languageManagerAPI = new LanguageManager();
     private final PlayerManagerAPI playerManagerAPI;
     private final MapManagerAPI mapManagerAPI;
-    private final GameManagerAPI gameManagerAPI;
+    private final GamesManagerAPI gamesManagerAPI;
     private final ShopManagerAPI shopManagerAPI;
     private final KitManagerAPI kitManager = new KitManager();
     private final PartiesManagerAPI partiesManagerAPI;
@@ -77,7 +77,7 @@ public class RealSkywars extends RealSkywarsAPI {
         worldManagerAPI = new WorldManager(this);
         playerManagerAPI = new PlayerManager(this);
         mapManagerAPI = new MapManager(this);
-        gameManagerAPI = new GameManager(this);
+        gamesManagerAPI = new GamesManager(this);
         shopManagerAPI = new ShopManager(this);
         partiesManagerAPI = new PartiesManager(this);
         leaderboardManagerAPI = new LeaderboardManager(this);
@@ -87,20 +87,29 @@ public class RealSkywars extends RealSkywarsAPI {
     }
 
     @Override
-    public Logger getLogger() { return logger; }
+    public Logger getLogger() {
+        return logger;
+    }
+
     @Override
     public String getVersion() {
         return this.plugin.getDescription().getVersion();
     }
+
     @Override
-    public RSWnms getNMS() { return rswNMS; }
+    public RSWnms getNMS() {
+        return rswNMS;
+    }
 
     @Override
     public WorldManagerAPI getWorldManagerAPI() {
         return worldManagerAPI;
     }
+
     @Override
-    public RSWEventsAPI getEventsAPI() { return rswEventsAPI; }
+    public RSWEventsAPI getEventsAPI() {
+        return rswEventsAPI;
+    }
 
     @Override
     public LanguageManagerAPI getLanguageManagerAPI() {
@@ -118,8 +127,8 @@ public class RealSkywars extends RealSkywarsAPI {
     }
 
     @Override
-    public GameManagerAPI getGameManagerAPI() {
-        return this.gameManagerAPI;
+    public GamesManagerAPI getGameManagerAPI() {
+        return this.gamesManagerAPI;
     }
 
     @Override
@@ -189,7 +198,7 @@ public class RealSkywars extends RealSkywarsAPI {
 
     @Override
     public void reload() {
-        gameManagerAPI.endGames();
+        gamesManagerAPI.endGames();
 
         RSWConfig.reload();
         RSWMapsConfig.reload();
@@ -214,7 +223,7 @@ public class RealSkywars extends RealSkywarsAPI {
         leaderboardManagerAPI.refreshLeaderboards();
 
         mapManagerAPI.loadMaps();
-        gameManagerAPI.loadLobby();
+        gamesManagerAPI.loadLobby();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package joserodpt.realskywars.api.managers;
 
-import joserodpt.realskywars.api.game.modes.RSWGame;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -8,18 +8,18 @@ import org.bukkit.World;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class GameManagerAPI {
+public abstract class GamesManagerAPI {
     public Boolean endingGames = false;
 
-    public abstract RSWGame getMatch(World world);
+    public abstract RSWMap getMatch(World world);
 
-    public abstract RSWGame getGame(String name);
+    public abstract RSWMap getGame(String name);
 
     public abstract void endGames();
 
-    public abstract List<RSWGame> getRoomsWithSelection(RSWPlayer rswPlayer);
+    public abstract List<RSWMap> getRoomsWithSelection(RSWPlayer rswPlayer);
 
-    public abstract String getStateString(RSWPlayer gp, RSWGame.GameState t);
+    public abstract String getStateString(RSWPlayer gp, RSWMap.MapState t);
 
     public abstract void loadLobby();
 
@@ -29,13 +29,13 @@ public abstract class GameManagerAPI {
 
     public abstract boolean scoreboardInLobby();
 
-    public abstract void removeRoom(RSWGame gr);
+    public abstract void removeRoom(RSWMap gr);
 
     public abstract void clearRooms();
 
-    public abstract List<RSWGame> getGames(GameModes pt);
+    public abstract List<RSWMap> getGames(GameModes pt);
 
-    public abstract void addRoom(RSWGame s);
+    public abstract void addRoom(RSWMap s);
 
     public abstract void setLobbyLoc(Location location);
 
@@ -45,9 +45,9 @@ public abstract class GameManagerAPI {
 
     public abstract boolean isInLobby(World w);
 
-    public abstract void findGame(RSWPlayer player, RSWGame.Mode type);
+    public abstract void findGame(RSWPlayer player, RSWMap.Mode type);
 
-    public abstract Optional<RSWGame> findSuitableGame(RSWGame.Mode type);
+    public abstract Optional<RSWMap> findSuitableGame(RSWMap.Mode type);
 
     public enum GameModes {SOLO, SOLO_RANKED, TEAMS, TEAMS_RANKED, RANKED, ALL}
 }

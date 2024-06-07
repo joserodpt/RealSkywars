@@ -1,4 +1,4 @@
-package joserodpt.realskywars.api.game.modes;
+package joserodpt.realskywars.api.map.modes;
 
 /*
  *   _____            _  _____ _
@@ -16,6 +16,7 @@ package joserodpt.realskywars.api.game.modes;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,10 +28,10 @@ import org.bukkit.block.data.type.WallSign;
 
 public class RSWSign {
 
-    private final RSWGame game;
+    private final RSWMap game;
     private final Block b;
 
-    public RSWSign(RSWGame gm, Block b) {
+    public RSWSign(RSWMap gm, Block b) {
         this.game = gm;
         this.b = b;
 
@@ -88,8 +89,8 @@ public class RSWSign {
     }
 
     public Location getLocation() {
-            return this.b.getLocation();
-        }
+        return this.b.getLocation();
+    }
 
     public String getLocationSerialized() {
         return this.getLocation().getWorld().getName() + "<" +

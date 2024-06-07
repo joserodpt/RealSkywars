@@ -1,6 +1,6 @@
 package joserodpt.realskywars.api.managers;
 
-import joserodpt.realskywars.api.game.modes.RSWGame;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 
 import java.util.HashMap;
@@ -20,5 +20,5 @@ public abstract class PartiesManagerAPI {
 
     public abstract void acceptInvite(RSWPlayer p);
 
-    public abstract boolean checkForParties(RSWPlayer p, RSWGame swgm);
+    public abstract boolean checkForParties(RSWPlayer p, RSWMap swgm);
 }

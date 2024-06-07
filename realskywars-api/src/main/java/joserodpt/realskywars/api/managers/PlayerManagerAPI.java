@@ -32,7 +32,7 @@ public abstract class PlayerManagerAPI {
 
     public abstract List<RSWShopDisplayItem> getBoughtItems(RSWPlayer player, ShopManagerAPI.Categories t);
 
-    public abstract int getPlayingPlayers(GameManagerAPI.GameModes pt);
+    public abstract int getPlayingPlayers(GamesManagerAPI.GameModes pt);
 
     public abstract void stopScoreboards();
 

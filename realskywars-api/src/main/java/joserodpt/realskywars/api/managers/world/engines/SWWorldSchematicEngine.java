@@ -19,7 +19,7 @@ package joserodpt.realskywars.api.managers.world.engines;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.game.modes.RSWGame;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.WorldManagerAPI;
 import joserodpt.realskywars.api.managers.world.SWWorldEngine;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
@@ -31,11 +31,11 @@ import org.bukkit.WorldBorder;
 public class SWWorldSchematicEngine implements SWWorldEngine {
 
     private final World world;
-    private final RSWGame gameRoom;
+    private final RSWMap gameRoom;
     private final String schematicName;
     private final WorldManagerAPI wm = RealSkywarsAPI.getInstance().getWorldManagerAPI();
 
-    public SWWorldSchematicEngine(World w, String sname, RSWGame gameMode) {
+    public SWWorldSchematicEngine(World w, String sname, RSWMap gameMode) {
         this.schematicName = sname;
         this.world = w;
         this.world.setAutoSave(false);
@@ -48,7 +48,7 @@ public class SWWorldSchematicEngine implements SWWorldEngine {
     }
 
     @Override
-    public void resetWorld(RSWGame.OperationReason rr) {
+    public void resetWorld(RSWMap.OperationReason rr) {
         Debugger.print(SWWorldSchematicEngine.class, "Resetting " + this.getName() + " - type: " + this.getType().name());
 
         switch (rr) {
@@ -56,7 +56,7 @@ public class SWWorldSchematicEngine implements SWWorldEngine {
                 //no need
                 break;
             case RESET:
-                this.deleteWorld(RSWGame.OperationReason.RESET);
+                this.deleteWorld(RSWMap.OperationReason.RESET);
             case LOAD:
                 if (this.world != null) {
                     //place schematic
@@ -67,16 +67,16 @@ public class SWWorldSchematicEngine implements SWWorldEngine {
                     wb.setCenter(this.gameRoom.getArena().getCenter());
                     wb.setSize(this.gameRoom.getBorderSize());
 
-                    this.gameRoom.setState(RSWGame.GameState.AVAILABLE);
+                    this.gameRoom.setState(RSWMap.MapState.AVAILABLE);
                 } else {
-                    RealSkywarsAPI.getInstance().getLogger().severe( "ERROR! Could not load " + this.getName());
+                    RealSkywarsAPI.getInstance().getLogger().severe("ERROR! Could not load " + this.getName());
                 }
                 break;
         }
     }
 
     @Override
-    public void deleteWorld(RSWGame.OperationReason rr) {
+    public void deleteWorld(RSWMap.OperationReason rr) {
         RealSkywarsAPI.getInstance().getWorldManagerAPI().clearItems(world);
         switch (rr) {
             case LOAD:

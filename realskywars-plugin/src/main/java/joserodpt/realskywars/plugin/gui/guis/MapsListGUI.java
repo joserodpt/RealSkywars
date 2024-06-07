@@ -17,7 +17,7 @@ package joserodpt.realskywars.plugin.gui.guis;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.game.modes.RSWGame;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
@@ -43,19 +43,19 @@ public class MapsListGUI {
 
     private static final Map<UUID, MapsListGUI> inventories = new HashMap<>();
     int pageNumber = 0;
-    private final Pagination<RSWGame> p;
+    private final Pagination<RSWMap> p;
     private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     private final Inventory inv;
     private final UUID uuid;
     private final RSWPlayer gp;
-    private final Map<Integer, RSWGame> display = new HashMap<>();
+    private final Map<Integer, RSWMap> display = new HashMap<>();
 
     public MapsListGUI(RSWPlayer as, String invName) {
         this.uuid = as.getUUID();
         this.inv = Bukkit.getServer().createInventory(null, 54, Text.color(invName) + ": " + RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(as, select(as.getMapViewerPref()), false));
 
         this.gp = as;
-        List<RSWGame> items = RealSkywarsAPI.getInstance().getGameManagerAPI().getRoomsWithSelection(as);
+        List<RSWMap> items = RealSkywarsAPI.getInstance().getGameManagerAPI().getRoomsWithSelection(as);
 
         this.p = new Pagination<>(28, items);
         fillChest(p.getPage(pageNumber), as);
@@ -101,7 +101,7 @@ public class MapsListGUI {
                         }
 
                         if (current.display.containsKey(e.getRawSlot())) {
-                            RSWGame a = current.display.get(e.getRawSlot());
+                            RSWMap a = current.display.get(e.getRawSlot());
                             if (!a.isPlaceHolder()) {
                                 a.addPlayer(p);
                             }
@@ -225,7 +225,7 @@ public class MapsListGUI {
         }
     }
 
-    public void fillChest(List<RSWGame> items, RSWPlayer p) {
+    public void fillChest(List<RSWMap> items, RSWPlayer p) {
         inv.clear();
         display.clear();
 
@@ -253,8 +253,8 @@ public class MapsListGUI {
         for (ItemStack i : inv.getContents()) {
             if (i == null) {
                 if (!items.isEmpty()) {
-                    RSWGame s = items.get(0);
-                    inv.setItem(slot, makeIcon(p,s));
+                    RSWMap s = items.get(0);
+                    inv.setItem(slot, makeIcon(p, s));
                     display.put(slot, s);
                     items.remove(0);
                 }
@@ -277,7 +277,7 @@ public class MapsListGUI {
         inventories.remove(this.uuid);
     }
 
-    private ItemStack makeIcon(RSWPlayer p, RSWGame g) {
+    private ItemStack makeIcon(RSWPlayer p, RSWMap g) {
         int count = 1;
         if (g.isPlaceHolder()) {
             return Itens.createItem(Material.BUCKET, count, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ITEMS_MAP_NOTFOUND_TITLE, false));
@@ -294,14 +294,14 @@ public class MapsListGUI {
         return ranked ? "&bRANKED" : "";
     }
 
-    private List<String> variableList(List<String> list, RSWGame g) {
+    private List<String> variableList(List<String> list, RSWMap g) {
         return list.stream()
                 .map(s -> s.replace("%players%", String.valueOf(g.getPlayerCount()))
                         .replace("%maxplayers%", String.valueOf(g.getMaxPlayers())))
                 .collect(Collectors.toList());
     }
 
-    private Material getStateMaterial(RSWGame g) {
+    private Material getStateMaterial(RSWMap g) {
         switch (g.getState()) {
             case WAITING:
                 return g.isRanked() ? Material.LIGHT_BLUE_CONCRETE : Material.LIGHT_BLUE_WOOL;

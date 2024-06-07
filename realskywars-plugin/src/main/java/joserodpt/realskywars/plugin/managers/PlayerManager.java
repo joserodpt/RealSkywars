@@ -18,7 +18,7 @@ package joserodpt.realskywars.plugin.managers;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.database.PlayerData;
-import joserodpt.realskywars.api.game.modes.RSWGame;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.PlayerManagerAPI;
 import joserodpt.realskywars.api.player.RSWGameLog;
@@ -40,9 +40,11 @@ import java.util.stream.Collectors;
 
 public class PlayerManager extends PlayerManagerAPI {
     private final RealSkywarsAPI rs;
+
     public PlayerManager(RealSkywarsAPI rs) {
         this.rs = rs;
     }
+
     public List<UUID> teleporting = new ArrayList<>();
     private final HashMap<Player, Player> trackingPlayers = new HashMap<>();
     private final List<RSWPlayer> players = new ArrayList<>();
@@ -140,16 +142,16 @@ public class PlayerManager extends PlayerManagerAPI {
             gp.getTab().updateRoomTAB();
 
             rs.getPlayerManagerAPI().getPlayers().stream()
-                .filter(RSWPlayer::isInMatch)
-                .forEach(player -> {
-                    RSWPlayer.RoomTAB rt = player.getTab();
-                    rt.remove(p);
-                    rt.updateRoomTAB();
-                });
+                    .filter(RSWPlayer::isInMatch)
+                    .forEach(player -> {
+                        RSWPlayer.RoomTAB rt = player.getTab();
+                        rt.remove(p);
+                        rt.updateRoomTAB();
+                    });
 
             return gp;
         } catch (Exception e) {
-            RealSkywarsAPI.getInstance().getLogger().severe( "Error while loading player data for " + p.getName() + " ->" + e.getMessage());
+            RealSkywarsAPI.getInstance().getLogger().severe("Error while loading player data for " + p.getName() + " ->" + e.getMessage());
         }
         return null;
     }
@@ -167,7 +169,7 @@ public class PlayerManager extends PlayerManagerAPI {
                 String[] data = obj.split(";");
                 if (data.length == 7) {
                     String mapa = data[0];
-                    RSWGame.Mode mode = RSWGame.Mode.valueOf(data[1]);
+                    RSWMap.Mode mode = RSWMap.Mode.valueOf(data[1]);
                     boolean ranked = Boolean.parseBoolean(data[2]);
                     int jogadores = Integer.parseInt(data[3]);
                     boolean win = Boolean.parseBoolean(data[4]);
@@ -278,8 +280,8 @@ public class PlayerManager extends PlayerManagerAPI {
     }
 
     @Override
-    public int getPlayingPlayers(GameManager.GameModes pt) {
-        return rs.getGameManagerAPI().getGames(pt).stream().mapToInt(RSWGame::getPlayerCount).sum();
+    public int getPlayingPlayers(GamesManager.GameModes pt) {
+        return rs.getGameManagerAPI().getGames(pt).stream().mapToInt(RSWMap::getPlayerCount).sum();
     }
 
     @Override

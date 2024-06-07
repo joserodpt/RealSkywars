@@ -19,12 +19,12 @@ import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.chests.TierViewer;
 import joserodpt.realskywars.api.config.RSWConfig;
-import joserodpt.realskywars.api.game.modes.RSWGame;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.kits.KitInventory;
 import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
 import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.managers.CurrencyManager;
-import joserodpt.realskywars.api.managers.GameManagerAPI;
+import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.player.RSWPlayer;
@@ -102,8 +102,8 @@ public class RealSkywarsCMD extends CommandBase {
     public void listcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CMD_MAPS, true).replace("%rooms%", "" + rs.getGameManagerAPI().getGames(GameManagerAPI.GameModes.ALL).size()));
-            for (RSWGame s : rs.getGameManagerAPI().getGames(GameManagerAPI.GameModes.ALL)) {
+            p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CMD_MAPS, true).replace("%rooms%", "" + rs.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL).size()));
+            for (RSWMap s : rs.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL)) {
                 TextComponent a = new TextComponent(Text.color("&7- &f" + s.getDisplayName()));
                 a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw map " + s.getMapName()));
                 a.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Text.color("&fClick to open &b" + s.getDisplayName() + "&f settings!")).create()));
@@ -188,7 +188,7 @@ public class RealSkywarsCMD extends CommandBase {
 
     @SubCommand("play")
     @Completion("#enum")
-    public void playcmd(final CommandSender commandSender, RSWGame.Mode type) {
+    public void playcmd(final CommandSender commandSender, RSWMap.Mode type) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
             if (type != null && p != null && p.getPlayer() != null) {
@@ -469,7 +469,7 @@ public class RealSkywarsCMD extends CommandBase {
     public void map(final CommandSender commandSender, String name) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            RSWGame sw = rs.getGameManagerAPI().getGame(name);
+            RSWMap sw = rs.getGameManagerAPI().getGame(name);
             if (sw != null) {
                 MapSettingsGUI r = new MapSettingsGUI(sw, p.getUUID());
                 r.openInventory(p);
@@ -559,7 +559,7 @@ public class RealSkywarsCMD extends CommandBase {
             }
 
             if (RSWConfig.file().isSection("Config.Lobby")) {
-                RSWGame map = rs.getMapManagerAPI().getMap(mapname);
+                RSWMap map = rs.getMapManagerAPI().getMap(mapname);
                 if (map == null) {
                     if (p.getSetupRoom() != null) {
                         p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.SETUP_NOT_FINISHED, true));
@@ -587,7 +587,7 @@ public class RealSkywarsCMD extends CommandBase {
     @Permission("rsw.admin")
     @WrongUsage("&c/rsw unregister <map>")
     public void unregister(final CommandSender commandSender, String mapName) {
-        RSWGame map = rs.getMapManagerAPI().getMap(mapName);
+        RSWMap map = rs.getMapManagerAPI().getMap(mapName);
         if (map != null) {
             rs.getMapManagerAPI().unregisterMap(map);
             commandSender.sendMessage(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.MAP_UNREGISTERED, true));
@@ -602,7 +602,7 @@ public class RealSkywarsCMD extends CommandBase {
     @Permission("rsw.admin")
     @WrongUsage("&c/rsw register <map>")
     public void register(final CommandSender commandSender, String mapName) {
-        RSWGame map = rs.getMapManagerAPI().getMap(mapName);
+        RSWMap map = rs.getMapManagerAPI().getMap(mapName);
         if (map != null) {
             rs.getMapManagerAPI().registerMap(map);
             commandSender.sendMessage(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.MAP_UNREGISTERED, true));
@@ -617,7 +617,7 @@ public class RealSkywarsCMD extends CommandBase {
     @Permission("rsw.admin")
     @WrongUsage("&c/rsw delete <map>")
     public void delete(final CommandSender commandSender, String mapName) {
-        RSWGame map = rs.getMapManagerAPI().getMap(mapName);
+        RSWMap map = rs.getMapManagerAPI().getMap(mapName);
         if (map != null) {
             rs.getMapManagerAPI().deleteMap(map);
             commandSender.sendMessage(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.MAP_UNREGISTERED, true));
@@ -632,10 +632,10 @@ public class RealSkywarsCMD extends CommandBase {
     @Permission("rsw.admin")
     @WrongUsage("&c/rsw rename <map> ")
     public void renamecmd(final CommandSender commandSender, final String mapName, final String displayName) {
-        RSWGame map = rs.getMapManagerAPI().getMap(mapName);
+        RSWMap map = rs.getMapManagerAPI().getMap(mapName);
         if (map != null) {
             map.setDisplayName(displayName);
-            map.save(RSWGame.Data.SETTINGS, true);
+            map.save(RSWMap.Data.SETTINGS, true);
             Text.send(commandSender, "&aMap renamed to &f" + displayName);
         } else {
             commandSender.sendMessage(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.NO_GAME_FOUND, true));
@@ -648,7 +648,7 @@ public class RealSkywarsCMD extends CommandBase {
     @WrongUsage("&c/rsw reset <map>")
     public void reset(final CommandSender commandSender, String mapSTR) {
         RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-        RSWGame map = rs.getMapManagerAPI().getMap(mapSTR);
+        RSWMap map = rs.getMapManagerAPI().getMap(mapSTR);
         if (map != null) {
             p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_RESET, true));
             map.reset();

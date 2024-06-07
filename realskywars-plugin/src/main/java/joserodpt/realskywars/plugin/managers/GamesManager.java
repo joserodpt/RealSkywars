@@ -18,10 +18,10 @@ package joserodpt.realskywars.plugin.managers;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.game.modes.Placeholder;
-import joserodpt.realskywars.api.game.modes.RSWGame;
-import joserodpt.realskywars.api.game.modes.RSWSign;
-import joserodpt.realskywars.api.managers.GameManagerAPI;
+import joserodpt.realskywars.api.map.modes.PlaceholderMode;
+import joserodpt.realskywars.api.map.RSWMap;
+import joserodpt.realskywars.api.map.modes.RSWSign;
+import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
@@ -37,17 +37,19 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class GameManager extends GameManagerAPI {
+public class GamesManager extends GamesManagerAPI {
     private final RealSkywarsAPI rs;
-    public GameManager(RealSkywarsAPI rs) {
+
+    public GamesManager(RealSkywarsAPI rs) {
         this.rs = rs;
     }
-    private final List<RSWGame> games = new ArrayList<>();
+
+    private final List<RSWMap> games = new ArrayList<>();
     private Location lobbyLOC;
     private Boolean loginTP = true;
 
     @Override
-    public RSWGame getMatch(World world) {
+    public RSWMap getMatch(World world) {
         return this.games.stream()
                 .filter(sw -> sw.getRSWWorld().getWorld().equals(world))
                 .findFirst()
@@ -55,7 +57,7 @@ public class GameManager extends GameManagerAPI {
     }
 
     @Override
-    public RSWGame getGame(String name) {
+    public RSWMap getGame(String name) {
         return this.games.stream()
                 .filter(g -> g.getMapName().equalsIgnoreCase(name))
                 .findFirst()
@@ -68,28 +70,28 @@ public class GameManager extends GameManagerAPI {
 
         this.games.parallelStream().forEach(g -> {
             g.kickPlayers(TranslatableLine.ADMIN_SHUTDOWN.get());
-            g.resetArena(RSWGame.OperationReason.SHUTDOWN);
+            g.resetArena(RSWMap.OperationReason.SHUTDOWN);
         });
     }
 
     @Override
-    public List<RSWGame> getRoomsWithSelection(RSWPlayer rswPlayer) {
-        List<RSWGame> f = new ArrayList<>();
+    public List<RSWMap> getRoomsWithSelection(RSWPlayer rswPlayer) {
+        List<RSWMap> f = new ArrayList<>();
         switch (rswPlayer.getMapViewerPref()) {
             case MAPV_ALL:
-                f.addAll(rswPlayer.getPlayer().hasPermission("rsw.admin") || rswPlayer.getPlayer().isOp() ? this.games : this.games.stream().filter(RSWGame::isRegistered).collect(Collectors.toList()));
+                f.addAll(rswPlayer.getPlayer().hasPermission("rsw.admin") || rswPlayer.getPlayer().isOp() ? this.games : this.games.stream().filter(RSWMap::isRegistered).collect(Collectors.toList()));
                 break;
             case MAPV_WAITING:
-                f.addAll(this.games.stream().filter(r -> r.getState().equals(RSWGame.GameState.WAITING) && r.isRegistered()).collect(Collectors.toList()));
+                f.addAll(this.games.stream().filter(r -> r.getState().equals(RSWMap.MapState.WAITING) && r.isRegistered()).collect(Collectors.toList()));
                 break;
             case MAPV_STARTING:
-                f.addAll(this.games.stream().filter(r -> r.getState().equals(RSWGame.GameState.STARTING) && r.isRegistered()).collect(Collectors.toList()));
+                f.addAll(this.games.stream().filter(r -> r.getState().equals(RSWMap.MapState.STARTING) && r.isRegistered()).collect(Collectors.toList()));
                 break;
             case MAPV_AVAILABLE:
-                f.addAll(this.games.stream().filter(r -> r.getState().equals(RSWGame.GameState.AVAILABLE) && r.isRegistered()).collect(Collectors.toList()));
+                f.addAll(this.games.stream().filter(r -> r.getState().equals(RSWMap.MapState.AVAILABLE) && r.isRegistered()).collect(Collectors.toList()));
                 break;
             case MAPV_SPECTATE:
-                f.addAll(this.games.stream().filter(r -> (r.getState().equals(RSWGame.GameState.PLAYING) || r.getState().equals(RSWGame.GameState.FINISHING) && r.isRegistered())).collect(Collectors.toList()));
+                f.addAll(this.games.stream().filter(r -> (r.getState().equals(RSWMap.MapState.PLAYING) || r.getState().equals(RSWMap.MapState.FINISHING) && r.isRegistered())).collect(Collectors.toList()));
                 break;
             case SOLO:
                 f.addAll(this.getGames(GameModes.SOLO));
@@ -106,30 +108,30 @@ public class GameManager extends GameManagerAPI {
             default:
                 break;
         }
-        return f.isEmpty() ? Collections.singletonList(new Placeholder("No Maps Found")) : f;
+        return f.isEmpty() ? Collections.singletonList(new PlaceholderMode("No Maps Found")) : f;
     }
 
     @Override
-    public List<RSWGame> getGames(GameModes pt) {
+    public List<RSWMap> getGames(GameModes pt) {
         switch (pt) {
             case ALL:
                 return this.games;
             case SOLO:
-                return this.games.stream().filter(r -> r.getGameMode().equals(RSWGame.Mode.SOLO) && r.isRegistered()).collect(Collectors.toList());
+                return this.games.stream().filter(r -> r.getGameMode().equals(RSWMap.Mode.SOLO) && r.isRegistered()).collect(Collectors.toList());
             case TEAMS:
-                return this.games.stream().filter(r -> r.getGameMode().equals(RSWGame.Mode.TEAMS) && r.isRegistered()).collect(Collectors.toList());
+                return this.games.stream().filter(r -> r.getGameMode().equals(RSWMap.Mode.TEAMS) && r.isRegistered()).collect(Collectors.toList());
             case RANKED:
                 return this.games.stream().filter(rswGame -> rswGame.isRanked() && rswGame.isRegistered()).collect(Collectors.toList());
             case SOLO_RANKED:
-                return this.games.stream().filter(r -> r.isRanked() && r.isRegistered() && r.getGameMode().equals(RSWGame.Mode.SOLO)).collect(Collectors.toList());
+                return this.games.stream().filter(r -> r.isRanked() && r.isRegistered() && r.getGameMode().equals(RSWMap.Mode.SOLO)).collect(Collectors.toList());
             case TEAMS_RANKED:
-                return this.games.stream().filter(r -> r.isRanked() && r.isRegistered() && r.getGameMode().equals(RSWGame.Mode.TEAMS)).collect(Collectors.toList());
+                return this.games.stream().filter(r -> r.isRanked() && r.isRegistered() && r.getGameMode().equals(RSWMap.Mode.TEAMS)).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
 
     @Override
-    public String getStateString(RSWPlayer gp, RSWGame.GameState t) {
+    public String getStateString(RSWPlayer gp, RSWMap.MapState t) {
         switch (t) {
             case WAITING:
                 return rs.getLanguageManagerAPI().getString(gp, LanguageManagerAPI.TS.MAP_WAITING, false);
@@ -184,7 +186,7 @@ public class GameManager extends GameManagerAPI {
     }
 
     @Override
-    public void removeRoom(RSWGame gr) {
+    public void removeRoom(RSWMap gr) {
         gr.getSigns().forEach(RSWSign::delete);
         this.games.remove(gr);
     }
@@ -195,7 +197,7 @@ public class GameManager extends GameManagerAPI {
     }
 
     @Override
-    public void addRoom(RSWGame s) {
+    public void addRoom(RSWMap s) {
         this.games.add(s);
     }
 
@@ -222,12 +224,12 @@ public class GameManager extends GameManagerAPI {
     }
 
     @Override
-    public void findGame(RSWPlayer player, RSWGame.Mode type) {
+    public void findGame(RSWPlayer player, RSWMap.Mode type) {
         UUID playerUUID = player.getUUID();
         if (!rs.getPlayerManagerAPI().getTeleporting().contains(playerUUID)) {
             rs.getPlayerManagerAPI().getTeleporting().add(playerUUID);
 
-            Optional<RSWGame> suitableGame = findSuitableGame(type);
+            Optional<RSWMap> suitableGame = findSuitableGame(type);
             if (suitableGame.isPresent()) {
                 if (suitableGame.get().isFull()) {
                     player.sendMessage(rs.getLanguageManagerAPI().getString(player, LanguageManagerAPI.TS.ROOM_FULL, true));
@@ -255,12 +257,12 @@ public class GameManager extends GameManagerAPI {
     }
 
     @Override
-    public Optional<RSWGame> findSuitableGame(RSWGame.Mode type) {
+    public Optional<RSWMap> findSuitableGame(RSWMap.Mode type) {
         return this.games.stream()
                 .filter(game -> (type == null || game.getGameMode().equals(type)) &&
-                        (game.getState().equals(RSWGame.GameState.AVAILABLE) ||
-                                game.getState().equals(RSWGame.GameState.STARTING) ||
-                                game.getState().equals(RSWGame.GameState.WAITING)))
+                        (game.getState().equals(RSWMap.MapState.AVAILABLE) ||
+                                game.getState().equals(RSWMap.MapState.STARTING) ||
+                                game.getState().equals(RSWMap.MapState.WAITING)))
                 .findFirst();
     }
 

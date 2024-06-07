@@ -16,7 +16,7 @@ package joserodpt.realskywars.plugin.gui.guis;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.game.modes.RSWGame;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
@@ -51,7 +51,7 @@ public class MapSettingsGUI {
     private final ItemStack aAvailable = Itens.createItem(Material.GREEN_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&aAvailable", "&7Starting", "&7Waiting", "&7Playing", "&7Finishing", "&7Resetting"));
     private final ItemStack aStarting = Itens.createItem(Material.YELLOW_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&aStarting", "&7Waiting", "&7Playing", "&7Finishing", "&7Resetting"));
     private final ItemStack aWaiting = Itens.createItem(Material.LIGHT_BLUE_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&aWaiting", "&7Playing", "&7Finishing", "&7Resetting"));
-    private final  ItemStack aPlaying = Itens.createItem(Material.RED_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&7Waiting", "&aPlaying", "&7Finishing", "&7Resetting"));
+    private final ItemStack aPlaying = Itens.createItem(Material.RED_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&7Waiting", "&aPlaying", "&7Finishing", "&7Resetting"));
     private final ItemStack aFinishing = Itens.createItem(Material.GRAY_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&7Waiting", "&7Playing", "&aFinishing", "&7Resetting"));
     private final ItemStack aResetting = Itens.createItem(Material.PURPLE_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&7Waiting", "&7Playing", "&7Finishing", "&aResetting"));
     private final ItemStack resetRoom = Itens.createItem(Material.BARRIER, 1, "&9Reset Room", Arrays.asList("&cClick here to reset the room.", "&4NOTE: ALL PLAYERS WILL BE KICKED FROM THE GAME."));
@@ -60,9 +60,9 @@ public class MapSettingsGUI {
 
     private static int refreshTask;
     private final UUID uuid;
-    private RSWGame game;
+    private RSWMap game;
 
-    public MapSettingsGUI(RSWGame g, UUID id) {
+    public MapSettingsGUI(RSWMap g, UUID id) {
         this.uuid = id;
         this.game = g;
 
@@ -150,22 +150,22 @@ public class MapSettingsGUI {
                                 // arstat
                                 switch (current.game.getState()) {
                                     case AVAILABLE:
-                                        current.game.setState(RSWGame.GameState.STARTING);
+                                        current.game.setState(RSWMap.MapState.STARTING);
                                         break;
                                     case FINISHING:
-                                        current.game.setState(RSWGame.GameState.RESETTING);
+                                        current.game.setState(RSWMap.MapState.RESETTING);
                                         break;
                                     case PLAYING:
-                                        current.game.setState(RSWGame.GameState.FINISHING);
+                                        current.game.setState(RSWMap.MapState.FINISHING);
                                         break;
                                     case RESETTING:
-                                        current.game.setState(RSWGame.GameState.AVAILABLE);
+                                        current.game.setState(RSWMap.MapState.AVAILABLE);
                                         break;
                                     case STARTING:
-                                        current.game.setState(RSWGame.GameState.WAITING);
+                                        current.game.setState(RSWMap.MapState.WAITING);
                                         break;
                                     case WAITING:
-                                        current.game.setState(RSWGame.GameState.PLAYING);
+                                        current.game.setState(RSWMap.MapState.PLAYING);
                                         break;
                                 }
                                 current.loadInv();
@@ -175,24 +175,24 @@ public class MapSettingsGUI {
                             case 13:
                                 // settings
                                 current.game.setBorderEnabled(!current.game.isBorderEnabled());
-                                current.game.save(RSWGame.Data.SETTINGS, true);
+                                current.game.save(RSWMap.Data.SETTINGS, true);
                                 current.loadInv();
                                 break;
                             case 14:
                                 // settings
                                 current.game.setRanked(!current.game.isRanked());
-                                current.game.save(RSWGame.Data.SETTINGS, true);
+                                current.game.save(RSWMap.Data.SETTINGS, true);
                                 current.loadInv();
                                 break;
                             case 15:
                                 // settings
                                 current.game.setSpectator(!current.game.isSpectatorEnabled());
-                                current.game.save(RSWGame.Data.SETTINGS, true);
+                                current.game.save(RSWMap.Data.SETTINGS, true);
                                 current.loadInv();
                                 break;
                             case 16:
                                 current.game.setInstantEnd(!current.game.isInstantEndEnabled());
-                                current.game.save(RSWGame.Data.SETTINGS, true);
+                                current.game.save(RSWMap.Data.SETTINGS, true);
                                 current.loadInv();
                                 break;
                         }

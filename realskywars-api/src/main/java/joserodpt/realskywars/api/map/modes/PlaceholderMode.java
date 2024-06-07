@@ -1,4 +1,4 @@
-package joserodpt.realskywars.api.game.modes;
+package joserodpt.realskywars.api.map.modes;
 
 /*
  *   _____            _  _____ _
@@ -16,59 +16,79 @@ package joserodpt.realskywars.api.game.modes;
  */
 
 import joserodpt.realskywars.api.cages.RSWCage;
-import joserodpt.realskywars.api.game.modes.teams.Team;
+import joserodpt.realskywars.api.map.RSWMap;
+import joserodpt.realskywars.api.map.modes.teams.Team;
 import joserodpt.realskywars.api.player.RSWPlayer;
 
 import java.util.List;
 
-public class Placeholder extends RSWGame {
-    public Placeholder(String nome) {
+public class PlaceholderMode extends RSWMap {
+    public PlaceholderMode(String nome) {
         super(nome);
     }
+
     @Override
     public boolean isPlaceHolder() {
         return true;
     }
+
     @Override
     public String forceStart(RSWPlayer p) {
         return null;
     }
+
     @Override
-    public boolean canStartGame() {
+    public boolean canStartMap() {
         return false;
     }
+
     @Override
-    public void removePlayer(RSWPlayer p) {}
+    public void removePlayer(RSWPlayer p) {
+    }
+
     @Override
-    public void addPlayer(RSWPlayer gp) {}
+    public void addPlayer(RSWPlayer gp) {
+    }
+
     @Override
-    public void resetArena(OperationReason rr) {}
+    public void resetArena(OperationReason rr) {
+    }
+
     @Override
-    public void checkWin() {}
+    public void checkWin() {
+    }
+
     @Override
     public Mode getGameMode() {
         return null;
     }
+
     @Override
     public List<RSWCage> getCages() {
         return null;
     }
+
     @Override
     public List<Team> getTeams() {
         return null;
     }
+
     @Override
     public int maxMembersTeam() {
         return 0;
     }
+
     @Override
     public int getMaxTime() {
         return 0;
     }
+
     @Override
-    public void startGameFunction() {}
+    public void forceStartMap() {
+    }
+
     @Override
-    public int minimumPlayersToStartGame() {
+    public int minimumPlayersToStartMap() {
         return 0;
     }
 }

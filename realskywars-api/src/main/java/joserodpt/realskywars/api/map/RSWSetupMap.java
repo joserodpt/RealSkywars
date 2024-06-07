@@ -1,4 +1,4 @@
-package joserodpt.realskywars.api.game;
+package joserodpt.realskywars.api.map;
 
 /*
  *   _____            _  _____ _
@@ -17,7 +17,6 @@ package joserodpt.realskywars.api.game;
 
 import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.chests.RSWChest;
-import joserodpt.realskywars.api.game.modes.RSWGame;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -27,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SetupRoom {
+public class RSWSetupMap {
 
     private final String name;
     private final String displayName;
@@ -35,7 +34,7 @@ public class SetupRoom {
     private final Map<Location, RSWCage> cages = new HashMap<>();
     private final Map<Location, RSWChest> chests = new HashMap<>();
     private final int maxPlayers;
-    private final RSWGame.Mode mode;
+    private final RSWMap.Mode mode;
     private Boolean tpConfirm = false;
     private World worldMap;
     private Location spectatorLocation;
@@ -47,31 +46,35 @@ public class SetupRoom {
 
     private Location l1, l2;
 
-    private Boolean cagesConfirmed = false, speclocConfirm = false, instantEnding = false,  borderEnabled = true, ranked = false;
+    private Boolean cagesConfirmed = false, speclocConfirm = false, instantEnding = false, borderEnabled = true, ranked = false;
 
-    public SetupRoom(String nome, String displayName, World w, RSWWorld.WorldType wt, int players) {
+    public RSWSetupMap(String nome, String displayName, World w, RSWWorld.WorldType wt, int players) {
         this.name = nome.replace(".schematic", "").replace(".schem", "");
         this.displayName = displayName.replace(".schematic", "").replace(".schem", "");
         this.worldMap = w;
         this.worldType = wt;
         this.maxPlayers = players;
-        this.mode = RSWGame.Mode.SOLO;
+        this.mode = RSWMap.Mode.SOLO;
     }
 
-    public SetupRoom(String nome, String displayName, World w, RSWWorld.WorldType wt, int teams, int ppert) {
+    public RSWSetupMap(String nome, String displayName, World w, RSWWorld.WorldType wt, int teams, int ppert) {
         this.name = nome.replace(".schematic", "").replace(".schem", "");
         this.displayName = displayName.replace(".schematic", "").replace(".schem", "");
         this.worldMap = w;
         this.worldType = wt;
         this.teams = teams;
         this.playersPerTeam = ppert;
-        this.mode = RSWGame.Mode.SOLO;
+        this.mode = RSWMap.Mode.SOLO;
         this.maxPlayers = teams * ppert;
     }
 
-    public Location getL1() { return this.l1; }
+    public Location getL1() {
+        return this.l1;
+    }
 
-    public Location getL2() { return this.l2; }
+    public Location getL2() {
+        return this.l2;
+    }
 
     public int getPlayersPerTeam() {
         return this.playersPerTeam;
@@ -109,7 +112,7 @@ public class SetupRoom {
         this.speclocConfirm = b;
     }
 
-    public RSWGame.Mode getGameType() {
+    public RSWMap.Mode getGameType() {
         return this.mode;
     }
 

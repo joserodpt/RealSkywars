@@ -16,7 +16,7 @@ package joserodpt.realskywars.plugin.listeners;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.game.modes.RSWGame;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.block.Block;
@@ -31,6 +31,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 
 public class EventListener implements Listener {
     private final RealSkywarsAPI rs;
+
     public EventListener(RealSkywarsAPI rs) {
         this.rs = rs;
     }
@@ -46,8 +47,8 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void projectileHitEvent(ProjectileHitEvent e) {
-        RSWGame match = rs.getGameManagerAPI().getMatch(e.getEntity().getWorld());
-        if (match != null && match.getProjectileTier() == RSWGame.ProjectileType.BREAK_BLOCKS) {
+        RSWMap match = rs.getGameManagerAPI().getMatch(e.getEntity().getWorld());
+        if (match != null && match.getProjectileTier() == RSWMap.ProjectileType.BREAK_BLOCKS) {
             Projectile projectile = e.getEntity();
             if (projectile instanceof EnderPearl) {
                 return;
@@ -66,7 +67,7 @@ public class EventListener implements Listener {
             event.setLine(0, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix());
             String name = event.getLine(1);
 
-            RSWGame m = rs.getGameManagerAPI().getGame(name);
+            RSWMap m = rs.getGameManagerAPI().getGame(name);
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(event.getPlayer());
 
             if (m != null && (event.getPlayer().isOp() || p.getPlayer().hasPermission("rs.admin"))) {

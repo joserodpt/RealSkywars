@@ -22,7 +22,7 @@ import joserodpt.realskywars.api.cages.RSWTeamCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.effects.RSWBowTrail;
-import joserodpt.realskywars.api.game.modes.RSWGame;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 
@@ -58,6 +58,7 @@ import java.util.UUID;
 
 public class PlayerListener implements Listener {
     private final RealSkywarsAPI rs;
+
     public PlayerListener(RealSkywarsAPI rs) {
         this.rs = rs;
     }
@@ -200,7 +201,7 @@ public class PlayerListener implements Listener {
                         Sign sign = (Sign) e.getClickedBlock().getState();
                         if (Text.strip(sign.getLine(0)).equals(Text.strip(rs.getLanguageManagerAPI().getPrefix()))) {
                             String mapName = Text.strip(sign.getLine(1));
-                            RSWGame game = rs.getGameManagerAPI().getGame(mapName);
+                            RSWMap game = rs.getGameManagerAPI().getGame(mapName);
 
                             if (game != null) {
                                 if (e.getPlayer().isSneaking() && (e.getPlayer().isOp() || e.getPlayer().hasPermission("rs.admin"))) {
@@ -373,12 +374,12 @@ public class PlayerListener implements Listener {
                         return;
                     }
 
-                    if (damaged.getMatch().getState() == RSWGame.GameState.PLAYING) {
+                    if (damaged.getMatch().getState() == RSWMap.MapState.PLAYING) {
                         damaged.addStatistic(RSWPlayer.Statistic.DEATH, 1, damaged.getMatch().isRanked());
 
                         Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
                             damaged.getPlayer().spigot().respawn();
-                            damaged.getMatch().spectate(damaged, RSWGame.SpectateType.GAME, damaged.getMatch().getSpectatorLocation());
+                            damaged.getMatch().spectate(damaged, RSWMap.SpectateType.INSIDE_GAME, damaged.getMatch().getSpectatorLocation());
                         }, 1);
                     } else {
                         damaged.teleport(damaged.getMatch().getSpectatorLocation());
@@ -424,7 +425,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (killed.isInMatch() && killed.getMatch().getState().equals(RSWGame.GameState.PLAYING)) {
+        if (killed.isInMatch() && killed.getMatch().getState().equals(RSWMap.MapState.PLAYING)) {
             killed.addStatistic(RSWPlayer.Statistic.DEATH, 1, killed.getMatch().isRanked());
 
             Location finalDeathLoc = deathLoc;
@@ -434,10 +435,10 @@ public class PlayerListener implements Listener {
                 }
                 if (finalDeathLoc == null) {
                     if (killed.getPlayer() != null)
-                        killed.getMatch().spectate(killed, RSWGame.SpectateType.GAME, killed.getMatch().getSpectatorLocation());
+                        killed.getMatch().spectate(killed, RSWMap.SpectateType.INSIDE_GAME, killed.getMatch().getSpectatorLocation());
                 } else {
                     if (killed.getPlayer() != null)
-                        killed.getMatch().spectate(killed, RSWGame.SpectateType.GAME, finalDeathLoc);
+                        killed.getMatch().spectate(killed, RSWMap.SpectateType.INSIDE_GAME, finalDeathLoc);
                 }
             }, 1);
         }
@@ -474,13 +475,13 @@ public class PlayerListener implements Listener {
         }
     }
 
-    Map<UUID, RSWGame> fastJoin = new HashMap<>();
+    Map<UUID, RSWMap> fastJoin = new HashMap<>();
 
     @EventHandler
     public void onAsyncPlayerJoin(AsyncPlayerPreLoginEvent e) {
         // auto join random match
         if (RSWConfig.file().getBoolean("Config.Auto-Join-Random-Match")) {
-            Optional<RSWGame> suitableGame = rs.getGameManagerAPI().findSuitableGame(null);
+            Optional<RSWMap> suitableGame = rs.getGameManagerAPI().findSuitableGame(null);
             if (suitableGame.isPresent()) {
                 if (suitableGame.get().isFull()) {
                     e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, rs.getLanguageManagerAPI().getString(null, LanguageManagerAPI.TS.ROOM_FULL, true));

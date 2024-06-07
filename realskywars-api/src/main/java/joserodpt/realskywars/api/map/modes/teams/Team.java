@@ -1,4 +1,4 @@
-package joserodpt.realskywars.api.game.modes.teams;
+package joserodpt.realskywars.api.map.modes.teams;
 
 /*
  *   _____            _  _____ _

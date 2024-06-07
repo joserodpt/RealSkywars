@@ -24,11 +24,11 @@ import joserodpt.realskywars.api.cages.RSWSoloCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWMapsConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.game.SetupRoom;
-import joserodpt.realskywars.api.game.modes.RSWGame;
-import joserodpt.realskywars.api.game.modes.Solo;
-import joserodpt.realskywars.api.game.modes.teams.Team;
-import joserodpt.realskywars.api.game.modes.teams.Teams;
+import joserodpt.realskywars.api.map.RSWSetupMap;
+import joserodpt.realskywars.api.map.RSWMap;
+import joserodpt.realskywars.api.map.modes.SoloMode;
+import joserodpt.realskywars.api.map.modes.teams.Team;
+import joserodpt.realskywars.api.map.modes.teams.TeamsMode;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
@@ -58,7 +58,7 @@ public class MapManager extends MapManagerAPI {
         rs.getGameManagerAPI().clearRooms();
 
         for (String s : RSWMapsConfig.file().getRoot().getRoutesAsStrings(false)) {
-            RSWGame.Mode t = getGameType(s);
+            RSWMap.Mode t = getGameType(s);
 
             if (t == null) {
                 rs.getLogger().severe("Mode " + getGameType(s) + " doesnt exist! Skipping map: " + s);
@@ -83,8 +83,8 @@ public class MapManager extends MapManagerAPI {
                 Location specLoc = getSpecLoc(s);
                 switch (t) {
                     case SOLO:
-                        Solo gs = new Solo(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWGame.GameState.AVAILABLE, getCages(s, specLoc), RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s), rs);
-                        gs.resetArena(RSWGame.OperationReason.LOAD);
+                        SoloMode gs = new SoloMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, getCages(s, specLoc), RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s), rs);
+                        gs.resetArena(RSWMap.OperationReason.LOAD);
                         rs.getGameManagerAPI().addRoom(gs);
                         break;
                     case TEAMS:
@@ -95,8 +95,8 @@ public class MapManager extends MapManagerAPI {
                             ts.add(new Team(tc, (RSWMapsConfig.file().getInt(s + ".number-of-players") / cgs.size()), c.getLoc(), worldName));
                             ++tc;
                         }
-                        Teams teas = new Teams(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWGame.GameState.AVAILABLE, ts, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s), rs);
-                        teas.resetArena(RSWGame.OperationReason.LOAD);
+                        TeamsMode teas = new TeamsMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, ts, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s), rs);
+                        teas.resetArena(RSWMap.OperationReason.LOAD);
                         rs.getGameManagerAPI().addRoom(teas);
                         break;
                     default:
@@ -107,18 +107,18 @@ public class MapManager extends MapManagerAPI {
     }
 
     @Override
-    public void unregisterMap(RSWGame map) {
+    public void unregisterMap(RSWMap map) {
         map.kickPlayers(TranslatableLine.ADMIN_SHUTDOWN.get());
         map.setRegistered(false);
     }
 
     @Override
-    public void registerMap(RSWGame map) {
+    public void registerMap(RSWMap map) {
         map.setRegistered(true);
     }
 
     @Override
-    public void deleteMap(RSWGame map) {
+    public void deleteMap(RSWMap map) {
         map.getAllPlayers().forEach(map::removePlayer);
         rs.getGameManagerAPI().removeRoom(map);
         RSWMapsConfig.file().remove(map.getMapName());
@@ -126,8 +126,8 @@ public class MapManager extends MapManagerAPI {
     }
 
     @Override
-    public RSWGame getMap(String s) {
-        return rs.getGameManagerAPI().getGames(GameManager.GameModes.ALL).stream()
+    public RSWMap getMap(String s) {
+        return rs.getGameManagerAPI().getGames(GamesManager.GameModes.ALL).stream()
                 .filter(g -> g.getMapName().equalsIgnoreCase(s))
                 .findFirst()
                 .orElse(null);
@@ -149,7 +149,7 @@ public class MapManager extends MapManagerAPI {
 
     @Override
     public void setupSolo(RSWPlayer p, String mapname, String displayName, RSWWorld.WorldType wt, int maxP) {
-        SetupRoom s = new SetupRoom(mapname, displayName, null, wt, maxP);
+        RSWSetupMap s = new RSWSetupMap(mapname, displayName, null, wt, maxP);
         s.setSchematic(mapname);
         p.setSetup(s);
 
@@ -159,7 +159,7 @@ public class MapManager extends MapManagerAPI {
 
     @Override
     public void setupTeams(RSWPlayer p, String mapname, String displayName, RSWWorld.WorldType wt, int teams, int pperteam) {
-        SetupRoom s = new SetupRoom(mapname, displayName, null, wt, teams, pperteam);
+        RSWSetupMap s = new RSWSetupMap(mapname, displayName, null, wt, teams, pperteam);
         s.setSchematic(mapname);
         p.setSetup(s);
 
@@ -263,19 +263,19 @@ public class MapManager extends MapManagerAPI {
 
         if (loaded) {
             // Save Data
-            RSWGame.Mode gt = p.getSetupRoom().getGameType();
+            RSWMap.Mode gt = p.getSetupRoom().getGameType();
             switch (gt) {
                 case SOLO:
-                    Solo gs = new Solo(p.getSetupRoom().getName(), p.getSetupRoom().getDisplayName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), RSWGame.GameState.AVAILABLE, p.getSetupRoom().getCages(), p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), rs);
+                    SoloMode gs = new SoloMode(p.getSetupRoom().getName(), p.getSetupRoom().getDisplayName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), RSWMap.MapState.AVAILABLE, p.getSetupRoom().getCages(), p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), rs);
 
                     if (p.getSetupRoom().getWorldType() == RSWWorld.WorldType.DEFAULT) {
-                        gs.getRSWWorld().resetWorld(RSWGame.OperationReason.LOAD);
+                        gs.getRSWWorld().resetWorld(RSWMap.OperationReason.LOAD);
                     } else {
-                        gs.getRSWWorld().resetWorld(RSWGame.OperationReason.RESET);
+                        gs.getRSWWorld().resetWorld(RSWMap.OperationReason.RESET);
                     }
 
                     rs.getGameManagerAPI().addRoom(gs);
-                    gs.save(RSWGame.Data.ALL, true);
+                    gs.save(RSWMap.Data.ALL, true);
 
                     //set chests
                     gs.getChests().forEach(RSWChest::setChest);
@@ -287,16 +287,16 @@ public class MapManager extends MapManagerAPI {
                         ts.add(new Team(tc, p.getSetupRoom().getPlayersPerTeam(), c.getLoc(), p.getSetupRoom().getWorld().getName()));
                         ++tc;
                     }
-                    Teams t = new Teams(p.getSetupRoom().getName(), p.getSetupRoom().getDisplayName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), RSWGame.GameState.AVAILABLE, ts, p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), rs);
+                    TeamsMode t = new TeamsMode(p.getSetupRoom().getName(), p.getSetupRoom().getDisplayName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), RSWMap.MapState.AVAILABLE, ts, p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), rs);
 
                     if (p.getSetupRoom().getWorldType() == RSWWorld.WorldType.DEFAULT) {
-                        t.getRSWWorld().resetWorld(RSWGame.OperationReason.LOAD);
+                        t.getRSWWorld().resetWorld(RSWMap.OperationReason.LOAD);
                     } else {
-                        t.getRSWWorld().resetWorld(RSWGame.OperationReason.RESET);
+                        t.getRSWWorld().resetWorld(RSWMap.OperationReason.RESET);
                     }
 
                     rs.getGameManagerAPI().addRoom(t);
-                    t.save(RSWGame.Data.ALL, true);
+                    t.save(RSWMap.Data.ALL, true);
 
                     //set chests
                     t.getChests().forEach(RSWChest::setChest);
@@ -313,8 +313,8 @@ public class MapManager extends MapManagerAPI {
     }
 
     @Override
-    protected RSWGame.Mode getGameType(String s) {
-        return (RSWMapsConfig.file().getString(s + ".Settings.GameType") == null) ? null : RSWGame.Mode.valueOf(RSWMapsConfig.file().getString(s + ".Settings.GameType"));
+    protected RSWMap.Mode getGameType(String s) {
+        return (RSWMapsConfig.file().getString(s + ".Settings.GameType") == null) ? null : RSWMap.Mode.valueOf(RSWMapsConfig.file().getString(s + ".Settings.GameType"));
     }
 
     @Override

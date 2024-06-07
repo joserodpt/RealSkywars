@@ -16,7 +16,7 @@ package joserodpt.realskywars.plugin.managers;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.game.modes.RSWGame;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.PartiesManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
@@ -24,6 +24,7 @@ import org.bukkit.Bukkit;
 
 public class PartiesManager extends PartiesManagerAPI {
     private final RealSkywarsAPI rs;
+
     public PartiesManager(RealSkywarsAPI rs) {
         this.rs = rs;
     }
@@ -55,7 +56,7 @@ public class PartiesManager extends PartiesManagerAPI {
     }
 
     @Override
-    public boolean checkForParties(RSWPlayer p, RSWGame swgm) {
+    public boolean checkForParties(RSWPlayer p, RSWMap swgm) {
         int current, max, toAdd;
 
         boolean result;

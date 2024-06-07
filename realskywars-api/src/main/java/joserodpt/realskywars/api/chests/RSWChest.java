@@ -17,9 +17,9 @@ package joserodpt.realskywars.api.chests;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
-import joserodpt.realskywars.api.game.RSWCountdown;
-import joserodpt.realskywars.api.game.SWEvent;
-import joserodpt.realskywars.api.game.modes.RSWGame;
+import joserodpt.realskywars.api.map.RSWCountdown;
+import joserodpt.realskywars.api.map.RSWEvent;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.holograms.RSWHologram;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -141,11 +141,11 @@ public class RSWChest {
         }
     }
 
-    public void startTasks(RSWGame sgm) {
+    public void startTasks(RSWMap sgm) {
         if (this.chestCTD == null && this.isChest()) {
             int time = RSWConfig.file().getInt("Config.Default-Refill-Time");
 
-            Optional<SWEvent> e = getRefillTime(sgm);
+            Optional<RSWEvent> e = getRefillTime(sgm);
             if (e.isPresent()) {
                 time = e.get().getTimeLeft();
             }
@@ -173,8 +173,8 @@ public class RSWChest {
         }
     }
 
-    private Optional<SWEvent> getRefillTime(RSWGame sgm) {
-        return sgm.getEvents().stream().filter(c -> c.getEventType().equals(SWEvent.EventType.REFILL)).findFirst();
+    private Optional<RSWEvent> getRefillTime(RSWMap sgm) {
+        return sgm.getEvents().stream().filter(c -> c.getEventType().equals(RSWEvent.EventType.REFILL)).findFirst();
     }
 
     public void cancelTasks() {
@@ -191,7 +191,8 @@ public class RSWChest {
     public void clearHologram() {
         this.hologram.deleteHologram();
     }
-    public enum Tier { BASIC, NORMAL, EPIC }
+
+    public enum Tier {BASIC, NORMAL, EPIC}
 
     public enum Type {NORMAL, MID}
 

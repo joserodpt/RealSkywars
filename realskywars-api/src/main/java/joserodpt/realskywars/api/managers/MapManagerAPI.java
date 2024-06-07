@@ -2,7 +2,7 @@ package joserodpt.realskywars.api.managers;
 
 import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.chests.RSWChest;
-import joserodpt.realskywars.api.game.modes.RSWGame;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.Location;
@@ -13,13 +13,13 @@ import java.util.List;
 public abstract class MapManagerAPI {
     public abstract void loadMaps();
 
-    public abstract void unregisterMap(RSWGame map);
+    public abstract void unregisterMap(RSWMap map);
 
-    public abstract void registerMap(RSWGame map);
+    public abstract void registerMap(RSWMap map);
 
-    public abstract void deleteMap(RSWGame map);
+    public abstract void deleteMap(RSWMap map);
 
-    public abstract RSWGame getMap(String s);
+    public abstract RSWMap getMap(String s);
 
     public abstract List<RSWCage> getCages(String s, Location specLoc);
 
@@ -33,7 +33,7 @@ public abstract class MapManagerAPI {
 
     public abstract void finishSetup(RSWPlayer p);
 
-    protected abstract RSWGame.Mode getGameType(String s);
+    protected abstract RSWMap.Mode getGameType(String s);
 
     protected abstract Boolean isInstantEndingEnabled(String s);
 
