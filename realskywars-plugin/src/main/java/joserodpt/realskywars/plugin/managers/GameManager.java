@@ -31,6 +31,7 @@ import org.bukkit.World;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ public class GameManager extends GameManagerAPI {
     public GameManager(RealSkywarsAPI rs) {
         this.rs = rs;
     }
-    private final ArrayList<RSWGame> games = new ArrayList<>();
+    private final List<RSWGame> games = new ArrayList<>();
     private Location lobbyLOC;
     private Boolean loginTP = true;
 
@@ -227,44 +228,39 @@ public class GameManager extends GameManagerAPI {
 
             Optional<RSWGame> suitableGame = findSuitableGame(type);
             if (suitableGame.isPresent()) {
-                joinSuitableGame(player, suitableGame.get());
+                if (suitableGame.get().isFull()) {
+                    player.sendMessage(rs.getLanguageManagerAPI().getString(player, LanguageManagerAPI.TS.ROOM_FULL, true));
+                    rs.getPlayerManagerAPI().getTeleporting().remove(playerUUID);
+                    return;
+                }
+
+                player.sendMessage(rs.getLanguageManagerAPI().getString(player, LanguageManagerAPI.TS.GAME_FOUND, true));
+                if (player.isInMatch()) {
+                    player.getMatch().removePlayer(player);
+                }
+                Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywarsAPI.getInstance().getPlugin(), () -> {
+                    suitableGame.get().addPlayer(player);
+                    rs.getPlayerManagerAPI().getTeleporting().remove(player.getUUID());
+                }, 5);
             } else {
-                handleNoGameFound(player);
+                player.sendMessage(rs.getLanguageManagerAPI().getString(player, LanguageManagerAPI.TS.NO_GAME_FOUND, true));
+                rs.getPlayerManagerAPI().getTeleporting().remove(player.getUUID());
+
+                if (Objects.equals(this.getLobbyLocation().getWorld(), player.getWorld())) {
+                    this.tpToLobby(player);
+                }
             }
         }
     }
 
     @Override
-    protected Optional<RSWGame> findSuitableGame(RSWGame.Mode type) {
+    public Optional<RSWGame> findSuitableGame(RSWGame.Mode type) {
         return this.games.stream()
-                .filter(game -> game.getGameMode().equals(type) &&
+                .filter(game -> (type == null || game.getGameMode().equals(type)) &&
                         (game.getState().equals(RSWGame.GameState.AVAILABLE) ||
                                 game.getState().equals(RSWGame.GameState.STARTING) ||
-                                game.getState().equals(RSWGame.GameState.WAITING)) &&
-                        !game.isFull())
+                                game.getState().equals(RSWGame.GameState.WAITING)))
                 .findFirst();
-    }
-
-    @Override
-    protected void joinSuitableGame(RSWPlayer player, RSWGame gameMode) {
-        player.sendMessage(rs.getLanguageManagerAPI().getString(player, LanguageManagerAPI.TS.GAME_FOUND, true));
-        if (player.isInMatch()) {
-            player.getMatch().removePlayer(player);
-        }
-        Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywarsAPI.getInstance().getPlugin(), () -> {
-            gameMode.addPlayer(player);
-            rs.getPlayerManagerAPI().getTeleporting().remove(player.getUUID());
-        }, 5);
-    }
-
-    @Override
-    protected void handleNoGameFound(RSWPlayer player) {
-        player.sendMessage(rs.getLanguageManagerAPI().getString(player, LanguageManagerAPI.TS.NO_GAME_FOUND, true));
-        rs.getPlayerManagerAPI().getTeleporting().remove(player.getUUID());
-
-        if (this.getLobbyLocation().getWorld().equals(player.getWorld())) {
-            this.tpToLobby(player);
-        }
     }
 
 }

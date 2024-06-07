@@ -51,6 +51,11 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 public class PlayerListener implements Listener {
     private final RealSkywarsAPI rs;
     public PlayerListener(RealSkywarsAPI rs) {
@@ -469,13 +474,39 @@ public class PlayerListener implements Listener {
         }
     }
 
+    Map<UUID, RSWGame> fastJoin = new HashMap<>();
+
+    @EventHandler
+    public void onAsyncPlayerJoin(AsyncPlayerPreLoginEvent e) {
+        // auto join random match
+        if (RSWConfig.file().getBoolean("Config.Auto-Join-Random-Match")) {
+            Optional<RSWGame> suitableGame = rs.getGameManagerAPI().findSuitableGame(null);
+            if (suitableGame.isPresent()) {
+                if (suitableGame.get().isFull()) {
+                    e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, rs.getLanguageManagerAPI().getString(null, LanguageManagerAPI.TS.ROOM_FULL, true));
+                } else {
+                    e.allow();
+                    fastJoin.put(e.getUniqueId(), suitableGame.get());
+                    return;
+                }
+            } else { //TODO
+                e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, rs.getLanguageManagerAPI().getString(null, LanguageManagerAPI.TS.NO_GAME_FOUND, true));
+                return;
+            }
+        }
+    }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         if (e.getPlayer().isOp() && rs.hasNewUpdate()) {
             Text.send(e.getPlayer(), "&6&LWARNING! &r&fThere is a new update available for Real&bSkywars&f! https://www.spigotmc.org/resources/105115/");
         }
 
-        rs.getPlayerManagerAPI().loadPlayer(e.getPlayer());
+        RSWPlayer p = rs.getPlayerManagerAPI().loadPlayer(e.getPlayer());
+        if (fastJoin.containsKey(e.getPlayer().getUniqueId())) {
+            fastJoin.get(e.getPlayer().getUniqueId()).addPlayer(p);
+            fastJoin.remove(e.getPlayer().getUniqueId());
+        }
     }
 
     @EventHandler

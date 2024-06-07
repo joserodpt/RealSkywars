@@ -115,7 +115,7 @@ public class PlayerManager extends PlayerManagerAPI {
     }
 
     @Override
-    public void loadPlayer(Player p) {
+    public RSWPlayer loadPlayer(Player p) {
         try {
             PlayerData playerData = rs.getDatabaseManagerAPI().getPlayerData(p);
 
@@ -140,15 +140,18 @@ public class PlayerManager extends PlayerManagerAPI {
             gp.getTab().updateRoomTAB();
 
             rs.getPlayerManagerAPI().getPlayers().stream()
-                    .filter(RSWPlayer::isInMatch)
-                    .forEach(player -> {
-                        RSWPlayer.RoomTAB rt = player.getTab();
-                        rt.remove(p);
-                        rt.updateRoomTAB();
-                    });
+                .filter(RSWPlayer::isInMatch)
+                .forEach(player -> {
+                    RSWPlayer.RoomTAB rt = player.getTab();
+                    rt.remove(p);
+                    rt.updateRoomTAB();
+                });
+
+            return gp;
         } catch (Exception e) {
             RealSkywarsAPI.getInstance().getLogger().severe( "Error while loading player data for " + p.getName() + " ->" + e.getMessage());
         }
+        return null;
     }
 
     @Override

@@ -14,7 +14,7 @@ public abstract class PlayerManagerAPI {
 
     public abstract ItemStack getItem(RSWPlayer p, Items i);
 
-    public abstract void loadPlayer(Player p);
+    public abstract RSWPlayer loadPlayer(Player p);
 
     protected abstract List<RSWGameLog> processGamesList(String s);
 

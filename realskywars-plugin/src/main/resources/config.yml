@@ -1,6 +1,7 @@
-Version: 5
+Version: 6
 Debug-Mode: false
 Config:
+  Auto-Join-Random-Match: false
   Use-Vault-As-Currency: false
   Auto-Teleport-To-Lobby: true
   Scoreboard-In-Lobby: true

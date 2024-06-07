@@ -47,11 +47,7 @@ public abstract class GameManagerAPI {
 
     public abstract void findGame(RSWPlayer player, RSWGame.Mode type);
 
-    protected abstract Optional<RSWGame> findSuitableGame(RSWGame.Mode type);
-
-    protected abstract void joinSuitableGame(RSWPlayer player, RSWGame gameMode);
-
-    protected abstract void handleNoGameFound(RSWPlayer player);
+    public abstract Optional<RSWGame> findSuitableGame(RSWGame.Mode type);
 
     public enum GameModes {SOLO, SOLO_RANKED, TEAMS, TEAMS_RANKED, RANKED, ALL}
 }

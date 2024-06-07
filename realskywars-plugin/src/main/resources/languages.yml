@@ -1,4 +1,4 @@
-Version: 2
+Version: 3
 Strings:
   Prefix: "&fReal&bSkywars &7> &r"
   Events:
@@ -12,6 +12,9 @@ Strings:
     Run-Time: "&fTime left : &b%time%"
     Starting: "&fStarting in &b%time% &fsecond(s)"
   Admin-Shutdown: "&cAn admin shutdown all games."
+  Bungeecord:
+    Full: "&cThis map is full. &7Please try another one."
+    No-Available-Maps: "&cThere are currently no available maps. &7Please try again later."
   Search:
     Not-Found: "&aEmpty"
   Shop:
