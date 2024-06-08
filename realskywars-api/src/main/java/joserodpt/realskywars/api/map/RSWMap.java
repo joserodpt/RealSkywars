@@ -673,20 +673,24 @@ public abstract class RSWMap {
 
         boolean isBungeeEnabled = RSWConfig.file().getBoolean("Config.Bungeecord.Enabled");
         boolean shouldKickPlayer = RSWConfig.file().getBoolean("Config.Bungeecord.Kick-Player");
+        boolean kicked = false;
 
         if (isBungeeEnabled) {
             if (shouldKickPlayer) {
-                if (p.getPlayer() != null)
+                if (p.getPlayer() != null) {
+                    kicked = true;
                     p.getPlayer().kickPlayer(TranslatableLine.BUNGEECORD_KICK_MESSAGE.get());
+                }
             } else {
                 TranslatableLine.BUNGEECORD_KICK_MESSAGE.send(p);
                 BungeecordUtils.connect(RSWConfig.file().getString("Config.Bungeecord.Lobby-Server"), p.getPlayer(), this.getRealSkywarsAPI().getPlugin());
             }
         }
 
-        rs.getGameManagerAPI().tpToLobby(p);
-        rs.getPlayerManagerAPI().giveItems(p.getPlayer(), PlayerManagerAPI.Items.LOBBY);
-
+        if (!kicked) {
+            rs.getGameManagerAPI().tpToLobby(p);
+            rs.getPlayerManagerAPI().giveItems(p.getPlayer(), PlayerManagerAPI.Items.LOBBY);
+        }
 
         if (this.getState() == MapState.PLAYING || this.getState() == MapState.FINISHING) {
             checkWin();
