@@ -20,6 +20,7 @@ import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.chests.TierViewer;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
+import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.kits.KitInventory;
 import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.managers.GamesManagerAPI;
@@ -58,6 +59,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
@@ -268,12 +270,21 @@ public class RealSkywarsCMD extends CommandBase {
 
         for (String language : rs.getLanguageManagerAPI().getLanguages()) {
             Text.send(commandSender, "&6Checking language &b" + language + "&6...");
+            Text.send(commandSender, "&6Checking for missing translations in strings...");
             for (TranslatableLine value : TranslatableLine.values()) {
                 if (value.getPath().startsWith(".")) {
                     String val = value.getInLanguage(language);
                     if (val == null) {
                         Text.send(commandSender, "&cMissing translation for &f" + value.name() + " &cin language &f" + language);
                     }
+                }
+            }
+
+            Text.send(commandSender, "&6Checking for missing translations in lists...");
+            for (TranslatableList value : TranslatableList.values()) {
+                List<String> tmp = value.getInLanguage(language);
+                if (tmp == null || tmp.isEmpty()) {
+                    Text.send(commandSender, "&cMissing translation for &f" + value.name() + " &cin language &f" + language);
                 }
             }
         }

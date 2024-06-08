@@ -17,7 +17,7 @@ package joserodpt.realskywars.plugin.gui.guis;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
@@ -292,7 +292,7 @@ public class MapsListGUI {
                 count = g.getPlayerCount();
             }
 
-            return Itens.createItem(getStateMaterial(g), count, TranslatableLine.ITEMS_MAP_TITLE.get(p, false).replace("%map%", g.getMapName()).replace("%displayname%", g.getDisplayName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(g.isRanked()), variableList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getList(p, LanguageManagerAPI.TL.ITEMS_MAP_DESCRIPTION), g));
+            return Itens.createItem(getStateMaterial(g), count, TranslatableLine.ITEMS_MAP_TITLE.get(p, false).replace("%map%", g.getMapName()).replace("%displayname%", g.getDisplayName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(g.isRanked()), variableList(TranslatableList.ITEMS_MAP_DESCRIPTION.get(p), g));
         }
     }
 

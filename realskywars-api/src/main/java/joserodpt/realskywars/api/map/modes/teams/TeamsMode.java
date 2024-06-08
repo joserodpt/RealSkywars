@@ -21,7 +21,7 @@ import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
@@ -74,13 +74,9 @@ public class TeamsMode extends RSWMap {
                         super.getBossBar().addPlayer(p.getPlayer());
 
                         //start msg
-                        for (String s : Text.color(super.getRealSkywarsAPI().getLanguageManagerAPI().getList(p, LanguageManagerAPI.TL.ARENA_START))) {
-                            p.sendCenterMessage(s.replace("%chests%", WordUtils.capitalizeFully(super.getChestTier().name())).replace("%kit%", p.getKit().getDisplayName()).replace("%project%", WordUtils.capitalizeFully(super.getProjectileTier().name().replace("_", " "))).replace("%time%", WordUtils.capitalizeFully(super.getTimeType().name())));
-                        }
+                        TranslatableList.ARENA_START.get(p).forEach(s -> p.sendCenterMessage(s.replace("%chests%", WordUtils.capitalizeFully(super.getChestTier().name())).replace("%kit%", p.getKit().getDisplayName()).replace("%project%", WordUtils.capitalizeFully(super.getProjectileTier().name().replace("_", " "))).replace("%time%", WordUtils.capitalizeFully(super.getTimeType().name()))));
 
                         p.getKit().give(p);
-
-
                         p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.PLAYING);
                     }
                 }
@@ -154,7 +150,7 @@ public class TeamsMode extends RSWMap {
 
                     if (p.getPlayer() != null) {
                         super.getBossBar().addPlayer(p.getPlayer());
-                        List<String> up = super.getRealSkywarsAPI().getLanguageManagerAPI().getList(p, LanguageManagerAPI.TL.TITLE_ROOMJOIN);
+                        List<String> up = TranslatableList.TITLE_ROOMJOIN.get(p);
                         p.getPlayer().sendTitle(up.get(0), up.get(1), 10, 120, 10);
                     }
 

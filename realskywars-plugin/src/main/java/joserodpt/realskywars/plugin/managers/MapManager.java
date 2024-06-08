@@ -24,7 +24,7 @@ import joserodpt.realskywars.api.cages.RSWSoloCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWMapsConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.RSWMap;
@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapManager extends MapManagerAPI {
-    private RealSkywarsAPI rs;
+    private final RealSkywarsAPI rs;
 
     public MapManager(RealSkywarsAPI rs) {
         this.rs = rs;
@@ -189,7 +189,7 @@ public class MapManager extends MapManagerAPI {
                 w.getBlockAt(0, 64, 0).setType(Material.BEDROCK);
                 Location loc = new Location(w, 0, 66, 0);
 
-                Text.sendList(p.getPlayer(), Text.replaceVarInList(rs.getLanguageManagerAPI().getList(p, LanguageManagerAPI.TL.INITSETUP_ARENA), "%cages%", p.getSetupRoom().getMaxPlayers() + ""), p.getSetupRoom().getMaxPlayers());
+                Text.sendList(p.getPlayer(), Text.replaceVarInList(TranslatableList.INITSETUP_ARENA.get(p), "%cages%", p.getSetupRoom().getMaxPlayers() + ""), p.getSetupRoom().getMaxPlayers());
 
                 RSWPlayerItems.SETUP.giveSet(p);
                 p.getPlayer().setGameMode(GameMode.CREATIVE);

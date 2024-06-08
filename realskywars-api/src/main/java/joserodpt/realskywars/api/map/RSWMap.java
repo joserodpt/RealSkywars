@@ -21,7 +21,7 @@ import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.RSWMapsConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.modes.RSWSign;
 import joserodpt.realskywars.api.map.modes.teams.Team;
@@ -574,9 +574,7 @@ public abstract class RSWMap {
 
     public void sendLog(RSWPlayer p, boolean winner) {
         if (p.getPlayer() != null) {
-            for (String s : Text.color(rs.getLanguageManagerAPI().getList(p, LanguageManagerAPI.TL.ARENA_END))) {
-                p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE, this.isRanked()) + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, this.isRanked()) + "").replace("%time%", Text.formatSeconds(this.mapTimer.getPassedSeconds())));
-            }
+            TranslatableList.ARENA_END.get(p).forEach(s -> p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE, this.isRanked()) + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, this.isRanked()) + "").replace("%time%", Text.formatSeconds(this.mapTimer.getPassedSeconds()))));
 
             p.addGameLog(new RSWGameLog(this.getMapName(), this.getGameMode(), this.isRanked(), this.getMaxPlayers(), winner, this.getTimePassed(), Text.getDayAndTime()));
 

@@ -205,12 +205,11 @@ public enum TranslatableLine {
     }
 
     public String get(RSWPlayer player, boolean prefix) {
-        return Text.color((prefix ? RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() : "") + RSWLanguagesConfig.file().getString("Languages." + player.getLanguage() + this.configPath));
+        return Text.color((prefix ? RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() : "") + getInLanguage(player.getLanguage()));
     }
 
-
     public String getDefault() {
-        return Text.color("Languages." + RSWConfig.file().getString("Config.Default-Language") + RSWLanguagesConfig.file().getString(this.configPath));
+        return getInLanguage(RSWConfig.file().getString("Config.Default-Language"));
     }
 
     public void sendDefault(CommandSender p, boolean prefix) {

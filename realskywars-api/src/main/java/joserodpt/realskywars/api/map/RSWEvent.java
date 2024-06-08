@@ -15,10 +15,9 @@ package joserodpt.realskywars.api.map;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWLanguagesConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Sound;
 import org.bukkit.entity.TNTPrimed;
@@ -61,11 +60,11 @@ public class RSWEvent {
     public void execute() {
         switch (this.et) {
             case REFILL:
-                this.room.getAllPlayers().forEach(rswPlayer -> rswPlayer.sendTitle(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getList(rswPlayer, LanguageManagerAPI.TL.REFILL_EVENT_TITLE).get(0), RealSkywarsAPI.getInstance().getLanguageManagerAPI().getList(rswPlayer, LanguageManagerAPI.TL.REFILL_EVENT_TITLE).get(1), 4, 10, 4));
+                this.room.getAllPlayers().forEach(rswPlayer -> rswPlayer.sendTitle(TranslatableList.REFILL_EVENT_TITLE.get(rswPlayer).get(0), TranslatableList.REFILL_EVENT_TITLE.get(rswPlayer).get(1), 4, 10, 4));
                 this.room.getAllPlayers().forEach(rswPlayer -> rswPlayer.playSound(Sound.BLOCK_CHEST_LOCKED, 50, 50));
                 break;
             case TNTRAIN:
-                this.room.getAllPlayers().forEach(rswPlayer -> rswPlayer.sendTitle(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getList(rswPlayer, LanguageManagerAPI.TL.TNTRAIN_EVENT_TITLE).get(0), RealSkywarsAPI.getInstance().getLanguageManagerAPI().getList(rswPlayer, LanguageManagerAPI.TL.TNTRAIN_EVENT_TITLE).get(1), 4, 10, 4));
+                this.room.getAllPlayers().forEach(rswPlayer -> rswPlayer.sendTitle(TranslatableList.TNTRAIN_EVENT_TITLE.get(rswPlayer).get(0), TranslatableList.TNTRAIN_EVENT_TITLE.get(rswPlayer).get(1), 4, 10, 4));
                 this.room.getAllPlayers().forEach(rswPlayer -> rswPlayer.playSound(Sound.ENTITY_TNT_PRIMED, 50, 50));
                 this.room.getPlayers().forEach(player -> player.spawnAbovePlayer(TNTPrimed.class));
                 break;

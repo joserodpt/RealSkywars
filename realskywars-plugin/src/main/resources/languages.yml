@@ -44,11 +44,6 @@ Strings:
 Default-Language: ENGLISH
 Languages:
   ENGLISH:
-    Strings:
-      Solo: "Solo"
-      Team: "Team"
-
-
     Messages:
       Maps: "Maps"
       System:

@@ -17,7 +17,7 @@ package joserodpt.realskywars.plugin.gui.guis;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Text;
@@ -53,7 +53,7 @@ public class PlayerGUI {
         this.inv = Bukkit.getServer().createInventory(null, InventoryType.HOPPER, target.getName());
 
         // infoMap
-        List<String> lore = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getList(p, LanguageManagerAPI.TL.STATS_ITEM_LORE)
+        List<String> lore = TranslatableList.STATS_ITEM_LORE.get(p)
                 .stream()
                 .map(s -> variables(s, target))
                 .collect(Collectors.toCollection(ArrayList::new));
