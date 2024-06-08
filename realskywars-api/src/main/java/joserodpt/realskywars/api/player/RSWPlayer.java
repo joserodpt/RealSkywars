@@ -538,7 +538,6 @@ public class RSWPlayer {
 
     public enum PlayerData {CAGE_BLOCK, GAME, COINS, LANG, MAPVIEWER_PREF, BOW_PARTICLES, BOUGHT_ITEMS}
 
-
     public void buyItem(String s) {
         this.bought.add(Text.strip(s));
         RealSkywarsAPI.getInstance().getPlayerManagerAPI().savePlayer(this, PlayerData.BOUGHT_ITEMS);

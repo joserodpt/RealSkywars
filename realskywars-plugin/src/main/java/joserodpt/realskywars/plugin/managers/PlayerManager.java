@@ -18,6 +18,7 @@ package joserodpt.realskywars.plugin.managers;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.database.PlayerData;
+import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.PlayerManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWGameLog;
@@ -205,7 +206,7 @@ public class PlayerManager extends PlayerManagerAPI {
     }
 
     @Override
-    public int getPlayingPlayers(GamesManager.GameModes pt) {
+    public int getPlayingPlayers(GamesManagerAPI.GameModes pt) {
         return rs.getGameManagerAPI().getGames(pt).stream().mapToInt(RSWMap::getPlayerCount).sum();
     }
 

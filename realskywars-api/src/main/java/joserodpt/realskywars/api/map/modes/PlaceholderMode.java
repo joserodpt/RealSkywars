@@ -47,8 +47,7 @@ public class PlaceholderMode extends RSWMap {
     }
 
     @Override
-    public AddResult addPlayer(RSWPlayer gp) {
-        return null;
+    public void addPlayer(RSWPlayer gp) {
     }
 
     @Override

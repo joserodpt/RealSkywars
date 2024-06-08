@@ -212,5 +212,4 @@ public class RSWChest {
     }
 
     public enum Type {NORMAL, MID}
-
 }

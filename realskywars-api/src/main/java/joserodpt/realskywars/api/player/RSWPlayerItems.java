@@ -10,6 +10,10 @@ public enum RSWPlayerItems {
     LOBBY, CAGE, SETUP, SPECTATOR, PROFILE, CAGESET, MAPS, SHOP, LEAVE, VOTE, SPECTATE, KIT, PLAYAGAIN, CHEST1, CHEST2;
 
     public void giveSet(RSWPlayer p) {
+        if (p.isBot() || p.getPlayer() == null) {
+            return;
+        }
+        
         p.getInventory().clear();
         switch (this) {
             case CAGE:

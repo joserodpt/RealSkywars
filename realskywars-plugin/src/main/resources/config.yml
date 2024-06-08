@@ -6,6 +6,7 @@ Config:
     Kick-Player: true
     Lobby-Server: lobby
   Use-Vault-As-Currency: false
+  Invincibility-Seconds: 3
   Auto-Teleport-To-Lobby: true
   Scoreboard-In-Lobby: true
   Spectator-Shop: true

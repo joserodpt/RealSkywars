@@ -25,6 +25,7 @@ import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWMapsConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.config.TranslatableList;
+import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.RSWMap;
@@ -128,7 +129,7 @@ public class MapManager extends MapManagerAPI {
 
     @Override
     public RSWMap getMap(String s) {
-        return rs.getGameManagerAPI().getGames(GamesManager.GameModes.ALL).stream()
+        return rs.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL).stream()
                 .filter(g -> g.getMapName().equalsIgnoreCase(s))
                 .findFirst()
                 .orElse(null);

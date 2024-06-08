@@ -15,7 +15,6 @@ package joserodpt.realskywars.api.cages;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -113,10 +112,7 @@ public class RSWSoloCage implements RSWCage {
 
         if (this.p != null)
             this.p.setInvincible(true);
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RealSkywarsAPI.getInstance().getPlugin(), () -> {
-            if (this.p != null)
-                this.p.setInvincible(false);
-        }, 200);
+
     }
 
     //CREDIT open source spigot

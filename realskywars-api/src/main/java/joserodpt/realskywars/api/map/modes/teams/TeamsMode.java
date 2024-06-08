@@ -101,29 +101,29 @@ public class TeamsMode extends RSWMap {
     }
 
     @Override
-    public AddResult addPlayer(RSWPlayer p) {
+    public void addPlayer(RSWPlayer p) {
         if (super.getRealSkywarsAPI().getPartiesManagerAPI().checkForParties(p, this)) {
             switch (this.getState()) {
                 case RESETTING:
                     TranslatableLine.CANT_JOIN.send(p, true);
-                    return AddResult.RESETTING;
+                    return;
                 case FINISHING:
                 case PLAYING:
                     if (this.isSpectatorEnabled()) {
                         spectate(p, SpectateType.EXTERNAL, null);
                     } else {
                         TranslatableLine.SPECTATING_DISABLED.send(p, true);
-                        return AddResult.SPECTATING_DISABLED;
+                        return;
                     }
                     break;
                 default:
                     if (this.getPlayerCount() == this.getMaxPlayers()) {
                         if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
                             spectate(p, SpectateType.EXTERNAL, null);
-                            return AddResult.SPECTATING;
+                            return;
                         } else {
                             TranslatableLine.ROOM_FULL.send(p, true);
-                            return AddResult.FULL;
+                            return;
                         }
                     }
 
@@ -179,10 +179,6 @@ public class TeamsMode extends RSWMap {
 
             //signal that is ranked
             if (this.isRanked()) p.sendActionbar("&b&lRANKED");
-
-            return AddResult.ADDED;
-        } else {
-            return AddResult.FULL;
         }
     }
 

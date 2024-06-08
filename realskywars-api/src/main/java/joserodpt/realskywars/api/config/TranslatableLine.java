@@ -16,6 +16,7 @@ public enum TranslatableLine {
     ITEMS_MAP_NOTFOUND_TITLE(".Itens.Map.Not-Found"),
     LOBBY_TELEPORT(".Messages.System.Lobby-Teleport"),
     MATCH_END(".Messages.Arena.Match-End"),
+    INVINCIBILITY_END(".Messages.Arena.Invincibility-End"),
     MATCH_LEAVE(".Messages.System.Arena.Leave"),
     MATCH_SPECTATE(".Messages.Arena.Player-Spectate"),
     PLAYER_JOIN_ARENA(".Messages.Arena.Player-Join"),

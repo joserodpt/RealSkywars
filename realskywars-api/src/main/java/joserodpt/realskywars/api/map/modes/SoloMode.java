@@ -69,7 +69,7 @@ public class SoloMode extends RSWMap {
                     super.getBossBar().addPlayer(p.getPlayer());
 
                     //start msg
-                    TranslatableList.ARENA_START.get(p).forEach(s -> p.sendCenterMessage(s.replace("%chests%", super.getChestTier().name()).replace("%kit%", p.getKit().getDisplayName()).replace("%project%", super.getProjectileTier().getDisplayName(p)).replace("%time%", super.getTimeType().getDisplayName(p))));
+                    TranslatableList.ARENA_START.get(p).forEach(s -> p.sendCenterMessage(s.replace("%chests%", super.getChestTier().getDisplayName(p)).replace("%kit%", p.getKit().getDisplayName()).replace("%project%", super.getProjectileTier().getDisplayName(p)).replace("%time%", super.getTimeType().getDisplayName(p))));
 
                     p.getKit().give(p);
                     p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.PLAYING);
@@ -96,29 +96,29 @@ public class SoloMode extends RSWMap {
     }
 
     @Override
-    public AddResult addPlayer(RSWPlayer p) {
+    public void addPlayer(RSWPlayer p) {
         if (super.getRealSkywarsAPI().getPartiesManagerAPI().checkForParties(p, this)) {
             switch (this.getState()) {
                 case RESETTING:
                     TranslatableLine.CANT_JOIN.send(p, true);
-                    return AddResult.RESETTING;
+                    return;
                 case FINISHING:
                 case PLAYING:
                     if (this.isSpectatorEnabled()) {
                         spectate(p, SpectateType.EXTERNAL, null);
                     } else {
                         TranslatableLine.SPECTATING_DISABLED.send(p, true);
-                        return AddResult.SPECTATING_DISABLED;
+                        return;
                     }
                     break;
                 default:
                     if (this.getPlayerCount() == this.getMaxPlayers()) {
                         if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
                             spectate(p, SpectateType.EXTERNAL, null);
-                            return AddResult.SPECTATING;
+                            return;
                         } else {
                             TranslatableLine.ROOM_FULL.send(p, true);
-                            return AddResult.FULL;
+                            return;
                         }
                     }
 
@@ -172,10 +172,6 @@ public class SoloMode extends RSWMap {
 
             //signal that is ranked
             if (super.isRanked()) p.sendActionbar("&b&lRANKED");
-
-            return AddResult.ADDED;
-        } else {
-            return AddResult.FULL;
         }
     }
 

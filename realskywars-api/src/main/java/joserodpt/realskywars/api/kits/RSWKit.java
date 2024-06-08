@@ -37,6 +37,7 @@ public class RSWKit {
     private String permission;
     private final List<Perks> kitPerks = new ArrayList<>();
     private boolean buyable = true;
+    private boolean none = false;
     private int enderTask = -2;
 
     public RSWKit(String name, String displayname, Double cost, Material ic, KitInventory kitInventory, String perm) {
@@ -54,11 +55,12 @@ public class RSWKit {
         this.price = cost;
         this.icon = Material.LEATHER_CHESTPLATE;
         this.kitInventory = kitInventory;
-        this.permission = "rs.kit";
+        this.permission = "rsw.kit";
     }
 
     public RSWKit() {
-        this.name = "none";
+        this.name = "None";
+        this.none = true;
         this.displayname = this.name;
         this.buyable = false;
     }
@@ -148,6 +150,10 @@ public class RSWKit {
     }
 
     public void give(RSWPlayer p) {
+        if (this.none) {
+            return;
+        }
+
         if (this.getKitInventory() == null) {
             RealSkywarsAPI.getInstance().getLogger().severe(this.getName() + " kit content's are null (?) Skipping give order.");
             return;

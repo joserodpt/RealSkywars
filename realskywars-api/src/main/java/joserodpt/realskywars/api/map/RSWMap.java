@@ -154,7 +154,16 @@ public abstract class RSWMap {
     public void startTimers() {
         this.mapTimer = new CountdownTimer(rs.getPlugin(), this.getMaxTime(), () -> {
         }, () -> {
-        }, (t) -> this.bossbar.tick());
+        }, (t) -> {
+            this.bossbar.tick();
+            if (RSWConfig.file().getInt("Config.Invincibility-Seconds") == t.getPassedSeconds()) {
+                for (RSWPlayer player : this.getPlayers()) {
+                    player.setInvincible(false);
+                    TranslatableLine.INVINCIBILITY_END.send(player, true);
+                }
+            }
+        }
+        );
         this.mapTimer.scheduleTimer();
 
         this.timeCounterTask = new BukkitRunnable() {
@@ -330,7 +339,7 @@ public abstract class RSWMap {
         this.projectileType = pt;
     }
 
-    abstract public AddResult addPlayer(RSWPlayer gp);
+    abstract public void addPlayer(RSWPlayer gp);
 
     public boolean isSpectatorEnabled() {
         return this.specEnabled;
@@ -731,6 +740,7 @@ public abstract class RSWMap {
                     if (!RSWConfig.file().getBoolean("Config.Disable-Map-Starting-Countdown.Actionbar")) {
                         p.sendActionbar(TranslatableLine.ARENA_START_COUNTDOWN.get(p).replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
                     }
+
                     p.setBarNumber(t.getSecondsLeft(), RSWConfig.file().getInt("Config.Time-To-Start"));
                 }
             }
@@ -984,7 +994,4 @@ public abstract class RSWMap {
 
     public enum SpectateType {INSIDE_GAME, EXTERNAL}
 
-    public enum AddResult {
-        ADDED, FULL, RESETTING, SPECTATING_DISABLED, SPECTATING
-    }
 }

@@ -15,7 +15,6 @@ package joserodpt.realskywars.api.cages;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -187,6 +186,5 @@ public class RSWTeamCage implements RSWCage {
         }
 
         this.p.forEach(rswPlayer -> rswPlayer.setInvincible(true));
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RealSkywarsAPI.getInstance().getPlugin(), () -> this.p.forEach(rswPlayer -> rswPlayer.setInvincible(false)), 200);
     }
 }

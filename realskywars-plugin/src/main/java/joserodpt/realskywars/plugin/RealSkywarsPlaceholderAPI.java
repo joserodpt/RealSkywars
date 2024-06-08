@@ -18,8 +18,8 @@ package joserodpt.realskywars.plugin;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.LeaderboardManagerAPI;
-import org.bukkit.OfflinePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
