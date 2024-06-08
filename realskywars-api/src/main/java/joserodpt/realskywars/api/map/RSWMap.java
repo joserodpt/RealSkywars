@@ -27,7 +27,9 @@ import joserodpt.realskywars.api.map.modes.RSWSign;
 import joserodpt.realskywars.api.map.modes.teams.Team;
 import joserodpt.realskywars.api.player.RSWGameLog;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.player.RSWPlayerTab;
 import joserodpt.realskywars.api.utils.ArenaCuboid;
+import joserodpt.realskywars.api.utils.CountdownTimer;
 import joserodpt.realskywars.api.utils.Demolition;
 import joserodpt.realskywars.api.utils.MathUtils;
 import joserodpt.realskywars.api.utils.Text;
@@ -73,7 +75,7 @@ public abstract class RSWMap {
     private RSWBossbar bossbar;
     private RSWChest.Tier chestTier = RSWChest.Tier.NORMAL;
     private Boolean specEnabled, instantEnding, ranked, borderEnabled;
-    private RSWCountdown mapTimer, startRoomTimer, winTimer;
+    private CountdownTimer mapTimer, startMapTimer, winTimer;
     private BukkitTask timeCounterTask;
     private ProjectileType projectileType = ProjectileType.NORMAL;
     private TimeType timeType = TimeType.DAY;
@@ -108,6 +110,8 @@ public abstract class RSWMap {
         this.chestVotes.put(UUID.randomUUID(), 2);
         this.projectileVotes.put(UUID.randomUUID(), 1);
         this.timeVotes.put(UUID.randomUUID(), 1);
+
+        this.bossbar = new RSWBossbar(this);
 
         //load events
         this.events = parseEvents();
@@ -146,13 +150,11 @@ public abstract class RSWMap {
     }
 
     public void startTimers() {
-        this.mapTimer = new RSWCountdown(rs.getPlugin(), this.getMaxTime(), () -> {
+        this.mapTimer = new CountdownTimer(rs.getPlugin(), this.getMaxTime(), () -> {
             //
         }, () -> {
             //
-        }, (t) -> {
-            this.bossbar.tick();
-        });
+        }, (t) -> this.bossbar.tick());
         this.mapTimer.scheduleTimer();
 
         this.timeCounterTask = new BukkitRunnable() {
@@ -172,12 +174,12 @@ public abstract class RSWMap {
         return this.timeCounterTask;
     }
 
-    public RSWCountdown getMapTimer() {
+    public CountdownTimer getMapTimer() {
         return this.mapTimer;
     }
 
-    public RSWCountdown getStartRoomTimer() {
-        return this.startRoomTimer;
+    public CountdownTimer getStartMapTimer() {
+        return this.startMapTimer;
     }
 
     public Location getPOS1() {
@@ -285,7 +287,8 @@ public abstract class RSWMap {
     public void setState(MapState w) {
         this.state = w;
         this.getRealSkywarsAPI().getEventsAPI().callRoomStateChange(this);
-        this.bossbar.setState(w);
+        if (this.bossbar != null)
+            this.bossbar.setState(w);
     }
 
     abstract public boolean isPlaceHolder();
@@ -375,7 +378,7 @@ public abstract class RSWMap {
                 if (!p.isBot()) {
                     for (RSWPlayer rswPlayer : this.inRoom) {
                         if (!rswPlayer.isBot()) {
-                            RSWPlayer.RoomTAB rt = rswPlayer.getTab();
+                            RSWPlayerTab rt = rswPlayer.getTab();
                             rt.remove(p.getPlayer());
                             rt.updateRoomTAB();
                         }
@@ -408,7 +411,7 @@ public abstract class RSWMap {
                 if (!p.isBot()) {
                     for (RSWPlayer rswPlayer : this.inRoom) {
                         if (!rswPlayer.isBot()) {
-                            RSWPlayer.RoomTAB rt = rswPlayer.getTab();
+                            RSWPlayerTab rt = rswPlayer.getTab();
                             List<Player> players = this.getPlayers().stream().map(RSWPlayer::getPlayer).collect(Collectors.toList());
                             rt.clear();
                             rt.add(players);
@@ -623,7 +626,7 @@ public abstract class RSWMap {
     }
 
     protected void cancelMapStart() {
-        getStartRoomTimer().killTask();
+        getStartMapTimer().killTask();
         for (RSWPlayer p : getAllPlayers()) {
             p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_CANCEL, true));
             p.sendActionbar(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_CANCEL, false));
@@ -657,13 +660,13 @@ public abstract class RSWMap {
 
         //update tab
         if (!p.isBot()) {
-            RSWPlayer.RoomTAB rt = p.getTab();
+            RSWPlayerTab rt = p.getTab();
             rt.reset();
             rt.updateRoomTAB();
         }
         for (RSWPlayer player : this.getPlayers()) {
             if (!player.isBot()) {
-                RSWPlayer.RoomTAB rt = player.getTab();
+                RSWPlayerTab rt = player.getTab();
                 rt.clear();
                 List<Player> players = this.getPlayers().stream().map(RSWPlayer::getPlayer).collect(Collectors.toList());
                 rt.add(players);
@@ -682,7 +685,7 @@ public abstract class RSWMap {
     abstract public int minimumPlayersToStartMap();
 
     protected void startRoom() {
-        this.startRoomTimer = new RSWCountdown(rs.getPlugin(), RSWConfig.file().getInt("Config.Time-To-Start"), () -> {
+        this.startMapTimer = new CountdownTimer(rs.getPlugin(), RSWConfig.file().getInt("Config.Time-To-Start"), () -> {
             //
         }, this::forceStartMap, (t) -> {
             if (getPlayerCount() < minimumPlayersToStartMap()) {
@@ -703,7 +706,7 @@ public abstract class RSWMap {
             }
         });
 
-        this.startRoomTimer.scheduleTimer();
+        this.startMapTimer.scheduleTimer();
     }
 
     protected void commonResetArena(OperationReason rr) {
@@ -718,9 +721,9 @@ public abstract class RSWMap {
         if (this.winTimer != null) {
             this.winTimer.killTask();
         }
-        if (this.startRoomTimer != null) {
-            this.startRoomTimer.killTask();
-            this.startRoomTimer = null;
+        if (this.startMapTimer != null) {
+            this.startMapTimer.killTask();
+            this.startMapTimer = null;
         }
 
         this.chests.forEach(RSWChest::clear);
@@ -736,7 +739,8 @@ public abstract class RSWMap {
         this.projectileVotes.put(UUID.randomUUID(), 1);
         this.timeVotes.put(UUID.randomUUID(), 1);
 
-        this.bossbar.reset();
+        if (this.bossbar != null)
+            this.bossbar.reset();
 
         this.events = parseEvents();
 
@@ -747,11 +751,11 @@ public abstract class RSWMap {
         }
     }
 
-    public void setWinTimer(RSWCountdown winTimer) {
+    public void setWinTimer(CountdownTimer winTimer) {
         this.winTimer = winTimer;
     }
 
-    public RSWCountdown getWinTimer() {
+    public CountdownTimer getWinTimer() {
         return this.winTimer;
     }
 

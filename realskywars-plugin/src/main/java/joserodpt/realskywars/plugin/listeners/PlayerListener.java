@@ -22,10 +22,9 @@ import joserodpt.realskywars.api.cages.RSWTeamCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.effects.RSWBowTrail;
-import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
-
 import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.plugin.gui.GUIManager;
 import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
@@ -34,7 +33,12 @@ import joserodpt.realskywars.plugin.gui.guis.PlayerProfileContentsGUI;
 import joserodpt.realskywars.plugin.gui.guis.ShopGUI;
 import joserodpt.realskywars.plugin.gui.guis.VoteGUI;
 import joserodpt.realskywars.plugin.managers.ShopManager;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
@@ -48,8 +52,18 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.*;
-import org.bukkit.event.player.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -149,8 +163,8 @@ public class PlayerListener implements Listener {
                                 case HOPPER:
                                     e.setCancelled(true);
 
-                                    if (p.getMatch().getStartRoomTimer() != null) {
-                                        if (p.getMatch().getStartRoomTimer().getSecondsLeft() > RSWConfig.file().getInt("Config.Vote-Before-Seconds")) {
+                                    if (p.getMatch().getStartMapTimer() != null) {
+                                        if (p.getMatch().getStartMapTimer().getSecondsLeft() > RSWConfig.file().getInt("Config.Vote-Before-Seconds")) {
                                             VoteGUI vg = new VoteGUI(p);
                                             vg.openInventory(p.getPlayer());
                                         } else {

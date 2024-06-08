@@ -17,10 +17,10 @@ package joserodpt.realskywars.api.chests;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
-import joserodpt.realskywars.api.map.RSWCountdown;
+import joserodpt.realskywars.api.managers.holograms.RSWHologram;
 import joserodpt.realskywars.api.map.RSWEvent;
 import joserodpt.realskywars.api.map.RSWMap;
-import joserodpt.realskywars.api.managers.holograms.RSWHologram;
+import joserodpt.realskywars.api.utils.CountdownTimer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -47,7 +47,7 @@ public class RSWChest {
     private List<RSWChestItem> items = new ArrayList<>();
     private Boolean opened = false;
     private int maxItemsPerChest;
-    private RSWCountdown chestCTD;
+    private CountdownTimer chestCTD;
 
     public RSWChest(Type ct, String worldName, int x, int y, int z, BlockFace bf) {
         this.type = ct;
@@ -153,7 +153,7 @@ public class RSWChest {
             this.hologram.spawnHologram(this.getLocation());
             this.hologram.setTime(time);
 
-            this.chestCTD = new RSWCountdown(RealSkywarsAPI.getInstance().getPlugin(), time, () -> {
+            this.chestCTD = new CountdownTimer(RealSkywarsAPI.getInstance().getPlugin(), time, () -> {
                 //
             }, () -> {
                 this.getLocation().getWorld().spawnParticle(Particle.CLOUD, this.getLocation().add(0.5, 0, 0.5), 5);

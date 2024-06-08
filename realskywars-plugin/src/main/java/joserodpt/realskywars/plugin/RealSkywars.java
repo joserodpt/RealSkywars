@@ -26,12 +26,12 @@ import joserodpt.realskywars.api.config.RSWShopsConfig;
 import joserodpt.realskywars.api.config.chests.BasicChestConfig;
 import joserodpt.realskywars.api.config.chests.EPICChestConfig;
 import joserodpt.realskywars.api.config.chests.NormalChestConfig;
+import joserodpt.realskywars.api.currency.CurrencyAdapter;
 import joserodpt.realskywars.api.managers.AchievementsManagerAPI;
 import joserodpt.realskywars.api.managers.ChestManagerAPI;
 import joserodpt.realskywars.api.managers.DatabaseManagerAPI;
 import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.HologramManagerAPI;
-import joserodpt.realskywars.api.currency.CurrencyAdapter;
 import joserodpt.realskywars.api.managers.KitManagerAPI;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.LeaderboardManagerAPI;
@@ -40,9 +40,22 @@ import joserodpt.realskywars.api.managers.PartiesManagerAPI;
 import joserodpt.realskywars.api.managers.PlayerManagerAPI;
 import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.managers.WorldManagerAPI;
-import joserodpt.realskywars.plugin.managers.*;
 import joserodpt.realskywars.api.nms.RSWnms;
+import joserodpt.realskywars.plugin.managers.AchievementsManager;
+import joserodpt.realskywars.plugin.managers.ChestManager;
+import joserodpt.realskywars.plugin.managers.DatabaseManager;
+import joserodpt.realskywars.plugin.managers.GamesManager;
+import joserodpt.realskywars.plugin.managers.HologramManager;
+import joserodpt.realskywars.plugin.managers.KitManager;
+import joserodpt.realskywars.plugin.managers.LanguageManager;
+import joserodpt.realskywars.plugin.managers.LeaderboardManager;
+import joserodpt.realskywars.plugin.managers.MapManager;
+import joserodpt.realskywars.plugin.managers.PartiesManager;
+import joserodpt.realskywars.plugin.managers.PlayerManager;
+import joserodpt.realskywars.plugin.managers.ShopManager;
+import joserodpt.realskywars.plugin.managers.WorldManager;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Random;
@@ -188,7 +201,7 @@ public class RealSkywars extends RealSkywarsAPI {
 
     @Override
     public String getServerVersion() {
-        return this.plugin.getServerVersion();
+        return Bukkit.getServer().getClass().getPackage().getName().substring(23);
     }
 
     @Override

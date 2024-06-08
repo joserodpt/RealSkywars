@@ -23,9 +23,10 @@ import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.PlayerManagerAPI;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
-import joserodpt.realskywars.api.map.RSWCountdown;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.player.RSWPlayerTab;
+import joserodpt.realskywars.api.utils.CountdownTimer;
 import joserodpt.realskywars.api.utils.Text;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Location;
@@ -59,7 +60,7 @@ public class TeamsMode extends RSWMap {
         } else {
             this.setState(MapState.PLAYING);
 
-            super.getStartRoomTimer().killTask();
+            super.getStartMapTimer().killTask();
 
             super.calculateVotes();
 
@@ -156,7 +157,7 @@ public class TeamsMode extends RSWMap {
                     if (!p.isBot()) {
                         for (RSWPlayer player : this.getPlayers()) {
                             if (!player.isBot()) {
-                                RSWPlayer.RoomTAB rt = player.getTab();
+                                RSWPlayerTab rt = player.getTab();
                                 List<Player> players = this.getPlayers().stream().map(RSWPlayer::getPlayer).collect(Collectors.toList());
                                 rt.clear();
                                 rt.add(players);
@@ -208,7 +209,7 @@ public class TeamsMode extends RSWMap {
                 this.kickPlayers(null);
                 this.resetArena(OperationReason.RESET);
             } else {
-                super.setWinTimer(new RSWCountdown(super.getRealSkywarsAPI().getPlugin(), RSWConfig.file().getInt("Config.Time-EndGame"), () -> {
+                super.setWinTimer(new CountdownTimer(super.getRealSkywarsAPI().getPlugin(), RSWConfig.file().getInt("Config.Time-EndGame"), () -> {
                     for (RSWPlayer p : winTeam.getMembers()) {
                         if (p.getPlayer() != null) {
                             p.setInvincible(true);

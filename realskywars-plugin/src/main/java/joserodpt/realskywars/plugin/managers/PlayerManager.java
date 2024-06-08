@@ -18,11 +18,12 @@ package joserodpt.realskywars.plugin.managers;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.database.PlayerData;
-import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.PlayerManagerAPI;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWGameLog;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.player.RSWPlayerTab;
 import joserodpt.realskywars.api.shop.RSWShopDisplayItem;
 import joserodpt.realskywars.api.utils.Itens;
 import org.bukkit.Bukkit;
@@ -144,7 +145,7 @@ public class PlayerManager extends PlayerManagerAPI {
             rs.getPlayerManagerAPI().getPlayers().stream()
                     .filter(RSWPlayer::isInMatch)
                     .forEach(player -> {
-                        RSWPlayer.RoomTAB rt = player.getTab();
+                        RSWPlayerTab rt = player.getTab();
                         rt.remove(p);
                         rt.updateRoomTAB();
                     });

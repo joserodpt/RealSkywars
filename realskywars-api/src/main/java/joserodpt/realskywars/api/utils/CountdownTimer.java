@@ -1,4 +1,4 @@
-package joserodpt.realskywars.api.map;
+package joserodpt.realskywars.api.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,14 +13,14 @@ import java.util.function.Consumer;
  *
  * @author ExpDev
  */
-public class RSWCountdown implements Runnable {
+public class CountdownTimer implements Runnable {
 
     // Main class for bukkit scheduling
     private final JavaPlugin plugin;
     // Seconds and shiz
     private final int seconds;
     // Actions to perform while counting down, before and after
-    private final Consumer<RSWCountdown> everySecond;
+    private final Consumer<CountdownTimer> everySecond;
     private final Runnable beforeTimer;
     private final Runnable afterTimer;
     // Our scheduled task's assigned id, needed for canceling
@@ -29,7 +29,7 @@ public class RSWCountdown implements Runnable {
 
     // Construct a timer, you could create multiple so for example if
     // you do not want these "actions"
-    public RSWCountdown(JavaPlugin plugin, int seconds, Runnable beforeTimer, Runnable afterTimer, Consumer<RSWCountdown> everySecond) {
+    public CountdownTimer(JavaPlugin plugin, int seconds, Runnable beforeTimer, Runnable afterTimer, Consumer<CountdownTimer> everySecond) {
         // Initializing fields
         this.plugin = plugin;
 

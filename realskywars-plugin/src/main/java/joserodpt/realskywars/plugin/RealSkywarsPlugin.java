@@ -32,11 +32,10 @@ import joserodpt.realskywars.api.config.RSWShopsConfig;
 import joserodpt.realskywars.api.config.chests.BasicChestConfig;
 import joserodpt.realskywars.api.config.chests.EPICChestConfig;
 import joserodpt.realskywars.api.config.chests.NormalChestConfig;
-import joserodpt.realskywars.api.map.RSWMap;
-import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
 import joserodpt.realskywars.api.managers.CurrencyManager;
 import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.nms.NMS114R1tov116R3;
 import joserodpt.realskywars.api.nms.NMS117R1;
 import joserodpt.realskywars.api.nms.NMS118R2andUP;
@@ -50,6 +49,7 @@ import joserodpt.realskywars.plugin.currency.LocalCurrencyAdapter;
 import joserodpt.realskywars.plugin.currency.VaultCurrencyAdapter;
 import joserodpt.realskywars.plugin.gui.guis.AchievementViewerGUI;
 import joserodpt.realskywars.plugin.gui.guis.GameHistoryGUI;
+import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapSettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerGUI;
@@ -335,28 +335,35 @@ public class RealSkywarsPlugin extends JavaPlugin {
         Bukkit.getPluginManager().disablePlugin(this);
     }
 
-    public String getServerVersion() {
-        return Bukkit.getServer().getClass().getPackage().getName().substring(23);
-    }
-
     private boolean setupNMS() {
-        String version = getServerVersion();
+        String version = Bukkit.getServer().getBukkitVersion().split("-")[0];
         getLogger().info("Server version: " + version);
 
         switch (version) {
-            case "v1_20_R3":
-            case "v1_20_R2":
-            case "v1_20_R1":
-            case "v1_19_R3":
-            case "v1_18_R2":
-                realSkywars.setNMS(new NMS118R2andUP());
-                break;
-            case "v1_17_R1":
+            case "1.17.1":
+            case "1.17":
+                getLogger().info("Using the 1.17.1 NMS adapter.");
                 realSkywars.setNMS(new NMS117R1());
-            case "v1_16_R3":
-            case "v1_15_R1":
-            case "v1_14_R1":
+            case "1.16.5":
+            case "1.16.4":
+            case "1.16.3":
+            case "1.16.2":
+            case "1.16.1":
+            case "1.16":
+            case "1.15.2":
+            case "1.15.1":
+            case "1.15":
+            case "1.14.4":
+            case "1.14.3":
+            case "1.14.2":
+            case "1.14.1":
+            case "1.14":
+                getLogger().info("Using the 1.17.1 NMS adapter.");
                 realSkywars.setNMS(new NMS114R1tov116R3());
+                break;
+            default:
+                getLogger().info("Using default 1.18.2+ NMS adapter.");
+                realSkywars.setNMS(new NMS118R2andUP());
                 break;
         }
         return realSkywars.getNMS() != null;

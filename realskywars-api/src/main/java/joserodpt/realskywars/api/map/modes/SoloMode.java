@@ -22,10 +22,11 @@ import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.PlayerManagerAPI;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
-import joserodpt.realskywars.api.map.RSWCountdown;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.map.modes.teams.Team;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.player.RSWPlayerTab;
+import joserodpt.realskywars.api.utils.CountdownTimer;
 import joserodpt.realskywars.api.utils.FireworkUtils;
 import joserodpt.realskywars.api.utils.Text;
 import org.apache.commons.lang.WordUtils;
@@ -57,7 +58,7 @@ public class SoloMode extends RSWMap {
         } else {
             this.setState(MapState.PLAYING);
 
-            super.getStartRoomTimer().killTask();
+            super.getStartMapTimer().killTask();
 
             super.calculateVotes();
 
@@ -150,7 +151,7 @@ public class SoloMode extends RSWMap {
                     if (!p.isBot()) {
                         for (RSWPlayer player : this.getPlayers()) {
                             if (!player.isBot()) {
-                                RSWPlayer.RoomTAB rt = player.getTab();
+                                RSWPlayerTab rt = player.getTab();
                                 List<Player> players = this.getPlayers().stream().map(RSWPlayer::getPlayer).collect(Collectors.toList());
                                 rt.clear();
                                 rt.add(players);
@@ -196,7 +197,7 @@ public class SoloMode extends RSWMap {
                 this.kickPlayers(null);
                 this.resetArena(OperationReason.RESET);
             } else {
-                super.setWinTimer(new RSWCountdown(super.getRealSkywarsAPI().getPlugin(), RSWConfig.file().getInt("Config.Time-EndGame"), () -> {
+                super.setWinTimer(new CountdownTimer(super.getRealSkywarsAPI().getPlugin(), RSWConfig.file().getInt("Config.Time-EndGame"), () -> {
                     if (p.getPlayer() != null) {
                         p.setInvincible(true);
                         p.addStatistic(RSWPlayer.Statistic.SOLO_WIN, 1, this.isRanked());

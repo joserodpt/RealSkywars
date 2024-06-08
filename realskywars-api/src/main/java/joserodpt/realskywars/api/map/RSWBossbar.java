@@ -56,8 +56,8 @@ public class RSWBossbar {
                 this.bossBar.setProgress(0D);
                 break;
             case STARTING:
-                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_STARTING.get().replace("%time%", Text.formatSeconds(map.getMapTimer().getSecondsLeft())));
-                double div = (double) map.getMapTimer().getSecondsLeft() / (double) RSWConfig.file().getInt("Config.Time-To-Start");
+                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_STARTING.get().replace("%time%", Text.formatSeconds(map.getStartMapTimer().getSecondsLeft())));
+                double div = (double) map.getStartMapTimer().getSecondsLeft() / (double) RSWConfig.file().getInt("Config.Time-To-Start");
                 this.bossBar.setProgress(div);
                 break;
             case FINISHING:
