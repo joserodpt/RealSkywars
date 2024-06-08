@@ -676,7 +676,8 @@ public abstract class RSWMap {
 
         if (isBungeeEnabled) {
             if (shouldKickPlayer) {
-                p.getPlayer().kickPlayer(TranslatableLine.BUNGEECORD_KICK_MESSAGE.get());
+                if (p.getPlayer() != null)
+                    p.getPlayer().kickPlayer(TranslatableLine.BUNGEECORD_KICK_MESSAGE.get());
             } else {
                 TranslatableLine.BUNGEECORD_KICK_MESSAGE.send(p);
                 BungeecordUtils.connect(RSWConfig.file().getString("Config.Bungeecord.Lobby-Server"), p.getPlayer(), this.getRealSkywarsAPI().getPlugin());
