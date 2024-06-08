@@ -24,15 +24,16 @@ import joserodpt.realskywars.api.cages.RSWSoloCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWMapsConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.map.RSWSetupMap;
-import joserodpt.realskywars.api.map.RSWMap;
-import joserodpt.realskywars.api.map.modes.SoloMode;
-import joserodpt.realskywars.api.map.modes.teams.Team;
-import joserodpt.realskywars.api.map.modes.teams.TeamsMode;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
+import joserodpt.realskywars.api.map.RSWMap;
+import joserodpt.realskywars.api.map.RSWSetupMap;
+import joserodpt.realskywars.api.map.modes.SoloMode;
+import joserodpt.realskywars.api.map.modes.teams.Team;
+import joserodpt.realskywars.api.map.modes.teams.TeamsMode;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.player.RSWPlayerItems;
 import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.api.utils.WorldEditUtils;
 import joserodpt.realskywars.plugin.gui.guis.SetupRoomSettingsGUI;
@@ -108,7 +109,7 @@ public class MapManager extends MapManagerAPI {
 
     @Override
     public void unregisterMap(RSWMap map) {
-        map.kickPlayers(TranslatableLine.ADMIN_SHUTDOWN.get());
+        map.kickPlayers(TranslatableLine.ADMIN_SHUTDOWN.getSingle());
         map.setRegistered(false);
     }
 
@@ -170,7 +171,7 @@ public class MapManager extends MapManagerAPI {
     @Override
     public void cancelSetup(RSWPlayer p) {
         rs.getGameManagerAPI().tpToLobby(p);
-        rs.getPlayerManagerAPI().giveItems(p.getPlayer(), PlayerManager.Items.LOBBY);
+        RSWPlayerItems.LOBBY.giveSet(p);
         RSWMapsConfig.file().remove(p.getSetupRoom().getName());
         RSWMapsConfig.save();
         p.setSetup(null);
@@ -181,7 +182,7 @@ public class MapManager extends MapManagerAPI {
         if (!p.getSetupRoom().isTPConfirmed()) {
             p.getSetupRoom().setTPConfirm(true);
 
-            p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.GENERATING_WORLD, true));
+            TranslatableLine.GENERATING_WORLD.send(p, true);
 
             World w = rs.getWorldManagerAPI().createEmptyWorld(p.getSetupRoom().getName().replace(".schematic", "").replace(".schem", ""), World.Environment.NORMAL);
             if (w != null) {
@@ -190,7 +191,7 @@ public class MapManager extends MapManagerAPI {
 
                 Text.sendList(p.getPlayer(), Text.replaceVarInList(rs.getLanguageManagerAPI().getList(p, LanguageManagerAPI.TL.INITSETUP_ARENA), "%cages%", p.getSetupRoom().getMaxPlayers() + ""), p.getSetupRoom().getMaxPlayers());
 
-                rs.getPlayerManagerAPI().giveItems(p.getPlayer(), PlayerManager.Items.SETUP);
+                RSWPlayerItems.SETUP.giveSet(p);
                 p.getPlayer().setGameMode(GameMode.CREATIVE);
 
                 if (p.getSetupRoom().getWorldType() == RSWWorld.WorldType.SCHEMATIC) {
@@ -232,16 +233,16 @@ public class MapManager extends MapManagerAPI {
                     pos1 = new Location(p.getSetupRoom().getWorld(), r.getMaximumPoint().getBlockX(), r.getMaximumPoint().getBlockY(), r.getMaximumPoint().getBlockZ());
                 }
             } catch (Exception e) {
-                p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.NO_ARENA_BOUNDARIES, true));
+                TranslatableLine.NO_ARENA_BOUNDARIES.send(p, true);
             }
         }
 
         if (pos1 == null || pos2 == null) {
-            p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.NO_ARENA_BOUNDARIES, true));
+            TranslatableLine.NO_ARENA_BOUNDARIES.send(p, true);
             return;
         }
 
-        p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.SAVING_ARENA, true));
+        TranslatableLine.SAVING_ARENA.send(p, true);
 
         // Beacon Remove
         p.getSetupRoom().getCages().forEach(cage -> p.getSetupRoom().getWorld().getBlockAt(cage.getLoc()).setType(Material.AIR));
@@ -306,7 +307,7 @@ public class MapManager extends MapManagerAPI {
             }
 
             p.setSetup(null);
-            p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_REGISTERED, true));
+            TranslatableLine.ARENA_REGISTERED.send(p, true);
         } else {
             p.sendMessage("Error while loading world for: " + p.getSetupRoom().getName() + " (possibly a bug?)");
         }

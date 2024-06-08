@@ -60,24 +60,11 @@ public class KitSettingsGUI {
     private void load() {
         inv.clear();
 
-        for (int i = 0; i < 9; ++i) {
-            inv.setItem(i, placeholder);
+        for (int slot : new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 18, 19, 20, 21, 23, 24, 25, 26, 9, 17}) {
+            inv.setItem(slot, placeholder);
         }
 
-        inv.setItem(18, placeholder);
-        inv.setItem(19, placeholder);
-        inv.setItem(20, placeholder);
-        inv.setItem(21, placeholder);
-        inv.setItem(23, placeholder);
-        inv.setItem(24, placeholder);
-        inv.setItem(25, placeholder);
-        inv.setItem(26, placeholder);
-
-        inv.setItem(9, placeholder);
-        inv.setItem(17, placeholder);
-
         inv.setItem(13, this.kt.hasPerk(RSWKit.Perks.ENDER) ? ender_pearl : ender_pearl_off);
-
         inv.setItem(22, confirm);
     }
 

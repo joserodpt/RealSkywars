@@ -35,7 +35,7 @@ public class RSWKit {
     private KitInventory kitInventory;
     private Material icon;
     private String permission;
-    private List<Perks> kitPerks = new ArrayList<>();
+    private final List<Perks> kitPerks = new ArrayList<>();
     private boolean buyable = true;
     private int enderTask = -2;
 
@@ -70,15 +70,15 @@ public class RSWKit {
 
         List<String> desc = new ArrayList<>();
 
-        desc.add(TranslatableLine.KIT_PRICE.get().replace("%price%", this.price.toString()));
+        desc.add(TranslatableLine.KIT_PRICE.getSingle().replace("%price%", this.price.toString()));
 
         //contents
         if (this.hasItems()) {
             desc.add("");
-            desc.add(TranslatableLine.KIT_CONTAINS.get());
+            desc.add(TranslatableLine.KIT_CONTAINS.getSingle());
 
             for (ItemStack s : this.getKitInventory().getListInventory()) {
-                desc.add(TranslatableLine.KIT_ITEM.get().replace("%amount%", s.getAmount() + "").replace("%item%", RealSkywarsAPI.getInstance().getNMS().getItemName(s)));
+                desc.add(TranslatableLine.KIT_ITEM.getSingle().replace("%amount%", s.getAmount() + "").replace("%item%", RealSkywarsAPI.getInstance().getNMS().getItemName(s)));
             }
         }
 
@@ -87,7 +87,7 @@ public class RSWKit {
         }
 
         desc.add("");
-        desc.add(shop ? TranslatableLine.KIT_BUY.get() : TranslatableLine.KIT_SELECT.get());
+        desc.add(shop ? TranslatableLine.KIT_BUY.getSingle() : TranslatableLine.KIT_SELECT.getSingle());
 
         return desc;
     }

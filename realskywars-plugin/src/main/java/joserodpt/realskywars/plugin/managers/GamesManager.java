@@ -19,11 +19,11 @@ import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.GamesManagerAPI;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.map.modes.PlaceholderMode;
 import joserodpt.realskywars.api.map.modes.RSWSign;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.player.RSWPlayerItems;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -69,7 +69,7 @@ public class GamesManager extends GamesManagerAPI {
         this.endingGames = true;
 
         this.games.parallelStream().forEach(g -> {
-            g.kickPlayers(TranslatableLine.ADMIN_SHUTDOWN.get());
+            g.kickPlayers(TranslatableLine.ADMIN_SHUTDOWN.getSingle());
             g.resetArena(RSWMap.OperationReason.SHUTDOWN);
         });
     }
@@ -131,20 +131,20 @@ public class GamesManager extends GamesManagerAPI {
     }
 
     @Override
-    public String getStateString(RSWPlayer gp, RSWMap.MapState t) {
+    public String getStateString(RSWPlayer p, RSWMap.MapState t) {
         switch (t) {
             case WAITING:
-                return rs.getLanguageManagerAPI().getString(gp, LanguageManagerAPI.TS.MAP_WAITING, false);
+                return TranslatableLine.MAP_WAITING.get(p, false);
             case AVAILABLE:
-                return rs.getLanguageManagerAPI().getString(gp, LanguageManagerAPI.TS.MAP_AVAILABLE, false);
+                return TranslatableLine.MAP_AVAILABLE.get(p, false);
             case STARTING:
-                return rs.getLanguageManagerAPI().getString(gp, LanguageManagerAPI.TS.MAP_STARTING, false);
+                return TranslatableLine.MAP_STARTING.get(p, false);
             case PLAYING:
-                return rs.getLanguageManagerAPI().getString(gp, LanguageManagerAPI.TS.MAP_PLAYING, false);
+                return TranslatableLine.MAP_PLAYING.get(p, false);
             case FINISHING:
-                return rs.getLanguageManagerAPI().getString(gp, LanguageManagerAPI.TS.MAP_FINISHING, false);
+                return TranslatableLine.MAP_FINISHING.get(p, false);
             case RESETTING:
-                return rs.getLanguageManagerAPI().getString(gp, LanguageManagerAPI.TS.MAP_RESETTING, false);
+                return TranslatableLine.MAP_RESETTING.get(p, false);
             default:
                 return "NaN";
         }
@@ -168,10 +168,10 @@ public class GamesManager extends GamesManagerAPI {
     public void tpToLobby(RSWPlayer p) {
         if (this.lobbyLOC != null) {
             p.teleport(this.lobbyLOC);
-            p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.LOBBY_TELEPORT, true));
-            rs.getPlayerManagerAPI().giveItems(p.getPlayer(), PlayerManager.Items.LOBBY);
+            TranslatableLine.LOBBY_TELEPORT.send(p, true);
+            RSWPlayerItems.LOBBY.giveSet(p);
         } else {
-            p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.LOBBYLOC_NOT_SET, true));
+            TranslatableLine.LOBBYLOC_NOT_SET.send(p, true);
         }
     }
 
@@ -232,12 +232,12 @@ public class GamesManager extends GamesManagerAPI {
             Optional<RSWMap> suitableGame = findSuitableGame(type);
             if (suitableGame.isPresent()) {
                 if (suitableGame.get().isFull()) {
-                    player.sendMessage(rs.getLanguageManagerAPI().getString(player, LanguageManagerAPI.TS.ROOM_FULL, true));
+                    TranslatableLine.ROOM_FULL.send(player, true);
                     rs.getPlayerManagerAPI().getTeleporting().remove(playerUUID);
                     return;
                 }
 
-                player.sendMessage(rs.getLanguageManagerAPI().getString(player, LanguageManagerAPI.TS.GAME_FOUND, true));
+                TranslatableLine.GAME_FOUND.send(player, true);
                 if (player.isInMatch()) {
                     player.getMatch().removePlayer(player);
                 }
@@ -246,7 +246,7 @@ public class GamesManager extends GamesManagerAPI {
                     rs.getPlayerManagerAPI().getTeleporting().remove(player.getUUID());
                 }, 5);
             } else {
-                player.sendMessage(rs.getLanguageManagerAPI().getString(player, LanguageManagerAPI.TS.NO_GAME_FOUND, true));
+                TranslatableLine.NO_GAME_FOUND.send(player, true);
                 rs.getPlayerManagerAPI().getTeleporting().remove(player.getUUID());
 
                 if (this.getLobbyLocation() != null && this.getLobbyLocation().getWorld() != null && Objects.equals(this.getLobbyLocation().getWorld(), player.getWorld())) {

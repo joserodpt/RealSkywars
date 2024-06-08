@@ -20,7 +20,7 @@ public class RSWBossbar {
     }
 
     public void reset() {
-        this.bossBar = Bukkit.createBossBar(TranslatableLine.BOSSBAR_ARENA_WAIT.get(), BarColor.WHITE, BarStyle.SOLID);
+        this.bossBar = Bukkit.createBossBar(TranslatableLine.BOSSBAR_ARENA_WAIT.getSingle(), BarColor.WHITE, BarStyle.SOLID);
     }
 
     public void tick() {
@@ -30,7 +30,7 @@ public class RSWBossbar {
 
         switch (map.getState()) {
             case PLAYING:
-                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_RUNTIME.get().replace("%time%", Text.formatSeconds(map.getMapTimer().getSecondsLeft())));
+                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_RUNTIME.getSingle().replace("%time%", Text.formatSeconds(map.getMapTimer().getSecondsLeft())));
                 double div = (double) map.getMapTimer().getSecondsLeft() / (double) map.getMaxTime();
                 this.bossBar.setProgress(div);
                 break;
@@ -60,19 +60,19 @@ public class RSWBossbar {
 
         switch (w) {
             case WAITING:
-                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_WAIT.get());
+                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_WAIT.getSingle());
                 this.bossBar.setProgress(0D);
                 break;
             case STARTING:
                 int time = map.getStartMapTimer() == null ? 0 : map.getStartMapTimer().getSecondsLeft();
-                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_STARTING.get().replace("%time%", Text.formatSeconds(time)));
+                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_STARTING.getSingle().replace("%time%", Text.formatSeconds(time)));
                 double div = (double) time / (double) RSWConfig.file().getInt("Config.Time-To-Start");
                 if (div <= 1 && div >= 0) {
                     this.bossBar.setProgress(div);
                 }
                 break;
             case FINISHING:
-                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_END.get());
+                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_END.getSingle());
                 this.bossBar.setColor(BarColor.BLUE);
 
                 int time2 = map.getFinishingTimer() == null ? 0 : map.getFinishingTimer().getSecondsLeft();
@@ -91,7 +91,7 @@ public class RSWBossbar {
         if (this.bossBar == null) {
             return;
         }
-        this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_DEATHMATCH.get());
+        this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_DEATHMATCH.getSingle());
         this.bossBar.setColor(BarColor.RED);
         this.bossBar.setProgress(0);
     }

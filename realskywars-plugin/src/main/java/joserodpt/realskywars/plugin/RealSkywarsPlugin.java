@@ -32,8 +32,8 @@ import joserodpt.realskywars.api.config.RSWShopsConfig;
 import joserodpt.realskywars.api.config.chests.BasicChestConfig;
 import joserodpt.realskywars.api.config.chests.EPICChestConfig;
 import joserodpt.realskywars.api.config.chests.NormalChestConfig;
-import joserodpt.realskywars.api.managers.CurrencyManager;
 import joserodpt.realskywars.api.managers.GamesManagerAPI;
+import joserodpt.realskywars.api.managers.TransactionManager;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.nms.NMS114R1tov116R3;
@@ -226,9 +226,9 @@ public class RealSkywarsPlugin extends JavaPlugin {
                 return new TypeResult(null, argument);
             }
         });
-        commandManager.getParameterHandler().register(CurrencyManager.Operations.class, argument -> {
+        commandManager.getParameterHandler().register(TransactionManager.Operations.class, argument -> {
             try {
-                CurrencyManager.Operations tt = CurrencyManager.Operations.valueOf(argument.toString().toUpperCase());
+                TransactionManager.Operations tt = TransactionManager.Operations.valueOf(argument.toString().toUpperCase());
                 return new TypeResult(tt, argument);
             } catch (Exception e) {
                 return new TypeResult(null, argument);

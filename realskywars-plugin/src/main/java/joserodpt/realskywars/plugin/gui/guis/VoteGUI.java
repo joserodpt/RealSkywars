@@ -15,9 +15,8 @@ package joserodpt.realskywars.plugin.gui.guis;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.map.RSWMap;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
 import org.bukkit.Bukkit;
@@ -35,7 +34,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
 import java.util.UUID;
 
 public class VoteGUI {
@@ -53,7 +51,7 @@ public class VoteGUI {
     public VoteGUI(RSWPlayer p) {
         this.p = p;
         this.uuid = p.getUUID();
-        this.inv = Bukkit.getServer().createInventory(null, 54, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_VOTE_TITLE, false));
+        this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MENU_VOTE_TITLE.get(p, false));
 
         fillChest();
     }
@@ -62,27 +60,27 @@ public class VoteGUI {
         this.inv.clear();
 
         //selection items
-        this.inv.setItem(10, Itens.createItem(Material.CHEST, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_CHESTS_TITLE, false)));
-        this.inv.setItem(19, Itens.createItem(Material.CLOCK, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_TIME_TITLE, false)));
-        this.inv.setItem(28, Itens.createItem(Material.ARROW, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PROJECTILES_TITLE, false)));
+        this.inv.setItem(10, Itens.createItem(Material.CHEST, 1, TranslatableLine.MENU_CHESTS_TITLE.get(p, false)));
+        this.inv.setItem(19, Itens.createItem(Material.CLOCK, 1, TranslatableLine.MENU_TIME_TITLE.get(p, false)));
+        this.inv.setItem(28, Itens.createItem(Material.ARROW, 1, TranslatableLine.MENU_PROJECTILES_TITLE.get(p, false)));
 
         this.inv.setItem(37, close);
 
         switch (def) {
             case CHESTS:
-                this.inv.setItem(13, Itens.createItem(Material.WOODEN_SWORD, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(this.p, LanguageManagerAPI.TS.CHEST_BASIC, false)));
-                this.inv.setItem(14, Itens.createItem(Material.CHEST, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CHEST_NORMAL, false)));
-                this.inv.setItem(15, Itens.createItem(Material.ENDER_CHEST, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CHEST_EPIC, false)));
+                this.inv.setItem(13, Itens.createItem(Material.WOODEN_SWORD, 1, TranslatableLine.CHEST_BASIC.get(p, false)));
+                this.inv.setItem(14, Itens.createItem(Material.CHEST, 1, TranslatableLine.CHEST_NORMAL.get(p, false)));
+                this.inv.setItem(15, Itens.createItem(Material.ENDER_CHEST, 1, TranslatableLine.CHEST_EPIC.get(p, false)));
                 break;
             case TIME:
-                this.inv.setItem(22, Itens.createItem(Material.YELLOW_CONCRETE, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.TIME_DAY, false)));
-                this.inv.setItem(23, Itens.createItem(Material.RED_CONCRETE, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.TIME_SUNSET, false)));
-                this.inv.setItem(24, Itens.createItem(Material.BLACK_CONCRETE, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.TIME_NIGHT, false)));
-                this.inv.setItem(25, Itens.createItem(Material.WATER_BUCKET, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.TIME_RAIN, false)));
+                this.inv.setItem(22, Itens.createItem(Material.YELLOW_CONCRETE, 1, TranslatableLine.TIME_DAY.get(p, false)));
+                this.inv.setItem(23, Itens.createItem(Material.RED_CONCRETE, 1, TranslatableLine.TIME_SUNSET.get(p, false)));
+                this.inv.setItem(24, Itens.createItem(Material.BLACK_CONCRETE, 1, TranslatableLine.TIME_NIGHT.get(p, false)));
+                this.inv.setItem(25, Itens.createItem(Material.WATER_BUCKET, 1, TranslatableLine.TIME_RAIN.get(p, false)));
                 break;
             case PROJECTILE:
-                this.inv.setItem(31, Itens.createItem(Material.EGG, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PROJECTILE_NORMAL, false)));
-                this.inv.setItem(33, Itens.createItem(Material.COBBLESTONE, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PROJECTILE_BREAK, false)));
+                this.inv.setItem(31, Itens.createItem(Material.EGG, 1, TranslatableLine.PROJECTILE_NORMAL.get(p, false)));
+                this.inv.setItem(33, Itens.createItem(Material.COBBLESTONE, 1, TranslatableLine.PROJECTILE_BREAK.get(p, false)));
                 break;
         }
 
@@ -142,43 +140,44 @@ public class VoteGUI {
                             //Chest vote
                             case 13:
                                 if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.CHESTS, p.getUUID())) {
-                                    p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ALREADY_VOTED, true));
+                                    TranslatableLine.ALREADY_VOTED.send(p, true);
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.basic")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.CHESTS, 1);
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.VOTE, true).replace("%thing%", RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CHEST_BASIC, false)));
+
+                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.CHEST_BASIC.get(p, false)));
                                     } else {
                                         p.closeInventory();
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CMD_NOPERM, true));
+                                        TranslatableLine.CMD_NOPERM.send(p, true);
                                     }
                                 }
                                 break;
                             case 14:
                                 if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.CHESTS, p.getUUID())) {
-                                    p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ALREADY_VOTED, true));
+                                    TranslatableLine.ALREADY_VOTED.send(p, true);
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.normal")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.CHESTS, 2);
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.VOTE, true).replace("%thing%", RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CHEST_NORMAL, false)));
+                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.CHEST_NORMAL.get(p, false)));
                                     } else {
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CMD_NOPERM, true));
+                                        TranslatableLine.CMD_NOPERM.send(p, true);
                                         p.closeInventory();
                                     }
                                 }
                                 break;
                             case 15:
                                 if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.CHESTS, p.getUUID())) {
-                                    p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ALREADY_VOTED, true));
+                                    TranslatableLine.ALREADY_VOTED.send(p, true);
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.epic")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.CHESTS, 3);
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.VOTE, true).replace("%thing%", RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CHEST_EPIC, false)));
+                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.CHEST_EPIC.get(p, false)));
 
                                     } else {
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CMD_NOPERM, true));
+                                        TranslatableLine.CMD_NOPERM.send(p, true);
                                         p.closeInventory();
                                     }
                                 }
@@ -188,14 +187,14 @@ public class VoteGUI {
 
                             case 22:
                                 if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.TIME, p.getUUID())) {
-                                    p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ALREADY_VOTED, true));
+                                    TranslatableLine.ALREADY_VOTED.send(p, true);
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.day")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 1);
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.VOTE, true).replace("%thing%", RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.TIME_DAY, false)));
+                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.TIME_DAY.get(p, false)));
                                     } else {
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CMD_NOPERM, true));
+                                        TranslatableLine.CMD_NOPERM.send(p, true);
                                         p.closeInventory();
                                     }
                                 }
@@ -203,42 +202,42 @@ public class VoteGUI {
 
                             case 23:
                                 if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.TIME, p.getUUID())) {
-                                    p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ALREADY_VOTED, true));
+                                    TranslatableLine.ALREADY_VOTED.send(p, true);
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.sunset")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 2);
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.VOTE, true).replace("%thing%", RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.TIME_SUNSET, false)));
+                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.TIME_SUNSET.get(p, false)));
                                     } else {
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CMD_NOPERM, true));
+                                        TranslatableLine.CMD_NOPERM.send(p, true);
                                         p.closeInventory();
                                     }
                                 }
                                 break;
                             case 24:
                                 if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.TIME, p.getUUID())) {
-                                    p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ALREADY_VOTED, true));
+                                    TranslatableLine.ALREADY_VOTED.send(p, true);
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.night")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 3);
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.VOTE, true).replace("%thing%", RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.TIME_NIGHT, false)));
+                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.TIME_NIGHT.get(p, false)));
                                     } else {
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CMD_NOPERM, true));
+                                        TranslatableLine.CMD_NOPERM.send(p, true);
                                         p.closeInventory();
                                     }
                                 }
                                 break;
                             case 25:
                                 if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.TIME, p.getUUID())) {
-                                    p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ALREADY_VOTED, true));
+                                    TranslatableLine.ALREADY_VOTED.send(p, true);
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.rain")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 4);
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.VOTE, true).replace("%thing%", RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.TIME_NIGHT, false)));
+                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.TIME_NIGHT.get(p, false)));
                                     } else {
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CMD_NOPERM, true));
+                                        TranslatableLine.CMD_NOPERM.send(p, true);
                                         p.closeInventory();
                                     }
                                 }
@@ -247,28 +246,28 @@ public class VoteGUI {
                             //projectile vote
                             case 31:
                                 if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.PROJECTILES, p.getUUID())) {
-                                    p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ALREADY_VOTED, true));
+                                    TranslatableLine.ALREADY_VOTED.send(p, true);
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.normal-projectile")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.PROJECTILES, 1);
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.VOTE, true).replace("%thing%", RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PROJECTILE_NORMAL, false)));
+                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.PROJECTILE_NORMAL.get(p, false)));
                                     } else {
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CMD_NOPERM, true));
+                                        TranslatableLine.CMD_NOPERM.send(p, true);
                                         p.closeInventory();
                                     }
                                 }
                                 break;
                             case 33:
                                 if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.PROJECTILES, p.getUUID())) {
-                                    p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ALREADY_VOTED, true));
+                                    TranslatableLine.ALREADY_VOTED.send(p, true);
                                     p.closeInventory();
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.break-projectile")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.PROJECTILES, 2);
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.VOTE, true).replace("%thing%", RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PROJECTILE_BREAK, false)));
+                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.PROJECTILE_BREAK.get(p, false)));
                                     } else {
-                                        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CMD_NOPERM, true));
+                                        TranslatableLine.CMD_NOPERM.send(p, true);
                                         p.closeInventory();
                                     }
                                 }

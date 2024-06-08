@@ -17,8 +17,8 @@ package joserodpt.realskywars.plugin.listeners;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.GamesManagerAPI;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
@@ -77,7 +77,7 @@ public class EventListener implements Listener {
             if (m != null && (event.getPlayer().isOp() || p.getPlayer().hasPermission("rs.admin"))) {
                 m.addSign(event.getBlock());
             } else {
-                p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.NO_GAME_FOUND, true));
+                TranslatableLine.NO_GAME_FOUND.send(p, true);
             }
         }
     }

@@ -16,7 +16,7 @@ package joserodpt.realskywars.plugin.commands;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import me.mattstudios.mf.annotations.Alias;
 import me.mattstudios.mf.annotations.Command;
@@ -44,7 +44,7 @@ public class SairCMD extends CommandBase {
             if (p.isInMatch()) {
                 p.getMatch().removePlayer(p);
             } else {
-                p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.NO_MATCH, true));
+                TranslatableLine.NO_MATCH.send(p, true);
             }
         } else {
             commandSender.sendMessage("[RealSkywars] Only players can run this command.");

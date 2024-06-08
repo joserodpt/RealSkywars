@@ -19,7 +19,6 @@ import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.kits.RSWKit;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.GUIBuilder;
@@ -39,7 +38,7 @@ import java.util.Collections;
 public class GUIManager {
 
     public static void openShopMenu(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENUS_SHOP_TILE, false), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENUS_SHOP_TILE.get(p, false), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -50,7 +49,7 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.SPAWNER, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CAGEBLOCK, false)), 10);
+        }, Itens.createItem(Material.SPAWNER, 1, TranslatableLine.CAGEBLOCK.get(p, false)), 10);
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -61,7 +60,7 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.CHEST, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.KITS, false)), 12);
+        }, Itens.createItem(Material.CHEST, 1, TranslatableLine.KITS.get(p, false)), 12);
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -72,7 +71,7 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.FIREWORK_ROCKET, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.WINBLOCK, false)), 14);
+        }, Itens.createItem(Material.FIREWORK_ROCKET, 1, TranslatableLine.WINBLOCK.get(p, false)), 14);
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -83,20 +82,20 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.BOW, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.BOWPARTICLE, false)), 16);
+        }, Itens.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(p, false)), 16);
 
         inventory.openInventory(p.getPlayer());
     }
 
     public static void openSpectate(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENUS_SPECTATE_TITLE, false), 54, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENUS_SPECTATE_TITLE.get(p, false), 54, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         int i = 0;
         for (RSWPlayer s : p.getMatch().getPlayers()) {
             if (s.getPlayer() != null) {
                 inventory.addItem(e -> {
                     p.teleport(s.getPlayer().getLocation());
-                    p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.COMPASS_TELEPORT, true).replace("%name%", s.getDisplayName()));
+                    p.sendMessage(TranslatableLine.COMPASS_TELEPORT.get(p, true).replace("%name%", s.getDisplayName()));
                 }, Itens.addLore(Itens.getHead(s.getPlayer(), 1, "&b" + s.getDisplayName()), Collections.singletonList("&c" + String.format("%.2f", s.getPlayer().getHealth()))), i);
                 ++i;
             }
@@ -105,7 +104,7 @@ public class GUIManager {
     }
 
     public static void openLanguage(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_LANG_TITLE, false), 18, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_LANG_TITLE.get(p, true), 18, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         int i = 0;
 
@@ -113,7 +112,7 @@ public class GUIManager {
             if (i == 17) {
                 break;
             } else {
-                inventory.addItem(e -> RealSkywarsAPI.getInstance().getPlayerManagerAPI().setLanguage(p, language), Itens.createItem(Material.BOOK, 1, "&b" + language, Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_LANG_SELECT, false))), i);
+                inventory.addItem(e -> RealSkywarsAPI.getInstance().getPlayerManagerAPI().setLanguage(p, language), Itens.createItem(Material.BOOK, 1, "&b" + language, Collections.singletonList(TranslatableLine.MENU_LANG_SELECT.get(p, false))), i);
             }
             ++i;
         }
@@ -128,11 +127,11 @@ public class GUIManager {
             p.closeInventory();
             new BukkitRunnable() {
                 public void run() {
-                    MapsListGUI v = new MapsListGUI(p, rsa.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAPS_NAME, false));
+                    MapsListGUI v = new MapsListGUI(p);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.NETHER_STAR, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ITEM_MAPS_NAME, false)), 12);
+        }, Itens.createItem(Material.NETHER_STAR, 1, TranslatableLine.ITEM_MAPS_NAME.get(p, false)), 12);
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -157,7 +156,7 @@ public class GUIManager {
             size = 45;
         }
 
-        GUIBuilder inventory = new GUIBuilder(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PLAYERP_TITLE, false), size, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_PLAYERP_TITLE.get(p, false), size, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -167,7 +166,7 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.CHEST, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.KITS, false), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PLAYERP_VIEWITEM, false))), 10);
+        }, Itens.createItem(Material.CHEST, 1, TranslatableLine.KITS.get(p, false), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 10);
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -180,7 +179,7 @@ public class GUIManager {
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
 
-        }, Itens.createItem(Material.SPAWNER, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CAGEBLOCK, false), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PLAYERP_VIEWITEM, false))), 12);
+        }, Itens.createItem(Material.SPAWNER, 1, TranslatableLine.CAGEBLOCK.get(p, false), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 12);
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -191,7 +190,7 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.FIREWORK_ROCKET, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.WINBLOCK, false), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PLAYERP_VIEWITEM, false))), 14);
+        }, Itens.createItem(Material.FIREWORK_ROCKET, 1, TranslatableLine.WINBLOCK.get(p, false), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 14);
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -202,12 +201,12 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.BOW, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.BOWPARTICLE, false), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PLAYERP_VIEWITEM, false))), 13);
+        }, Itens.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(p, false), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 13);
 
         inventory.addItem(e -> {
             p.closeInventory();
             openAchievementGUI(p);
-        }, Itens.createItem(Material.BOOKSHELF, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ACHIEVEMENTS, false), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PLAYERP_VIEWITEM, false))), 16);
+        }, Itens.createItem(Material.BOOKSHELF, 1, TranslatableLine.ACHIEVEMENTS.get(p, false), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 16);
 
 
         //settings
@@ -217,21 +216,21 @@ public class GUIManager {
                     p.closeInventory();
                     GameHistoryGUI v = new GameHistoryGUI(p);
                     v.openInventory(p);
-                }, Itens.createItem(Material.FILLED_MAP, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PLAYERP_GAME_HISTORY, false), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PLAYERP_VIEWITEM, false))), 31);
+                }, Itens.createItem(Material.FILLED_MAP, 1, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(p, false), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 31);
             } else {
                 inventory.addItem(e -> {
                     p.closeInventory();
                     GameHistoryGUI v = new GameHistoryGUI(p);
                     v.openInventory(p);
-                }, Itens.createItem(Material.FILLED_MAP, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PLAYERP_GAME_HISTORY, false), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PLAYERP_VIEWITEM, false))), 32);
+                }, Itens.createItem(Material.FILLED_MAP, 1, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(p, false), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 32);
                 inventory.addItem(e -> {
                     p.closeInventory();
                     GUIManager.openLanguage(p);
-                }, Itens.createItem(Material.BOOK, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_LANG_TITLE, false), Collections.singletonList("&f> " + p.getLanguage())), 30);
+                }, Itens.createItem(Material.BOOK, 1, TranslatableLine.MENU_LANG_TITLE.get(p, false), Collections.singletonList("&f> " + p.getLanguage())), 30);
             }
 
             if (!RSWConfig.file().getBoolean("Config.Disable-Player-Reset")) {
-                inventory.addItem(e -> p.resetData(), Itens.createItem(Material.BARRIER, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PLAYERP_RESET_TITLE, false), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PLAYERP_RESET_ALERT, false))), 44);
+                inventory.addItem(e -> p.resetData(), Itens.createItem(Material.BARRIER, 1, TranslatableLine.MENU_PLAYER_RESET_TITLE.get(p, false), Collections.singletonList(TranslatableLine.MENU_PLAYER_RESET_ALERT.get(p, false))), 44);
             }
         }
 
@@ -239,36 +238,36 @@ public class GUIManager {
     }
 
     public static void openAchievementGUI(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ACHIEVEMENTS, false), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+        GUIBuilder inventory = new GUIBuilder(TranslatableLine.ACHIEVEMENTS.get(p, false), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.KILLS);
             v.openInventory(p);
-        }, Itens.createItem(Material.DIAMOND_SWORD, 1, "&b&l" + RSWPlayer.PlayerStatistics.KILLS.name(), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PLAYERP_VIEWITEM, false))), 10);
+        }, Itens.createItem(Material.DIAMOND_SWORD, 1, "&b&l" + RSWPlayer.PlayerStatistics.KILLS.name(), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 10);
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.WINS_SOLO);
             v.openInventory(p);
-        }, Itens.createItem(Material.LEATHER_BOOTS, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_SOLO.name().replace("_", " "), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PLAYERP_VIEWITEM, false))), 12);
+        }, Itens.createItem(Material.LEATHER_BOOTS, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_SOLO.name().replace("_", " "), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 12);
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.WINS_TEAMS);
             v.openInventory(p);
-        }, Itens.createItem(Material.CHAINMAIL_CHESTPLATE, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_TEAMS.name().replace("_", " "), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PLAYERP_VIEWITEM, false))), 14);
+        }, Itens.createItem(Material.CHAINMAIL_CHESTPLATE, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_TEAMS.name().replace("_", " "), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 14);
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.GAMES_PLAYED);
             v.openInventory(p);
-        }, Itens.createItem(Material.FILLED_MAP, 1, "&b&l" + RSWPlayer.PlayerStatistics.GAMES_PLAYED.name().replace("_", " "), Collections.singletonList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MENU_PLAYERP_VIEWITEM, false))), 16);
+        }, Itens.createItem(Material.FILLED_MAP, 1, "&b&l" + RSWPlayer.PlayerStatistics.GAMES_PLAYED.name().replace("_", " "), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 16);
 
         inventory.addItem(e -> {
             p.closeInventory();
             GUIManager.openPlayerMenu(p);
-        }, Itens.createItem(Material.BIRCH_DOOR, 1, TranslatableLine.BUTTONS_MENU_TITLE.get(), Collections.singletonList(TranslatableLine.BUTTONS_MENU_DESC.get())), 26);
+        }, Itens.createItem(Material.BIRCH_DOOR, 1, TranslatableLine.BUTTONS_MENU_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_MENU_DESC.getSingle())), 26);
 
         inventory.openInventory(p.getPlayer());
     }

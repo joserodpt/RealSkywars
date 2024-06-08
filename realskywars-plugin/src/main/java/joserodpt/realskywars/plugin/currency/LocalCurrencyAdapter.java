@@ -16,9 +16,8 @@ package joserodpt.realskywars.plugin.currency;
  */
 
 
-import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.currency.CurrencyAdapter;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 
 public class LocalCurrencyAdapter implements CurrencyAdapter {
@@ -38,7 +37,7 @@ public class LocalCurrencyAdapter implements CurrencyAdapter {
     public boolean removeCoins(RSWPlayer p, double amount) {
         if (getCoins(p) >= amount) {
             setCoins(p, getCoins(p) - amount);
-            p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.REMOVED_COINS, true).replace("%coins%", "" + amount));
+            p.sendMessage(TranslatableLine.REMOVED_COINS.get(p, true).replace("%coins%", "" + amount));
             return true;
         }
 

@@ -16,8 +16,8 @@ package joserodpt.realskywars.plugin.gui.guis;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.map.RSWMap;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Text;
@@ -34,7 +34,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class MapSettingsGUI {
     private static final Map<UUID, MapSettingsGUI> inventories = new HashMap<>();
@@ -140,9 +144,9 @@ public class MapSettingsGUI {
                         switch (e.getRawSlot()) {
                             // reset
                             case 22:
-                                p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(gp, LanguageManagerAPI.TS.ARENA_RESET, true));
+                                TranslatableLine.ARENA_RESET.sendDefault(p, true);
                                 current.game.reset();
-                                p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(gp, LanguageManagerAPI.TS.MAP_RESET_DONE, true));
+                                TranslatableLine.MAP_RESET_DONE.sendDefault(p, true);
 
                                 current.loadInv();
                                 break;
@@ -170,7 +174,7 @@ public class MapSettingsGUI {
                                 }
                                 current.loadInv();
 
-                                p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(gp, LanguageManagerAPI.TS.GAME_STATUS_SET, true).replace("%status%", current.game.getState().name()));
+                                p.sendMessage(TranslatableLine.GAME_STATUS_SET.get(gp, true).replace("%status%", current.game.getState().name()));
                                 break;
                             case 13:
                                 // settings

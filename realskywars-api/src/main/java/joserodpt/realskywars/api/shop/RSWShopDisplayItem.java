@@ -133,7 +133,7 @@ public class RSWShopDisplayItem {
 
     public ItemStack getItemStack() {
         if (!this.interactive) {
-            return Itens.createItem(Material.BUCKET, this.getAmount(), TranslatableLine.SEARCH_NOTFOUND_NAME.get());
+            return Itens.createItem(Material.BUCKET, this.getAmount(), TranslatableLine.SEARCH_NOTFOUND_NAME.getSingle());
         }
 
         switch (this.it) {
@@ -143,12 +143,12 @@ public class RSWShopDisplayItem {
             case SPEC_SHOP:
                 return Itens.createItem(m, 1, "&f" + this.amount + "x " + this.getDisplayName(), makeSpecShopDescription());
             default:
-                return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), formatName(this.getDisplayName()), Collections.singletonList(TranslatableLine.SHOP_BOUGHT.get())) : Itens.createItem(m, 1, formatName(this.getDisplayName()), Collections.singletonList(TranslatableLine.SHOP_BUY.get().replace("%price%", this.getPrice().toString())));
+                return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), formatName(this.getDisplayName()), Collections.singletonList(TranslatableLine.SHOP_BOUGHT.getSingle())) : Itens.createItem(m, 1, formatName(this.getDisplayName()), Collections.singletonList(TranslatableLine.SHOP_BUY.getSingle().replace("%price%", this.getPrice().toString())));
         }
     }
 
     private List<String> makeSpecShopDescription() {
-        return Arrays.asList(TranslatableLine.SHOP_BUY.get().replace("%price%", this.getPrice().toString()), "", "&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount.");
+        return Arrays.asList(TranslatableLine.SHOP_BUY.getSingle().replace("%price%", this.getPrice().toString()), "", "&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount.");
     }
 
     public Material getMaterial() {

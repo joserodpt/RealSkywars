@@ -22,12 +22,12 @@ import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.RSWMapsConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
-import joserodpt.realskywars.api.managers.PlayerManagerAPI;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.modes.RSWSign;
 import joserodpt.realskywars.api.map.modes.teams.Team;
 import joserodpt.realskywars.api.player.RSWGameLog;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.player.RSWPlayerItems;
 import joserodpt.realskywars.api.player.RSWPlayerTab;
 import joserodpt.realskywars.api.utils.BungeecordUtils;
 import joserodpt.realskywars.api.utils.CountdownTimer;
@@ -138,15 +138,15 @@ public abstract class RSWMap {
 
     public String forceStart(RSWPlayer p) {
         if (canStartMap()) {
-            return this.getRealSkywarsAPI().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CMD_CANT_FORCESTART, true);
+            return TranslatableLine.CMD_CANT_FORCESTART.get(p, true);
         } else {
             switch (this.getState()) {
                 case PLAYING:
                 case FINISHING:
-                    return this.getRealSkywarsAPI().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ALREADY_STARTED, true);
+                    return TranslatableLine.ALREADY_STARTED.get(p, true);
                 default:
                     this.forceStartMap();
-                    return this.getRealSkywarsAPI().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CMD_MATCH_FORCESTART, true);
+                    return TranslatableLine.CMD_MATCH_FORCESTART.get(p, true);
             }
         }
     }
@@ -275,6 +275,8 @@ public abstract class RSWMap {
         for (RSWPlayer p : tmp) {
             if (msg != null) {
                 p.sendMessage(Text.color(msg));
+            } else {
+                TranslatableLine.ARENA_RESET.send(p, true);
             }
             this.removePlayer(p);
         }
@@ -392,7 +394,7 @@ public abstract class RSWMap {
                 this.sendLog(p, false);
 
                 //click to play again
-                TextComponent component = new TextComponent(TextComponent.fromLegacyText(" > " + rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PLAY_AGAIN, false)));
+                TextComponent component = new TextComponent(TextComponent.fromLegacyText(" > " + TranslatableLine.PLAY_AGAIN.get(p, false)));
                 component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw play " + this.getGameMode().name().toLowerCase()));
                 p.getPlayer().spigot().sendMessage(component);
 
@@ -420,11 +422,11 @@ public abstract class RSWMap {
                     }
                 }
 
-                p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MATCH_SPECTATE, true));
+                TranslatableLine.MATCH_SPECTATE.send(p, true);
                 break;
         }
 
-        rs.getPlayerManagerAPI().giveItems(p.getPlayer(), PlayerManagerAPI.Items.SPECTATOR);
+        RSWPlayerItems.SPECTATOR.giveSet(p);
     }
 
     abstract public void checkWin();
@@ -444,7 +446,7 @@ public abstract class RSWMap {
     public void reset() {
         this.setState(MapState.RESETTING);
 
-        this.kickPlayers(rs.getLanguageManagerAPI().getString(LanguageManagerAPI.TS.ARENA_RESET, true));
+        this.kickPlayers(null);
         this.resetArena(OperationReason.RESET);
     }
 
@@ -628,8 +630,8 @@ public abstract class RSWMap {
     protected void cancelMapStart() {
         getStartMapTimer().killTask();
         for (RSWPlayer p : getAllPlayers()) {
-            p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_CANCEL, true));
-            p.sendActionbar(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_CANCEL, false));
+            TranslatableLine.ARENA_CANCEL.send(p, true);
+            p.sendActionbar(TranslatableLine.ARENA_CANCEL.get(p));
             p.setBarNumber(0);
         }
 
@@ -641,7 +643,7 @@ public abstract class RSWMap {
 
         p.setBarNumber(0);
         p.setInvincible(false);
-        p.sendMessage(Text.color(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MATCH_LEAVE, true)));
+        TranslatableLine.MATCH_LEAVE.send(p, true);
 
         p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.LOBBY_OR_NOGAME);
         p.setFlying(false);
@@ -679,17 +681,17 @@ public abstract class RSWMap {
             if (shouldKickPlayer) {
                 if (p.getPlayer() != null) {
                     kicked = true;
-                    p.getPlayer().kickPlayer(TranslatableLine.BUNGEECORD_KICK_MESSAGE.get());
+                    p.getPlayer().kickPlayer(TranslatableLine.BUNGEECORD_KICK_MESSAGE.getSingle());
                 }
             } else {
-                TranslatableLine.BUNGEECORD_KICK_MESSAGE.send(p);
+                TranslatableLine.BUNGEECORD_KICK_MESSAGE.sendSingle(p);
                 BungeecordUtils.connect(RSWConfig.file().getString("Config.Bungeecord.Lobby-Server"), p.getPlayer(), this.getRealSkywarsAPI().getPlugin());
             }
         }
 
         if (!kicked) {
             rs.getGameManagerAPI().tpToLobby(p);
-            rs.getPlayerManagerAPI().giveItems(p.getPlayer(), PlayerManagerAPI.Items.LOBBY);
+            RSWPlayerItems.LOBBY.giveSet(p);
         }
 
         if (this.getState() == MapState.PLAYING || this.getState() == MapState.FINISHING) {
@@ -713,8 +715,8 @@ public abstract class RSWMap {
                         p.getCage().tpPlayer(p);
                     }
 
-                    p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_CANCEL, true));
-                    p.sendActionbar(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_CANCEL, false));
+                    TranslatableLine.ARENA_CANCEL.send(p, true);
+                    p.sendActionbar(TranslatableLine.ARENA_CANCEL.get(p));
                     p.setBarNumber(0);
                 }
                 this.setState(MapState.WAITING);
@@ -725,8 +727,8 @@ public abstract class RSWMap {
                         p.getCage().tpPlayer(p);
                     }
 
-                    p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_START_COUNTDOWN, true).replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
-                    p.sendActionbar(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_START_COUNTDOWN, false).replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
+                    p.sendMessage(TranslatableLine.ARENA_CANCEL.get(p, true).replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
+                    p.sendActionbar(TranslatableLine.ARENA_CANCEL.get(p).replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
                     p.setBarNumber(t.getSecondsLeft(), RSWConfig.file().getInt("Config.Time-To-Start"));
                 }
             }

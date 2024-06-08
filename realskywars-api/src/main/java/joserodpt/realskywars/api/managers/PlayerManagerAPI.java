@@ -4,16 +4,11 @@ import joserodpt.realskywars.api.player.RSWGameLog;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.shop.RSWShopDisplayItem;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.UUID;
 
 public abstract class PlayerManagerAPI {
-    public abstract void giveItems(Player p, Items i);
-
-    public abstract ItemStack getItem(RSWPlayer p, Items i);
-
     public abstract RSWPlayer loadPlayer(Player p);
 
     protected abstract List<RSWGameLog> processGamesList(String s);
@@ -46,5 +41,4 @@ public abstract class PlayerManagerAPI {
 
     public abstract List<UUID> getTeleporting();
 
-    public enum Items {LOBBY, CAGE, SETUP, SPECTATOR, PROFILE, CAGESET, MAPS, SHOP, LEAVE, VOTE, SPECTATE, KIT, PLAYAGAIN, CHEST1, CHEST2}
 }

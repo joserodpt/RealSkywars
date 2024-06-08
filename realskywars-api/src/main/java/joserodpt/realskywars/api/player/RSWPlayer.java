@@ -19,10 +19,10 @@ import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.achievements.RSWAchievement;
 import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.config.RSWConfig;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.effects.RSWBlockWinTrail;
 import joserodpt.realskywars.api.effects.RSWTrail;
 import joserodpt.realskywars.api.kits.RSWKit;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.map.RSWSetupMap;
@@ -571,7 +571,7 @@ public class RSWPlayer {
     public void leaveParty() {
         this.rswParty.playerLeave(this);
         this.rswParty = null;
-        this.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(this, LanguageManagerAPI.TS.PARTY_LEAVE, true).replace("%player%", this.getDisplayName()));
+        this.sendMessage(TranslatableLine.PARTY_LEAVE.get(this, true).replace("%player%", this.getDisplayName()));
     }
 
     public MapViewerPref getMapViewerPref() {

@@ -15,8 +15,7 @@ package joserodpt.realskywars.api.party;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
 
 import java.util.ArrayList;
@@ -35,28 +34,28 @@ public class RSWParty {
     public void playerJoin(RSWPlayer p) {
         p.joinParty(this.owner);
         this.members.add(p);
-        this.owner.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(this.owner, LanguageManagerAPI.TS.PARTY_JOIN, true).replace("%player%", p.getDisplayName()));
-        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(rswPlayer, LanguageManagerAPI.TS.PARTY_JOIN, true).replace("%player%", p.getDisplayName())));
+
+        this.owner.sendMessage(TranslatableLine.PARTY_JOIN.get(this.owner).replace("%player%", p.getDisplayName()));
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.PARTY_JOIN.get(rswPlayer).replace("%player%", p.getDisplayName())));
     }
 
     public void playerLeave(RSWPlayer p) {
-        this.owner.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(this.owner, LanguageManagerAPI.TS.PARTY_LEAVE, true).replace("%player%", p.getDisplayName()));
-        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(rswPlayer, LanguageManagerAPI.TS.PARTY_LEAVE, true).replace("%player%", p.getDisplayName())));
+        this.owner.sendMessage(TranslatableLine.PARTY_LEAVE.get(this.owner).replace("%player%", p.getDisplayName()));
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.PARTY_LEAVE.get(rswPlayer).replace("%player%", p.getDisplayName())));
     }
 
     public void kick(RSWPlayer p) {
         this.members.remove(p);
-        this.owner.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(this.owner, LanguageManagerAPI.TS.PARTY_KICK, true).replace("%player%", p.getDisplayName()));
-        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(rswPlayer, LanguageManagerAPI.TS.PARTY_KICK, true).replace("%player%", p.getDisplayName())));
+        this.owner.sendMessage(TranslatableLine.PARTY_KICK.get(this.owner).replace("%player%", p.getDisplayName()));
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.PARTY_KICK.get(rswPlayer).replace("%player%", p.getDisplayName())));
     }
 
     public void disband() {
-        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(rswPlayer, LanguageManagerAPI.TS.PARTY_DISBAND, true).replace("%player%", this.owner.getDisplayName())));
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.PARTY_DISBAND.get(rswPlayer).replace("%player%", this.owner.getDisplayName())));
         this.members.forEach(RSWPlayer::leaveParty);
         this.members.clear();
-        this.owner.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(this.owner, LanguageManagerAPI.TS.PARTY_DISBAND, true).replace("%player%", this.owner.getDisplayName()));
+        this.owner.sendMessage(TranslatableLine.PARTY_DISBAND.get(this.owner).replace("%player%", this.owner.getDisplayName()));
         this.owner.leaveParty();
-
     }
 
     public boolean isOwner(RSWPlayer p) {

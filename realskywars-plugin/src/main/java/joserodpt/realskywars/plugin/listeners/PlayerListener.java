@@ -23,7 +23,6 @@ import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.effects.RSWBowTrail;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
@@ -93,7 +92,7 @@ public class PlayerListener implements Listener {
                 }
             }
             if (block) {
-                rsw.sendMessage(rs.getLanguageManagerAPI().getString(rsw, LanguageManagerAPI.TS.BLOCKED_COMMAND, true));
+                TranslatableLine.BLOCKED_COMMAND.send(rsw, true);
                 Debugger.print(PlayerListener.class, "blocked " + command + " for " + event.getPlayer());
                 event.setCancelled(true);
             }
@@ -169,7 +168,7 @@ public class PlayerListener implements Listener {
                                             VoteGUI vg = new VoteGUI(p);
                                             vg.openInventory(p.getPlayer());
                                         } else {
-                                            p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CANT_VOTE, true));
+                                            TranslatableLine.CANT_VOTE.send(p, true);
                                         }
                                     } else {
                                         VoteGUI vg = new VoteGUI(p);
@@ -226,7 +225,7 @@ public class PlayerListener implements Listener {
                                     game.addPlayer(p);
                                 }
                             } else {
-                                p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.NO_GAME_FOUND, true));
+                                TranslatableLine.NO_GAME_FOUND.send(p, true);
                             }
                         }
                     }
@@ -243,7 +242,7 @@ public class PlayerListener implements Listener {
                                 break;
                             case NETHER_STAR:
                                 e.setCancelled(true);
-                                MapsListGUI v = new MapsListGUI(p, rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MAPS_NAME, false));
+                                MapsListGUI v = new MapsListGUI(p);
                                 v.openInventory(p);
                                 e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 break;
@@ -301,7 +300,7 @@ public class PlayerListener implements Listener {
                             } else {
                                 log(event, pg);
                                 pg.getSetupRoom().confirmCages(true);
-                                pg.sendMessage(rs.getLanguageManagerAPI().getString(pg, LanguageManagerAPI.TS.CAGES_SET, false));
+                                TranslatableLine.CAGES_SET.send(pg, true);
                             }
                             break;
                         case TEAMS:
@@ -310,7 +309,7 @@ public class PlayerListener implements Listener {
                             } else {
                                 log(event, pg);
                                 pg.getSetupRoom().confirmCages(true);
-                                pg.sendMessage(rs.getLanguageManagerAPI().getString(pg, LanguageManagerAPI.TS.CAGES_SET, false));
+                                TranslatableLine.CAGES_SET.send(pg, true);
                             }
                             break;
                     }
@@ -467,7 +466,7 @@ public class PlayerListener implements Listener {
             RSWPlayer hitter = rs.getPlayerManagerAPI().getPlayer(whoHit);
             RSWPlayer hurt = rs.getPlayerManagerAPI().getPlayer(whoWasHit);
             if (hitter.getTeam() != null && hitter.getTeam().getMembers().contains(hurt)) {
-                whoHit.sendMessage(rs.getLanguageManagerAPI().getString(hitter, LanguageManagerAPI.TS.TEAMMATE_DAMAGE_CANCEL, true));
+                TranslatableLine.TEAMMATE_DAMAGE_CANCEL.send(hitter, true);
                 e.setCancelled(true);
             }
             if (hitter.getState() == RSWPlayer.PlayerState.SPECTATOR || hitter.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
@@ -500,18 +499,18 @@ public class PlayerListener implements Listener {
             if (suitableGame.isPresent()) {
                 RSWMap game = suitableGame.get();
                 if (game.getState() == RSWMap.MapState.RESETTING) {
-                    e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_RESETTING_MESSAGE.get());
+                    e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_RESETTING_MESSAGE.getSingle());
                     return;
                 }
 
                 if (suitableGame.get().isFull() && !game.isSpectatorEnabled()) {
-                    e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_FULL.get());
+                    e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_FULL.getSingle());
                 } else {
                     fastJoin.put(e.getUniqueId(), suitableGame.get());
                     e.allow();
                 }
             } else {
-                e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_NO_AVAILABLE_MAPS.get());
+                e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_NO_AVAILABLE_MAPS.getSingle());
             }
         }
     }

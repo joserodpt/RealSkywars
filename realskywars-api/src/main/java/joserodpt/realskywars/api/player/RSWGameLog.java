@@ -49,7 +49,7 @@ public class RSWGameLog {
     }
 
     public ItemStack getItem() {
-        return this.dummy ? Itens.createItem(Material.BUCKET, 1, TranslatableLine.SEARCH_NOTFOUND_NAME.get()) :
+        return this.dummy ? Itens.createItem(Material.BUCKET, 1, TranslatableLine.SEARCH_NOTFOUND_NAME.getSingle()) :
                 Itens.createItem(Material.FILLED_MAP, 1, "&f&l" + this.dayandtime, Arrays.asList("&fMap: &b" + this.map + " &f| Win: " + getWin(),
                         "&fPlayers: &b" + this.players,
                         "&fTime: &b" + Text.formatSeconds(this.seconds)));

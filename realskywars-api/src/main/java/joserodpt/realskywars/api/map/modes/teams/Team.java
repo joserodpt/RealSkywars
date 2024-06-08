@@ -15,10 +15,9 @@ package joserodpt.realskywars.api.map.modes.teams;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.cages.RSWTeamCage;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Location;
@@ -41,7 +40,7 @@ public class Team {
     }
 
     public void addPlayer(RSWPlayer p) {
-        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.TEAM_BROADCAST_JOIN, true).replace("%player%", p.getName())));
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.TEAM_BROADCAST_JOIN.get(p, true).replace("%player%", p.getName())));
 
         this.members.add(p);
         p.setTeam(this);
@@ -50,19 +49,19 @@ public class Team {
         }
 
         p.teleport(this.tc.getLoc());
-        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.TEAM_JOIN, true).replace("%team%", getName()));
+        p.sendMessage(TranslatableLine.TEAM_JOIN.get(p, true).replace("%team%", getName()));
     }
 
     public void removeMember(RSWPlayer p) {
         this.members.remove(p);
 
-        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.TEAM_BROADCAST_LEAVE, true).replace("%player%", p.getName())));
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.TEAM_BROADCAST_LEAVE.get(p, true).replace("%player%", p.getName())));
 
         if (this.playing && members.isEmpty()) {
             this.eliminated = true;
         }
         p.setTeam(null);
-        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.TEAM_LEAVE, true).replace("%team%", getName()));
+        p.sendMessage(TranslatableLine.TEAM_LEAVE.get(p, true).replace("%team%", getName()));
     }
 
     public Boolean isTeamFull() {

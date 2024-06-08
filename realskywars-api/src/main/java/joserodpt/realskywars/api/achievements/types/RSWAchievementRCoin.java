@@ -17,8 +17,8 @@ package joserodpt.realskywars.api.achievements.types;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.achievements.RSWAchievement;
-import joserodpt.realskywars.api.managers.CurrencyManager;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.config.TranslatableLine;
+import joserodpt.realskywars.api.managers.TransactionManager;
 import joserodpt.realskywars.api.player.RSWPlayer;
 
 import java.util.Locale;
@@ -29,8 +29,7 @@ public class RSWAchievementRCoin implements RSWAchievement {
     private final int goal;
     private final Double reward;
 
-    public RSWAchievementRCoin(RSWPlayer.PlayerStatistics at, int goal, Double reward)
-    {
+    public RSWAchievementRCoin(RSWPlayer.PlayerStatistics at, int goal, Double reward) {
         this.at = at;
         this.goal = goal;
         this.reward = reward;
@@ -48,8 +47,8 @@ public class RSWAchievementRCoin implements RSWAchievement {
 
     @Override
     public void giveAchievement(RSWPlayer p) {
-        new CurrencyManager(RealSkywarsAPI.getInstance().getCurrencyAdapter(), p, (Double) this.getReward(), CurrencyManager.Operations.ADD, true);
-        p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ACHIEVEMENT_GET, true).replace("%achievement%", this.goal + " - " + this.getAchievementName()).replace("%reward%", this.getRewardName()));
+        new TransactionManager(RealSkywarsAPI.getInstance().getCurrencyAdapter(), p, (Double) this.getReward(), TransactionManager.Operations.ADD, true);
+        p.sendMessage(TranslatableLine.ACHIEVEMENT_GET.get(p, true).replace("%achievement%", this.goal + " - " + this.getAchievementName()).replace("%reward%", this.getRewardName()));
     }
 
     @Override

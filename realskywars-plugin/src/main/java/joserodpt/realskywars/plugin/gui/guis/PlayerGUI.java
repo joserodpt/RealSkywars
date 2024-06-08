@@ -16,6 +16,7 @@ package joserodpt.realskywars.plugin.gui.guis;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
@@ -57,7 +58,7 @@ public class PlayerGUI {
                 .map(s -> variables(s, target))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        inv.setItem(2, Itens.createItem(Material.MAP, 1, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.STATS_ITEM_NAME, false).replace("%player%", target.getDisplayName()), lore));
+        inv.setItem(2, Itens.createItem(Material.MAP, 1, TranslatableLine.STATS_ITEM_NAME.get(p, false).replace("%player%", target.getDisplayName()), lore));
     }
 
     public static Listener getListener() {

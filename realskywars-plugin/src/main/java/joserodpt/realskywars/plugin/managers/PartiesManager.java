@@ -16,9 +16,9 @@ package joserodpt.realskywars.plugin.managers;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.map.RSWMap;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.PartiesManagerAPI;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.Bukkit;
 
@@ -35,23 +35,23 @@ public class PartiesManager extends PartiesManagerAPI {
             if (emissor.hasParty()) {
                 if (emissor.getParty().isOwner(emissor) && !emissor.getParty().getMembers().contains(recetor)) {
                     invites.put(recetor, emissor);
-                    emissor.sendMessage(rs.getLanguageManagerAPI().getString(emissor, LanguageManagerAPI.TS.PARTY_INVITE_SENT, true).replace("%player%", recetor.getDisplayName()));
-                    recetor.sendMessage(rs.getLanguageManagerAPI().getString(recetor, LanguageManagerAPI.TS.PARTY_INVITE_RECIEVED, true).replace("%player%", emissor.getDisplayName()));
+                    emissor.sendMessage(TranslatableLine.PARTY_INVITE_SENT.get(emissor, true).replace("%player%", recetor.getDisplayName()));
+                    recetor.sendMessage(TranslatableLine.PARTY_INVITE_RECIEVED.get(recetor, true).replace("%player%", emissor.getDisplayName()));
                 } else {
-                    emissor.sendMessage(rs.getLanguageManagerAPI().getString(emissor, LanguageManagerAPI.TS.PARTY_NOT_OWNER, true));
+                    TranslatableLine.PARTY_NOT_OWNER.send(emissor, true);
                 }
             } else {
-                emissor.sendMessage(rs.getLanguageManagerAPI().getString(emissor, LanguageManagerAPI.TS.PARTY_NOTINPARTY, true));
+                TranslatableLine.PARTY_NOTINPARTY.send(emissor, true);
             }
         } else {
-            emissor.sendMessage(rs.getLanguageManagerAPI().getString(emissor, LanguageManagerAPI.TS.PARTY_CANTINVITEYOURSELF, true));
+            TranslatableLine.PARTY_CANTINVITEYOURSELF.send(emissor, true);
         }
     }
 
     @Override
     public void acceptInvite(RSWPlayer p) {
         RSWPlayer inviteOwner = this.getInvite(p);
-        p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PARTY_ACCEPTEDINVITE, true).replace("%player%", inviteOwner.getDisplayName()));
+        p.sendMessage(TranslatableLine.PARTY_ACCEPTEDINVITE.get(p, true).replace("%player%", inviteOwner.getDisplayName()));
         inviteOwner.getParty().playerJoin(p);
     }
 
@@ -68,7 +68,7 @@ public class PartiesManager extends PartiesManagerAPI {
                 toAdd = current + p.getParty().getMembers().size() + 1; //1 = owner of the party
 
                 if (toAdd > max) {
-                    p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PARTY_INSUFICIENT_ROOMSPACE, true));
+                    TranslatableLine.PARTY_INSUFICIENT_ROOMSPACE.send(p, true);
                     result = false;
                 } else {
                     p.getParty().setAllowJoin(true);
@@ -90,7 +90,7 @@ public class PartiesManager extends PartiesManagerAPI {
                         result = true;
                     }
                 } else {
-                    p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PARTY_NOT_OWNER, true));
+                    TranslatableLine.PARTY_NOT_OWNER.send(p, true);
                     result = false;
                 }
             }

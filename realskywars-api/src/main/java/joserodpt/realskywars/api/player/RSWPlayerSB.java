@@ -3,6 +3,7 @@ package joserodpt.realskywars.api.player;
 import fr.mrmicky.fastboard.FastBoard;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
@@ -73,20 +74,20 @@ public class RSWPlayerSB {
                                 return;
                             }
                             lista = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getList(p, LanguageManagerAPI.TL.SCOREBOARD_LOBBY_LINES);
-                            tit = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.SCOREBOARD_LOBBY_TITLE, false);
+                            tit = TranslatableLine.SCOREBOARD_LOBBY_TITLE.get(p);
                             break;
                         case CAGE:
                             lista = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getList(p, LanguageManagerAPI.TL.SCOREBOARD_CAGE_LINES);
-                            tit = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.SCOREBOARD_CAGE_TITLE, false).replace("%map%", p.getMatch().getMapName()).replace("%displayname%", p.getMatch().getDisplayName()).replace("%mode%", p.getMatch().getGameMode().name());
+                            tit = TranslatableLine.SCOREBOARD_CAGE_TITLE.get(p).replace("%map%", p.getMatch().getMapName()).replace("%displayname%", p.getMatch().getDisplayName()).replace("%mode%", p.getMatch().getGameMode().name());
                             break;
                         case SPECTATOR:
                         case EXTERNAL_SPECTATOR:
                             lista = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getList(p, LanguageManagerAPI.TL.SCOREBOARD_SPECTATOR_LINES);
-                            tit = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.SCOREBOARD_SPECTATOR_TITLE, false).replace("%map%", p.getMatch().getMapName()).replace("%displayname%", p.getMatch().getDisplayName()).replace("%mode%", p.getMatch().getGameMode().name());
+                            tit = TranslatableLine.SCOREBOARD_SPECTATOR_TITLE.get(p).replace("%map%", p.getMatch().getMapName()).replace("%displayname%", p.getMatch().getDisplayName()).replace("%mode%", p.getMatch().getGameMode().name());
                             break;
                         case PLAYING:
                             lista = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getList(p, LanguageManagerAPI.TL.SCOREBOARD_PLAYING_LINES);
-                            tit = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.SCOREBOARD_PLAYING_TITLE, false).replace("%map%", p.getMatch().getMapName()).replace("%displayname%", p.getMatch().getDisplayName()).replace("%mode%", p.getMatch().getGameMode().name());
+                            tit = TranslatableLine.SCOREBOARD_PLAYING_TITLE.get(p).replace("%map%", p.getMatch().getMapName()).replace("%displayname%", p.getMatch().getDisplayName()).replace("%mode%", p.getMatch().getGameMode().name());
                             break;
                         default:
                             throw new IllegalStateException("Unexpected value SCOREBOARD!!! : " + p.getState());

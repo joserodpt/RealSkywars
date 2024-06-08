@@ -16,10 +16,14 @@ package joserodpt.realskywars.plugin.commands;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
-import me.mattstudios.mf.annotations.*;
+import me.mattstudios.mf.annotations.Alias;
+import me.mattstudios.mf.annotations.Command;
+import me.mattstudios.mf.annotations.Default;
+import me.mattstudios.mf.annotations.Permission;
+import me.mattstudios.mf.annotations.SubCommand;
 import me.mattstudios.mf.base.CommandBase;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -53,9 +57,9 @@ public class PartyCMD extends CommandBase {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(((Player) commandSender));
             if (!p.hasParty()) {
                 p.createParty();
-                p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PARTY_CREATED, true));
+                TranslatableLine.PARTY_CREATED.send(p, true);
             } else {
-                p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PARTY_ALREADYCREATED, true));
+                TranslatableLine.PARTY_ALREADYCREATED.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -71,10 +75,10 @@ public class PartyCMD extends CommandBase {
                 if (p.getParty().isOwner(p)) {
                     p.disbandParty();
                 } else {
-                    p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PARTY_NOT_OWNER, true));
+                    TranslatableLine.PARTY_NOT_OWNER.send(p, true);
                 }
             } else {
-                p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PARTY_NOTINPARTY, true));
+                TranslatableLine.PARTY_NOTINPARTY.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -89,7 +93,7 @@ public class PartyCMD extends CommandBase {
             if (player != null) {
                 rs.getPartiesManagerAPI().sendInvite(p, rs.getPlayerManagerAPI().getPlayer(player));
             } else {
-                p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.NO_PLAYER_FOUND, true));
+                TranslatableLine.NO_PLAYER_FOUND.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -105,10 +109,10 @@ public class PartyCMD extends CommandBase {
                 if (rs.getPartiesManagerAPI().hasInvite(p)) {
                     rs.getPartiesManagerAPI().acceptInvite(p);
                 } else {
-                    p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PARTY_INVITENOTFOUND, true));
+                    TranslatableLine.PARTY_INVITENOTFOUND.send(p, true);
                 }
             } else {
-                p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PARTY_ALREADYIN, true));
+                TranslatableLine.PARTY_ALREADYIN.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -125,13 +129,13 @@ public class PartyCMD extends CommandBase {
                     if (player != null && p.getPlayer() != player) {
                         p.getParty().kick(rs.getPlayerManagerAPI().getPlayer(player));
                     } else {
-                        p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.NO_PLAYER_FOUND, true));
+                        TranslatableLine.NO_PLAYER_FOUND.send(p, true);
                     }
                 } else {
-                    p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PARTY_NOT_OWNER, true));
+                    TranslatableLine.PARTY_NOT_OWNER.send(p, true);
                 }
             } else {
-                p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PARTY_NOTINPARTY, true));
+                TranslatableLine.PARTY_NOTINPARTY.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -150,7 +154,7 @@ public class PartyCMD extends CommandBase {
                     p.getParty().playerLeave(p);
                 }
             } else {
-                p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.PARTY_NOTINPARTY, true));
+                TranslatableLine.PARTY_NOTINPARTY.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);

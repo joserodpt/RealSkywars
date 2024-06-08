@@ -17,6 +17,7 @@ package joserodpt.realskywars.api.map;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWLanguagesConfig;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Sound;
@@ -71,7 +72,7 @@ public class RSWEvent {
             case BORDERSHRINK:
                 this.room.getBossBar().setDeathmatch();
 
-                this.room.getAllPlayers().forEach(rswPlayer -> rswPlayer.sendTitle("", Text.color(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(rswPlayer, LanguageManagerAPI.TS.TITLE_DEATHMATCH, false)), 10, 20, 5));
+                this.room.getAllPlayers().forEach(rswPlayer -> rswPlayer.sendTitle("", TranslatableLine.TITLE_DEATHMATCH.get(rswPlayer), 10, 20, 5));
                 this.room.getAllPlayers().forEach(rswPlayer -> rswPlayer.playSound(Sound.ENTITY_ENDER_DRAGON_GROWL, 50, 50));
 
                 this.room.getBorder().setSize((double) this.room.getBorderSize() / 2, 30L);

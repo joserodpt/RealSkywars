@@ -17,8 +17,8 @@ package joserodpt.realskywars.plugin.gui.guis;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Pagination;
@@ -36,29 +36,37 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class MapsListGUI {
 
     private static final Map<UUID, MapsListGUI> inventories = new HashMap<>();
     int pageNumber = 0;
-    private final Pagination<RSWMap> p;
+    private Pagination<RSWMap> p;
     private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     private final Inventory inv;
     private final UUID uuid;
-    private final RSWPlayer gp;
+    private RSWPlayer gp = null;
     private final Map<Integer, RSWMap> display = new HashMap<>();
 
-    public MapsListGUI(RSWPlayer as, String invName) {
+    public MapsListGUI(RSWPlayer as) {
         this.uuid = as.getUUID();
-        this.inv = Bukkit.getServer().createInventory(null, 54, Text.color(invName) + ": " + RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(as, select(as.getMapViewerPref()), false));
+        this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MAPS_NAME.get(as, false) + ": " + Text.color(translateMapViewerPref(as)));
 
         this.gp = as;
-        List<RSWMap> items = RealSkywarsAPI.getInstance().getGameManagerAPI().getRoomsWithSelection(as);
+        load();
+    }
+
+    private void load() {
+        List<RSWMap> items = RealSkywarsAPI.getInstance().getGameManagerAPI().getRoomsWithSelection(this.gp);
 
         this.p = new Pagination<>(28, items);
-        fillChest(p.getPage(pageNumber), as);
+        fillChest(p.getPage(pageNumber), this.gp);
     }
 
     public static Listener getListener() {
@@ -82,7 +90,7 @@ public class MapsListGUI {
 
                         switch (e.getRawSlot()) {
                             case 49:
-                                selectNext(p);
+                                selectNext(p, current);
                                 break;
                             case 26:
                             case 35:
@@ -110,7 +118,7 @@ public class MapsListGUI {
                 }
             }
 
-            private void selectNext(RSWPlayer gp) {
+            private void selectNext(RSWPlayer gp, MapsListGUI curr) {
                 switch (gp.getMapViewerPref()) {
                     case MAPV_ALL:
                         gp.setMapViewerPref(RSWPlayer.MapViewerPref.MAPV_AVAILABLE);
@@ -141,9 +149,7 @@ public class MapsListGUI {
                         break;
                 }
 
-                gp.closeInventory();
-                MapsListGUI v = new MapsListGUI(gp, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(gp, LanguageManagerAPI.TS.MAPS_NAME, false));
-                v.openInventory(gp);
+                curr.load();
                 gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
             }
 
@@ -187,28 +193,28 @@ public class MapsListGUI {
         return pageNumber == 0;
     }
 
-    private LanguageManagerAPI.TS select(RSWPlayer.MapViewerPref t) {
-        switch (t) {
+    private String translateMapViewerPref(RSWPlayer p) {
+        switch (p.getMapViewerPref()) {
             case MAPV_ALL:
-                return LanguageManagerAPI.TS.MAP_ALL;
+                return TranslatableLine.MAP_ALL.get(p, false);
             case MAPV_WAITING:
-                return LanguageManagerAPI.TS.MAP_WAITING;
+                return TranslatableLine.MAP_WAITING.get(p, false);
             case MAPV_SPECTATE:
-                return LanguageManagerAPI.TS.MAP_SPECTATE;
+                return TranslatableLine.MAP_SPECTATE.get(p, false);
             case MAPV_STARTING:
-                return LanguageManagerAPI.TS.MAP_STARTING;
+                return TranslatableLine.MAP_STARTING.get(p, false);
             case MAPV_AVAILABLE:
-                return LanguageManagerAPI.TS.MAP_AVAILABLE;
+                return TranslatableLine.MAP_AVAILABLE.get(p, false);
             case SOLO:
-                return LanguageManagerAPI.TS.SOLO;
+                return "&eSolo";
             case SOLO_RANKED:
-                return LanguageManagerAPI.TS.SOLO_RANKED;
+                return "&eSolo &b&LRANKED";
             case TEAMS_RANKED:
-                return LanguageManagerAPI.TS.TEAMS_RANKED;
+                return "&9Teams &b&LRANKED";
             case TEAMS:
-                return LanguageManagerAPI.TS.TEAMS;
+                return "&9Teams";
         }
-        return null;
+        return "";
     }
 
     public void openInventory(RSWPlayer player) {
@@ -237,16 +243,16 @@ public class MapsListGUI {
             inv.setItem(18, placeholder);
             inv.setItem(27, placeholder);
         } else {
-            inv.setItem(18, Itens.createItem(Material.YELLOW_STAINED_GLASS, 1, TranslatableLine.BUTTONS_BACK_TITLE.get(), Collections.singletonList(TranslatableLine.BUTTONS_BACK_DESC.get())));
-            inv.setItem(27, Itens.createItem(Material.YELLOW_STAINED_GLASS, 1, TranslatableLine.BUTTONS_BACK_TITLE.get(), Collections.singletonList(TranslatableLine.BUTTONS_BACK_DESC.get())));
+            inv.setItem(18, Itens.createItem(Material.YELLOW_STAINED_GLASS, 1, TranslatableLine.BUTTONS_BACK_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_BACK_DESC.getSingle())));
+            inv.setItem(27, Itens.createItem(Material.YELLOW_STAINED_GLASS, 1, TranslatableLine.BUTTONS_BACK_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_BACK_DESC.getSingle())));
         }
 
         if (lastPage()) {
             inv.setItem(26, placeholder);
             inv.setItem(35, placeholder);
         } else {
-            inv.setItem(26, Itens.createItem(Material.GREEN_STAINED_GLASS, 1, TranslatableLine.BUTTONS_NEXT_TITLE.get(), Collections.singletonList(TranslatableLine.BUTTONS_NEXT_DESC.get())));
-            inv.setItem(35, Itens.createItem(Material.GREEN_STAINED_GLASS, 1, TranslatableLine.BUTTONS_NEXT_TITLE.get(), Collections.singletonList(TranslatableLine.BUTTONS_NEXT_DESC.get())));
+            inv.setItem(26, Itens.createItem(Material.GREEN_STAINED_GLASS, 1, TranslatableLine.BUTTONS_NEXT_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_NEXT_DESC.getSingle())));
+            inv.setItem(35, Itens.createItem(Material.GREEN_STAINED_GLASS, 1, TranslatableLine.BUTTONS_NEXT_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_NEXT_DESC.getSingle())));
         }
 
         int slot = 0;
@@ -262,7 +268,7 @@ public class MapsListGUI {
             ++slot;
         }
 
-        inv.setItem(49, Itens.createItem(Material.COMPARATOR, 1, TranslatableLine.BUTTONS_FILTER_TITLE.get(), Collections.singletonList(TranslatableLine.BUTTONS_FILTER_DESC.get())));
+        inv.setItem(49, Itens.createItem(Material.COMPARATOR, 1, TranslatableLine.BUTTONS_FILTER_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_FILTER_DESC.getSingle())));
     }
 
     public Inventory getInventory() {
@@ -280,13 +286,13 @@ public class MapsListGUI {
     private ItemStack makeIcon(RSWPlayer p, RSWMap g) {
         int count = 1;
         if (g.isPlaceHolder()) {
-            return Itens.createItem(Material.BUCKET, count, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ITEMS_MAP_NOTFOUND_TITLE, false));
+            return Itens.createItem(Material.BUCKET, count, TranslatableLine.ITEMS_MAP_NOTFOUND_TITLE.get(p, false));
         } else {
             if (g.getPlayerCount() > 0) {
                 count = g.getPlayerCount();
             }
 
-            return Itens.createItem(getStateMaterial(g), count, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ITEMS_MAP_TITLE, false).replace("%map%", g.getMapName()).replace("%displayname%", g.getDisplayName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(g.isRanked()), variableList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getList(p, LanguageManagerAPI.TL.ITEMS_MAP_DESCRIPTION), g));
+            return Itens.createItem(getStateMaterial(g), count, TranslatableLine.ITEMS_MAP_TITLE.get(p, false).replace("%map%", g.getMapName()).replace("%displayname%", g.getDisplayName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(g.isRanked()), variableList(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getList(p, LanguageManagerAPI.TL.ITEMS_MAP_DESCRIPTION), g));
         }
     }
 

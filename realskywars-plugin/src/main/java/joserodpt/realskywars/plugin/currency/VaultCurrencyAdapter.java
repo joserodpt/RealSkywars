@@ -29,14 +29,23 @@ public class VaultCurrencyAdapter implements CurrencyAdapter {
     }
 
     @Override
-    public void addCoins(RSWPlayer p, double amount) { RealSkywarsAPI.getInstance().getVaultEconomy().depositPlayer(p.getPlayer(), amount); }
+    public void addCoins(RSWPlayer p, double amount) {
+        RealSkywarsAPI.getInstance().getVaultEconomy().depositPlayer(p.getPlayer(), amount);
+    }
 
     @Override
-    public boolean removeCoins(RSWPlayer p, double amount) { return  RealSkywarsAPI.getInstance().getVaultEconomy().withdrawPlayer(p.getPlayer(), amount).transactionSuccess(); }
+    public boolean removeCoins(RSWPlayer p, double amount) {
+        return RealSkywarsAPI.getInstance().getVaultEconomy().withdrawPlayer(p.getPlayer(), amount).transactionSuccess();
+    }
 
     @Override
-    public void setCoins(RSWPlayer p, double amount) {  RealSkywarsAPI.getInstance().getVaultEconomy().withdrawPlayer(p.getPlayer(), getCoins(p)); RealSkywarsAPI.getInstance().getVaultEconomy().depositPlayer(p.getPlayer(), amount); }
+    public void setCoins(RSWPlayer p, double amount) {
+        RealSkywarsAPI.getInstance().getVaultEconomy().withdrawPlayer(p.getPlayer(), getCoins(p));
+        RealSkywarsAPI.getInstance().getVaultEconomy().depositPlayer(p.getPlayer(), amount);
+    }
 
     @Override
-    public double getCoins(RSWPlayer p) { return  RealSkywarsAPI.getInstance().getVaultEconomy().getBalance(p.getPlayer()); }
+    public double getCoins(RSWPlayer p) {
+        return RealSkywarsAPI.getInstance().getVaultEconomy().getBalance(p.getPlayer());
+    }
 }

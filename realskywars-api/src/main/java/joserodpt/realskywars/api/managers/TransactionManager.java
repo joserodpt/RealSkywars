@@ -16,18 +16,19 @@ package joserodpt.realskywars.api.managers;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.currency.CurrencyAdapter;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
 
-public class CurrencyManager {
+public class TransactionManager {
     private RSWPlayer fromPlayer;
     private Double operationQuantity = 0D;
     private final RSWPlayer toPlayer;
     private Boolean console = false;
     private final CurrencyAdapter ca;
 
-    public CurrencyManager(CurrencyAdapter ca, RSWPlayer to, RSWPlayer from, Double coins, Operations op, boolean executeNow) {
+    public TransactionManager(CurrencyAdapter ca, RSWPlayer to, RSWPlayer from, Double coins, Operations op, boolean executeNow) {
         this.ca = ca;
         this.toPlayer = to;
         this.fromPlayer = from;
@@ -44,7 +45,7 @@ public class CurrencyManager {
         }
     }
 
-    public CurrencyManager(CurrencyAdapter ca, RSWPlayer to, Double coins, Operations op, boolean executeNow) {
+    public TransactionManager(CurrencyAdapter ca, RSWPlayer to, Double coins, Operations op, boolean executeNow) {
         this.ca = ca;
         this.toPlayer = to;
 
@@ -65,19 +66,19 @@ public class CurrencyManager {
             switch (o) {
                 case SEND:
                     if (this.operationQuantity == null) {
-                        this.fromPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(this.fromPlayer, LanguageManagerAPI.TS.INSUFICIENT_COINS, true).replace("%coins%", ca.getCoins(this.fromPlayer) + ""));
+                        this.fromPlayer.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(this.fromPlayer).replace("%coins%", ca.getCoins(this.fromPlayer) + ""));
                         return;
                     }
 
                     if (ca.getCoins(this.fromPlayer) >= operationQuantity) {
                         this.transferCoins();
                     } else {
-                        this.fromPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(this.fromPlayer, LanguageManagerAPI.TS.INSUFICIENT_COINS, true).replace("%coins%", ca.getCoins(this.fromPlayer) + ""));
+                        this.fromPlayer.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(this.fromPlayer).replace("%coins%", ca.getCoins(this.fromPlayer) + ""));
                     }
                     break;
                 case SET:
                     if (!this.fromPlayer.getPlayer().hasPermission("rs.admin")) {
-                        this.fromPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(this.fromPlayer, LanguageManagerAPI.TS.CMD_NOPERM, true));
+                        TranslatableLine.CMD_NOPERM.send(this.fromPlayer, true);
                         return;
                     }
 
@@ -85,7 +86,7 @@ public class CurrencyManager {
                     break;
                 case ADD:
                     if (!this.fromPlayer.getPlayer().hasPermission("rs.admin")) {
-                        this.fromPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(this.fromPlayer, LanguageManagerAPI.TS.CMD_NOPERM, true));
+                        TranslatableLine.CMD_NOPERM.send(this.fromPlayer, true);
                         return;
                     }
 
@@ -93,7 +94,7 @@ public class CurrencyManager {
                     break;
                 case REMOVE:
                     if (!this.fromPlayer.getPlayer().hasPermission("rs.admin")) {
-                        this.fromPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(this.fromPlayer, LanguageManagerAPI.TS.CMD_NOPERM, true));
+                        TranslatableLine.CMD_NOPERM.send(this.fromPlayer, true);
                         return;
                     }
 
@@ -132,14 +133,14 @@ public class CurrencyManager {
 
     public void transferCoins() {
         ca.transferCoins(this.toPlayer, this.fromPlayer, this.operationQuantity);
-        this.fromPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(this.toPlayer, LanguageManagerAPI.TS.SENDER_COINS, true).replace("%coins%", "" + this.operationQuantity).replace("%player%", this.toPlayer.getDisplayName()));
-        this.toPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(this.toPlayer, LanguageManagerAPI.TS.RECIEVER_COINS, true).replace("%coins%", "" + this.operationQuantity).replace("%player%", this.fromPlayer.getDisplayName()));
+        this.fromPlayer.sendMessage(TranslatableLine.SENDER_COINS.get(this.fromPlayer, true).replace("%coins%", "" + this.operationQuantity).replace("%player%", this.toPlayer.getDisplayName()));
+        this.toPlayer.sendMessage(TranslatableLine.RECIEVER_COINS.get(this.fromPlayer, true).replace("%coins%", "" + this.operationQuantity).replace("%player%", this.fromPlayer.getDisplayName()));
     }
 
     public void addCoins() {
         ca.addCoins(this.toPlayer, this.operationQuantity);
 
-        this.toPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(this.toPlayer, LanguageManagerAPI.TS.ADDED_COINS, true).replace("%coins%", "" + this.operationQuantity));
+        this.toPlayer.sendMessage(TranslatableLine.ADDED_COINS.get(this.toPlayer, true).replace("%coins%", "" + this.operationQuantity));
         if (!this.console) {
             this.fromPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + "Coins added to Player " + this.toPlayer.getName());
         } else {
@@ -154,7 +155,7 @@ public class CurrencyManager {
     public void setCoins() {
         ca.setCoins(this.toPlayer, this.operationQuantity);
 
-        this.toPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(toPlayer, LanguageManagerAPI.TS.SET_COINS, true).replace("%coins%", "" + this.operationQuantity));
+        this.toPlayer.sendMessage(TranslatableLine.SET_COINS.get(this.fromPlayer, true).replace("%coins%", "" + this.operationQuantity));
         if (!this.console) {
             this.fromPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + "Coins have been set Player " + this.toPlayer.getName());
         } else {
