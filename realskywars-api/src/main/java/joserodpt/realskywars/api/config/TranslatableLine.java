@@ -1,5 +1,6 @@
 package joserodpt.realskywars.api.config;
 
+import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.command.CommandSender;
 
@@ -17,6 +18,12 @@ public enum TranslatableLine {
     KIT_SELECT("Strings.Kit.Select"),
     KIT_CONTAINS("Strings.Kit.Contains"),
     KIT_ITEM("Strings.Kit.Items"),
+
+    BUNGEECORD_FULL("Strings.BungeeCord.Full"),
+    BUNGEECORD_NO_AVAILABLE_MAPS("Strings.BungeeCord.No-Available-Maps"),
+    BUNGEECORD_KICK_MESSAGE("Strings.BungeeCord.Kick-Message"),
+    BUNGEECORD_RESETTING_MESSAGE("Strings.BungeeCord.Resetting"),
+
     BUTTONS_NEXT_TITLE("Strings.Menus.Next-Button.Title"),
     BUTTONS_NEXT_DESC("Strings.Menus.Next-Button.Description"),
     BUTTONS_BACK_TITLE("Strings.Menus.Back-Button.Title"),
@@ -39,5 +46,10 @@ public enum TranslatableLine {
 
     public void send(CommandSender sender) {
         Text.send(sender, this.get());
+    }
+
+    public void send(RSWPlayer sender) {
+        if (sender.getPlayer() != null)
+            send(sender.getPlayer());
     }
 }

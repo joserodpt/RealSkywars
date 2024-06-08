@@ -1,7 +1,10 @@
 Version: 6
 Debug-Mode: false
 Config:
-  Auto-Join-Random-Match: false
+  Bungeecord:
+    Enabled: false
+    Kick-Player: true
+    Lobby-Server: lobby
   Use-Vault-As-Currency: false
   Auto-Teleport-To-Lobby: true
   Scoreboard-In-Lobby: true

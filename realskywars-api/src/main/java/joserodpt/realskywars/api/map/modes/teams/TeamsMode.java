@@ -105,12 +105,12 @@ public class TeamsMode extends RSWMap {
     }
 
     @Override
-    public void addPlayer(RSWPlayer p) {
+    public AddResult addPlayer(RSWPlayer p) {
         if (super.getRealSkywarsAPI().getPartiesManagerAPI().checkForParties(p, this)) {
             switch (this.getState()) {
                 case RESETTING:
                     p.sendMessage(super.getRealSkywarsAPI().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CANT_JOIN, true));
-                    break;
+                    return AddResult.RESETTING;
                 case FINISHING:
                 case PLAYING:
                     if (this.isSpectatorEnabled()) {
@@ -121,8 +121,13 @@ public class TeamsMode extends RSWMap {
                     break;
                 default:
                     if (this.getPlayerCount() == this.getMaxPlayers()) {
-                        p.sendMessage(super.getRealSkywarsAPI().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ROOM_FULL, true));
-                        return;
+                        if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
+                            spectate(p, SpectateType.EXTERNAL, null);
+                            return AddResult.SPECTATING;
+                        } else {
+                            p.sendMessage(super.getRealSkywarsAPI().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ROOM_FULL, true));
+                            return AddResult.FULL;
+                        }
                     }
 
                     //cage
@@ -177,6 +182,10 @@ public class TeamsMode extends RSWMap {
 
             //signal that is ranked
             if (this.isRanked()) p.sendActionbar("&b&lRANKED");
+
+            return AddResult.ADDED;
+        } else {
+            return AddResult.FULL;
         }
     }
 
@@ -209,7 +218,7 @@ public class TeamsMode extends RSWMap {
                 this.kickPlayers(null);
                 this.resetArena(OperationReason.RESET);
             } else {
-                super.setWinTimer(new CountdownTimer(super.getRealSkywarsAPI().getPlugin(), RSWConfig.file().getInt("Config.Time-EndGame"), () -> {
+                super.setFinishingTimer(new CountdownTimer(super.getRealSkywarsAPI().getPlugin(), RSWConfig.file().getInt("Config.Time-EndGame"), () -> {
                     for (RSWPlayer p : winTeam.getMembers()) {
                         if (p.getPlayer() != null) {
                             p.setInvincible(true);
@@ -233,15 +242,11 @@ public class TeamsMode extends RSWMap {
                     // if (Players.get(0).p != null) {
                     //     firework(Players.get(0));
                     // }
-                    double div = (double) t.getSecondsLeft() / (double) RSWConfig.file().getInt("Config.Time-EndGame");
-                    if (div <= 1 && div >= 0) {
-                        super.getBossBar().setProgress(div);
-                    }
 
                     super.getAllPlayers().forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), RSWConfig.file().getInt("Config.Time-EndGame")));
                 }));
 
-                super.getWinTimer().scheduleTimer();
+                super.getFinishingTimer().scheduleTimer();
             }
 
             super.getChests().forEach(RSWChest::cancelTasks);

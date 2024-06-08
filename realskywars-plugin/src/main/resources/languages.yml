@@ -12,9 +12,11 @@ Strings:
     Run-Time: "&fTime left : &b%time%"
     Starting: "&fStarting in &b%time% &fsecond(s)"
   Admin-Shutdown: "&cAn admin shutdown all games."
-  Bungeecord:
+  BungeeCord:
     Full: "&cThis map is full. &7Please try another one."
     No-Available-Maps: "&cThere are currently no available maps. &7Please try again later."
+    Kick-Message: "&7Connecting to the lobby..."
+    Resetting: "&cThis map is resetting. &7Please try again later."
   Search:
     Not-Found: "&aEmpty"
   Shop:

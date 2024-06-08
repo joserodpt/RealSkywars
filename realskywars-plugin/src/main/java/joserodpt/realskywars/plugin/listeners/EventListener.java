@@ -16,9 +16,12 @@ package joserodpt.realskywars.plugin.listeners;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.map.RSWMap;
+import joserodpt.realskywars.api.config.RSWConfig;
+import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
@@ -28,6 +31,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.server.ServerListPingEvent;
 
 public class EventListener implements Listener {
     private final RealSkywarsAPI rs;
@@ -75,6 +79,14 @@ public class EventListener implements Listener {
             } else {
                 p.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.NO_GAME_FOUND, true));
             }
+        }
+    }
+
+    @EventHandler
+    public void onServerPing(ServerListPingEvent event) {
+        if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
+            event.setMaxPlayers(rs.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL).size() == 1 ? rs.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL).get(0).getMaxPlayers() : 1);
+            event.setMotd(Text.color("&f&lReal&B&LSkywars &r&6Version &e" + rs.getPlugin().getDescription().getVersion() + "\n&dBungeecord &r&2Map: &a" + (rs.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL).size() == 1 ? rs.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL).get(0).getMapName() : "?")));
         }
     }
 }

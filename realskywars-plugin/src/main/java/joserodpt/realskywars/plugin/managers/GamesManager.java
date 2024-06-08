@@ -18,11 +18,11 @@ package joserodpt.realskywars.plugin.managers;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.map.modes.PlaceholderMode;
-import joserodpt.realskywars.api.map.RSWMap;
-import joserodpt.realskywars.api.map.modes.RSWSign;
 import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
+import joserodpt.realskywars.api.map.RSWMap;
+import joserodpt.realskywars.api.map.modes.PlaceholderMode;
+import joserodpt.realskywars.api.map.modes.RSWSign;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Bukkit;
@@ -249,7 +249,7 @@ public class GamesManager extends GamesManagerAPI {
                 player.sendMessage(rs.getLanguageManagerAPI().getString(player, LanguageManagerAPI.TS.NO_GAME_FOUND, true));
                 rs.getPlayerManagerAPI().getTeleporting().remove(player.getUUID());
 
-                if (Objects.equals(this.getLobbyLocation().getWorld(), player.getWorld())) {
+                if (this.getLobbyLocation() != null && this.getLobbyLocation().getWorld() != null && Objects.equals(this.getLobbyLocation().getWorld(), player.getWorld())) {
                     this.tpToLobby(player);
                 }
             }
@@ -258,12 +258,13 @@ public class GamesManager extends GamesManagerAPI {
 
     @Override
     public Optional<RSWMap> findSuitableGame(RSWMap.Mode type) {
-        return this.games.stream()
-                .filter(game -> (type == null || game.getGameMode().equals(type)) &&
+        return type == null ? this.games.stream().findFirst() : this.games.stream()
+                .filter(game -> game.getGameMode().equals(type) &&
                         (game.getState().equals(RSWMap.MapState.AVAILABLE) ||
                                 game.getState().equals(RSWMap.MapState.STARTING) ||
                                 game.getState().equals(RSWMap.MapState.WAITING)))
                 .findFirst();
+
     }
 
 }

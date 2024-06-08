@@ -100,28 +100,33 @@ public class SoloMode extends RSWMap {
     }
 
     @Override
-    public void addPlayer(RSWPlayer p) {
+    public AddResult addPlayer(RSWPlayer p) {
         if (super.getRealSkywarsAPI().getPartiesManagerAPI().checkForParties(p, this)) {
             switch (this.getState()) {
                 case RESETTING:
                     p.sendMessage(super.getRealSkywarsAPI().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.CANT_JOIN, true));
-                    break;
+                    return AddResult.RESETTING;
                 case FINISHING:
                 case PLAYING:
                     if (this.isSpectatorEnabled()) {
                         spectate(p, SpectateType.EXTERNAL, null);
                     } else {
                         p.sendMessage(super.getRealSkywarsAPI().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.SPECTATING_DISABLED, true));
+                        return AddResult.SPECTATING_DISABLED;
                     }
                     break;
                 default:
                     if (this.getPlayerCount() == this.getMaxPlayers()) {
-                        p.sendMessage(super.getRealSkywarsAPI().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ROOM_FULL, true));
-                        return;
+                        if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
+                            spectate(p, SpectateType.EXTERNAL, null);
+                            return AddResult.SPECTATING;
+                        } else {
+                            p.sendMessage(super.getRealSkywarsAPI().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ROOM_FULL, true));
+                            return AddResult.FULL;
+                        }
                     }
 
                     //cage
-
                     for (RSWCage c : this.cages) {
                         if (c.isEmpty() && p.getPlayer() != null) {
                             c.addPlayer(p);
@@ -171,6 +176,10 @@ public class SoloMode extends RSWMap {
 
             //signal that is ranked
             if (super.isRanked()) p.sendActionbar("&b&lRANKED");
+
+            return AddResult.ADDED;
+        } else {
+            return AddResult.FULL;
         }
     }
 
@@ -197,7 +206,8 @@ public class SoloMode extends RSWMap {
                 this.kickPlayers(null);
                 this.resetArena(OperationReason.RESET);
             } else {
-                super.setWinTimer(new CountdownTimer(super.getRealSkywarsAPI().getPlugin(), RSWConfig.file().getInt("Config.Time-EndGame"), () -> {
+                super.setFinishingTimer(new CountdownTimer(super.getRealSkywarsAPI().getPlugin(), RSWConfig.file().getInt("Config.Time-EndGame"), () -> {
+                    super.getBossBar().tick();
                     if (p.getPlayer() != null) {
                         p.setInvincible(true);
                         p.addStatistic(RSWPlayer.Statistic.SOLO_WIN, 1, this.isRanked());
@@ -209,23 +219,19 @@ public class SoloMode extends RSWMap {
                         g.sendMessage(super.getRealSkywarsAPI().getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MATCH_END, true).replace("%time%", Text.formatSeconds(RSWConfig.file().getInt("Config.Time-EndGame"))));
                     }
                 }, () -> {
+                    super.getBossBar().tick();
                     this.sendLog(p, true);
                     this.kickPlayers(null);
                     this.resetArena(OperationReason.RESET);
                 }, (t) -> {
-                    double div = (double) t.getSecondsLeft() / (double) RSWConfig.file().getInt("Config.Time-EndGame");
-                    if (div <= 1 && div >= 0) {
-                        super.getBossBar().setProgress(div);
-                    }
-
                     super.getAllPlayers().forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), RSWConfig.file().getInt("Config.Time-EndGame")));
-
+                    super.getBossBar().tick();
                     if (p.getPlayer() != null) {
                         FireworkUtils.spawnRandomFirework(p.getLocation());
                     }
                 }));
 
-                super.getWinTimer().scheduleTimer();
+                super.getFinishingTimer().scheduleTimer();
             }
 
             super.getChests().forEach(RSWChest::cancelTasks);

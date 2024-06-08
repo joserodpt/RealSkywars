@@ -111,8 +111,12 @@ public class RSWSoloCage implements RSWCage {
         World w = Bukkit.getWorld(this.worldName);
         w.getBlockAt(x, y - 1, z).setType(Material.AIR);
 
-        this.p.setInvincible(true);
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RealSkywarsAPI.getInstance().getPlugin(), () -> {this.p.setInvincible(false);}, 200);
+        if (this.p != null)
+            this.p.setInvincible(true);
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RealSkywarsAPI.getInstance().getPlugin(), () -> {
+            if (this.p != null)
+                this.p.setInvincible(false);
+        }, 200);
     }
 
     //CREDIT open source spigot

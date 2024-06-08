@@ -20,6 +20,7 @@ import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.RSWMapsConfig;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.PlayerManagerAPI;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
@@ -28,9 +29,10 @@ import joserodpt.realskywars.api.map.modes.teams.Team;
 import joserodpt.realskywars.api.player.RSWGameLog;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.player.RSWPlayerTab;
-import joserodpt.realskywars.api.utils.ArenaCuboid;
+import joserodpt.realskywars.api.utils.BungeecordUtils;
 import joserodpt.realskywars.api.utils.CountdownTimer;
 import joserodpt.realskywars.api.utils.Demolition;
+import joserodpt.realskywars.api.utils.MapCuboid;
 import joserodpt.realskywars.api.utils.MathUtils;
 import joserodpt.realskywars.api.utils.Text;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -57,7 +59,7 @@ import java.util.stream.Collectors;
 public abstract class RSWMap {
 
     private final RSWWorld world;
-    private final ArenaCuboid arenaCuboid;
+    private final MapCuboid mapCuboid;
     private final List<RSWChest> chests;
     private final List<RSWSign> signs;
     private final String name;
@@ -75,7 +77,7 @@ public abstract class RSWMap {
     private RSWBossbar bossbar;
     private RSWChest.Tier chestTier = RSWChest.Tier.NORMAL;
     private Boolean specEnabled, instantEnding, ranked, borderEnabled;
-    private CountdownTimer mapTimer, startMapTimer, winTimer;
+    private CountdownTimer mapTimer, startMapTimer, finishingTimer;
     private BukkitTask timeCounterTask;
     private ProjectileType projectileType = ProjectileType.NORMAL;
     private TimeType timeType = TimeType.DAY;
@@ -90,10 +92,10 @@ public abstract class RSWMap {
         this.displayName = displayName;
         this.schematicName = schematicName;
 
-        this.arenaCuboid = new ArenaCuboid(pos1, pos2);
-        this.borderSize = this.arenaCuboid.getSizeX();
+        this.mapCuboid = new MapCuboid(pos1, pos2);
+        this.borderSize = this.mapCuboid.getSizeX();
         this.border = w.getWorldBorder();
-        this.border.setCenter(this.arenaCuboid.getCenter());
+        this.border.setCenter(this.mapCuboid.getCenter());
         this.border.setSize(this.borderSize);
         this.world = new RSWWorld(this, w, wt);
 
@@ -124,7 +126,7 @@ public abstract class RSWMap {
         this.name = nome;
         this.displayName = nome;
         this.world = null;
-        this.arenaCuboid = null;
+        this.mapCuboid = null;
         this.chests = null;
         this.signs = null;
         this.maxPlayers = -1;
@@ -151,9 +153,7 @@ public abstract class RSWMap {
 
     public void startTimers() {
         this.mapTimer = new CountdownTimer(rs.getPlugin(), this.getMaxTime(), () -> {
-            //
         }, () -> {
-            //
         }, (t) -> this.bossbar.tick());
         this.mapTimer.scheduleTimer();
 
@@ -183,11 +183,11 @@ public abstract class RSWMap {
     }
 
     public Location getPOS1() {
-        return this.arenaCuboid.getPOS1();
+        return this.mapCuboid.getPOS1();
     }
 
     public Location getPOS2() {
-        return this.arenaCuboid.getPOS2();
+        return this.mapCuboid.getPOS2();
     }
 
     public ProjectileType getProjectileTier() {
@@ -328,7 +328,7 @@ public abstract class RSWMap {
         this.projectileType = pt;
     }
 
-    abstract public void addPlayer(RSWPlayer gp);
+    abstract public AddResult addPlayer(RSWPlayer gp);
 
     public boolean isSpectatorEnabled() {
         return this.specEnabled;
@@ -448,8 +448,8 @@ public abstract class RSWMap {
         this.resetArena(OperationReason.RESET);
     }
 
-    public ArenaCuboid getArena() {
-        return this.arenaCuboid;
+    public MapCuboid getArena() {
+        return this.mapCuboid;
     }
 
     public int getBorderSize() {
@@ -643,9 +643,6 @@ public abstract class RSWMap {
         p.setInvincible(false);
         p.sendMessage(Text.color(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.MATCH_LEAVE, true)));
 
-        rs.getGameManagerAPI().tpToLobby(p);
-        rs.getPlayerManagerAPI().giveItems(p.getPlayer(), PlayerManagerAPI.Items.LOBBY);
-
         p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.LOBBY_OR_NOGAME);
         p.setFlying(false);
         p.setGameMode(GameMode.SURVIVAL);
@@ -674,6 +671,22 @@ public abstract class RSWMap {
             }
         }
 
+        boolean isBungeeEnabled = RSWConfig.file().getBoolean("Config.Bungeecord.Enabled");
+        boolean shouldKickPlayer = RSWConfig.file().getBoolean("Config.Bungeecord.Kick-Player");
+
+        if (isBungeeEnabled) {
+            if (shouldKickPlayer) {
+                p.getPlayer().kickPlayer(TranslatableLine.BUNGEECORD_KICK_MESSAGE.get());
+            } else {
+                TranslatableLine.BUNGEECORD_KICK_MESSAGE.send(p);
+                BungeecordUtils.connect(RSWConfig.file().getString("Config.Bungeecord.Lobby-Server"), p.getPlayer(), this.getRealSkywarsAPI().getPlugin());
+            }
+        }
+
+        rs.getGameManagerAPI().tpToLobby(p);
+        rs.getPlayerManagerAPI().giveItems(p.getPlayer(), PlayerManagerAPI.Items.LOBBY);
+
+
         if (this.getState() == MapState.PLAYING || this.getState() == MapState.FINISHING) {
             checkWin();
         }
@@ -691,6 +704,10 @@ public abstract class RSWMap {
             if (getPlayerCount() < minimumPlayersToStartMap()) {
                 t.killTask();
                 for (RSWPlayer p : this.inRoom) {
+                    if (p.getWorld() != this.getRSWWorld().getWorld() && p.hasCage()) {
+                        p.getCage().tpPlayer(p);
+                    }
+
                     p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_CANCEL, true));
                     p.sendActionbar(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_CANCEL, false));
                     p.setBarNumber(0);
@@ -699,6 +716,10 @@ public abstract class RSWMap {
             } else {
                 this.setState(MapState.STARTING);
                 for (RSWPlayer p : this.inRoom) {
+                    if (p.getWorld() != this.getRSWWorld().getWorld() && p.hasCage()) {
+                        p.getCage().tpPlayer(p);
+                    }
+
                     p.sendMessage(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_START_COUNTDOWN, true).replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
                     p.sendActionbar(rs.getLanguageManagerAPI().getString(p, LanguageManagerAPI.TS.ARENA_START_COUNTDOWN, false).replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
                     p.setBarNumber(t.getSecondsLeft(), RSWConfig.file().getInt("Config.Time-To-Start"));
@@ -718,8 +739,8 @@ public abstract class RSWMap {
         if (this.mapTimer != null) {
             this.mapTimer.killTask();
         }
-        if (this.winTimer != null) {
-            this.winTimer.killTask();
+        if (this.finishingTimer != null) {
+            this.finishingTimer.killTask();
         }
         if (this.startMapTimer != null) {
             this.startMapTimer.killTask();
@@ -749,14 +770,16 @@ public abstract class RSWMap {
         if (rr != OperationReason.SHUTDOWN) {
             this.chests.forEach(RSWChest::setChest);
         }
+
+        this.setState(MapState.AVAILABLE);
     }
 
-    public void setWinTimer(CountdownTimer winTimer) {
-        this.winTimer = winTimer;
+    public void setFinishingTimer(CountdownTimer finishingTimer) {
+        this.finishingTimer = finishingTimer;
     }
 
-    public CountdownTimer getWinTimer() {
-        return this.winTimer;
+    public CountdownTimer getFinishingTimer() {
+        return this.finishingTimer;
     }
 
     public List<RSWEvent> parseEvents() {
@@ -925,4 +948,8 @@ public abstract class RSWMap {
     }
 
     public enum SpectateType {INSIDE_GAME, EXTERNAL}
+
+    public enum AddResult {
+        ADDED, FULL, RESETTING, SPECTATING_DISABLED, SPECTATING
+    }
 }

@@ -19,18 +19,19 @@ import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.chests.TierViewer;
 import joserodpt.realskywars.api.config.RSWConfig;
-import joserodpt.realskywars.api.map.RSWMap;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.kits.KitInventory;
-import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
 import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.managers.CurrencyManager;
 import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.api.utils.WorldEditUtils;
 import joserodpt.realskywars.plugin.gui.GUIManager;
+import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapSettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerGUI;
@@ -38,7 +39,14 @@ import joserodpt.realskywars.plugin.gui.guis.PlayerProfileContentsGUI;
 import joserodpt.realskywars.plugin.gui.guis.SettingsGUI;
 import joserodpt.realskywars.plugin.managers.LanguageManager;
 import joserodpt.realskywars.plugin.managers.ShopManager;
-import me.mattstudios.mf.annotations.*;
+import me.mattstudios.mf.annotations.Alias;
+import me.mattstudios.mf.annotations.Command;
+import me.mattstudios.mf.annotations.Completion;
+import me.mattstudios.mf.annotations.Default;
+import me.mattstudios.mf.annotations.Optional;
+import me.mattstudios.mf.annotations.Permission;
+import me.mattstudios.mf.annotations.SubCommand;
+import me.mattstudios.mf.annotations.WrongUsage;
 import me.mattstudios.mf.base.CommandBase;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -79,7 +87,7 @@ public class RealSkywarsCMD extends CommandBase {
                 v.openInventory(p);
             }
         } else {
-            Text.send(commandSender, "&f&lReal&B&LSkywars &r&aVersion &e" + rs.getPlugin().getDescription().getVersion());
+            Text.send(commandSender, "&f&lReal&B&LSkywars &r&6Version &e" + rs.getPlugin().getDescription().getVersion());
         }
     }
 
@@ -190,7 +198,13 @@ public class RealSkywarsCMD extends CommandBase {
     @Completion("#enum")
     public void playcmd(final CommandSender commandSender, RSWMap.Mode type) {
         if (commandSender instanceof Player) {
-            RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
+            Player pobj = (Player) commandSender;
+            if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
+                pobj.kickPlayer(TranslatableLine.BUNGEECORD_KICK_MESSAGE.get());
+                return;
+            }
+
+            RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(pobj);
             if (type != null && p != null && p.getPlayer() != null) {
                 if (!(p.getState() == RSWPlayer.PlayerState.CAGE)) {
                     rs.getGameManagerAPI().findGame(p, type);

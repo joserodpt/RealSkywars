@@ -168,6 +168,12 @@ public class RealSkywarsPlugin extends JavaPlugin {
         getLogger().info("Loaded " + realSkywars.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL).size() + " maps.");
         realSkywars.getPlayerManagerAPI().loadPlayers();
 
+        if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
+            getLogger().info("Bungeecord mode is enabled.");
+            this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        }
+
+        //load achievements
         realSkywars.getAchievementsManagerAPI().loadAchievements();
 
         //load leaderboard

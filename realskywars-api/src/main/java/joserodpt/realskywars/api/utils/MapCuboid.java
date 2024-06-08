@@ -1,10 +1,18 @@
 package joserodpt.realskywars.api.utils;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class is a region/cuboid from one location to another. It can be used
@@ -12,7 +20,7 @@ import java.util.*;
  *
  * @author desht (Original code), KingFaris10 (Editor of code), Modifications by JoseGamer_PT
  */
-public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSerializable {
+public class MapCuboid implements Iterable<Block>, Cloneable, ConfigurationSerializable {
     protected String worldName;
     protected int x1, y1, z1;
     protected int x2, y2, z2;
@@ -27,7 +35,7 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
      * @param l1 - One of the corners
      * @param l2 - The other corner
      */
-    public ArenaCuboid(Location l1, Location l2) {
+    public MapCuboid(Location l1, Location l2) {
         if (!l1.getWorld().equals(l2.getWorld()))
             throw new IllegalArgumentException("Locations must be on the same world");
         this.worldName = l1.getWorld().getName();
@@ -49,7 +57,7 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
      *
      * @param l1 location of the Cuboid
      */
-    public ArenaCuboid(Location l1) {
+    public MapCuboid(Location l1) {
         this(l1, l1);
         totalBlocks = getVolume();
 
@@ -60,7 +68,7 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
      *
      * @param other - The Cuboid to copy
      */
-    public ArenaCuboid(ArenaCuboid other) {
+    public MapCuboid(MapCuboid other) {
         this(other.getWorld().getName(), other.x1, other.y1, other.z1, other.x2, other.y2, other.z2);
         totalBlocks = getVolume();
 
@@ -77,7 +85,7 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
      * @param y2    - Y co-ordinate of corner 2
      * @param z2    - Z co-ordinate of corner 2
      */
-    public ArenaCuboid(World world, int x1, int y1, int z1, int x2, int y2, int z2) {
+    public MapCuboid(World world, int x1, int y1, int z1, int x2, int y2, int z2) {
         this.worldName = world.getName();
         this.x1 = Math.min(x1, x2);
         this.x2 = Math.max(x1, x2);
@@ -100,7 +108,7 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
      * @param y2        - Y co-ordinate of corner 2
      * @param z2        - Z co-ordinate of corner 2
      */
-    private ArenaCuboid(String worldName, int x1, int y1, int z1, int x2, int y2, int z2) {
+    private MapCuboid(String worldName, int x1, int y1, int z1, int x2, int y2, int z2) {
         this.worldName = worldName;
         this.x1 = Math.min(x1, x2);
         this.x2 = Math.max(x1, x2);
@@ -118,7 +126,7 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
      *
      * @param map - The map of keys.
      */
-    public ArenaCuboid(Map<String, Object> map) {
+    public MapCuboid(Map<String, Object> map) {
         this.worldName = (String) map.get("worldName");
         this.x1 = (Integer) map.get("x1");
         this.x2 = (Integer) map.get("x2");
@@ -311,20 +319,20 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
      * @param amount - The number of blocks by which to expand
      * @return A new Cuboid expanded by the given direction and amount
      */
-    public ArenaCuboid expand(CuboidDirection dir, int amount) {
+    public MapCuboid expand(CuboidDirection dir, int amount) {
         switch (dir) {
             case North:
-                return new ArenaCuboid(this.worldName, this.x1 - amount, this.y1, this.z1, this.x2, this.y2, this.z2);
+                return new MapCuboid(this.worldName, this.x1 - amount, this.y1, this.z1, this.x2, this.y2, this.z2);
             case South:
-                return new ArenaCuboid(this.worldName, this.x1, this.y1, this.z1, this.x2 + amount, this.y2, this.z2);
+                return new MapCuboid(this.worldName, this.x1, this.y1, this.z1, this.x2 + amount, this.y2, this.z2);
             case East:
-                return new ArenaCuboid(this.worldName, this.x1, this.y1, this.z1 - amount, this.x2, this.y2, this.z2);
+                return new MapCuboid(this.worldName, this.x1, this.y1, this.z1 - amount, this.x2, this.y2, this.z2);
             case West:
-                return new ArenaCuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2, this.z2 + amount);
+                return new MapCuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2, this.z2 + amount);
             case Down:
-                return new ArenaCuboid(this.worldName, this.x1, this.y1 - amount, this.z1, this.x2, this.y2, this.z2);
+                return new MapCuboid(this.worldName, this.x1, this.y1 - amount, this.z1, this.x2, this.y2, this.z2);
             case Up:
-                return new ArenaCuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2 + amount, this.z2);
+                return new MapCuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2 + amount, this.z2);
             default:
                 throw new IllegalArgumentException("Invalid direction " + dir);
         }
@@ -337,7 +345,7 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
      * @param amount - The number of blocks by which to shift
      * @return A new Cuboid shifted by the given direction and amount
      */
-    public ArenaCuboid shift(CuboidDirection dir, int amount) {
+    public MapCuboid shift(CuboidDirection dir, int amount) {
         return expand(dir, amount).expand(dir.opposite(), -amount);
     }
 
@@ -349,8 +357,8 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
      * @param amount - The number of blocks by which to outset
      * @return A new Cuboid outset by the given direction and amount
      */
-    public ArenaCuboid outset(CuboidDirection dir, int amount) {
-        ArenaCuboid c;
+    public MapCuboid outset(CuboidDirection dir, int amount) {
+        MapCuboid c;
         switch (dir) {
             case Horizontal:
                 c = expand(CuboidDirection.North, amount).expand(CuboidDirection.South, amount)
@@ -377,7 +385,7 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
      * @param amount - The number of blocks by which to inset
      * @return A new Cuboid inset by the given direction and amount
      */
-    public ArenaCuboid inset(CuboidDirection dir, int amount) {
+    public MapCuboid inset(CuboidDirection dir, int amount) {
         return this.outset(dir, -amount);
     }
 
@@ -448,7 +456,7 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
      *
      * @return A new Cuboid with no external air blocks
      */
-    public ArenaCuboid contract() {
+    public MapCuboid contract() {
         return this.contract(CuboidDirection.Down).contract(CuboidDirection.South).contract(CuboidDirection.East)
                 .contract(CuboidDirection.Up).contract(CuboidDirection.North).contract(CuboidDirection.West);
     }
@@ -461,39 +469,39 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
      * @param dir - The direction in which to contract
      * @return A new Cuboid contracted in the given direction
      */
-    public ArenaCuboid contract(CuboidDirection dir) {
-        ArenaCuboid face = getFace(dir.opposite());
+    public MapCuboid contract(CuboidDirection dir) {
+        MapCuboid face = getFace(dir.opposite());
         switch (dir) {
             case Down:
                 while (face.containsOnly(Material.AIR) && face.getLowerY() > this.getLowerY()) {
                     face = face.shift(CuboidDirection.Down, 1);
                 }
-                return new ArenaCuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, face.getUpperY(), this.z2);
+                return new MapCuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, face.getUpperY(), this.z2);
             case Up:
                 while (face.containsOnly(Material.AIR) && face.getUpperY() < this.getUpperY()) {
                     face = face.shift(CuboidDirection.Up, 1);
                 }
-                return new ArenaCuboid(this.worldName, this.x1, face.getLowerY(), this.z1, this.x2, this.y2, this.z2);
+                return new MapCuboid(this.worldName, this.x1, face.getLowerY(), this.z1, this.x2, this.y2, this.z2);
             case North:
                 while (face.containsOnly(Material.AIR) && face.getLowerX() > this.getLowerX()) {
                     face = face.shift(CuboidDirection.North, 1);
                 }
-                return new ArenaCuboid(this.worldName, this.x1, this.y1, this.z1, face.getUpperX(), this.y2, this.z2);
+                return new MapCuboid(this.worldName, this.x1, this.y1, this.z1, face.getUpperX(), this.y2, this.z2);
             case South:
                 while (face.containsOnly(Material.AIR) && face.getUpperX() < this.getUpperX()) {
                     face = face.shift(CuboidDirection.South, 1);
                 }
-                return new ArenaCuboid(this.worldName, face.getLowerX(), this.y1, this.z1, this.x2, this.y2, this.z2);
+                return new MapCuboid(this.worldName, face.getLowerX(), this.y1, this.z1, this.x2, this.y2, this.z2);
             case East:
                 while (face.containsOnly(Material.AIR) && face.getLowerZ() > this.getLowerZ()) {
                     face = face.shift(CuboidDirection.East, 1);
                 }
-                return new ArenaCuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2, face.getUpperZ());
+                return new MapCuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2, face.getUpperZ());
             case West:
                 while (face.containsOnly(Material.AIR) && face.getUpperZ() < this.getUpperZ()) {
                     face = face.shift(CuboidDirection.West, 1);
                 }
-                return new ArenaCuboid(this.worldName, this.x1, this.y1, face.getLowerZ(), this.x2, this.y2, this.z2);
+                return new MapCuboid(this.worldName, this.x1, this.y1, face.getLowerZ(), this.x2, this.y2, this.z2);
             default:
                 throw new IllegalArgumentException("Invalid direction " + dir);
         }
@@ -506,20 +514,20 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
      * @param dir - which face of the Cuboid to get
      * @return The Cuboid representing this Cuboid's requested face
      */
-    public ArenaCuboid getFace(CuboidDirection dir) {
+    public MapCuboid getFace(CuboidDirection dir) {
         switch (dir) {
             case Down:
-                return new ArenaCuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y1, this.z2);
+                return new MapCuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y1, this.z2);
             case Up:
-                return new ArenaCuboid(this.worldName, this.x1, this.y2, this.z1, this.x2, this.y2, this.z2);
+                return new MapCuboid(this.worldName, this.x1, this.y2, this.z1, this.x2, this.y2, this.z2);
             case North:
-                return new ArenaCuboid(this.worldName, this.x1, this.y1, this.z1, this.x1, this.y2, this.z2);
+                return new MapCuboid(this.worldName, this.x1, this.y1, this.z1, this.x1, this.y2, this.z2);
             case South:
-                return new ArenaCuboid(this.worldName, this.x2, this.y1, this.z1, this.x2, this.y2, this.z2);
+                return new MapCuboid(this.worldName, this.x2, this.y1, this.z1, this.x2, this.y2, this.z2);
             case East:
-                return new ArenaCuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2, this.z1);
+                return new MapCuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2, this.z1);
             case West:
-                return new ArenaCuboid(this.worldName, this.x1, this.y1, this.z2, this.x2, this.y2, this.z2);
+                return new MapCuboid(this.worldName, this.x1, this.y1, this.z2, this.x2, this.y2, this.z2);
             default:
                 throw new IllegalArgumentException("Invalid direction " + dir);
         }
@@ -544,7 +552,7 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
      * @param other - The other cuboid.
      * @return A new Cuboid large enough to hold this Cuboid and the given Cuboid
      */
-    public ArenaCuboid getBoundingCuboid(ArenaCuboid other) {
+    public MapCuboid getBoundingCuboid(MapCuboid other) {
         if (other == null)
             return this;
 
@@ -555,7 +563,7 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
         int yMax = Math.max(this.getUpperY(), other.getUpperY());
         int zMax = Math.max(this.getUpperZ(), other.getUpperZ());
 
-        return new ArenaCuboid(this.worldName, xMin, yMin, zMin, xMax, yMax, zMax);
+        return new MapCuboid(this.worldName, xMin, yMin, zMin, xMax, yMax, zMax);
     }
 
     /**
@@ -612,8 +620,8 @@ public class ArenaCuboid implements Iterable<Block>, Cloneable, ConfigurationSer
     }
 
     @Override
-    public ArenaCuboid clone() {
-        return new ArenaCuboid(this);
+    public MapCuboid clone() {
+        return new MapCuboid(this);
     }
 
     @Override

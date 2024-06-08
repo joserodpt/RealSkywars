@@ -21,6 +21,7 @@ import joserodpt.realskywars.api.cages.RSWSoloCage;
 import joserodpt.realskywars.api.cages.RSWTeamCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.effects.RSWBowTrail;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
@@ -494,19 +495,23 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onAsyncPlayerJoin(AsyncPlayerPreLoginEvent e) {
         // auto join random match
-        if (RSWConfig.file().getBoolean("Config.Auto-Join-Random-Match")) {
+        if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
             Optional<RSWMap> suitableGame = rs.getGameManagerAPI().findSuitableGame(null);
             if (suitableGame.isPresent()) {
-                if (suitableGame.get().isFull()) {
-                    e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, rs.getLanguageManagerAPI().getString(null, LanguageManagerAPI.TS.ROOM_FULL, true));
-                } else {
-                    e.allow();
-                    fastJoin.put(e.getUniqueId(), suitableGame.get());
+                RSWMap game = suitableGame.get();
+                if (game.getState() == RSWMap.MapState.RESETTING) {
+                    e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_RESETTING_MESSAGE.get());
                     return;
                 }
-            } else { //TODO
-                e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, rs.getLanguageManagerAPI().getString(null, LanguageManagerAPI.TS.NO_GAME_FOUND, true));
-                return;
+
+                if (suitableGame.get().isFull() && !game.isSpectatorEnabled()) {
+                    e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_FULL.get());
+                } else {
+                    fastJoin.put(e.getUniqueId(), suitableGame.get());
+                    e.allow();
+                }
+            } else {
+                e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_NO_AVAILABLE_MAPS.get());
             }
         }
     }

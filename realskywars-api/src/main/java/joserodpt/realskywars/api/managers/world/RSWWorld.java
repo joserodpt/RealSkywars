@@ -15,12 +15,13 @@ package joserodpt.realskywars.api.managers.world;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.world.engines.SWWorldDefaultEngine;
 import joserodpt.realskywars.api.managers.world.engines.SWWorldSchematicEngine;
+import joserodpt.realskywars.api.map.RSWMap;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 
 public class RSWWorld {
 
@@ -37,7 +38,7 @@ public class RSWWorld {
     }
 
     public void resetWorld(RSWMap.OperationReason rr) {
-        this.engine.getWorld().getEntities().forEach(Entity::remove);
+        this.engine.getWorld().getEntities().stream().filter(entity -> entity.getType() != EntityType.PLAYER).forEach(Entity::remove);
         this.engine.resetWorld(rr);
     }
 
