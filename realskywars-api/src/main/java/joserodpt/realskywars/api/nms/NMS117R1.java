@@ -16,7 +16,7 @@ package joserodpt.realskywars.api.nms;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import org.apache.commons.lang.WordUtils;
+import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +27,7 @@ public class NMS117R1 implements RSWnms {
     private final Class<?> world = ReflectionHelper.getClass("net.minecraft.world.level.World");
     private final Class<?> craft_world = ReflectionHelper.getCraftBukkitClass("CraftWorld");
     private final Class<?> block_pos = ReflectionHelper.getClass("net.minecraft.core.BlockPosition");
-    private final Class<?> i_block_data  = ReflectionHelper.getClass("net.minecraft.world.level.block.state.IBlockData");
+    private final Class<?> i_block_data = ReflectionHelper.getClass("net.minecraft.world.level.block.state.IBlockData");
     private final Class<?> block_class = ReflectionHelper.getClass("net.minecraft.world.level.block.Block");
 
     @Override
@@ -40,8 +40,8 @@ public class NMS117R1 implements RSWnms {
             assert world != null;
             assert i_block_data != null;
             world.getMethod("playBlockAction", block_pos, block_class, Integer.TYPE, Integer.TYPE).invoke(invoke, instance, i_block_data.getMethod("getBlock").invoke(world.getMethod("getType", block_pos).invoke(invoke, instance)), 1, open ? 1 : 0);
-        }
-        catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException ex) {
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException |
+                 InstantiationException ex) {
             RealSkywarsAPI.getInstance().getLogger().severe("Error while executing chest animation nms.");
             RealSkywarsAPI.getInstance().getLogger().severe(ex.toString());
         }
@@ -49,6 +49,6 @@ public class NMS117R1 implements RSWnms {
 
     @Override
     public String getItemName(ItemStack itemStack) {
-        return WordUtils.capitalizeFully(itemStack.getType().name().replace("_", " "));
+        return Text.beautifyMaterialName(itemStack.getType());
     }
 }

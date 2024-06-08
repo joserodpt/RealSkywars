@@ -53,7 +53,7 @@ public class GameHistoryGUI {
 
     public GameHistoryGUI(RSWPlayer p) {
         this.uuid = p.getUUID();
-        this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(p, false));
+        this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(p));
 
         List<RSWGameLog> items = p.getGamesList();
 

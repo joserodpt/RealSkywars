@@ -55,18 +55,17 @@ public class MapsListGUI {
     private final Map<Integer, RSWMap> display = new HashMap<>();
 
     public MapsListGUI(RSWPlayer as) {
-        this.uuid = as.getUUID();
-        this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MAPS_NAME.get(as, false) + ": " + Text.color(translateMapViewerPref(as)));
-
         this.gp = as;
+        this.uuid = as.getUUID();
+        this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MAPS_NAME.get(as, false));
+
         load();
     }
 
     private void load() {
-        List<RSWMap> items = RealSkywarsAPI.getInstance().getGameManagerAPI().getRoomsWithSelection(this.gp);
-
-        this.p = new Pagination<>(28, items);
-        fillChest(p.getPage(pageNumber), this.gp);
+        this.p = new Pagination<>(28, RealSkywarsAPI.getInstance().getGameManagerAPI().getRoomsWithSelection(this.gp));
+        Bukkit.getLogger().warning(this.p.toString());
+        fillChest(this.p.getPage(pageNumber), this.gp);
     }
 
     public static Listener getListener() {
@@ -148,8 +147,17 @@ public class MapsListGUI {
                         gp.setMapViewerPref(RSWPlayer.MapViewerPref.MAPV_ALL);
                         break;
                 }
+                curr.gp = gp;
+
+                // update inventory title
+                try {
+                    InventoryView openInv = gp.getPlayer().getOpenInventory();
+                    openInv.setTitle(TranslatableLine.MAPS_NAME.get(gp, false) + ": " + Text.color(curr.translateMapViewerPref(gp)));
+                } catch (Exception ignored) {
+                }
 
                 curr.load();
+
                 gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
             }
 
@@ -196,15 +204,15 @@ public class MapsListGUI {
     private String translateMapViewerPref(RSWPlayer p) {
         switch (p.getMapViewerPref()) {
             case MAPV_ALL:
-                return TranslatableLine.MAP_ALL.get(p, false);
+                return TranslatableLine.MAP_ALL.get(p);
             case MAPV_WAITING:
-                return TranslatableLine.MAP_WAITING.get(p, false);
+                return TranslatableLine.MAP_WAITING.get(p);
             case MAPV_SPECTATE:
-                return TranslatableLine.MAP_SPECTATE.get(p, false);
+                return TranslatableLine.MAP_SPECTATE.get(p);
             case MAPV_STARTING:
-                return TranslatableLine.MAP_STARTING.get(p, false);
+                return TranslatableLine.MAP_STARTING.get(p);
             case MAPV_AVAILABLE:
-                return TranslatableLine.MAP_AVAILABLE.get(p, false);
+                return TranslatableLine.MAP_AVAILABLE.get(p);
             case SOLO:
                 return "&eSolo";
             case SOLO_RANKED:
@@ -286,13 +294,13 @@ public class MapsListGUI {
     private ItemStack makeIcon(RSWPlayer p, RSWMap g) {
         int count = 1;
         if (g.isPlaceHolder()) {
-            return Itens.createItem(Material.BUCKET, count, TranslatableLine.ITEMS_MAP_NOTFOUND_TITLE.get(p, false));
+            return Itens.createItem(Material.BUCKET, count, TranslatableLine.ITEMS_MAP_NOTFOUND_TITLE.get(p));
         } else {
             if (g.getPlayerCount() > 0) {
                 count = g.getPlayerCount();
             }
 
-            return Itens.createItem(getStateMaterial(g), count, TranslatableLine.ITEMS_MAP_TITLE.get(p, false).replace("%map%", g.getMapName()).replace("%displayname%", g.getDisplayName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(g.isRanked()), variableList(TranslatableList.ITEMS_MAP_DESCRIPTION.get(p), g));
+            return Itens.createItem(getStateMaterial(g), count, TranslatableLine.ITEMS_MAP_TITLE.get(p).replace("%map%", g.getMapName()).replace("%displayname%", g.getDisplayName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(g.isRanked()), variableList(TranslatableList.ITEMS_MAP_DESCRIPTION.get(p), g));
         }
     }
 

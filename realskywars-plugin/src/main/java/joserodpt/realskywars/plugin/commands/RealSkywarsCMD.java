@@ -109,7 +109,7 @@ public class RealSkywarsCMD extends CommandBase {
     public void listcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            p.sendMessage(TranslatableLine.CMD_MAPS.get(p, false).replace("%rooms%", "" + rs.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL).size()));
+            p.sendMessage(TranslatableLine.CMD_MAPS.get(p).replace("%rooms%", "" + rs.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL).size()));
             for (RSWMap s : rs.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL)) {
                 TextComponent a = new TextComponent(Text.color("&7- &f" + s.getDisplayName()));
                 a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw map " + s.getMapName()));
@@ -226,7 +226,7 @@ public class RealSkywarsCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
 
-            p.sendMessage(TranslatableLine.CMD_COINS.get(p, false).replace("%coins%", rs.getCurrencyAdapter().getCoins(p) + ""));
+            p.sendMessage(TranslatableLine.CMD_COINS.get(p).replace("%coins%", rs.getCurrencyAdapter().getCoins(p) + ""));
         } else {
             commandSender.sendMessage(onlyPlayer);
         }

@@ -43,27 +43,27 @@ public enum RSWPlayerItems {
     public ItemStack get(RSWPlayer p) {
         switch (this) {
             case KIT:
-                return Itens.createItem(Material.BOW, 1, TranslatableLine.ITEM_KIT_NAME.get(p, false));
+                return Itens.createItem(Material.BOW, 1, TranslatableLine.ITEM_KIT_NAME.get(p));
             case PROFILE:
-                return Itens.createItem(Material.BOOK, 1, TranslatableLine.ITEM_PROFILE_NAME.get(p, false));
+                return Itens.createItem(Material.BOOK, 1, TranslatableLine.ITEM_PROFILE_NAME.get(p));
             case CAGESET:
-                return Itens.createItem(Material.BEACON, 1, TranslatableLine.ITEM_CAGESET_NAME.get(p, false));
+                return Itens.createItem(Material.BEACON, 1, TranslatableLine.ITEM_CAGESET_NAME.get(p));
             case MAPS:
-                return Itens.createItem(Material.NETHER_STAR, 1, TranslatableLine.ITEM_MAPS_NAME.get(p, false));
+                return Itens.createItem(Material.NETHER_STAR, 1, TranslatableLine.ITEM_MAPS_NAME.get(p));
             case SHOP:
-                return Itens.createItem(Material.EMERALD, 1, TranslatableLine.ITEM_SHOP_NAME.get(p, false));
+                return Itens.createItem(Material.EMERALD, 1, TranslatableLine.ITEM_SHOP_NAME.get(p));
             case LEAVE:
-                return Itens.createItem(Material.MINECART, 1, TranslatableLine.ITEM_LEAVE_NAME.get(p, false));
+                return Itens.createItem(Material.MINECART, 1, TranslatableLine.ITEM_LEAVE_NAME.get(p));
             case VOTE:
-                return Itens.createItem(Material.HOPPER, 1, TranslatableLine.ITEM_VOTE_NAME.get(p, false));
+                return Itens.createItem(Material.HOPPER, 1, TranslatableLine.ITEM_VOTE_NAME.get(p));
             case SPECTATE:
-                return Itens.createItem(Material.MAP, 1, TranslatableLine.ITEM_SPECTATE_NAME.get(p, false));
+                return Itens.createItem(Material.MAP, 1, TranslatableLine.ITEM_SPECTATE_NAME.get(p));
             case PLAYAGAIN:
-                return Itens.createItem(Material.TOTEM_OF_UNDYING, 1, TranslatableLine.ITEM_PLAYAGAIN_NAME.get(p, false));
+                return Itens.createItem(Material.TOTEM_OF_UNDYING, 1, TranslatableLine.ITEM_PLAYAGAIN_NAME.get(p));
             case CHEST1:
-                return Itens.createItem(Material.CHEST, 1, TranslatableLine.ITEM_CHEST1_NAME.get(p, false));
+                return Itens.createItem(Material.CHEST, 1, TranslatableLine.ITEM_CHEST1_NAME.get(p));
             case CHEST2:
-                return Itens.createItem(Material.CHEST, 1, TranslatableLine.ITEM_CHEST2_NAME.get(p, false));
+                return Itens.createItem(Material.CHEST, 1, TranslatableLine.ITEM_CHEST2_NAME.get(p));
         }
         return new ItemStack(Material.DEAD_BUSH);
     }

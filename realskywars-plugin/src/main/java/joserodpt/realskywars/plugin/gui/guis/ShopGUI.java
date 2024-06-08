@@ -212,7 +212,7 @@ public class ShopGUI {
                                             p.buyItem(a.getName() + "|" + current.cat.name());
 
                                             a.setBought(true);
-                                            current.inv.setItem(e.getRawSlot(), Itens.createItemLoreEnchanted(e.getCurrentItem().getType(), 1, e.getCurrentItem().getItemMeta().getDisplayName(), Collections.singletonList(TranslatableLine.SHOP_ALREADY_BOUGHT.get(p, false).replace("%name%", a.getName()))));
+                                            current.inv.setItem(e.getRawSlot(), Itens.createItemLoreEnchanted(e.getCurrentItem().getType(), 1, e.getCurrentItem().getItemMeta().getDisplayName(), Collections.singletonList(TranslatableLine.SHOP_ALREADY_BOUGHT.get(p).replace("%name%", a.getName()))));
                                             p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.get(p, true).replace("%name%", a.getName()).replace("%coins%", a.getPrice() + ""));
                                         } else {
                                             p.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(p, true).replace("%coins%", RealSkywarsAPI.getInstance().getCurrencyAdapter().getCoins(p) + ""));
@@ -262,15 +262,15 @@ public class ShopGUI {
     private String getTitle(RSWPlayer p, ShopManager.Categories t) {
         switch (t) {
             case KITS:
-                return TranslatableLine.KITS.get(p, false);
+                return TranslatableLine.KITS.get(p);
             case BOW_PARTICLES:
-                return TranslatableLine.BOWPARTICLE.get(p, false);
+                return TranslatableLine.BOWPARTICLE.get(p);
             case WIN_BLOCKS:
-                return TranslatableLine.WINBLOCK.get(p, false);
+                return TranslatableLine.WINBLOCK.get(p);
             case CAGE_BLOCKS:
-                return TranslatableLine.CAGEBLOCK.get(p, false);
+                return TranslatableLine.CAGEBLOCK.get(p);
             case SPEC_SHOP:
-                return TranslatableLine.MENU_SPECTATOR_SHOP_TITLE.get(p, false);
+                return TranslatableLine.MENU_SPECTATOR_SHOP_TITLE.get(p);
             default:
                 return "? not found";
         }

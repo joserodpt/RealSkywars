@@ -58,7 +58,7 @@ public class PlayerGUI {
                 .map(s -> variables(s, target))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        inv.setItem(2, Itens.createItem(Material.MAP, 1, TranslatableLine.STATS_ITEM_NAME.get(p, false).replace("%player%", target.getDisplayName()), lore));
+        inv.setItem(2, Itens.createItem(Material.MAP, 1, TranslatableLine.STATS_ITEM_NAME.get(p).replace("%player%", target.getDisplayName()), lore));
     }
 
     public static Listener getListener() {

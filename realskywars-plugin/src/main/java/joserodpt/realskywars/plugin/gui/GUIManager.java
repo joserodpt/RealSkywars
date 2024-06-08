@@ -38,7 +38,7 @@ import java.util.Collections;
 public class GUIManager {
 
     public static void openShopMenu(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENUS_SHOP_TILE.get(p, false), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENUS_SHOP_TILE.get(p), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -49,7 +49,7 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.SPAWNER, 1, TranslatableLine.CAGEBLOCK.get(p, false)), 10);
+        }, Itens.createItem(Material.SPAWNER, 1, TranslatableLine.CAGEBLOCK.get(p)), 10);
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -60,7 +60,7 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.CHEST, 1, TranslatableLine.KITS.get(p, false)), 12);
+        }, Itens.createItem(Material.CHEST, 1, TranslatableLine.KITS.get(p)), 12);
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -71,7 +71,7 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.FIREWORK_ROCKET, 1, TranslatableLine.WINBLOCK.get(p, false)), 14);
+        }, Itens.createItem(Material.FIREWORK_ROCKET, 1, TranslatableLine.WINBLOCK.get(p)), 14);
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -82,13 +82,13 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(p, false)), 16);
+        }, Itens.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(p)), 16);
 
         inventory.openInventory(p.getPlayer());
     }
 
     public static void openSpectate(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENUS_SPECTATE_TITLE.get(p, false), 54, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENUS_SPECTATE_TITLE.get(p), 54, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         int i = 0;
         for (RSWPlayer s : p.getMatch().getPlayers()) {
@@ -112,7 +112,7 @@ public class GUIManager {
             if (i == 17) {
                 break;
             } else {
-                inventory.addItem(e -> RealSkywarsAPI.getInstance().getPlayerManagerAPI().setLanguage(p, language), Itens.createItem(Material.BOOK, 1, "&b" + language, Collections.singletonList(TranslatableLine.MENU_LANG_SELECT.get(p, false))), i);
+                inventory.addItem(e -> RealSkywarsAPI.getInstance().getPlayerManagerAPI().setLanguage(p, language), Itens.createItem(Material.BOOK, 1, "&b" + language, Collections.singletonList(TranslatableLine.MENU_LANG_SELECT.get(p))), i);
             }
             ++i;
         }
@@ -131,7 +131,7 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.NETHER_STAR, 1, TranslatableLine.ITEM_MAPS_NAME.get(p, false)), 12);
+        }, Itens.createItem(Material.NETHER_STAR, 1, TranslatableLine.ITEM_MAPS_NAME.get(p)), 12);
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -156,7 +156,7 @@ public class GUIManager {
             size = 45;
         }
 
-        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_PLAYERP_TITLE.get(p, false), size, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_PLAYERP_TITLE.get(p), size, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -166,7 +166,7 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.CHEST, 1, TranslatableLine.KITS.get(p, false), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 10);
+        }, Itens.createItem(Material.CHEST, 1, TranslatableLine.KITS.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 10);
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -179,7 +179,7 @@ public class GUIManager {
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
 
-        }, Itens.createItem(Material.SPAWNER, 1, TranslatableLine.CAGEBLOCK.get(p, false), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 12);
+        }, Itens.createItem(Material.SPAWNER, 1, TranslatableLine.CAGEBLOCK.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 12);
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -190,7 +190,7 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.FIREWORK_ROCKET, 1, TranslatableLine.WINBLOCK.get(p, false), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 14);
+        }, Itens.createItem(Material.FIREWORK_ROCKET, 1, TranslatableLine.WINBLOCK.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 14);
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -201,12 +201,12 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(p, false), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 13);
+        }, Itens.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 13);
 
         inventory.addItem(e -> {
             p.closeInventory();
             openAchievementGUI(p);
-        }, Itens.createItem(Material.BOOKSHELF, 1, TranslatableLine.ACHIEVEMENTS.get(p, false), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 16);
+        }, Itens.createItem(Material.BOOKSHELF, 1, TranslatableLine.ACHIEVEMENTS.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 16);
 
 
         //settings
@@ -216,21 +216,21 @@ public class GUIManager {
                     p.closeInventory();
                     GameHistoryGUI v = new GameHistoryGUI(p);
                     v.openInventory(p);
-                }, Itens.createItem(Material.FILLED_MAP, 1, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(p, false), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 31);
+                }, Itens.createItem(Material.FILLED_MAP, 1, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 31);
             } else {
                 inventory.addItem(e -> {
                     p.closeInventory();
                     GameHistoryGUI v = new GameHistoryGUI(p);
                     v.openInventory(p);
-                }, Itens.createItem(Material.FILLED_MAP, 1, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(p, false), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 32);
+                }, Itens.createItem(Material.FILLED_MAP, 1, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 32);
                 inventory.addItem(e -> {
                     p.closeInventory();
                     GUIManager.openLanguage(p);
-                }, Itens.createItem(Material.BOOK, 1, TranslatableLine.MENU_LANG_TITLE.get(p, false), Collections.singletonList("&f> " + p.getLanguage())), 30);
+                }, Itens.createItem(Material.BOOK, 1, TranslatableLine.MENU_LANG_TITLE.get(p), Collections.singletonList("&f> " + p.getLanguage())), 30);
             }
 
             if (!RSWConfig.file().getBoolean("Config.Disable-Player-Reset")) {
-                inventory.addItem(e -> p.resetData(), Itens.createItem(Material.BARRIER, 1, TranslatableLine.MENU_PLAYER_RESET_TITLE.get(p, false), Collections.singletonList(TranslatableLine.MENU_PLAYER_RESET_ALERT.get(p, false))), 44);
+                inventory.addItem(e -> p.resetData(), Itens.createItem(Material.BARRIER, 1, TranslatableLine.MENU_PLAYER_RESET_TITLE.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYER_RESET_ALERT.get(p))), 44);
             }
         }
 
@@ -238,31 +238,31 @@ public class GUIManager {
     }
 
     public static void openAchievementGUI(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder(TranslatableLine.ACHIEVEMENTS.get(p, false), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+        GUIBuilder inventory = new GUIBuilder(TranslatableLine.ACHIEVEMENTS.get(p), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.KILLS);
             v.openInventory(p);
-        }, Itens.createItem(Material.DIAMOND_SWORD, 1, "&b&l" + RSWPlayer.PlayerStatistics.KILLS.name(), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 10);
+        }, Itens.createItem(Material.DIAMOND_SWORD, 1, "&b&l" + RSWPlayer.PlayerStatistics.KILLS.name(), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 10);
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.WINS_SOLO);
             v.openInventory(p);
-        }, Itens.createItem(Material.LEATHER_BOOTS, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_SOLO.name().replace("_", " "), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 12);
+        }, Itens.createItem(Material.LEATHER_BOOTS, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_SOLO.name().replace("_", " "), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 12);
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.WINS_TEAMS);
             v.openInventory(p);
-        }, Itens.createItem(Material.CHAINMAIL_CHESTPLATE, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_TEAMS.name().replace("_", " "), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 14);
+        }, Itens.createItem(Material.CHAINMAIL_CHESTPLATE, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_TEAMS.name().replace("_", " "), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 14);
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.GAMES_PLAYED);
             v.openInventory(p);
-        }, Itens.createItem(Material.FILLED_MAP, 1, "&b&l" + RSWPlayer.PlayerStatistics.GAMES_PLAYED.name().replace("_", " "), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p, false))), 16);
+        }, Itens.createItem(Material.FILLED_MAP, 1, "&b&l" + RSWPlayer.PlayerStatistics.GAMES_PLAYED.name().replace("_", " "), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 16);
 
         inventory.addItem(e -> {
             p.closeInventory();

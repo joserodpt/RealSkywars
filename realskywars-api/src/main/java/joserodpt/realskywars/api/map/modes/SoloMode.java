@@ -29,7 +29,6 @@ import joserodpt.realskywars.api.player.RSWPlayerItems;
 import joserodpt.realskywars.api.player.RSWPlayerTab;
 import joserodpt.realskywars.api.utils.CountdownTimer;
 import joserodpt.realskywars.api.utils.FireworkUtils;
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -70,7 +69,7 @@ public class SoloMode extends RSWMap {
                     super.getBossBar().addPlayer(p.getPlayer());
 
                     //start msg
-                    TranslatableList.ARENA_START.get(p).forEach(s -> p.sendCenterMessage(s.replace("%chests%", WordUtils.capitalizeFully(super.getChestTier().name())).replace("%kit%", p.getKit().getDisplayName()).replace("%project%", WordUtils.capitalizeFully(super.getProjectileTier().name().replace("_", " "))).replace("%time%", WordUtils.capitalizeFully(super.getTimeType().name()))));
+                    TranslatableList.ARENA_START.get(p).forEach(s -> p.sendCenterMessage(s.replace("%chests%", super.getChestTier().name()).replace("%kit%", p.getKit().getDisplayName()).replace("%project%", super.getProjectileTier().getDisplayName(p)).replace("%time%", super.getTimeType().getDisplayName(p))));
 
                     p.getKit().give(p);
                     p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.PLAYING);

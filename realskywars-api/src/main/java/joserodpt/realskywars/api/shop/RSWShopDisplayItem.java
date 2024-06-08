@@ -21,7 +21,6 @@ import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Text;
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -70,12 +69,11 @@ public class RSWShopDisplayItem {
         info.put(a, b);
     }
 
-
     private String formatName(String name) {
         String ret;
         try {
             Material m = Material.getMaterial(Text.strip(name));
-            ret = "&b" + WordUtils.capitalizeFully(m.name().replace("_", " "));
+            ret = "&b" + Text.beautifyMaterialName(m);
         } catch (Exception e) {
             ret = name;
         }

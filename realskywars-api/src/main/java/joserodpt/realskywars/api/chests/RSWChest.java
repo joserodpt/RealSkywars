@@ -17,9 +17,11 @@ package joserodpt.realskywars.api.chests;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.holograms.RSWHologram;
 import joserodpt.realskywars.api.map.RSWEvent;
 import joserodpt.realskywars.api.map.RSWMap;
+import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.CountdownTimer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -192,7 +194,22 @@ public class RSWChest {
         this.hologram.deleteHologram();
     }
 
-    public enum Tier {BASIC, NORMAL, EPIC}
+    public enum Tier {
+        BASIC, NORMAL, EPIC;
+
+        public String getDisplayName(RSWPlayer p) {
+            switch (this) {
+                case BASIC:
+                    return TranslatableLine.CHEST_BASIC.get(p);
+                case NORMAL:
+                    return TranslatableLine.CHEST_NORMAL.get(p);
+                case EPIC:
+                    return TranslatableLine.CHEST_EPIC.get(p);
+                default:
+                    return "?";
+            }
+        }
+    }
 
     public enum Type {NORMAL, MID}
 

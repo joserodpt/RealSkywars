@@ -394,7 +394,7 @@ public abstract class RSWMap {
                 this.sendLog(p, false);
 
                 //click to play again
-                TextComponent component = new TextComponent(TextComponent.fromLegacyText(" > " + TranslatableLine.PLAY_AGAIN.get(p, false)));
+                TextComponent component = new TextComponent(TextComponent.fromLegacyText(" > " + TranslatableLine.PLAY_AGAIN.get(p)));
                 component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw play " + this.getGameMode().name().toLowerCase()));
                 p.getPlayer().spigot().sendMessage(component);
 
@@ -949,11 +949,37 @@ public abstract class RSWMap {
     }
 
     public enum ProjectileType {
-        NORMAL, BREAK_BLOCKS
+        NORMAL, BREAK_BLOCKS;
+
+        public String getDisplayName(RSWPlayer p) {
+            switch (this) {
+                case NORMAL:
+                    return TranslatableLine.PROJECTILE_NORMAL.get(p);
+                case BREAK_BLOCKS:
+                    return TranslatableLine.PROJECTILE_BREAK.get(p);
+                default:
+                    return "?";
+            }
+        }
     }
 
     public enum TimeType {
-        DAY, NIGHT, RAIN, SUNSET
+        DAY, NIGHT, RAIN, SUNSET;
+
+        public String getDisplayName(RSWPlayer p) {
+            switch (this) {
+                case DAY:
+                    return TranslatableLine.TIME_DAY.get(p);
+                case NIGHT:
+                    return TranslatableLine.TIME_NIGHT.get(p);
+                case RAIN:
+                    return TranslatableLine.TIME_RAIN.get(p);
+                case SUNSET:
+                    return TranslatableLine.TIME_SUNSET.get(p);
+                default:
+                    return "?";
+            }
+        }
     }
 
     public enum SpectateType {INSIDE_GAME, EXTERNAL}

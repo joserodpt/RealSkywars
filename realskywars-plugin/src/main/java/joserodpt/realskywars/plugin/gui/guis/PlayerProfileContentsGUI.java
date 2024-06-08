@@ -188,13 +188,13 @@ public class PlayerProfileContentsGUI {
     private String getTitle(RSWPlayer p, ShopManager.Categories t) {
         switch (t) {
             case KITS:
-                return TranslatableLine.KITS.get(p, false);
+                return TranslatableLine.KITS.get(p);
             case BOW_PARTICLES:
-                return TranslatableLine.BOWPARTICLE.get(p, false);
+                return TranslatableLine.BOWPARTICLE.get(p);
             case WIN_BLOCKS:
-                return TranslatableLine.WINBLOCK.get(p, false);
+                return TranslatableLine.WINBLOCK.get(p);
             case CAGE_BLOCKS:
-                return TranslatableLine.CAGEBLOCK.get(p, false);
+                return TranslatableLine.CAGEBLOCK.get(p);
             default:
                 return "? not found";
         }

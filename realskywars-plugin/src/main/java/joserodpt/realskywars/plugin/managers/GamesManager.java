@@ -108,6 +108,7 @@ public class GamesManager extends GamesManagerAPI {
             default:
                 break;
         }
+        Bukkit.getLogger().warning(f.toString());
         return f.isEmpty() ? Collections.singletonList(new PlaceholderMode("No Maps Found")) : f;
     }
 
@@ -134,17 +135,17 @@ public class GamesManager extends GamesManagerAPI {
     public String getStateString(RSWPlayer p, RSWMap.MapState t) {
         switch (t) {
             case WAITING:
-                return TranslatableLine.MAP_WAITING.get(p, false);
+                return TranslatableLine.MAP_WAITING.get(p);
             case AVAILABLE:
-                return TranslatableLine.MAP_AVAILABLE.get(p, false);
+                return TranslatableLine.MAP_AVAILABLE.get(p);
             case STARTING:
-                return TranslatableLine.MAP_STARTING.get(p, false);
+                return TranslatableLine.MAP_STARTING.get(p);
             case PLAYING:
-                return TranslatableLine.MAP_PLAYING.get(p, false);
+                return TranslatableLine.MAP_PLAYING.get(p);
             case FINISHING:
-                return TranslatableLine.MAP_FINISHING.get(p, false);
+                return TranslatableLine.MAP_FINISHING.get(p);
             case RESETTING:
-                return TranslatableLine.MAP_RESETTING.get(p, false);
+                return TranslatableLine.MAP_RESETTING.get(p);
             default:
                 return "NaN";
         }
