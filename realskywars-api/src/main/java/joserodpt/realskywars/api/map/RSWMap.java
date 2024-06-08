@@ -725,8 +725,12 @@ public abstract class RSWMap {
                         p.getCage().tpPlayer(p);
                     }
 
-                    p.sendMessage(TranslatableLine.ARENA_CANCEL.get(p, true).replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
-                    p.sendActionbar(TranslatableLine.ARENA_CANCEL.get(p).replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
+                    if (!RSWConfig.file().getBoolean("Config.Disable-Map-Starting-Countdown.Message")) {
+                        p.sendMessage(TranslatableLine.ARENA_START_COUNTDOWN.get(p, true).replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
+                    }
+                    if (!RSWConfig.file().getBoolean("Config.Disable-Map-Starting-Countdown.Actionbar")) {
+                        p.sendActionbar(TranslatableLine.ARENA_START_COUNTDOWN.get(p).replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
+                    }
                     p.setBarNumber(t.getSecondsLeft(), RSWConfig.file().getInt("Config.Time-To-Start"));
                 }
             }

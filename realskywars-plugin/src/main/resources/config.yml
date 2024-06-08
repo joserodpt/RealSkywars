@@ -13,6 +13,9 @@ Config:
   PlaceholderAPI-In-Scoreboard: false
   Disable-Player-Reset: false
   Disable-Language-Selection: false
+  Disable-Map-Starting-Countdown:
+    Message: false
+    Actionbar: false
   Item-Slots:
     Lobby:
       Profile: 0
