@@ -264,40 +264,21 @@ public class RealSkywarsCMD extends CommandBase {
     @SubCommand("verifylang")
     @Permission("rsw.admin")
     public void verifylangcmd(final CommandSender commandSender) {
-        if (commandSender instanceof Player) {
-            RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            String sep = "&9&m&l--------------------------------";
-            Text.sendList(p.getPlayer(), Arrays.asList(sep, "&fLanguage Verification Started.", "&6"));
+        Text.send(commandSender, "&aLanguage Verification Started.");
 
-            //TODO
-
-            /*
-            HashMap<String, HashMap<LanguageManager.TS, String>> flag = rs.getLanguageManagerAPI().verifyLanguages();
-            if (flag.isEmpty()) {
-                p.sendMessage(rs.getLanguageManagerAPI().getPrefix() + Text.color("&aNo errors encountered."));
-                p.sendMessage(Text.color(sep));
-            } else {
-                for (Map.Entry<String, HashMap<LanguageManager.TS, String>> entry : flag.entrySet()) {
-                    String key = entry.getKey();
-                    HashMap<LanguageManager.TS, String> value = entry.getValue();
-
-                    p.sendMessage(Text.color("&6Found translation errors in Language: &b" + key));
-
-                    for (Map.Entry<LanguageManager.TS, String> e : value.entrySet()) {
-                        LanguageManager.TS t = e.getKey();
-                        Object s = e.getValue();
-
-                        p.sendMessage(Text.color("&7<&4!&7> &b" + t.name() + " &4returned: &7" + s));
+        for (String language : rs.getLanguageManagerAPI().getLanguages()) {
+            Text.send(commandSender, "&6Checking language &b" + language + "&6...");
+            for (TranslatableLine value : TranslatableLine.values()) {
+                if (value.getPath().startsWith(".")) {
+                    String val = value.getInLanguage(language);
+                    if (val == null) {
+                        Text.send(commandSender, "&cMissing translation for &f" + value.name() + " &cin language &f" + language);
                     }
-
-                    Text.sendList(p.getPlayer(), Arrays.asList("", "&fFound &b" + value.size() + " &ferrors for the Language &b" + key + ".", sep));
                 }
             }
-            
-             */
-        } else {
-            commandSender.sendMessage(onlyPlayer);
         }
+
+        Text.send(commandSender, "&fLanguage Verification Finished.");
     }
 
     @SubCommand("setspectator")

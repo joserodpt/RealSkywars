@@ -196,6 +196,10 @@ public enum TranslatableLine {
         return Text.color(RSWLanguagesConfig.file().getString(this.configPath));
     }
 
+    public String getInLanguage(String l) {
+        return RSWLanguagesConfig.file().getString("Languages." + l + this.configPath);
+    }
+
     public String get(RSWPlayer player) {
         return get(player, false);
     }
@@ -223,5 +227,9 @@ public enum TranslatableLine {
         if (p.getPlayer() != null) {
             p.sendMessage(get(p, prefix));
         }
+    }
+
+    public String getPath() {
+        return this.configPath;
     }
 }
