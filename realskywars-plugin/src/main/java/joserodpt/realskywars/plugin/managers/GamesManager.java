@@ -108,7 +108,6 @@ public class GamesManager extends GamesManagerAPI {
             default:
                 break;
         }
-        Bukkit.getLogger().warning(f.toString());
         return f.isEmpty() ? Collections.singletonList(new PlaceholderMode("No Maps Found")) : f;
     }
 

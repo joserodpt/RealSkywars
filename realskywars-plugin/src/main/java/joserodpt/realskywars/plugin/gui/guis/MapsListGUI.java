@@ -22,7 +22,6 @@ import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Pagination;
-import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -47,25 +46,22 @@ public class MapsListGUI {
 
     private static final Map<UUID, MapsListGUI> inventories = new HashMap<>();
     int pageNumber = 0;
-    private Pagination<RSWMap> p;
+    private final Pagination<RSWMap> p;
     private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     private final Inventory inv;
     private final UUID uuid;
-    private RSWPlayer gp = null;
+    private RSWPlayer gp;
     private final Map<Integer, RSWMap> display = new HashMap<>();
 
-    public MapsListGUI(RSWPlayer as) {
-        this.gp = as;
-        this.uuid = as.getUUID();
-        this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MAPS_NAME.get(as, false));
+    public MapsListGUI(RSWPlayer p) {
+        this.uuid = p.getUUID();
+        this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MAPS_NAME.get(p, false) + ": " + p.getMapViewerPref().getDisplayName(p));
 
-        load();
-    }
+        this.gp = p;
+        List<RSWMap> items = RealSkywarsAPI.getInstance().getGameManagerAPI().getRoomsWithSelection(p);
 
-    private void load() {
-        this.p = new Pagination<>(28, RealSkywarsAPI.getInstance().getGameManagerAPI().getRoomsWithSelection(this.gp));
-        Bukkit.getLogger().warning(this.p.toString());
-        fillChest(this.p.getPage(pageNumber), this.gp);
+        this.p = new Pagination<>(28, items);
+        fillChest(this.p.getPage(pageNumber), p);
     }
 
     public static Listener getListener() {
@@ -149,15 +145,9 @@ public class MapsListGUI {
                 }
                 curr.gp = gp;
 
-                // update inventory title
-                try {
-                    InventoryView openInv = gp.getPlayer().getOpenInventory();
-                    openInv.setTitle(TranslatableLine.MAPS_NAME.get(gp, false) + ": " + Text.color(curr.translateMapViewerPref(gp)));
-                } catch (Exception ignored) {
-                }
-
-                curr.load();
-
+                gp.closeInventory();
+                MapsListGUI v = new MapsListGUI(gp);
+                v.openInventory(gp);
                 gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
             }
 
@@ -199,30 +189,6 @@ public class MapsListGUI {
 
     private boolean firstPage() {
         return pageNumber == 0;
-    }
-
-    private String translateMapViewerPref(RSWPlayer p) {
-        switch (p.getMapViewerPref()) {
-            case MAPV_ALL:
-                return TranslatableLine.MAP_ALL.get(p);
-            case MAPV_WAITING:
-                return TranslatableLine.MAP_WAITING.get(p);
-            case MAPV_SPECTATE:
-                return TranslatableLine.MAP_SPECTATE.get(p);
-            case MAPV_STARTING:
-                return TranslatableLine.MAP_STARTING.get(p);
-            case MAPV_AVAILABLE:
-                return TranslatableLine.MAP_AVAILABLE.get(p);
-            case SOLO:
-                return "&eSolo";
-            case SOLO_RANKED:
-                return "&eSolo &b&LRANKED";
-            case TEAMS_RANKED:
-                return "&9Teams &b&LRANKED";
-            case TEAMS:
-                return "&9Teams";
-        }
-        return "";
     }
 
     public void openInventory(RSWPlayer player) {

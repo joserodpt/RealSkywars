@@ -630,6 +630,31 @@ public class RSWPlayer {
     public enum PlayerStatistics {WINS_SOLO, WINS_TEAMS, KILLS, DEATHS, LOSES, GAMES_PLAYED, GAME_BALANCE, GAME_KILLS}
 
     public enum MapViewerPref {
-        MAPV_SPECTATE, MAPV_AVAILABLE, MAPV_STARTING, MAPV_WAITING, MAPV_ALL, SOLO, TEAMS, SOLO_RANKED, TEAMS_RANKED
+        MAPV_SPECTATE, MAPV_AVAILABLE, MAPV_STARTING, MAPV_WAITING, MAPV_ALL, SOLO, TEAMS, SOLO_RANKED, TEAMS_RANKED;
+
+        public String getDisplayName(RSWPlayer p) {
+            switch (this) {
+                case MAPV_ALL:
+                    return TranslatableLine.MAP_ALL.get(p);
+                case MAPV_WAITING:
+                    return TranslatableLine.MAP_WAITING.get(p);
+                case MAPV_SPECTATE:
+                    return TranslatableLine.MAP_SPECTATE.get(p);
+                case MAPV_STARTING:
+                    return TranslatableLine.MAP_STARTING.get(p);
+                case MAPV_AVAILABLE:
+                    return TranslatableLine.MAP_AVAILABLE.get(p);
+                case SOLO:
+                    return Text.color("&eSolo");
+                case SOLO_RANKED:
+                    return Text.color("&eSolo &b&LRANKED");
+                case TEAMS_RANKED:
+                    return Text.color("&9Teams &b&LRANKED");
+                case TEAMS:
+                    return Text.color("&9Teams");
+                default:
+                    return "?";
+            }
+        }
     }
 }
