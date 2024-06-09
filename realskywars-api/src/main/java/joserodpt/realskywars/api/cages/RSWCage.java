@@ -23,15 +23,26 @@ import java.util.List;
 
 public interface RSWCage {
     int getID();
-    Location getLoc();
+
+    Location getLocation();
+
     boolean isEmpty();
+
     void setCage();
+
     void addPlayer(RSWPlayer p);
+
     void removePlayer(RSWPlayer p);
+
     void tpPlayer(RSWPlayer p);
+
     int getMaxPlayers();
+
     List<RSWPlayer> getPlayers();
+
     void clearCage();
+
     void setCage(Material m);
+
     void open();
 }

@@ -47,6 +47,7 @@ import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -87,29 +88,40 @@ public class MapManager extends MapManagerAPI {
             }
             displayName = Text.color(displayName);
 
-            RSWWorld.WorldType wt = getWorldType(RSWMapsConfig.file().getString(s + ".type"));
-            Boolean unregistered = RSWMapsConfig.file().getBoolean(s + ".Settings.Unregistered");
-
             boolean loaded = rs.getWorldManagerAPI().loadWorld(worldName, World.Environment.NORMAL);
             if (loaded) {
-                World w = Bukkit.getWorld(worldName);
+                RSWWorld.WorldType wt = getWorldType(RSWMapsConfig.file().getString(s + ".type"));
+                Boolean unregistered = RSWMapsConfig.file().getBoolean(s + ".Settings.Unregistered");
 
                 Location specLoc = getSpecLoc(s);
+                Map<Location, RSWCage> cgs = getMapCages(s, specLoc);
+
+                if (cgs.isEmpty()) {
+                    Bukkit.getLogger().severe("[RealSkywars] There are no cages in " + worldName + " (possibly a bug? Check config pls!)");
+                    continue;
+                }
+
+                Map<Location, RSWChest> chests = getMapChests(worldName, s);
+                if (chests.isEmpty()) {
+                    Bukkit.getLogger().warning("[RealSkywars] There are no chests in " + worldName + " (possibly a bug? Check config pls!)");
+                }
+
+                World w = Bukkit.getWorld(worldName);
+
                 switch (t) {
                     case SOLO:
-                        SoloMode gs = new SoloMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, getMapCages(s, specLoc), RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), getMapChests(worldName, s), isRanked(s), unregistered, rs);
+                        SoloMode gs = new SoloMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, cgs, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), chests, isRanked(s), unregistered, rs);
                         gs.resetArena(RSWMap.OperationReason.LOAD);
                         this.addMap(gs);
                         break;
                     case TEAMS:
-                        List<RSWCage> cgs = getMapCages(s, specLoc);
-                        List<Team> ts = new ArrayList<>();
+                        Map<Location, Team> ts = new HashMap<>();
                         int tc = 1;
-                        for (RSWCage c : cgs) {
-                            ts.add(new Team(tc, (RSWMapsConfig.file().getInt(s + ".number-of-players") / cgs.size()), c.getLoc(), worldName));
+                        for (RSWCage c : cgs.values()) {
+                            ts.put(c.getLocation(), new Team(tc, (RSWMapsConfig.file().getInt(s + ".number-of-players") / cgs.size()), c.getLocation(), worldName));
                             ++tc;
                         }
-                        TeamsMode teas = new TeamsMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, ts, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), getMapChests(worldName, s), isRanked(s), unregistered, rs);
+                        TeamsMode teas = new TeamsMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, ts, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), chests, isRanked(s), unregistered, rs);
                         teas.resetArena(RSWMap.OperationReason.LOAD);
                         this.addMap(teas);
                         break;
@@ -180,10 +192,10 @@ public class MapManager extends MapManagerAPI {
     }
 
     @Override
-    public List<RSWMap> getMaps(MapGamemodes pt) {
+    public Collection<RSWMap> getMaps(MapGamemodes pt) {
         switch (pt) {
             case ALL:
-                return new ArrayList<>(this.maps.values());
+                return this.maps.values();
             case SOLO:
                 return this.maps.values().stream().filter(r -> r.getGameMode().equals(RSWMap.Mode.SOLO) && !r.isUnregistered()).collect(Collectors.toList());
             case TEAMS:
@@ -199,14 +211,14 @@ public class MapManager extends MapManagerAPI {
     }
 
     @Override
-    public List<RSWCage> getMapCages(String s, Location specLoc) {
-        List<RSWCage> locs = new ArrayList<>();
+    public Map<Location, RSWCage> getMapCages(String s, Location specLoc) {
+        Map<Location, RSWCage> locs = new HashMap<>();
         int id = 0;
         for (String i : RSWMapsConfig.file().getSection(s + ".Locations.Cages").getRoutesAsStrings(false)) {
             int x = RSWMapsConfig.file().getInt(s + ".Locations.Cages." + i + ".X");
             int y = RSWMapsConfig.file().getInt(s + ".Locations.Cages." + i + ".Y");
             int z = RSWMapsConfig.file().getInt(s + ".Locations.Cages." + i + ".Z");
-            locs.add(new RSWSoloCage(id, x, y, z, RSWMapsConfig.file().getString(s + ".world"), specLoc.getBlockX(), specLoc.getBlockY(), specLoc.getBlockZ()));
+            locs.put(new Location(Bukkit.getWorld(RSWMapsConfig.file().getString(s + ".world")), x, y, z), new RSWSoloCage(id, x, y, z, RSWMapsConfig.file().getString(s + ".world"), specLoc.getBlockX(), specLoc.getBlockY(), specLoc.getBlockZ()));
             ++id;
         }
         return locs;
@@ -231,6 +243,7 @@ public class MapManager extends MapManagerAPI {
         SetupRoomSettingsGUI m = new SetupRoomSettingsGUI(p, s);
         m.openInventory(p);
     }
+
 
     @Override
     public void cancelSetup(RSWPlayer p) {
@@ -306,16 +319,17 @@ public class MapManager extends MapManagerAPI {
             return;
         }
 
-        TranslatableLine.SAVING_ARENA.send(p, true);
+        TranslatableLine.SAVING_MAP.send(p, true);
 
         // Beacon Remove
-        p.getSetupRoom().getCages().forEach(cage -> p.getSetupRoom().getWorld().getBlockAt(cage.getLoc()).setType(Material.AIR));
+        p.getSetupRoom().getCages().keySet().forEach(cage -> p.getSetupRoom().getWorld().getBlockAt(cage).setType(Material.AIR));
 
         //Remove dropped items
-        rs.getWorldManagerAPI().clearItems(p.getSetupRoom().getWorld());
+        rs.getWorldManagerAPI().clearDroppedItems(p.getSetupRoom().getWorld());
 
         //worldType
         if (p.getSetupRoom().getWorldType() == RSWWorld.WorldType.DEFAULT) {
+
             //Unload world
             rs.getWorldManagerAPI().unloadWorld(p.getSetupRoom().getWorld().getName(), true);
 
@@ -346,10 +360,10 @@ public class MapManager extends MapManagerAPI {
                     gs.getChests().forEach(RSWChest::setChest);
                     break;
                 case TEAMS:
-                    List<Team> ts = new ArrayList<>();
+                    Map<Location, Team> ts = new HashMap<>();
                     int tc = 1;
-                    for (RSWCage c : p.getSetupRoom().getCages()) {
-                        ts.add(new Team(tc, p.getSetupRoom().getPlayersPerTeam(), c.getLoc(), p.getSetupRoom().getWorld().getName()));
+                    for (RSWCage c : p.getSetupRoom().getCages().values()) {
+                        ts.put(c.getLocation(), new Team(tc, p.getSetupRoom().getPlayersPerTeam(), c.getLocation(), p.getSetupRoom().getWorld().getName()));
                         ++tc;
                     }
                     TeamsMode t = new TeamsMode(p.getSetupRoom().getName(), p.getSetupRoom().getDisplayName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), RSWMap.MapState.AVAILABLE, ts, p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), false, rs);
@@ -371,7 +385,7 @@ public class MapManager extends MapManagerAPI {
             }
 
             p.setSetup(null);
-            TranslatableLine.ARENA_REGISTERED.send(p, true);
+            TranslatableLine.MAP_REGISTERED.send(p, true);
         } else {
             p.sendMessage("Error while loading world for: " + p.getSetupRoom().getName() + " (possibly a bug?)");
         }
@@ -436,8 +450,8 @@ public class MapManager extends MapManagerAPI {
     }
 
     @Override
-    protected List<RSWChest> getMapChests(String worldName, String section) {
-        List<RSWChest> chests = new ArrayList<>();
+    protected Map<Location, RSWChest> getMapChests(String worldName, String section) {
+        Map<Location, RSWChest> chests = new HashMap<>();
         if (RSWMapsConfig.file().isSection(section + ".Chests")) {
             for (String i : RSWMapsConfig.file().getSection(section + ".Chests").getRoutesAsStrings(false)) {
                 int x = RSWMapsConfig.file().getInt(section + ".Chests." + i + ".LocationX");
@@ -450,7 +464,7 @@ public class MapManager extends MapManagerAPI {
                     Debugger.print(MapManager.class, "CHEST FACE INVALID WHILE LOADING " + worldName + "!! >> " + RSWMapsConfig.file().getString(section + ".Chests." + i + ".Type"));
                 }
 
-                chests.add(new RSWChest(ct, worldName, x, y, z, f));
+                chests.put(new Location(Bukkit.getWorld(worldName), x, y, z), new RSWChest(ct, worldName, x, y, z, f));
             }
         } else {
             Debugger.print(MapManager.class, "There are no chests in " + worldName + " (possibly a bug? Check config pls!)");
@@ -523,7 +537,59 @@ public class MapManager extends MapManagerAPI {
     }
 
     @Override
-    public List<String> getMapNames() {
-        return new ArrayList<>(this.maps.keySet());
+    public Collection<String> getMapNames() {
+        return this.maps.keySet();
+    }
+
+    @Override
+    public void editMap(RSWPlayer p, RSWMap map) {
+        if (!map.isUnregistered()) {
+            TranslatableLine.MAP_UNREGISTER_TO_EDIT.send(p, true);
+            return;
+        }
+
+        p.teleport(map.getSpectatorLocation());
+        Text.sendList(p.getPlayer(), Text.replaceVarInList(TranslatableList.INITSETUP_ARENA.get(p), "%cages%", map.getCages().size() + ""), map.getGameMode() == RSWMap.Mode.SOLO ? map.getMaxPlayers() : map.getTeams().size());
+        RSWPlayerItems.SETUP.giveSet(p);
+
+        map.getCages().forEach(rswCage -> map.getRSWWorld().getWorld().getBlockAt(rswCage.getLocation()).setType(Material.BEACON));
+    }
+
+    @Override
+    public void finishEdit(RSWPlayer p, RSWMap sw) {
+        if (sw.isUnregistered()) {
+            if (sw.getGameMode() == RSWMap.Mode.SOLO && sw.getCages().size() != sw.getMaxPlayers()) {
+                p.sendMessage("&cYou have to set the correct number of cages for the number of players in the arena!");
+                return;
+            }
+
+            if (sw.getGameMode() == RSWMap.Mode.TEAMS && sw.getCages().size() != sw.getTeams().size()) {
+                p.sendMessage("&cYou have to set the correct number of cages for the number of teams in the arena!");
+                return;
+            }
+
+            TranslatableLine.SAVING_MAP.send(p, true);
+
+            // Beacon Remove
+            sw.getCages().forEach(cage -> sw.getRSWWorld().getWorld().getBlockAt(cage.getLocation()).setType(Material.AIR));
+
+            sw.clear();
+
+            //Remove dropped items
+            rs.getWorldManagerAPI().clearDroppedItems(sw.getRSWWorld().getWorld());
+
+            rs.getLobbyManagerAPI().tpToLobby(p);
+            RSWPlayerItems.LOBBY.giveSet(p);
+
+            sw.getRSWWorld().save();
+
+            if (sw.isUnregistered()) {
+                sw.setUnregistered(false);
+            }
+
+            TranslatableLine.MAP_REGISTERED.send(p, true);
+        } else {
+            TranslatableLine.MAP_UNREGISTER_TO_EDIT.send(p, true);
+        }
     }
 }

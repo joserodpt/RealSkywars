@@ -17,10 +17,10 @@ package joserodpt.realskywars.api.managers.world.engines;
 
 import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.WorldManagerAPI;
-import joserodpt.realskywars.api.managers.world.SWWorldEngine;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
+import joserodpt.realskywars.api.managers.world.SWWorldEngine;
+import joserodpt.realskywars.api.map.RSWMap;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 
@@ -96,5 +96,10 @@ public class SWWorldDefaultEngine implements SWWorldEngine {
     @Override
     public RSWWorld.WorldType getType() {
         return RSWWorld.WorldType.DEFAULT;
+    }
+
+    @Override
+    public void save() {
+        this.world.save();
     }
 }

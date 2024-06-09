@@ -2,6 +2,7 @@ package joserodpt.realskywars.api.managers;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 
@@ -10,8 +11,6 @@ import java.io.IOException;
 import java.util.Random;
 
 public abstract class WorldManagerAPI {
-    public abstract void clearItems(World w);
-
     public abstract File[] verifiedListFiles(File directory) throws IOException;
 
     public abstract boolean isSymlink(File file);
@@ -35,6 +34,10 @@ public abstract class WorldManagerAPI {
     protected abstract void cleanDirectory(File directory) throws IOException;
 
     public abstract void forceDelete(File file) throws IOException;
+
+    public void clearDroppedItems(World world) {
+        world.getEntities().stream().filter(e -> e.getType() == EntityType.DROPPED_ITEM).forEach(org.bukkit.entity.Entity::remove);
+    }
 
     public enum CopyTo {ROOT, RSW_FOLDER}
 

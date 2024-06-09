@@ -43,7 +43,7 @@ public class RSWTeamCage implements RSWCage {
         return this.id;
     }
 
-    public Location getLoc() {
+    public Location getLocation() {
         return new Location(Bukkit.getWorld(this.worldName), this.loc.getBlockX(), this.loc.getBlockY(), this.loc.getBlockZ()).add(0.5, 0, 0.5);
     }
 
@@ -145,7 +145,7 @@ public class RSWTeamCage implements RSWCage {
     }
 
     public void tpPlayer(RSWPlayer p) {
-        p.teleport(getLoc());
+        p.teleport(getLocation());
         this.p.add(p);
     }
 

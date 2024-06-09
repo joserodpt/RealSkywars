@@ -267,37 +267,94 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(event.getPlayer());
+
+        if (event.getPlayer().isOp()) {
+            if (event.getBlock().getType() == Material.BEACON) {
+                Location loc = event.getBlock().getLocation();
+                Bukkit.getLogger().warning(loc.toString());
+
+                RSWMap mp = rs.getMapManagerAPI().getMap(event.getBlock().getLocation().getWorld());
+                if (mp != null && mp.isUnregistered()) {
+                    mp.removeCage(loc);
+                    p.getPlayer().sendMessage(ChatColor.RED + "You removed this cage.");
+                    return;
+                }
+
+                if (p.getSetupRoom() != null) {
+                    p.getSetupRoom().removeCage(loc);
+                    p.getPlayer().sendMessage(ChatColor.RED + "You removed this cage.");
+                }
+            }
+
+            if (event.getBlock().getType() == Material.CHEST) {
+                Location loc = event.getBlock().getLocation();
+
+                RSWMap mp = rs.getMapManagerAPI().getMap(event.getBlock().getLocation().getWorld());
+                if (mp != null && mp.isUnregistered()) {
+                    mp.removeChest(loc);
+                    p.getPlayer().sendMessage(ChatColor.RED + "You removed this chest.");
+                    return;
+                }
+
+                if (p.getSetupRoom() != null) {
+                    p.getSetupRoom().removeChest(loc);
+                    p.getPlayer().sendMessage(ChatColor.RED + "You removed this chest.");
+                }
+            }
+        }
+
         if (p != null) {
             switch (p.getState()) {
                 case SPECTATOR:
                 case EXTERNAL_SPECTATOR:
                 case CAGE:
                     event.setCancelled(true);
+                case LOBBY_OR_NOGAME:
+                    if (rs.getLobbyManagerAPI().isInLobby(p.getLocation().getWorld())) {
+                        event.setCancelled(true);
+                    }
                     break;
             }
-        }
-        if (event.getBlock().getType() == Material.BEACON && p.getSetupRoom() != null) {
-            Location loc = event.getBlock().getLocation().add(0.5, 0, 0.5);
-            p.getSetupRoom().removeCage(loc);
-            p.getPlayer().sendMessage(ChatColor.RED + "You removed this cage.");
-        }
-        if (event.getBlock().getType() == Material.CHEST && p.getSetupRoom() != null) {
-            p.getSetupRoom().removeChest(event.getBlock().getLocation());
-            p.getPlayer().sendMessage(ChatColor.RED + "You removed this chest.");
-        }
-        if (rs.getLobbyManagerAPI().isInLobby(event.getBlock().getWorld()) && !p.getPlayer().isOp()) {
-            event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void place(BlockPlaceEvent event) {
+        RSWPlayer pg = rs.getPlayerManagerAPI().getPlayer(event.getPlayer());
+
         if (event.getPlayer().isOp()) {
-            RSWPlayer pg = rs.getPlayerManagerAPI().getPlayer(event.getPlayer());
-            if (pg.getSetupRoom() != null) {
-                if (event.getBlock().getType().equals(Material.BEACON)) {
+            if (event.getBlock().getType().equals(Material.BEACON)) {
+                RSWMap mp = rs.getMapManagerAPI().getMap(event.getBlock().getLocation().getWorld());
+                if (mp != null && mp.isUnregistered()) {
+
+                    switch (mp.getGameMode()) {
+                        case SOLO:
+                            if ((mp.getCages().size() + 1) > mp.getMaxPlayers()) {
+                                pg.sendMessage("&cYou can't place more cages than the max players.");
+                                return;
+                            }
+                            break;
+                        case TEAMS:
+                            if ((mp.getCages().size() + 1) > mp.getTeams().size()) {
+                                pg.sendMessage("&cYou can't place more cages than the max teams.");
+                                return;
+                            }
+                            break;
+                    }
+
+                    mp.addCage(event.getBlock().getLocation());
+                    pg.sendMessage("&aYou placed a new cage.");
+                    return;
+                }
+
+                if (pg.getSetupRoom() != null) {
                     switch (pg.getSetupRoom().getGameType()) {
                         case SOLO:
+                            if (((pg.getSetupRoom().getCages().size() + 1) > pg.getSetupRoom().getMaxPlayers())) {
+                                pg.sendMessage("&cYou can't place more cages than the max players.");
+                                return;
+                            }
+
                             if ((pg.getSetupRoom().getCages().size() + 1) < pg.getSetupRoom().getMaxPlayers()) {
                                 log(event, pg);
                             } else {
@@ -307,6 +364,10 @@ public class PlayerListener implements Listener {
                             }
                             break;
                         case TEAMS:
+                            if (((pg.getSetupRoom().getCages().size() + 1) > pg.getSetupRoom().getTeamCount())) {
+                                pg.sendMessage("&cYou can't place more cages than the max teams.");
+                            }
+
                             if ((pg.getSetupRoom().getCages().size() + 1) < pg.getSetupRoom().getTeamCount()) {
                                 log(event, pg);
                             } else {
@@ -317,7 +378,27 @@ public class PlayerListener implements Listener {
                             break;
                     }
                 }
-                if (event.getBlock().getType() == Material.CHEST && pg.getSetupRoom() != null) {
+            }
+
+            if (event.getBlock().getType() == Material.CHEST) {
+                RSWMap mp2 = rs.getMapManagerAPI().getMap(event.getBlock().getLocation().getWorld());
+                if (mp2 != null && mp2.isUnregistered()) {
+                    String name = event.getItemInHand().getItemMeta().getDisplayName();
+                    switch (Text.strip(name).toLowerCase()) {
+                        case "common chest":
+                            mp2.addChest(event.getBlock(), RSWChest.Type.NORMAL);
+                            pg.sendMessage("Added Normal Chest.");
+                            break;
+                        case "mid chest":
+                            mp2.addChest(event.getBlock(), RSWChest.Type.MID);
+                            pg.sendMessage("Added Mid Chest.");
+                            break;
+                    }
+
+                    return;
+                }
+
+                if (pg.getSetupRoom() != null) {
                     String name = event.getItemInHand().getItemMeta().getDisplayName();
                     Block b = event.getBlock();
                     BlockData blockData = b.getBlockData();
@@ -332,16 +413,16 @@ public class PlayerListener implements Listener {
                             pg.sendMessage("Added Mid Chest.");
                             break;
                     }
-
                 }
             }
-            switch (pg.getState()) {
-                case SPECTATOR:
-                case EXTERNAL_SPECTATOR:
-                case CAGE:
-                    event.setCancelled(true);
-                    break;
-            }
+        }
+
+        switch (pg.getState()) {
+            case SPECTATOR:
+            case EXTERNAL_SPECTATOR:
+            case CAGE:
+                event.setCancelled(true);
+                break;
         }
     }
 
@@ -350,12 +431,10 @@ public class PlayerListener implements Listener {
         int i = p.getSetupRoom().getCages().size() + 1;
         switch (p.getSetupRoom().getGameType()) {
             case SOLO:
-                RSWSoloCage c = new RSWSoloCage(i, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getWorld().getName(), 0, 64, 0);
-                p.getSetupRoom().addCage(loc, c);
+                p.getSetupRoom().addCage(loc, new RSWSoloCage(i, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getWorld().getName(), 0, 64, 0));
                 break;
             case TEAMS:
-                RSWTeamCage tc = new RSWTeamCage(i, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getWorld().getName(), p.getSetupRoom().getPlayersPerTeam());
-                p.getSetupRoom().addCage(loc, tc);
+                p.getSetupRoom().addCage(loc, new RSWTeamCage(i, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getWorld().getName(), p.getSetupRoom().getPlayersPerTeam()));
                 break;
         }
         e.getPlayer().sendMessage(ChatColor.GREEN + "You placed cage number " + i);

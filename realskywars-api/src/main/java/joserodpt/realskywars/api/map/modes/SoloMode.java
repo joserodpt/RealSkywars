@@ -17,6 +17,7 @@ package joserodpt.realskywars.api.map.modes;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.cages.RSWCage;
+import joserodpt.realskywars.api.cages.RSWSoloCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
@@ -34,14 +35,17 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SoloMode extends RSWMap {
 
-    private final List<RSWCage> cages;
+    private final Map<Location, RSWCage> cages;
 
-    public SoloMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, List<RSWCage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, List<RSWChest> chests, Boolean rankd, Boolean unregistered, RealSkywarsAPI rs) {
+    public SoloMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, Map<Location, RSWCage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, Map<Location, RSWChest> chests, Boolean rankd, Boolean unregistered, RealSkywarsAPI rs) {
         super(nome, displayName, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border, pos1, pos2, chests, rankd, unregistered, rs);
         this.cages = cages;
     }
@@ -129,7 +133,7 @@ public class SoloMode extends RSWMap {
                     }
 
                     //cage
-                    for (RSWCage c : this.cages) {
+                    for (RSWCage c : this.cages.values()) {
                         if (c.isEmpty() && p.getPlayer() != null) {
                             c.addPlayer(p);
                             break;
@@ -243,17 +247,17 @@ public class SoloMode extends RSWMap {
     }
 
     @Override
-    public List<RSWCage> getCages() {
-        return this.cages;
+    public Collection<RSWCage> getCages() {
+        return this.cages.values();
     }
 
     @Override
-    public List<Team> getTeams() {
-        return null;
+    public Collection<Team> getTeams() {
+        return Collections.emptyList();
     }
 
     @Override
-    public int maxMembersTeam() {
+    public int getMaxTeamMembers() {
         return 0;
     }
 
@@ -265,5 +269,17 @@ public class SoloMode extends RSWMap {
     @Override
     public int minimumPlayersToStartMap() {
         return RSWConfig.file().getInt("Config.Min-Players-ToStart");
+    }
+
+    @Override
+    public void removeCage(Location loc) {
+        this.cages.remove(loc);
+        this.save(Data.CAGES, true);
+    }
+
+    @Override
+    public void addCage(Location location) {
+        this.cages.put(location, new RSWSoloCage(this.cages.size() + 1, location, this.getSpectatorLocation()));
+        this.save(Data.CAGES, true);
     }
 }

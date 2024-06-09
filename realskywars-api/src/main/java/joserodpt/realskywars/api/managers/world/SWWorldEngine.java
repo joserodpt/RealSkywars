@@ -31,4 +31,6 @@ public interface SWWorldEngine {
     String getName();
 
     RSWWorld.WorldType getType();
+
+    void save();
 }

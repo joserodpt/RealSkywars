@@ -5,6 +5,7 @@ import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.shop.RSWShopDisplayItem;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,7 +32,7 @@ public abstract class PlayerManagerAPI {
 
     public abstract void stopScoreboards();
 
-    public abstract List<RSWPlayer> getPlayers();
+    public abstract Collection<RSWPlayer> getPlayers();
 
     public abstract void addPlayer(RSWPlayer rswPlayer);
 

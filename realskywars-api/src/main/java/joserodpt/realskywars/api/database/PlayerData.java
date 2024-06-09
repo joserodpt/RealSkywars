@@ -21,8 +21,8 @@ import joserodpt.realskywars.api.RealSkywarsAPI;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -163,8 +163,8 @@ public class PlayerData {
         return this.ranked_games_played;
     }
 
-    public List<String> getBought_items() {
-        return new ArrayList<>(Arrays.asList(this.bought_items.split("/")));
+    public Collection<String> getBought_items() {
+        return Arrays.asList(this.bought_items.split("/"));
     }
 
     public Double getCoins() {

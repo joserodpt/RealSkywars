@@ -8,7 +8,9 @@ import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class MapManagerAPI {
@@ -26,11 +28,11 @@ public abstract class MapManagerAPI {
 
     public abstract List<RSWMap> getMapsForPlayer(RSWPlayer rswPlayer);
 
-    public abstract List<RSWMap> getMaps(MapGamemodes pt);
+    public abstract Collection<RSWMap> getMaps(MapGamemodes pt);
 
-    protected abstract List<RSWCage> getMapCages(String s, Location specLoc);
+    protected abstract Map<Location, RSWCage> getMapCages(String s, Location specLoc);
 
-    protected abstract List<RSWChest> getMapChests(String worldName, String section);
+    protected abstract Map<Location, RSWChest> getMapChests(String worldName, String section);
 
     public abstract void setupSolo(RSWPlayer p, String mapname, String displayName, RSWWorld.WorldType wt, int maxP);
 
@@ -68,7 +70,11 @@ public abstract class MapManagerAPI {
 
     public abstract void addMap(RSWMap s);
 
-    public abstract List<String> getMapNames();
+    public abstract Collection<String> getMapNames();
+
+    public abstract void editMap(RSWPlayer p, RSWMap sw);
+
+    public abstract void finishEdit(RSWPlayer p, RSWMap sw);
 
     public enum MapGamemodes {SOLO, SOLO_RANKED, TEAMS, TEAMS_RANKED, RANKED, ALL}
 }

@@ -21,9 +21,7 @@ import joserodpt.realskywars.api.managers.world.RSWWorld;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class RSWSetupMap {
@@ -84,8 +82,8 @@ public class RSWSetupMap {
         return teams;
     }
 
-    public List<RSWCage> getCages() {
-        return new ArrayList<>(this.cages.values());
+    public Map<Location, RSWCage> getCages() {
+        return this.cages;
     }
 
     public void confirmCages(boolean b) {
@@ -164,8 +162,8 @@ public class RSWSetupMap {
         this.chests.put(swChest.getLocation(), swChest);
     }
 
-    public List<RSWChest> getChests() {
-        return new ArrayList<>(this.chests.values());
+    public Map<Location, RSWChest> getChests() {
+        return this.chests;
     }
 
     public Boolean isRanked() {

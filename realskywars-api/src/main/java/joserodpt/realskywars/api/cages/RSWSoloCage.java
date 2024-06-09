@@ -26,10 +26,10 @@ import java.util.List;
 
 public class RSWSoloCage implements RSWCage {
 
-    private final int id;
-    private final int x, y, z;
-    private final int specx, specy, specz;
-    private final String worldName;
+    private int id;
+    private int x, y, z;
+    private int specx, specy, specz;
+    private String worldName;
     private RSWPlayer p;
 
     public RSWSoloCage(int i, int x, int y, int z, String worldName, int specx, int specy, int specz) {
@@ -43,14 +43,18 @@ public class RSWSoloCage implements RSWCage {
         this.worldName = worldName;
     }
 
-    public Location getLoc() {
+    public RSWSoloCage(int i, Location l, Location specLoc) {
+        this(i, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName(), specLoc.getBlockX(), specLoc.getBlockY(), specLoc.getBlockZ());
+    }
+
+    public Location getLocation() {
         return new Location(Bukkit.getWorld(this.worldName), this.x, this.y, this.z).add(0.5, 0, 0.5);
     }
 
     public void tpPlayer(RSWPlayer p) {
         this.p = p;
         Location lookat = new Location(Bukkit.getWorld(this.worldName), this.specx, this.specy, this.specz);
-        p.teleport(lookAt(getLoc(), lookat));
+        p.teleport(lookAt(getLocation(), lookat));
     }
 
     public int getID() {

@@ -61,6 +61,17 @@ public class RSWChest {
     private int maxItemsPerChest;
     private CountdownTimer chestCTD;
 
+    public RSWChest(Type ct, Location l, BlockFace bf) {
+        this.type = ct;
+        this.x = l.getBlockX();
+        this.y = l.getBlockY();
+        this.z = l.getBlockZ();
+        this.worldName = Objects.requireNonNull(l.getWorld()).getName();
+        this.bf = bf;
+        this.hologram = RealSkywarsAPI.getInstance().getHologramManagerAPI().getHologramInstance();
+        this.clear();
+    }
+
     public RSWChest(Type ct, String worldName, int x, int y, int z, BlockFace bf) {
         this.type = ct;
         this.x = x;

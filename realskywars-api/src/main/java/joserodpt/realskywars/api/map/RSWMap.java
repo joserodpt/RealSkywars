@@ -46,6 +46,7 @@ import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -54,17 +55,19 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public abstract class RSWMap {
 
     private final RSWWorld world;
-    private final MapCuboid mapCuboid;
-    private final List<RSWChest> chests;
-    private final List<RSWSign> signs;
+    private MapCuboid mapCuboid;
+    private final Map<Location, RSWChest> chests;
+    private final Map<Location, RSWSign> signs;
     private final String name;
     private String displayName;
     private final int maxPlayers, borderSize;
@@ -88,7 +91,7 @@ public abstract class RSWMap {
     private RealSkywarsAPI rs;
     private boolean unregistered = false;
 
-    public RSWMap(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean borderEnabled, Location pos1, Location pos2, List<RSWChest> chests, Boolean rankd, Boolean unregistered, RealSkywarsAPI rs) {
+    public RSWMap(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean borderEnabled, Location pos1, Location pos2, Map<Location, RSWChest> chests, Boolean rankd, Boolean unregistered, RealSkywarsAPI rs) {
         this.rs = rs;
 
         this.name = nome;
@@ -318,7 +321,7 @@ public abstract class RSWMap {
 
     public void setTierType(RSWChest.Tier tier) {
         this.chestTier = tier;
-        this.chests.forEach(swChest -> swChest.setLoot(tier.getChest(swChest.getType()), tier.getMaxItemsPerChest()));
+        this.getChests().forEach(swChest -> swChest.setLoot(tier.getChest(swChest.getType()), tier.getMaxItemsPerChest()));
     }
 
     public void setTime(TimeType tt) {
@@ -446,11 +449,11 @@ public abstract class RSWMap {
 
     abstract public Mode getGameMode();
 
-    abstract public List<RSWCage> getCages();
+    abstract public Collection<RSWCage> getCages();
 
-    abstract public List<Team> getTeams();
+    abstract public Collection<Team> getTeams();
 
-    abstract public int maxMembersTeam();
+    abstract public int getMaxTeamMembers();
 
     public void clear() {
         this.world.deleteWorld(OperationReason.RESET);
@@ -509,8 +512,8 @@ public abstract class RSWMap {
         return false;
     }
 
-    public List<RSWChest> getChests() {
-        return this.chests;
+    public Collection<RSWChest> getChests() {
+        return this.chests.values();
     }
 
     public List<RSWEvent> getEvents() {
@@ -520,7 +523,7 @@ public abstract class RSWMap {
     abstract public int getMaxTime();
 
     public RSWChest getChest(Location location) {
-        for (RSWChest chest : this.chests) {
+        for (RSWChest chest : this.getChests()) {
             if (location.equals(chest.getLocation())) {
                 return chest;
             }
@@ -532,8 +535,8 @@ public abstract class RSWMap {
         return this.schematicName;
     }
 
-    private List<RSWSign> loadSigns() {
-        List<RSWSign> list = new ArrayList<>();
+    private Map<Location, RSWSign> loadSigns() {
+        Map<Location, RSWSign> list = new HashMap<>();
 
         if (RSWMapsConfig.file().isList(this.getMapName() + ".Signs")) {
             for (String i : RSWMapsConfig.file().getStringList(this.getMapName() + ".Signs")) {
@@ -544,24 +547,25 @@ public abstract class RSWMap {
                 int y = Integer.parseInt(signData[2]);
                 int z = Integer.parseInt(signData[3]);
 
-                list.add(new RSWSign(this, w.getBlockAt(x, y, z)));
+                Location l = new Location(w, x, y, z);
+                list.put(l, new RSWSign(this, w.getBlockAt(l)));
             }
         }
         return list;
     }
 
     public void addSign(Block b) {
-        this.signs.add(new RSWSign(this, b));
+        this.signs.put(b.getLocation(), new RSWSign(this, b));
         this.saveSigns();
     }
 
     public void updateSigns() {
-        this.signs.forEach(RSWSign::update);
+        this.getSigns().forEach(RSWSign::update);
     }
 
     public void removeSign(Block b) {
         RSWSign tmp = null;
-        for (RSWSign sign : this.signs) {
+        for (RSWSign sign : this.getSigns()) {
             if (sign.getBlock().equals(b)) {
                 tmp = sign;
                 sign.getBehindBlock().setType(Material.BLACK_CONCRETE);
@@ -569,7 +573,7 @@ public abstract class RSWMap {
             }
         }
         if (tmp != null) {
-            this.signs.remove(tmp);
+            this.signs.remove(tmp.getLocation());
         }
 
         this.saveSigns();
@@ -581,8 +585,8 @@ public abstract class RSWMap {
         RSWMapsConfig.save();
     }
 
-    public List<RSWSign> getSigns() {
-        return this.signs;
+    public Collection<RSWSign> getSigns() {
+        return this.signs.values();
     }
 
     public void sendLog(RSWPlayer p, boolean winner) {
@@ -770,7 +774,7 @@ public abstract class RSWMap {
             this.startMapTimer = null;
         }
 
-        this.chests.forEach(RSWChest::clear);
+        this.getChests().forEach(RSWChest::clear);
         this.world.resetWorld(rr);
 
         this.inRoom.clear();
@@ -791,7 +795,7 @@ public abstract class RSWMap {
         this.timePassed = 0;
 
         if (rr != OperationReason.SHUTDOWN) {
-            this.chests.forEach(RSWChest::setChest);
+            this.getChests().forEach(RSWChest::setChest);
         }
 
         this.setState(MapState.AVAILABLE);
@@ -850,6 +854,28 @@ public abstract class RSWMap {
         return this.unregistered;
     }
 
+    public abstract void removeCage(Location loc);
+
+    public abstract void addCage(Location location);
+
+    public void addChest(Block b, RSWChest.Type t) {
+        BlockData blockData = b.getBlockData();
+        BlockFace f = ((Directional) blockData).getFacing();
+        this.chests.put(b.getLocation(), new RSWChest(t, b.getLocation(), f));
+        this.save(Data.CHESTS, true);
+    }
+
+    public void removeChest(Location loc) {
+        for (Location location : this.chests.keySet()) {
+
+            if (location.getX() == loc.getX() && location.getY() == loc.getY() && location.getZ() == loc.getZ()) {
+                this.chests.remove(location);
+                this.save(Data.CHESTS, true);
+                break;
+            }
+        }
+    }
+
     public enum Data {
         ALL, SETTINGS, WORLD, NAME, TYPE, NUM_PLAYERS, CAGES, CHESTS, SPECT_LOC, BORDER
     }
@@ -884,10 +910,11 @@ public abstract class RSWMap {
                 }
                 break;
             case CAGES:
+                RSWMapsConfig.file().remove(this.getMapName() + ".Locations.Cages");
                 switch (this.getGameMode()) {
                     case SOLO:
                         for (RSWCage c : this.getCages()) {
-                            Location loc = c.getLoc();
+                            Location loc = c.getLocation();
                             RSWMapsConfig.file().set(this.getMapName() + ".Locations.Cages." + c.getID() + ".X", loc.getBlockX());
                             RSWMapsConfig.file().set(this.getMapName() + ".Locations.Cages." + c.getID() + ".Y", loc.getBlockY());
                             RSWMapsConfig.file().set(this.getMapName() + ".Locations.Cages." + c.getID() + ".Z", loc.getBlockZ());
@@ -895,7 +922,7 @@ public abstract class RSWMap {
                         break;
                     case TEAMS:
                         for (Team c : this.getTeams()) {
-                            Location loc = c.getTeamCage().getLoc();
+                            Location loc = c.getTeamCage().getLocation();
                             RSWMapsConfig.file().set(this.getMapName() + ".Locations.Cages." + c.getTeamCage().getID() + ".X", loc.getBlockX());
                             RSWMapsConfig.file().set(this.getMapName() + ".Locations.Cages." + c.getTeamCage().getID() + ".Y", loc.getBlockY());
                             RSWMapsConfig.file().set(this.getMapName() + ".Locations.Cages." + c.getTeamCage().getID() + ".Z", loc.getBlockZ());
@@ -905,6 +932,7 @@ public abstract class RSWMap {
                 break;
             case CHESTS:
                 int chestID = 1;
+                RSWMapsConfig.file().remove(this.getMapName() + ".Chests");
                 for (RSWChest chest : this.getChests()) {
                     RSWMapsConfig.file().set(this.getMapName() + ".Chests." + chestID + ".LocationX", chest.getLocation().getBlockX());
                     RSWMapsConfig.file().set(this.getMapName() + ".Chests." + chestID + ".LocationY", chest.getLocation().getBlockY());

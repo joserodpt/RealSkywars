@@ -44,6 +44,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,7 +53,7 @@ public class RSWPlayer {
     private List<RSWGameLog> gamesList = new ArrayList<>();
     private RSWPlayerTab rt;
     private String anonName = "?";
-    private Player p;
+    private Player player;
     private PlayerState state = PlayerState.LOBBY_OR_NOGAME;
     private String language = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getDefaultLanguage();
     private RSWMap room;
@@ -68,17 +69,17 @@ public class RSWPlayer {
     private Double coins = 0D, balanceGame = 0D;
     private RSWPlayerSB playerscoreboard;
     private Material cageBlock = Material.GLASS;
-    private List<String> bought = new ArrayList<>();
+    private List<String> boughtList = new ArrayList<>();
     private MapViewerPref mapViewerPref;
     private RSWKit swKit;
     private Particle bowParticle;
     private Material winblockMaterial;
     private Boolean invincible = false, bot = false, winblockRandom = false;
 
-    public RSWPlayer(Player jog, RSWPlayer.PlayerState estado, int kills, int d, int solowin, int teamwin, Double coi, String lang, List<String> bgh, int l, int gp, int rankedTotalkills, int rankedDeaths, int rankedWinsSolo, int rankedWinsTEAMS, int rankedLoses, int rankedGamesPlayed, List<RSWGameLog> gamesList) {
+    public RSWPlayer(Player jog, RSWPlayer.PlayerState estado, int kills, int d, int solowin, int teamwin, Double coi, String lang, Collection<String> bgh, int l, int gp, int rankedTotalkills, int rankedDeaths, int rankedWinsSolo, int rankedWinsTEAMS, int rankedLoses, int rankedGamesPlayed, Collection<RSWGameLog> gamesList) {
         this.anonName = Text.anonName();
 
-        this.p = jog;
+        this.player = jog;
         this.state = estado;
         this.kills = kills;
         this.winsSolo = solowin;
@@ -86,12 +87,12 @@ public class RSWPlayer {
         this.deaths = d;
         this.coins = coi;
         this.language = lang;
-        this.bought = bgh;
+        this.boughtList = new ArrayList<>(bgh);
         this.loses = l;
         this.gamesPlayed = gp;
         this.playerscoreboard = new RSWPlayerSB(this);
 
-        this.gamesList = gamesList;
+        this.gamesList = new ArrayList<>(gamesList);
 
         this.rankedTotalkills = rankedTotalkills;
         this.rankedDeaths = rankedDeaths;
@@ -111,7 +112,7 @@ public class RSWPlayer {
     }
 
     public <T extends Entity> void spawnAbovePlayer(Class<T> c) {
-        if (this.p != null) {
+        if (this.player != null) {
             Entity ent = this.getWorld().spawn(this.getLocation().add(0, 3, 0), c);
             if (ent instanceof TNTPrimed) {
                 ((TNTPrimed) ent).setFuseTicks(60);
@@ -220,23 +221,23 @@ public class RSWPlayer {
 
     public void sendMessage(String string) {
         if (!this.bot) {
-            this.p.sendMessage(Text.color(string));
+            this.player.sendMessage(Text.color(string));
         }
     }
 
     public void resetData() {
         RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerData(RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerData(this.getPlayer()), true);
         RealSkywarsAPI.getInstance().getPlayerManagerAPI().removePlayer(this);
-        this.p.kickPlayer(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + "§4Your data was cleared with success. \n §cPlease join the server again to complete the reset.");
+        this.player.kickPlayer(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + "§4Your data was cleared with success. \n §cPlease join the server again to complete the reset.");
     }
 
     public String getName() {
-        return this.p == null ? this.anonName : this.p.getName();
+        return this.player == null ? this.anonName : this.player.getName();
     }
 
     public void teleport(Location l) {
-        if (this.p != null) {
-            this.p.teleport(l);
+        if (this.player != null) {
+            this.player.teleport(l);
         }
     }
 
@@ -253,17 +254,17 @@ public class RSWPlayer {
     }
 
     public Location getLocation() {
-        return this.p == null ? null : this.p.getLocation();
+        return this.player == null ? null : this.player.getLocation();
     }
 
     public void playSound(Sound s, int i, int i1) {
-        if (this.p != null) {
-            this.p.playSound(this.p.getLocation(), s, i, i1);
+        if (this.player != null) {
+            this.player.playSound(this.player.getLocation(), s, i, i1);
         }
     }
 
     public World getWorld() {
-        return this.p == null ? null : this.p.getWorld();
+        return this.player == null ? null : this.player.getWorld();
     }
 
     public void executeWinBlock(int t) {
@@ -284,14 +285,14 @@ public class RSWPlayer {
     }
 
     public void setFlying(boolean b) {
-        if (this.p != null) {
-            this.p.setAllowFlight(b);
-            this.p.setFlying(b);
+        if (this.player != null) {
+            this.player.setAllowFlight(b);
+            this.player.setFlying(b);
         }
     }
 
     public UUID getUUID() {
-        return p.getUniqueId();
+        return player.getUniqueId();
     }
 
     public String getLanguage() {
@@ -299,7 +300,7 @@ public class RSWPlayer {
     }
 
     public Player getPlayer() {
-        return this.p;
+        return this.player;
     }
 
     public void setProperty(PlayerProperties pp, Object o) {
@@ -404,7 +405,7 @@ public class RSWPlayer {
     }
 
     public List<String> getBoughtItems() {
-        return this.bought != null ? this.bought : new ArrayList<>();
+        return this.boughtList != null ? this.boughtList : new ArrayList<>();
     }
 
     public Boolean boughtItem(String name, ShopManagerAPI.ShopCategory c) {
@@ -448,12 +449,12 @@ public class RSWPlayer {
     }
 
     public void heal() {
-        if (this.p != null) {
-            this.p.setFireTicks(0);
-            this.p.setHealth(20);
-            this.p.setFoodLevel(20);
+        if (this.player != null) {
+            this.player.setFireTicks(0);
+            this.player.setHealth(20);
+            this.player.setFoodLevel(20);
 
-            this.p.getActivePotionEffects().forEach(potionEffect -> this.p.removePotionEffect(potionEffect.getType()));
+            this.player.getActivePotionEffects().forEach(potionEffect -> this.player.removePotionEffect(potionEffect.getType()));
         }
     }
 
@@ -494,7 +495,7 @@ public class RSWPlayer {
     }
 
     public void sendTitle(String s, String s1, int i, int i1, int i2) {
-        if (this.p != null) this.p.sendTitle(s, s1, i, i1, i2);
+        if (this.player != null) this.player.sendTitle(s, s1, i, i1, i2);
     }
 
     public boolean hasKit() {
@@ -506,7 +507,7 @@ public class RSWPlayer {
     }
 
     public PlayerInventory getInventory() {
-        return this.p.getInventory();
+        return this.player.getInventory();
     }
 
     public boolean hasTeam() {
@@ -514,7 +515,7 @@ public class RSWPlayer {
     }
 
     public String getDisplayName() {
-        return this.bot ? this.anonName : this.p.getDisplayName();
+        return this.bot ? this.anonName : this.player.getDisplayName();
     }
 
     public void sendCenterMessage(String r) {
@@ -542,12 +543,13 @@ public class RSWPlayer {
     public enum PlayerData {CAGE_BLOCK, GAME, COINS, LANG, MAPVIEWER_PREF, BOUGHT_ITEMS, KIT}
 
     public void buyItem(String s) {
-        this.bought.add(Text.strip(s));
+        this.boughtList.add(Text.strip(s));
         RealSkywarsAPI.getInstance().getPlayerManagerAPI().savePlayer(this, PlayerData.BOUGHT_ITEMS);
     }
 
     public void sendActionbar(String s) {
-        if (this.p != null) this.p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Text.color(s)));
+        if (this.player != null)
+            this.player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Text.color(s)));
     }
 
     public boolean hasParty() {
@@ -585,23 +587,23 @@ public class RSWPlayer {
     }
 
     public void closeInventory() {
-        if (this.p != null) {
-            this.p.closeInventory();
+        if (this.player != null) {
+            this.player.closeInventory();
         }
     }
 
     public void setBarNumber(int xp) {
-        if (this.p != null) {
-            this.p.setLevel(xp);
-            this.p.setExp(xp);
+        if (this.player != null) {
+            this.player.setLevel(xp);
+            this.player.setExp(xp);
         }
     }
 
     public void setBarNumber(int xp, int max) {
-        if (this.p != null && xp != 0 && max != 0) {
-            this.p.setLevel(xp);
+        if (this.player != null && xp != 0 && max != 0) {
+            this.player.setLevel(xp);
             float div = (float) xp / (float) max;
-            this.p.setExp(div);
+            this.player.setExp(div);
         }
     }
 

@@ -58,5 +58,9 @@ public class RSWWorld {
         return this.engine.getType();
     }
 
+    public void save() {
+        this.engine.save();
+    }
+
     public enum WorldType {DEFAULT, SCHEMATIC}
 }

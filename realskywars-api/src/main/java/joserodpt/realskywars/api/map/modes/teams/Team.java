@@ -48,7 +48,7 @@ public class Team {
             this.tc.addPlayer(p);
         }
 
-        p.teleport(this.tc.getLoc());
+        p.teleport(this.tc.getLocation());
         p.sendMessage(TranslatableLine.TEAM_JOIN.get(p, true).replace("%team%", getName()));
     }
 

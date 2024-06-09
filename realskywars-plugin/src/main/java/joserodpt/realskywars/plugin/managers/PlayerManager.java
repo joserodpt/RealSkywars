@@ -32,6 +32,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -230,8 +231,8 @@ public class PlayerManager extends PlayerManagerAPI {
     }
 
     @Override
-    public List<RSWPlayer> getPlayers() {
-        return new ArrayList<>(players.values());
+    public Collection<RSWPlayer> getPlayers() {
+        return players.values();
     }
 
     @Override

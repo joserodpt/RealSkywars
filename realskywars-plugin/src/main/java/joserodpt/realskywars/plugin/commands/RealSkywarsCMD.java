@@ -60,6 +60,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
@@ -110,7 +111,7 @@ public class RealSkywarsCMD extends CommandBase {
     public void listcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            List<RSWMap> tmp = rs.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL);
+            Collection<RSWMap> tmp = rs.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL);
             p.sendMessage(TranslatableLine.CMD_MAPS.get(p).replace("%rooms%", "" + tmp.size()));
             for (RSWMap s : tmp) {
                 TextComponent a = new TextComponent(Text.color("&7- &f" + s.getDisplayName()));
@@ -631,7 +632,7 @@ public class RealSkywarsCMD extends CommandBase {
             }
 
             map.setUnregistered(false);
-            TranslatableLine.MAP_REGISTERED.sendDefault(commandSender, true);
+            TranslatableLine.MAP_COMMAND_REGISTERED.sendDefault(commandSender, true);
         } else {
             TranslatableLine.NO_MAP_FOUND.sendDefault(commandSender, true);
         }
@@ -647,7 +648,23 @@ public class RealSkywarsCMD extends CommandBase {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
             RSWMap sw = rs.getMapManagerAPI().getMap(mapName);
             if (sw != null) {
-                //TODO: Implement map editing
+                rs.getMapManagerAPI().editMap(p, sw);
+            } else {
+                TranslatableLine.NO_MAP_FOUND.send(p, true);
+            }
+        } else {
+            commandSender.sendMessage(onlyPlayer);
+        }
+    }
+
+    @SubCommand("finishedit")
+    @Permission("rsw.admin")
+    public void finishedit(final CommandSender commandSender) {
+        if (commandSender instanceof Player) {
+            RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
+            RSWMap sw = rs.getMapManagerAPI().getMap(p.getWorld());
+            if (sw != null) {
+                rs.getMapManagerAPI().finishEdit(p, sw);
             } else {
                 TranslatableLine.NO_MAP_FOUND.send(p, true);
             }

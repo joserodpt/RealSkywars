@@ -33,6 +33,7 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EventListener implements Listener {
@@ -87,8 +88,8 @@ public class EventListener implements Listener {
     @EventHandler
     public void onServerPing(ServerListPingEvent event) {
         if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
-            List<RSWMap> maps = rs.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL);
-            RSWMap map = rs.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL).get(0);
+            List<RSWMap> maps = new ArrayList<>(rs.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL));
+            RSWMap map = maps.get(0);
             event.setMaxPlayers(maps.size() == 1 ? map.getMaxPlayers() : 1);
             event.setMotd(Text.color("&f&lReal&B&LSkywars &r&6Version &e" + rs.getPlugin().getDescription().getVersion() + "\n&dBungeecord &r&2Map: &a" + (maps.size() == 1 ? map.getMapName() : "?")));
         }

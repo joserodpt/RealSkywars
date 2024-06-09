@@ -33,15 +33,18 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TeamsMode extends RSWMap {
 
     private final int maxMembersTeam;
-    private final List<Team> teams;
+    private final Map<Location, Team> teams;
 
-    public TeamsMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, List<Team> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, List<RSWChest> chests, Boolean rankd, Boolean unregistered, RealSkywarsAPI rs) {
+    public TeamsMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, Map<Location, Team> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, Map<Location, RSWChest> chests, Boolean rankd, Boolean unregistered, RealSkywarsAPI rs) {
         super(nome, displayName, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border, pos1, pos2, chests, rankd, unregistered, rs);
 
         this.teams = teams;
@@ -64,7 +67,7 @@ public class TeamsMode extends RSWMap {
 
             super.calculateVotes();
 
-            for (Team t : this.teams) {
+            for (Team t : this.getTeams()) {
                 for (RSWPlayer p : t.getMembers()) {
                     if (p.getPlayer() != null) {
                         p.setBarNumber(0);
@@ -88,7 +91,7 @@ public class TeamsMode extends RSWMap {
 
     @Override
     public boolean canStartMap() {
-        return super.getPlayerCount() < (this.maxMembersTeam() + 1);
+        return super.getPlayerCount() < (this.getMaxTeamMembers() + 1);
     }
 
     @Override
@@ -133,7 +136,7 @@ public class TeamsMode extends RSWMap {
                     }
 
                     //cage
-                    for (Team c : this.teams) {
+                    for (Team c : this.getTeams()) {
                         if (!c.isTeamFull()) {
                             c.addPlayer(p);
                             break;
@@ -189,12 +192,12 @@ public class TeamsMode extends RSWMap {
 
     @Override
     public void resetArena(OperationReason rr) {
-        this.teams.forEach(Team::reset);
+        this.getTeams().forEach(Team::reset);
         super.commonResetArena(rr);
     }
 
     private int getAliveTeams() {
-        return (int) this.teams.stream()
+        return (int) this.getTeams().stream()
                 .filter(t -> !t.isEliminated() && t.getMemberCount() > 0)
                 .count();
     }
@@ -258,17 +261,17 @@ public class TeamsMode extends RSWMap {
     }
 
     @Override
-    public List<RSWCage> getCages() {
+    public Collection<RSWCage> getCages() {
         return null;
     }
 
     @Override
-    public List<Team> getTeams() {
-        return this.teams;
+    public Collection<Team> getTeams() {
+        return this.teams.values();
     }
 
     @Override
-    public int maxMembersTeam() {
+    public int getMaxTeamMembers() {
         return this.maxMembersTeam;
     }
 
@@ -279,6 +282,18 @@ public class TeamsMode extends RSWMap {
 
     @Override
     public int minimumPlayersToStartMap() {
-        return maxMembersTeam() + 1;
+        return getMaxTeamMembers() + 1;
+    }
+
+    @Override
+    public void removeCage(Location loc) {
+        this.teams.remove(loc);
+        this.save(Data.CAGES, true);
+    }
+
+    @Override
+    public void addCage(Location location) {
+        this.teams.put(location, new Team(this.getTeams().size() + 1, this.getMaxTeamMembers(), location, Objects.requireNonNull(location.getWorld()).getName()));
+        this.save(Data.CAGES, true);
     }
 }

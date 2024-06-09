@@ -19,8 +19,9 @@ import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.map.modes.teams.Team;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import org.bukkit.Location;
 
-import java.util.List;
+import java.util.Collection;
 
 public class PlaceholderMode extends RSWMap {
     public PlaceholderMode(String nome) {
@@ -64,17 +65,17 @@ public class PlaceholderMode extends RSWMap {
     }
 
     @Override
-    public List<RSWCage> getCages() {
+    public Collection<RSWCage> getCages() {
         return null;
     }
 
     @Override
-    public List<Team> getTeams() {
+    public Collection<Team> getTeams() {
         return null;
     }
 
     @Override
-    public int maxMembersTeam() {
+    public int getMaxTeamMembers() {
         return 0;
     }
 
@@ -90,5 +91,14 @@ public class PlaceholderMode extends RSWMap {
     @Override
     public int minimumPlayersToStartMap() {
         return 0;
+    }
+
+    @Override
+    public void removeCage(Location loc) {
+    }
+
+    @Override
+    public void addCage(Location location) {
+
     }
 }

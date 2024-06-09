@@ -19,10 +19,10 @@ package joserodpt.realskywars.api.managers.world.engines;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.WorldManagerAPI;
-import joserodpt.realskywars.api.managers.world.SWWorldEngine;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
+import joserodpt.realskywars.api.managers.world.SWWorldEngine;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.utils.WorldEditUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -77,7 +77,7 @@ public class SWWorldSchematicEngine implements SWWorldEngine {
 
     @Override
     public void deleteWorld(RSWMap.OperationReason rr) {
-        RealSkywarsAPI.getInstance().getWorldManagerAPI().clearItems(world);
+        RealSkywarsAPI.getInstance().getWorldManagerAPI().clearDroppedItems(this.getWorld());
         switch (rr) {
             case LOAD:
             case SHUTDOWN:
@@ -102,5 +102,10 @@ public class SWWorldSchematicEngine implements SWWorldEngine {
     @Override
     public RSWWorld.WorldType getType() {
         return RSWWorld.WorldType.SCHEMATIC;
+    }
+
+    @Override
+    public void save() {
+        this.world.save();
     }
 }

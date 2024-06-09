@@ -111,6 +111,10 @@ public class Text {
     }
 
     public static String beautifyMaterialName(Material m) {
+        if (m == null) {
+            return "Unknown";
+        }
+
         String[] parts = m.name().split("_");
         StringBuilder formattedString = new StringBuilder();
 

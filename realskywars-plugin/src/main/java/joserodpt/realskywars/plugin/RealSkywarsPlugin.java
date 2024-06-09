@@ -187,7 +187,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
                 .mapToObj(i -> "Map" + i)
                 .collect(Collectors.toCollection(ArrayList::new)));
 
-        commandManager.getCompletionHandler().register("#maps", input -> realSkywars.getMapManagerAPI().getMapNames());
+        commandManager.getCompletionHandler().register("#maps", input -> new ArrayList<>(realSkywars.getMapManagerAPI().getMapNames()));
         commandManager.getCompletionHandler().register("#boolean", input -> Arrays.asList("false", "true"));
         commandManager.getCompletionHandler().register("#worldtype", input -> Arrays.asList("DEFAULT", "SCHEMATIC"));
         commandManager.getCompletionHandler().register("#kits", input -> realSkywars.getKitManagerAPI().getKits().stream()

@@ -24,8 +24,6 @@ import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -41,11 +39,6 @@ public class WorldManager extends WorldManagerAPI {
 
     public WorldManager(RealSkywarsAPI rs) {
         this.rs = rs;
-    }
-
-    @Override
-    public void clearItems(World w) {
-        w.getEntities().stream().filter(entity -> entity.getType() == EntityType.DROPPED_ITEM).forEach(Entity::remove);
     }
 
     //CREDIT to open source
