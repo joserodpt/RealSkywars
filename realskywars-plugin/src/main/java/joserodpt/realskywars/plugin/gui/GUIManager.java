@@ -45,7 +45,7 @@ public class GUIManager {
 
             new BukkitRunnable() {
                 public void run() {
-                    ShopGUI v = new ShopGUI(p, ShopManagerAPI.Categories.CAGE_BLOCKS);
+                    ShopGUI v = new ShopGUI(p, ShopManagerAPI.ShopCategory.CAGE_BLOCKS);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
@@ -56,7 +56,7 @@ public class GUIManager {
 
             new BukkitRunnable() {
                 public void run() {
-                    ShopGUI v = new ShopGUI(p, ShopManagerAPI.Categories.KITS);
+                    ShopGUI v = new ShopGUI(p, ShopManagerAPI.ShopCategory.KITS);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
@@ -67,7 +67,7 @@ public class GUIManager {
 
             new BukkitRunnable() {
                 public void run() {
-                    ShopGUI v = new ShopGUI(p, ShopManagerAPI.Categories.WIN_BLOCKS);
+                    ShopGUI v = new ShopGUI(p, ShopManagerAPI.ShopCategory.WIN_BLOCKS);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
@@ -78,7 +78,7 @@ public class GUIManager {
 
             new BukkitRunnable() {
                 public void run() {
-                    ShopGUI v = new ShopGUI(p, ShopManagerAPI.Categories.BOW_PARTICLES);
+                    ShopGUI v = new ShopGUI(p, ShopManagerAPI.ShopCategory.BOW_PARTICLES);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
@@ -162,7 +162,7 @@ public class GUIManager {
             p.closeInventory();
             new BukkitRunnable() {
                 public void run() {
-                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.Categories.KITS);
+                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.KITS);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
@@ -174,7 +174,7 @@ public class GUIManager {
 
             new BukkitRunnable() {
                 public void run() {
-                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.Categories.CAGE_BLOCKS);
+                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.CAGE_BLOCKS);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
@@ -186,7 +186,7 @@ public class GUIManager {
 
             new BukkitRunnable() {
                 public void run() {
-                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.Categories.WIN_BLOCKS);
+                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.WIN_BLOCKS);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
@@ -197,7 +197,7 @@ public class GUIManager {
 
             new BukkitRunnable() {
                 public void run() {
-                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.Categories.BOW_PARTICLES);
+                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.BOW_PARTICLES);
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
@@ -293,11 +293,11 @@ public class GUIManager {
         inventory.setItem(event -> {
             if (id == 0) {
                 p.closeInventory();
-                PlayerProfileContentsGUI pc = new PlayerProfileContentsGUI(p, ShopManagerAPI.Categories.KITS);
+                PlayerProfileContentsGUI pc = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.KITS);
                 pc.openInventory(p);
             } else {
                 p.closeInventory();
-                ShopGUI s = new ShopGUI(p, ShopManagerAPI.Categories.KITS);
+                ShopGUI s = new ShopGUI(p, ShopManagerAPI.ShopCategory.KITS);
                 s.openInventory(p);
             }
         }, Itens.createItem(Material.BIRCH_DOOR, 1, ""), 53);

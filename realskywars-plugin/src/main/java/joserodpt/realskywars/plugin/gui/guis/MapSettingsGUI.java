@@ -52,12 +52,6 @@ public class MapSettingsGUI {
     private final ItemStack specoff = Itens.createItem(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &cOFF &7for dead players."));
     private final ItemStack ieon = Itens.createItem(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &aON&7."));
     private final ItemStack ieoff = Itens.createItem(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &cOFF&7."));
-    private final ItemStack aAvailable = Itens.createItem(Material.GREEN_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&aAvailable", "&7Starting", "&7Waiting", "&7Playing", "&7Finishing", "&7Resetting"));
-    private final ItemStack aStarting = Itens.createItem(Material.YELLOW_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&aStarting", "&7Waiting", "&7Playing", "&7Finishing", "&7Resetting"));
-    private final ItemStack aWaiting = Itens.createItem(Material.LIGHT_BLUE_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&aWaiting", "&7Playing", "&7Finishing", "&7Resetting"));
-    private final ItemStack aPlaying = Itens.createItem(Material.RED_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&7Waiting", "&aPlaying", "&7Finishing", "&7Resetting"));
-    private final ItemStack aFinishing = Itens.createItem(Material.GRAY_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&7Waiting", "&7Playing", "&aFinishing", "&7Resetting"));
-    private final ItemStack aResetting = Itens.createItem(Material.PURPLE_CONCRETE, 1, "&9Map Status", Arrays.asList("&fCick to change the map status.", "", "&7Available", "&7Starting", "&7Waiting", "&7Playing", "&7Finishing", "&aResetting"));
     private final ItemStack resetRoom = Itens.createItem(Material.BARRIER, 1, "&9Reset Room", Arrays.asList("&cClick here to reset the room.", "&4NOTE: ALL PLAYERS WILL BE KICKED FROM THE GAME."));
     private final ItemStack borderon = Itens.createItem(Material.ITEM_FRAME, 1, "&9Border", Collections.singletonList("&7Border is turned &aON&7."));
     private final ItemStack borderoff = Itens.createItem(Material.ITEM_FRAME, 1, "&9Border", Collections.singletonList("&7Border is turned &cOFF&7."));
@@ -87,26 +81,7 @@ public class MapSettingsGUI {
         }
 
         // ARENASTATE
-        switch (game.getState()) {
-            case AVAILABLE:
-                inv.setItem(10, aAvailable);
-                break;
-            case FINISHING:
-                inv.setItem(10, aFinishing);
-                break;
-            case PLAYING:
-                inv.setItem(10, aPlaying);
-                break;
-            case RESETTING:
-                inv.setItem(10, aResetting);
-                break;
-            case STARTING:
-                inv.setItem(10, aStarting);
-                break;
-            case WAITING:
-                inv.setItem(10, aWaiting);
-                break;
-        }
+        inv.setItem(10, game.getState().getStateIcon(game.isRanked()));
 
         inv.setItem(13, game.isBorderEnabled() ? borderon : borderoff);
         inv.setItem(14, game.isRanked() ? rankedon : rankedoff);

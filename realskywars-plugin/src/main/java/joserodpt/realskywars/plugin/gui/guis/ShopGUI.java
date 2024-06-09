@@ -25,7 +25,6 @@ import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Pagination;
 import joserodpt.realskywars.plugin.RealSkywars;
 import joserodpt.realskywars.plugin.gui.GUIManager;
-import joserodpt.realskywars.plugin.managers.ShopManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -57,14 +56,14 @@ public class ShopGUI {
     private final Inventory inv;
     private final UUID uuid;
     private final Map<Integer, RSWShopDisplayItem> display = new HashMap<>();
-    private final ShopManagerAPI.Categories cat;
+    private final ShopManagerAPI.ShopCategory cat;
 
-    public ShopGUI(RSWPlayer swPl, ShopManagerAPI.Categories t) {
-        this.uuid = swPl.getUUID();
+    public ShopGUI(RSWPlayer rswp, ShopManagerAPI.ShopCategory t) {
+        this.uuid = rswp.getUUID();
         this.cat = t;
-        inv = Bukkit.getServer().createInventory(null, 54, getTitle(swPl, t));
+        inv = Bukkit.getServer().createInventory(null, 54, t.getCategoryTitle(rswp));
 
-        List<RSWShopDisplayItem> items = RealSkywarsAPI.getInstance().getShopManagerAPI().getCategoryContents(swPl, t).stream().sorted(Comparator.comparingDouble(RSWShopDisplayItem::getPrice))
+        List<RSWShopDisplayItem> items = RealSkywarsAPI.getInstance().getShopManagerAPI().getCategoryContents(rswp, t).stream().sorted(Comparator.comparingDouble(RSWShopDisplayItem::getPrice))
                 .collect(Collectors.toList());
 
         if (!items.isEmpty()) {
@@ -99,7 +98,7 @@ public class ShopGUI {
             inv.setItem(35, Itens.createItem(Material.GREEN_STAINED_GLASS, 1, TranslatableLine.BUTTONS_NEXT_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_NEXT_DESC.getSingle())));
         }
 
-        if (this.cat != ShopManagerAPI.Categories.SPEC_SHOP) {
+        if (this.cat != ShopManagerAPI.ShopCategory.SPEC_SHOP) {
             inv.setItem(49, Itens.createItem(Material.CHEST, 1, TranslatableLine.BUTTONS_MENU_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_MENU_DESC.getSingle())));
         }
 
@@ -139,7 +138,7 @@ public class ShopGUI {
                         switch (e.getRawSlot()) {
                             case 49:
                                 clicker.closeInventory();
-                                if (current.cat != ShopManagerAPI.Categories.SPEC_SHOP) {
+                                if (current.cat != ShopManagerAPI.ShopCategory.SPEC_SHOP) {
                                     GUIManager.openShopMenu(p);
                                 }
                                 break;
@@ -162,7 +161,7 @@ public class ShopGUI {
                         if (current.display.containsKey(e.getRawSlot())) {
                             RSWShopDisplayItem a = current.display.get(e.getRawSlot());
 
-                            if (current.cat == ShopManager.Categories.SPEC_SHOP) {
+                            if (current.cat == ShopManagerAPI.ShopCategory.SPEC_SHOP) {
                                 switch (e.getClick()) {
                                     case SWAP_OFFHAND:
                                         a.addAmount(1);
@@ -197,7 +196,7 @@ public class ShopGUI {
                                     return;
                                 }
 
-                                if (e.getClick() == ClickType.RIGHT && current.cat == ShopManager.Categories.KITS) {
+                                if (e.getClick() == ClickType.RIGHT && current.cat == ShopManagerAPI.ShopCategory.KITS) {
                                     GUIManager.openKitPreview(p, RealSkywars.getInstance().getKitManagerAPI().getKit(a.getName()), 1);
                                     return;
                                 }
@@ -257,23 +256,6 @@ public class ShopGUI {
                 }
             }
         };
-    }
-
-    private String getTitle(RSWPlayer p, ShopManager.Categories t) {
-        switch (t) {
-            case KITS:
-                return TranslatableLine.KITS.get(p);
-            case BOW_PARTICLES:
-                return TranslatableLine.BOWPARTICLE.get(p);
-            case WIN_BLOCKS:
-                return TranslatableLine.WINBLOCK.get(p);
-            case CAGE_BLOCKS:
-                return TranslatableLine.CAGEBLOCK.get(p);
-            case SPEC_SHOP:
-                return TranslatableLine.MENU_SPECTATOR_SHOP_TITLE.get(p);
-            default:
-                return "? not found";
-        }
     }
 
     private boolean lastPage() {

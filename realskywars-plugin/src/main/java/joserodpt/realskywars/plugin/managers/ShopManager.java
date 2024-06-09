@@ -31,26 +31,28 @@ import java.util.stream.Collectors;
 
 public class ShopManager extends ShopManagerAPI {
     private final RealSkywarsAPI rs;
+
     public ShopManager(RealSkywarsAPI rs) {
         this.rs = rs;
     }
+
     @Override
-    public List<RSWShopDisplayItem> getCategoryContents(RSWPlayer p, ShopManager.Categories t) {
-        if (t == Categories.KITS) {
+    public List<RSWShopDisplayItem> getCategoryContents(RSWPlayer p, ShopCategory cat) {
+        if (cat == ShopCategory.KITS) {
             return rs.getKitManagerAPI().getKits().stream()
                     .map(a -> new RSWShopDisplayItem(
                             a.getName(),
                             a.getDisplayName(),
                             a.getIcon(),
                             a.getPrice(),
-                            p.boughtItem(a.getName(), ShopManager.Categories.KITS),
+                            p.boughtItem(a.getName(), ShopCategory.KITS),
                             a.getPermission(),
-                            ShopManager.Categories.KITS))
+                            ShopCategory.KITS))
                     .collect(Collectors.toList());
         }
 
         List<RSWShopDisplayItem> items = new ArrayList<>();
-        if (t == Categories.SPEC_SHOP) {
+        if (cat == ShopCategory.SPEC_SHOP) {
             for (String sa : RSWShopsConfig.file().getStringList("Spectator-Shop")) {
                 // MATERIAL>AMOUNT>PRICE>NAME>PERMISSION
                 String[] parse = sa.split(">");
@@ -72,7 +74,7 @@ public class ShopManager extends ShopManagerAPI {
                 Material m = Material.getMaterial(material);
                 if (m == null) {
                     m = Material.STONE;
-                    RealSkywarsAPI.getInstance().getLogger().severe("[FATAL] Material: " + material + " isn't valid for this item shop! Changed to Stone.");
+                    RealSkywarsAPI.getInstance().getLogger().severe("[FATAL] Material: " + material + " isn'cat valid for this item shop! Changed to Stone.");
                     error = true;
                 }
 
@@ -82,20 +84,7 @@ public class ShopManager extends ShopManagerAPI {
                 items.add(s);
             }
         } else {
-            String cat = null;
-            switch (t) {
-                case CAGE_BLOCKS:
-                    cat = "Cage-Blocks";
-                    break;
-                case WIN_BLOCKS:
-                    cat = "Win-Blocks";
-                    break;
-                case BOW_PARTICLES:
-                    cat = "Bow-Particles";
-                    break;
-            }
-
-            for (String sa : RSWShopsConfig.file().getStringList("Main-Shop." + cat)) {
+            for (String sa : RSWShopsConfig.file().getStringList("Main-Shop." + cat.getCategoryConfigName())) {
                 String[] parse = sa.split(">");
 
                 boolean error = false;
@@ -123,11 +112,11 @@ public class ShopManager extends ShopManagerAPI {
 
                 if (m == null) {
                     m = Material.BARRIER;
-                    Debugger.print(ShopManager.class, "[FATAL] Material: " + material + " isn't valid! Changed to Barrier Material.");
+                    Debugger.print(ShopManager.class, "[FATAL] Material: " + material + " isn'cat valid! Changed to Barrier Material.");
                     error = true;
                 }
 
-                RSWShopDisplayItem s = new RSWShopDisplayItem(name, displayName, m, price, p.boughtItem(name, t), perm, Categories.CAGE_BLOCKS);
+                RSWShopDisplayItem s = new RSWShopDisplayItem(name, displayName, m, price, p.boughtItem(name, cat), perm, ShopCategory.CAGE_BLOCKS);
                 if (material.equalsIgnoreCase("randomblock")) {
                     s.addInfo("RandomBlock", "RandomBlock");
                 }
@@ -136,7 +125,7 @@ public class ShopManager extends ShopManagerAPI {
                     try {
                         s.addInfo("Particle", Particle.valueOf(parse[4]));
                     } catch (Exception e) {
-                        RealSkywarsAPI.getInstance().getLogger().warning("[FATAL] " + parse[4] + " isn't a valid particle! Changed to drip lava.");
+                        RealSkywarsAPI.getInstance().getLogger().warning("[FATAL] " + parse[4] + " isn'cat a valid particle! Changed to drip lava.");
                         s.addInfo("Particle", Particle.DRIP_LAVA);
                     }
                 }

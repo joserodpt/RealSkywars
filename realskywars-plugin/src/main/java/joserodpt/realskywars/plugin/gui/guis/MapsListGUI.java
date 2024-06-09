@@ -266,7 +266,7 @@ public class MapsListGUI {
                 count = g.getPlayerCount();
             }
 
-            return Itens.createItem(getStateMaterial(g), count, TranslatableLine.ITEMS_MAP_TITLE.get(p).replace("%map%", g.getMapName()).replace("%displayname%", g.getDisplayName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(g.isRanked()), variableList(TranslatableList.ITEMS_MAP_DESCRIPTION.get(p), g));
+            return Itens.createItem(g.getState().getStateMaterial(g.isRanked()), count, TranslatableLine.ITEMS_MAP_TITLE.get(p).replace("%map%", g.getMapName()).replace("%displayname%", g.getDisplayName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(g.isRanked()), variableList(TranslatableList.ITEMS_MAP_DESCRIPTION.get(p), g));
         }
     }
 
@@ -282,24 +282,5 @@ public class MapsListGUI {
                 .map(s -> s.replace("%players%", String.valueOf(g.getPlayerCount()))
                         .replace("%maxplayers%", String.valueOf(g.getMaxPlayers())))
                 .collect(Collectors.toList());
-    }
-
-    private Material getStateMaterial(RSWMap g) {
-        switch (g.getState()) {
-            case WAITING:
-                return g.isRanked() ? Material.LIGHT_BLUE_CONCRETE : Material.LIGHT_BLUE_WOOL;
-            case AVAILABLE:
-                return g.isRanked() ? Material.GREEN_CONCRETE : Material.GREEN_WOOL;
-            case STARTING:
-                return g.isRanked() ? Material.YELLOW_CONCRETE : Material.YELLOW_WOOL;
-            case PLAYING:
-                return g.isRanked() ? Material.RED_CONCRETE : Material.RED_WOOL;
-            case FINISHING:
-                return g.isRanked() ? Material.PURPLE_CONCRETE : Material.PURPLE_WOOL;
-            case RESETTING:
-                return g.isRanked() ? Material.BLACK_CONCRETE : Material.BLACK_WOOL;
-            default:
-                return g.isRanked() ? Material.BEACON : Material.DIRT;
-        }
     }
 }

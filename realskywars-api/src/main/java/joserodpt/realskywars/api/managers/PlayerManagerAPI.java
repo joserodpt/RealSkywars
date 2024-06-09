@@ -25,7 +25,7 @@ public abstract class PlayerManagerAPI {
 
     public abstract void loadPlayers();
 
-    public abstract List<RSWShopDisplayItem> getBoughtItems(RSWPlayer player, ShopManagerAPI.Categories t);
+    public abstract List<RSWShopDisplayItem> getBoughtItems(RSWPlayer player, ShopManagerAPI.ShopCategory t);
 
     public abstract int getPlayingPlayers(MapManagerAPI.MapGamemodes pt);
 

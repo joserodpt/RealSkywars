@@ -17,12 +17,12 @@ package joserodpt.realskywars.plugin.gui.guis;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
+import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.shop.RSWShopDisplayItem;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Pagination;
 import joserodpt.realskywars.plugin.gui.GUIManager;
-import joserodpt.realskywars.plugin.managers.ShopManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -52,12 +52,12 @@ public class PlayerProfileContentsGUI {
     private final Inventory inv;
     private final UUID uuid;
     private final Map<Integer, RSWShopDisplayItem> display = new HashMap<>();
-    private final ShopManager.Categories cat;
+    private final ShopManagerAPI.ShopCategory cat;
 
-    public PlayerProfileContentsGUI(RSWPlayer p, ShopManager.Categories t) {
+    public PlayerProfileContentsGUI(RSWPlayer p, ShopManagerAPI.ShopCategory t) {
         this.uuid = p.getUUID();
         this.cat = t;
-        inv = Bukkit.getServer().createInventory(null, 54, getTitle(p, t));
+        inv = Bukkit.getServer().createInventory(null, 54, t.getCategoryTitle(p));
 
         this.p = new Pagination<>(28, RealSkywarsAPI.getInstance().getPlayerManagerAPI().getBoughtItems(p, t));
         fillChest(this.p.getPage(pageNumber));
@@ -114,7 +114,7 @@ public class PlayerProfileContentsGUI {
                                 return;
                             }
 
-                            if (e.getClick() == ClickType.RIGHT && current.cat == ShopManager.Categories.KITS) {
+                            if (e.getClick() == ClickType.RIGHT && current.cat == ShopManagerAPI.ShopCategory.KITS) {
                                 GUIManager.openKitPreview(p, RealSkywarsAPI.getInstance().getKitManagerAPI().getKit(a.getName()), 0);
                                 return;
                             }
@@ -138,7 +138,7 @@ public class PlayerProfileContentsGUI {
                                     }
                                     break;
                             }
-                            p.sendMessage(TranslatableLine.PROFILE_SELECTED.get(p, true).replace("%name%", a.getName()).replace("%type%", current.getTitle(p, ShopManager.Categories.KITS)));
+                            p.sendMessage(TranslatableLine.PROFILE_SELECTED.get(p, true).replace("%name%", a.getName()).replace("%type%", current.cat.getCategoryTitle(p)));
                         }
                     }
                 }
@@ -183,21 +183,6 @@ public class PlayerProfileContentsGUI {
 
     private boolean firstPage() {
         return pageNumber == 0;
-    }
-
-    private String getTitle(RSWPlayer p, ShopManager.Categories t) {
-        switch (t) {
-            case KITS:
-                return TranslatableLine.KITS.get(p);
-            case BOW_PARTICLES:
-                return TranslatableLine.BOWPARTICLE.get(p);
-            case WIN_BLOCKS:
-                return TranslatableLine.WINBLOCK.get(p);
-            case CAGE_BLOCKS:
-                return TranslatableLine.CAGEBLOCK.get(p);
-            default:
-                return "? not found";
-        }
     }
 
     public void fillChest(List<RSWShopDisplayItem> items) {

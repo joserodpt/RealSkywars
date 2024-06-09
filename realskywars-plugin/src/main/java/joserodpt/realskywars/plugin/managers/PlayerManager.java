@@ -20,6 +20,7 @@ import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.database.PlayerData;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.managers.PlayerManagerAPI;
+import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWGameLog;
 import joserodpt.realskywars.api.player.RSWPlayer;
@@ -207,7 +208,7 @@ public class PlayerManager extends PlayerManagerAPI {
     }
 
     @Override
-    public List<RSWShopDisplayItem> getBoughtItems(RSWPlayer player, ShopManager.Categories t) {
+    public List<RSWShopDisplayItem> getBoughtItems(RSWPlayer player, ShopManagerAPI.ShopCategory t) {
         List<RSWShopDisplayItem> bought = rs.getShopManagerAPI().getCategoryContents(player, t).stream()
                 .filter(a -> a != null && a.isBought())
                 .collect(Collectors.toList());
@@ -249,7 +250,7 @@ public class PlayerManager extends PlayerManagerAPI {
         tmp.remove(gp);
 
         Optional<RSWPlayer> search = tmp.stream().filter(c -> c.getState().equals(RSWPlayer.PlayerState.PLAYING)).findAny();
-        if (!search.isPresent() || search.get().isBot()) {
+        if (search.isEmpty() || search.get().isBot()) {
             TranslatableLine.NO_TRACKER.send(gp, true);
             return;
         }

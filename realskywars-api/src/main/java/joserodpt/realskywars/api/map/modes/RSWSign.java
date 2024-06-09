@@ -39,38 +39,23 @@ public class RSWSign {
     }
 
     public void update() {
+        if (this.game == null) {
+            return;
+        }
+
         Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywarsAPI.getInstance().getPlugin(), () -> {
-            if (b.getType().name().contains("SIGN")) {
-                Sign s = (Sign) b.getState();
+            if (this.getBlock().getType().name().contains("SIGN")) {
+                Sign s = (Sign) this.getBlock().getState();
 
                 s.setLine(0, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix());
-                s.setLine(1, Text.color("&b" + game.getMapName()));
-                s.setLine(2, Text.color("&f" + game.getGameMode().name() + " | &f" + game.getPlayerCount() + "&7/&f" + game.getMaxPlayers()));
-                s.setLine(3, Text.color("&b&l" + game.getState().name()));
+                s.setLine(1, Text.color("&b" + this.getGame().getMapName()));
+                s.setLine(2, Text.color("&f" + this.getGame().getGameMode().name() + " | &f" + this.getGame().getPlayerCount() + "&7/&f" + this.getGame().getMaxPlayers()));
+                s.setLine(3, Text.color("&b&l" + this.getGame().getState().name()));
                 s.update();
 
-                this.b.getWorld().getBlockAt(this.getBehindBlock().getLocation()).setType(selectGlass());
+                this.b.getWorld().getBlockAt(this.getBehindBlock().getLocation()).setType(this.getGame().getState().getStateMaterial(this.getGame().isRanked()));
             }
         });
-    }
-
-    private Material selectGlass() {
-        switch (this.game.getState()) {
-            case WAITING:
-                return Material.LIGHT_BLUE_CONCRETE;
-            case AVAILABLE:
-                return Material.GREEN_CONCRETE;
-            case STARTING:
-                return Material.YELLOW_CONCRETE;
-            case PLAYING:
-                return Material.RED_CONCRETE;
-            case FINISHING:
-                return Material.PURPLE_CONCRETE;
-            case RESETTING:
-                return Material.BLACK_CONCRETE;
-            default:
-                return Material.DIRT;
-        }
     }
 
     private Block getGlass(Block b) {
@@ -82,6 +67,10 @@ public class RSWSign {
 
     public Block getBlock() {
         return this.b;
+    }
+
+    public RSWMap getGame() {
+        return this.game;
     }
 
     public Block getBehindBlock() {

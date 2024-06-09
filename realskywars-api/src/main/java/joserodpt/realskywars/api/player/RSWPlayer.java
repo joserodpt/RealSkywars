@@ -407,7 +407,7 @@ public class RSWPlayer {
         return this.bought != null ? this.bought : new ArrayList<>();
     }
 
-    public Boolean boughtItem(String name, ShopManagerAPI.Categories c) {
+    public Boolean boughtItem(String name, ShopManagerAPI.ShopCategory c) {
         return this.getBoughtItems().contains(name + "|" + c.name());
     }
 

@@ -15,12 +15,32 @@ package joserodpt.realskywars.api.managers.holograms;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realskywars.api.managers.holograms.support.DHHologram;
+import joserodpt.realskywars.api.managers.holograms.support.HDHologram;
+import joserodpt.realskywars.api.managers.holograms.support.NoHologram;
 import org.bukkit.Location;
 
 public interface RSWHologram {
-    enum HType {DECENT_HOLOGRAMS, HOLOGRAPHIC_DISPLAYS, NONE}
+    enum HType {
+        DECENT_HOLOGRAMS, HOLOGRAPHIC_DISPLAYS, NONE;
+
+        public RSWHologram getHologramInstance() {
+            switch (this) {
+                case DECENT_HOLOGRAMS:
+                    return new DHHologram();
+                case HOLOGRAPHIC_DISPLAYS:
+                    return new HDHologram();
+                default:
+                    return new NoHologram();
+            }
+        }
+    }
+
     void spawnHologram(Location loc);
+
     void setTime(int seconds);
+
     void deleteHologram();
+
     HType getType();
 }

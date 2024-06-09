@@ -32,6 +32,7 @@ import joserodpt.realskywars.api.player.RSWPlayerTab;
 import joserodpt.realskywars.api.utils.BungeecordUtils;
 import joserodpt.realskywars.api.utils.CountdownTimer;
 import joserodpt.realskywars.api.utils.Demolition;
+import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.MapCuboid;
 import joserodpt.realskywars.api.utils.MathUtils;
 import joserodpt.realskywars.api.utils.Text;
@@ -47,10 +48,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -968,6 +971,107 @@ public abstract class RSWMap {
                     return TranslatableLine.MAP_STATE_RESETTING.get(p);
                 default:
                     return "?";
+            }
+        }
+
+        public Material getStateMaterial(boolean ranked) {
+            switch (this) {
+                case WAITING:
+                    return ranked ? Material.LIGHT_BLUE_CONCRETE : Material.LIGHT_BLUE_WOOL;
+                case AVAILABLE:
+                    return ranked ? Material.GREEN_CONCRETE : Material.GREEN_WOOL;
+                case STARTING:
+                    return ranked ? Material.YELLOW_CONCRETE : Material.YELLOW_WOOL;
+                case PLAYING:
+                    return ranked ? Material.RED_CONCRETE : Material.RED_WOOL;
+                case FINISHING:
+                    return ranked ? Material.PURPLE_CONCRETE : Material.PURPLE_WOOL;
+                case RESETTING:
+                    return ranked ? Material.BLACK_CONCRETE : Material.BLACK_WOOL;
+                default:
+                    return ranked ? Material.BEACON : Material.DIRT;
+            }
+        }
+
+        public ItemStack getStateIcon(Boolean ranked) {
+            switch (this) {
+                case AVAILABLE:
+                    return Itens.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
+                            "&fClick to change the map status.",
+                            "",
+                            "&aAvailable",
+                            "&7Starting",
+                            "&7Waiting",
+                            "&7Playing",
+                            "&7Finishing",
+                            "&7Resetting"
+                    ));
+                case STARTING:
+                    return Itens.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
+                            "&fClick to change the map status.",
+                            "",
+                            "&7Available",
+                            "&aStarting",
+                            "&7Waiting",
+                            "&7Playing",
+                            "&7Finishing",
+                            "&7Resetting"
+                    ));
+                case WAITING:
+                    return Itens.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
+                            "&fClick to change the map status.",
+                            "",
+                            "&7Available",
+                            "&7Starting",
+                            "&aWaiting",
+                            "&7Playing",
+                            "&7Finishing",
+                            "&7Resetting"
+                    ));
+                case PLAYING:
+                    return Itens.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
+                            "&fClick to change the map status.",
+                            "",
+                            "&7Available",
+                            "&7Starting",
+                            "&7Waiting",
+                            "&aPlaying",
+                            "&7Finishing",
+                            "&7Resetting"
+                    ));
+                case FINISHING:
+                    return Itens.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
+                            "&fClick to change the map status.",
+                            "",
+                            "&7Available",
+                            "&7Starting",
+                            "&7Waiting",
+                            "&7Playing",
+                            "&aFinishing",
+                            "&7Resetting"
+                    ));
+                case RESETTING:
+                    return Itens.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
+                            "&fClick to change the map status.",
+                            "",
+                            "&7Available",
+                            "&7Starting",
+                            "&7Waiting",
+                            "&7Playing",
+                            "&7Finishing",
+                            "&aResetting"
+                    ));
+                default:
+                    return Itens.createItem(Material.BEACON, 1, "&9Map Status", Arrays.asList(
+                            "&fClick to change the map status.",
+                            "",
+                            "&7Available",
+                            "&7Starting",
+                            "&7Waiting",
+                            "&7Playing",
+                            "&7Finishing",
+                            "&7Resetting"
+                    ));
             }
         }
     }

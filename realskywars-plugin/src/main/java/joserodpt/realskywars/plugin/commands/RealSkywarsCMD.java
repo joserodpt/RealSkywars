@@ -24,6 +24,7 @@ import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.kits.KitInventory;
 import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
+import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.managers.TransactionManager;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.RSWMap;
@@ -37,7 +38,6 @@ import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerProfileContentsGUI;
 import joserodpt.realskywars.plugin.gui.guis.SettingsGUI;
-import joserodpt.realskywars.plugin.managers.ShopManager;
 import me.mattstudios.mf.annotations.Alias;
 import me.mattstudios.mf.annotations.Command;
 import me.mattstudios.mf.annotations.Completion;
@@ -128,7 +128,7 @@ public class RealSkywarsCMD extends CommandBase {
     public void kitscmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            PlayerProfileContentsGUI ds = new PlayerProfileContentsGUI(p, ShopManager.Categories.KITS);
+            PlayerProfileContentsGUI ds = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.KITS);
             ds.openInventory(p);
         } else {
             commandSender.sendMessage(onlyPlayer);

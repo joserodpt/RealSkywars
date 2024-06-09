@@ -18,17 +18,14 @@ package joserodpt.realskywars.plugin.managers;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.managers.HologramManagerAPI;
 import joserodpt.realskywars.api.managers.holograms.RSWHologram;
-import joserodpt.realskywars.api.managers.holograms.support.DHHologram;
-import joserodpt.realskywars.api.managers.holograms.support.HDHologram;
-import joserodpt.realskywars.api.managers.holograms.support.NoHologram;
 import org.bukkit.Bukkit;
 
 public class HologramManager extends HologramManagerAPI {
-    private RealSkywarsAPI rsa;
+    
     private RSWHologram.HType selected = RSWHologram.HType.NONE;
 
     public HologramManager(RealSkywarsAPI rsa) {
-        this.rsa = rsa;
+
         //select scoreboard plugin
         if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
             this.selected = RSWHologram.HType.HOLOGRAPHIC_DISPLAYS;
@@ -49,13 +46,6 @@ public class HologramManager extends HologramManagerAPI {
 
     @Override
     public RSWHologram getHologramInstance() {
-        switch (this.selected) {
-            case DECENT_HOLOGRAMS:
-                return new DHHologram();
-            case HOLOGRAPHIC_DISPLAYS:
-                return new HDHologram();
-            default:
-                return new NoHologram();
-        }
+        return this.selected.getHologramInstance();
     }
 }

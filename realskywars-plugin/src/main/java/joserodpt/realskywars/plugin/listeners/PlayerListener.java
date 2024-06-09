@@ -23,6 +23,7 @@ import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.effects.RSWBowTrail;
+import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
@@ -32,7 +33,6 @@ import joserodpt.realskywars.plugin.gui.guis.PlayerGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerProfileContentsGUI;
 import joserodpt.realskywars.plugin.gui.guis.ShopGUI;
 import joserodpt.realskywars.plugin.gui.guis.VoteGUI;
-import joserodpt.realskywars.plugin.managers.ShopManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -104,6 +104,9 @@ public class PlayerListener implements Listener {
     public void pegar(EntityPickupItemEvent e) {
         if (e.getEntity() instanceof Player) {
             RSWPlayer gp = rs.getPlayerManagerAPI().getPlayer((Player) e.getEntity());
+            if (gp == null) {
+                return;
+            }
             switch (gp.getState()) {
                 case SPECTATOR:
                 case EXTERNAL_SPECTATOR:
@@ -152,7 +155,7 @@ public class PlayerListener implements Listener {
                             switch (e.getPlayer().getInventory().getItemInMainHand().getType()) {
                                 case BOW:
                                     e.setCancelled(true);
-                                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManager.Categories.KITS);
+                                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.KITS);
                                     v.openInventory(p);
                                     e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                     break;
@@ -196,7 +199,7 @@ public class PlayerListener implements Listener {
                                     break;
                                 case EMERALD:
                                     e.setCancelled(true);
-                                    ShopGUI ss = new ShopGUI(p, ShopManager.Categories.SPEC_SHOP);
+                                    ShopGUI ss = new ShopGUI(p, ShopManagerAPI.ShopCategory.SPEC_SHOP);
                                     ss.openInventory(p);
 
                                     e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);

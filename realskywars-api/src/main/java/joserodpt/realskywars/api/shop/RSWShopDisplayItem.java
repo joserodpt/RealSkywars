@@ -40,9 +40,9 @@ public class RSWShopDisplayItem {
     private Boolean bought = false;
     private String permission;
     private Boolean interactive = true;
-    private ShopManagerAPI.Categories it;
+    private ShopManagerAPI.ShopCategory it;
 
-    public RSWShopDisplayItem(String name, String displayName, Material ma, Double per, Boolean b, String perm, ShopManagerAPI.Categories t) {
+    public RSWShopDisplayItem(String name, String displayName, Material ma, Double per, Boolean b, String perm, ShopManagerAPI.ShopCategory t) {
         this.name = name;
         this.displayName = displayName;
         this.price = per;
@@ -58,7 +58,7 @@ public class RSWShopDisplayItem {
         this.price = price;
         this.permission = perm;
         this.m = ma;
-        this.it = ShopManagerAPI.Categories.SPEC_SHOP;
+        this.it = ShopManagerAPI.ShopCategory.SPEC_SHOP;
     }
 
     public RSWShopDisplayItem() {
@@ -122,7 +122,7 @@ public class RSWShopDisplayItem {
     }
 
     public Double getPrice() {
-        return this.it == ShopManagerAPI.Categories.SPEC_SHOP ? this.price * this.amount : this.price;
+        return this.it == ShopManagerAPI.ShopCategory.SPEC_SHOP ? this.price * this.amount : this.price;
     }
 
     public int getAmount() {
