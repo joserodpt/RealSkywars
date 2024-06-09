@@ -275,7 +275,7 @@ public class MapsListGUI {
     }
 
     private List<String> variableList(List<String> list, RSWMap g) {
-        if (!g.isUnregistered()) {
+        if (g.isUnregistered()) {
             list.add("&c&lUNREGISTERED");
         }
         return list.stream()

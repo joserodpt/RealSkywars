@@ -837,7 +837,7 @@ public abstract class RSWMap {
 
     public void setUnregistered(boolean b) {
         this.unregistered = b;
-        if (!b) {
+        if (b) {
             this.kickPlayers(null);
         }
         this.save(Data.SETTINGS, true);

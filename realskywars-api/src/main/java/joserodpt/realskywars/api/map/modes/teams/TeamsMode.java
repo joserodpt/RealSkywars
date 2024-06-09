@@ -102,6 +102,11 @@ public class TeamsMode extends RSWMap {
 
     @Override
     public void addPlayer(RSWPlayer p) {
+        if (this.isUnregistered()) {
+            TranslatableLine.MAP_IS_UNREGISTERED.send(p, true);
+            return;
+        }
+
         if (super.getRealSkywarsAPI().getPartiesManagerAPI().checkForParties(p, this)) {
             switch (this.getState()) {
                 case RESETTING:

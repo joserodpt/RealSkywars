@@ -54,6 +54,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class MapManager extends MapManagerAPI {
@@ -146,19 +147,19 @@ public class MapManager extends MapManagerAPI {
         List<RSWMap> f = new ArrayList<>();
         switch (rswPlayer.getMapViewerPref()) {
             case MAPV_ALL:
-                f.addAll(rswPlayer.getPlayer().hasPermission("rsw.admin") || rswPlayer.getPlayer().isOp() ? this.maps.values() : this.maps.values().stream().filter(RSWMap::isUnregistered).collect(Collectors.toList()));
+                f.addAll(rswPlayer.getPlayer().hasPermission("rsw.admin") || rswPlayer.getPlayer().isOp() ? this.maps.values() : this.maps.values().stream().filter(Predicate.not(RSWMap::isUnregistered)).collect(Collectors.toList()));
                 break;
             case MAPV_WAITING:
-                f.addAll(this.maps.values().stream().filter(r -> r.getState().equals(RSWMap.MapState.WAITING) && r.isUnregistered()).collect(Collectors.toList()));
+                f.addAll(this.maps.values().stream().filter(r -> r.getState().equals(RSWMap.MapState.WAITING) && !r.isUnregistered()).collect(Collectors.toList()));
                 break;
             case MAPV_STARTING:
-                f.addAll(this.maps.values().stream().filter(r -> r.getState().equals(RSWMap.MapState.STARTING) && r.isUnregistered()).collect(Collectors.toList()));
+                f.addAll(this.maps.values().stream().filter(r -> r.getState().equals(RSWMap.MapState.STARTING) && !r.isUnregistered()).collect(Collectors.toList()));
                 break;
             case MAPV_AVAILABLE:
-                f.addAll(this.maps.values().stream().filter(r -> r.getState().equals(RSWMap.MapState.AVAILABLE) && r.isUnregistered()).collect(Collectors.toList()));
+                f.addAll(this.maps.values().stream().filter(r -> r.getState().equals(RSWMap.MapState.AVAILABLE) && !r.isUnregistered()).collect(Collectors.toList()));
                 break;
             case MAPV_SPECTATE:
-                f.addAll(this.maps.values().stream().filter(r -> (r.getState().equals(RSWMap.MapState.PLAYING) || r.getState().equals(RSWMap.MapState.FINISHING) && r.isUnregistered())).collect(Collectors.toList()));
+                f.addAll(this.maps.values().stream().filter(r -> (r.getState().equals(RSWMap.MapState.PLAYING) || r.getState().equals(RSWMap.MapState.FINISHING) && !r.isUnregistered())).collect(Collectors.toList()));
                 break;
             case SOLO:
                 f.addAll(this.getMaps(MapGamemodes.SOLO));
@@ -184,15 +185,15 @@ public class MapManager extends MapManagerAPI {
             case ALL:
                 return new ArrayList<>(this.maps.values());
             case SOLO:
-                return this.maps.values().stream().filter(r -> r.getGameMode().equals(RSWMap.Mode.SOLO) && r.isUnregistered()).collect(Collectors.toList());
+                return this.maps.values().stream().filter(r -> r.getGameMode().equals(RSWMap.Mode.SOLO) && !r.isUnregistered()).collect(Collectors.toList());
             case TEAMS:
-                return this.maps.values().stream().filter(r -> r.getGameMode().equals(RSWMap.Mode.TEAMS) && r.isUnregistered()).collect(Collectors.toList());
+                return this.maps.values().stream().filter(r -> r.getGameMode().equals(RSWMap.Mode.TEAMS) && !r.isUnregistered()).collect(Collectors.toList());
             case RANKED:
-                return this.maps.values().stream().filter(rswGame -> rswGame.isRanked() && rswGame.isUnregistered()).collect(Collectors.toList());
+                return this.maps.values().stream().filter(rswGame -> rswGame.isRanked() && !rswGame.isUnregistered()).collect(Collectors.toList());
             case SOLO_RANKED:
-                return this.maps.values().stream().filter(r -> r.isRanked() && r.isUnregistered() && r.getGameMode().equals(RSWMap.Mode.SOLO)).collect(Collectors.toList());
+                return this.maps.values().stream().filter(r -> r.isRanked() && !r.isUnregistered() && r.getGameMode().equals(RSWMap.Mode.SOLO)).collect(Collectors.toList());
             case TEAMS_RANKED:
-                return this.maps.values().stream().filter(r -> r.isRanked() && r.isUnregistered() && r.getGameMode().equals(RSWMap.Mode.TEAMS)).collect(Collectors.toList());
+                return this.maps.values().stream().filter(r -> r.isRanked() && !r.isUnregistered() && r.getGameMode().equals(RSWMap.Mode.TEAMS)).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }

@@ -97,7 +97,7 @@ public class SoloMode extends RSWMap {
 
     @Override
     public void addPlayer(RSWPlayer p) {
-        if (!this.isUnregistered()) {
+        if (this.isUnregistered()) {
             TranslatableLine.MAP_IS_UNREGISTERED.send(p, true);
             return;
         }
