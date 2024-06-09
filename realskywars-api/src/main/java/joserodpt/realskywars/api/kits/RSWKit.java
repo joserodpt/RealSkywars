@@ -65,22 +65,22 @@ public class RSWKit {
         this.buyable = false;
     }
 
-    public List<String> getDescription(boolean shop) {
+    public List<String> getDescription(RSWPlayer p, boolean shop) {
         if (!this.buyable) {
             return Collections.emptyList();
         }
 
         List<String> desc = new ArrayList<>();
 
-        desc.add(TranslatableLine.KIT_PRICE.getSingle().replace("%price%", this.price.toString()));
+        desc.add(TranslatableLine.KIT_PRICE.get(p).replace("%price%", this.price.toString()));
 
         //contents
         if (this.hasItems()) {
             desc.add("");
-            desc.add(TranslatableLine.KIT_CONTAINS.getSingle());
+            desc.add(TranslatableLine.KIT_CONTAINS.get(p));
 
             for (ItemStack s : this.getKitInventory().getListInventory()) {
-                desc.add(TranslatableLine.KIT_ITEM.getSingle().replace("%amount%", s.getAmount() + "").replace("%item%", RealSkywarsAPI.getInstance().getNMS().getItemName(s)));
+                desc.add(TranslatableLine.KIT_ITEM.get(p).replace("%amount%", s.getAmount() + "").replace("%item%", RealSkywarsAPI.getInstance().getNMS().getItemName(s)));
             }
         }
 
@@ -89,7 +89,7 @@ public class RSWKit {
         }
 
         desc.add("");
-        desc.add(shop ? TranslatableLine.KIT_BUY.getSingle() : TranslatableLine.KIT_SELECT.getSingle());
+        desc.add(shop ? TranslatableLine.KIT_BUY.get(p) : TranslatableLine.KIT_SELECT.get(p));
 
         return desc;
     }

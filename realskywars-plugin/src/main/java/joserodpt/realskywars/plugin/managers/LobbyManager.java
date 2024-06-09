@@ -50,7 +50,7 @@ public class LobbyManager extends LobbyManagerAPI {
 
     @Override
     public void tpToLobby(Player player) {
-        if (this.lobbyLOC != null) {
+        if (this.lobbyLOC != null && player != null) {
             player.teleport(this.lobbyLOC);
         }
     }

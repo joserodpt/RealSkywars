@@ -28,7 +28,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class RSWShopDisplayItem {
@@ -71,15 +70,12 @@ public class RSWShopDisplayItem {
     }
 
     private String formatName(String name) {
-        String ret;
         try {
             Material m = Material.getMaterial(Text.strip(name));
-            ret = "&b" + Text.beautifyMaterialName(m);
+            return "&b" + RealSkywarsAPI.getInstance().getNMS().getItemName(new ItemStack(m));
         } catch (Exception e) {
-            ret = name;
+            return "&r&f" + name;
         }
-        ret = "&r&f" + ret;
-        return ret;
     }
 
     public Object getInfo(String s) {
@@ -138,16 +134,12 @@ public class RSWShopDisplayItem {
         switch (this.it) {
             case KITS:
                 RSWKit k = RealSkywarsAPI.getInstance().getKitManagerAPI().getKit(name);
-                return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), "&r&f" + k.getDisplayName(), k.getDescription(false)) : Itens.createItem(m, 1, "&r&f" + k.getDisplayName(), k.getDescription(true));
+                return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), "&r&f" + k.getDisplayName(), k.getDescription(p, false)) : Itens.createItem(m, 1, "&r&f" + k.getDisplayName(), k.getDescription(p, true));
             case SPEC_SHOP:
-                return Itens.createItem(m, 1, "&f" + this.amount + "x " + this.getDisplayName(), makeSpecShopDescription());
+                return Itens.createItem(m, 1, "&f" + this.amount + "x " + this.getDisplayName(), Arrays.asList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%price%", this.getPrice().toString()), "", "&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount."));
             default:
-                return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), formatName(this.getDisplayName()), Collections.singletonList(TranslatableLine.SHOP_ALREADY_BOUGHT.get(p))) : Itens.createItem(m, 1, formatName(this.getDisplayName()), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%price%", this.getPrice().toString())));
+                return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), formatName(name), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_SELECT.get(p))) : Itens.createItem(m, 1, formatName(this.getDisplayName()), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%coins%", this.getPrice().toString())));
         }
-    }
-
-    private List<String> makeSpecShopDescription() {
-        return Arrays.asList(TranslatableLine.SHOP_CLICK_2_BUY.getSingle().replace("%price%", this.getPrice().toString()), "", "&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount.");
     }
 
     public Material getMaterial() {

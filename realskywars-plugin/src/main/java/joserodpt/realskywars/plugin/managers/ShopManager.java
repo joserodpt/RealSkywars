@@ -74,7 +74,7 @@ public class ShopManager extends ShopManagerAPI {
                 Material m = Material.getMaterial(material);
                 if (m == null) {
                     m = Material.STONE;
-                    RealSkywarsAPI.getInstance().getLogger().severe("[FATAL] Material: " + material + " isn'cat valid for this item shop! Changed to Stone.");
+                    RealSkywarsAPI.getInstance().getLogger().severe("[FATAL] Material: " + material + " isn't a valid for this item shop! Changed to Stone.");
                     error = true;
                 }
 
@@ -112,7 +112,7 @@ public class ShopManager extends ShopManagerAPI {
 
                 if (m == null) {
                     m = Material.BARRIER;
-                    Debugger.print(ShopManager.class, "[FATAL] Material: " + material + " isn'cat valid! Changed to Barrier Material.");
+                    Debugger.print(ShopManager.class, "[FATAL] Material: " + material + " isn't valid! Changed to Barrier Material.");
                     error = true;
                 }
 
@@ -125,7 +125,7 @@ public class ShopManager extends ShopManagerAPI {
                     try {
                         s.addInfo("Particle", Particle.valueOf(parse[4]));
                     } catch (Exception e) {
-                        RealSkywarsAPI.getInstance().getLogger().warning("[FATAL] " + parse[4] + " isn'cat a valid particle! Changed to drip lava.");
+                        RealSkywarsAPI.getInstance().getLogger().warning("[FATAL] " + parse[4] + " isn't a valid particle! Changed to drip lava.");
                         s.addInfo("Particle", Particle.DRIP_LAVA);
                     }
                 }

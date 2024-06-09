@@ -211,7 +211,7 @@ public class ShopGUI {
                                             p.buyItem(a.getName() + "|" + current.cat.name());
 
                                             a.setBought(true);
-                                            current.inv.setItem(e.getRawSlot(), Itens.createItemLoreEnchanted(e.getCurrentItem().getType(), 1, e.getCurrentItem().getItemMeta().getDisplayName(), Collections.singletonList(TranslatableLine.SHOP_ALREADY_BOUGHT.get(p).replace("%name%", a.getName()))));
+                                            current.inv.setItem(e.getRawSlot(), Itens.createItemLoreEnchanted(e.getCurrentItem().getType(), 1, e.getCurrentItem().getItemMeta().getDisplayName(), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_SELECT.get(p))));
                                             p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.get(p, true).replace("%name%", a.getName()).replace("%coins%", a.getPrice() + ""));
                                         } else {
                                             p.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(p, true).replace("%coins%", RealSkywarsAPI.getInstance().getCurrencyAdapter().getCoins(p) + ""));

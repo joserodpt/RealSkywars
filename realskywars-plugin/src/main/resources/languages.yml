@@ -81,6 +81,7 @@ Languages:
         Already-Bought: "&fYou already bought &b%name%&f."
         No-Permission: "&fYou &cdon't have permission &fto buy this item."
         Not-Buyable: "&fThis item &cisn't &abuyable&f."
+        Click-To-Select: "&fClick here to select this item."
       Commands:
         No-Permission: "&cYou don't have permission to execute this command."
         Config-Reload: "&aConfiguration reloaded."
