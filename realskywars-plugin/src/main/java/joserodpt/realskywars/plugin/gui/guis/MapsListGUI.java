@@ -275,6 +275,9 @@ public class MapsListGUI {
     }
 
     private List<String> variableList(List<String> list, RSWMap g) {
+        if (!g.isUnregistered()) {
+            list.add("&c&lUNREGISTERED");
+        }
         return list.stream()
                 .map(s -> s.replace("%players%", String.valueOf(g.getPlayerCount()))
                         .replace("%maxplayers%", String.valueOf(g.getMaxPlayers())))

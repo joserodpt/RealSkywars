@@ -83,14 +83,15 @@ public abstract class RSWMap {
     private TimeType timeType = TimeType.DAY;
     private List<RSWEvent> events;
     private RealSkywarsAPI rs;
-    private boolean registered = true;
+    private boolean unregistered = false;
 
-    public RSWMap(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean borderEnabled, Location pos1, Location pos2, List<RSWChest> chests, Boolean rankd, RealSkywarsAPI rs) {
+    public RSWMap(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean borderEnabled, Location pos1, Location pos2, List<RSWChest> chests, Boolean rankd, Boolean unregistered, RealSkywarsAPI rs) {
         this.rs = rs;
 
         this.name = nome;
         this.displayName = displayName;
         this.schematicName = schematicName;
+        this.unregistered = unregistered;
 
         this.mapCuboid = new MapCuboid(pos1, pos2);
         this.borderSize = this.mapCuboid.getSizeX();
@@ -834,12 +835,16 @@ public abstract class RSWMap {
         this.displayName = displayName;
     }
 
-    public void setRegistered(boolean b) {
-        this.registered = b;
+    public void setUnregistered(boolean b) {
+        this.unregistered = b;
+        if (!b) {
+            this.kickPlayers(TranslatableLine.ADMIN_SHUTDOWN.getSingle());
+        }
+        this.save(Data.SETTINGS, true);
     }
 
-    public boolean isRegistered() {
-        return registered;
+    public boolean isUnregistered() {
+        return this.unregistered;
     }
 
     public enum Data {
@@ -919,9 +924,9 @@ public abstract class RSWMap {
                 RSWMapsConfig.file().set(this.getMapName() + ".Locations.Spectator.Z", this.getSpectatorLocation().getZ());
                 RSWMapsConfig.file().set(this.getMapName() + ".Locations.Spectator.Yaw", this.getSpectatorLocation().getYaw());
                 RSWMapsConfig.file().set(this.getMapName() + ".Locations.Spectator.Pitch", this.getSpectatorLocation().getPitch());
-
                 break;
             case SETTINGS:
+                RSWMapsConfig.file().set(this.getMapName() + ".Settings.Unregistered", this.isUnregistered());
                 RSWMapsConfig.file().set(this.getMapName() + ".Settings.DisplayName", this.getDisplayName());
                 RSWMapsConfig.file().set(this.getMapName() + ".Settings.GameType", this.getGameMode().name());
                 RSWMapsConfig.file().set(this.getMapName() + ".Settings.Spectator", this.isSpectatorEnabled());

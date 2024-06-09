@@ -24,14 +24,15 @@ import joserodpt.realskywars.api.map.modes.PlaceholderMode;
 import joserodpt.realskywars.api.map.modes.RSWSign;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.player.RSWPlayerItems;
-import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -44,31 +45,28 @@ public class GamesManager extends GamesManagerAPI {
         this.rs = rs;
     }
 
-    private final List<RSWMap> games = new ArrayList<>();
+    private final Map<String, RSWMap> games = new HashMap<>();
     private Location lobbyLOC;
     private Boolean loginTP = true;
 
     @Override
-    public RSWMap getMatch(World world) {
-        return this.games.stream()
+    public RSWMap getMap(World world) {
+        return this.games.values().stream()
                 .filter(sw -> sw.getRSWWorld().getWorld().equals(world))
                 .findFirst()
                 .orElse(null);
     }
 
     @Override
-    public RSWMap getGame(String name) {
-        return this.games.stream()
-                .filter(g -> g.getMapName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElse(null);
+    public RSWMap getMap(String name) {
+        return this.games.get(name);
     }
 
     @Override
     public void endGames() {
         this.endingGames = true;
 
-        this.games.parallelStream().forEach(g -> {
+        this.games.values().parallelStream().forEach(g -> {
             g.kickPlayers(TranslatableLine.ADMIN_SHUTDOWN.getSingle());
             g.resetArena(RSWMap.OperationReason.SHUTDOWN);
         });
@@ -79,19 +77,19 @@ public class GamesManager extends GamesManagerAPI {
         List<RSWMap> f = new ArrayList<>();
         switch (rswPlayer.getMapViewerPref()) {
             case MAPV_ALL:
-                f.addAll(rswPlayer.getPlayer().hasPermission("rsw.admin") || rswPlayer.getPlayer().isOp() ? this.games : this.games.stream().filter(RSWMap::isRegistered).collect(Collectors.toList()));
+                f.addAll(rswPlayer.getPlayer().hasPermission("rsw.admin") || rswPlayer.getPlayer().isOp() ? this.games.values() : this.games.values().stream().filter(RSWMap::isUnregistered).collect(Collectors.toList()));
                 break;
             case MAPV_WAITING:
-                f.addAll(this.games.stream().filter(r -> r.getState().equals(RSWMap.MapState.WAITING) && r.isRegistered()).collect(Collectors.toList()));
+                f.addAll(this.games.values().stream().filter(r -> r.getState().equals(RSWMap.MapState.WAITING) && r.isUnregistered()).collect(Collectors.toList()));
                 break;
             case MAPV_STARTING:
-                f.addAll(this.games.stream().filter(r -> r.getState().equals(RSWMap.MapState.STARTING) && r.isRegistered()).collect(Collectors.toList()));
+                f.addAll(this.games.values().stream().filter(r -> r.getState().equals(RSWMap.MapState.STARTING) && r.isUnregistered()).collect(Collectors.toList()));
                 break;
             case MAPV_AVAILABLE:
-                f.addAll(this.games.stream().filter(r -> r.getState().equals(RSWMap.MapState.AVAILABLE) && r.isRegistered()).collect(Collectors.toList()));
+                f.addAll(this.games.values().stream().filter(r -> r.getState().equals(RSWMap.MapState.AVAILABLE) && r.isUnregistered()).collect(Collectors.toList()));
                 break;
             case MAPV_SPECTATE:
-                f.addAll(this.games.stream().filter(r -> (r.getState().equals(RSWMap.MapState.PLAYING) || r.getState().equals(RSWMap.MapState.FINISHING) && r.isRegistered())).collect(Collectors.toList()));
+                f.addAll(this.games.values().stream().filter(r -> (r.getState().equals(RSWMap.MapState.PLAYING) || r.getState().equals(RSWMap.MapState.FINISHING) && r.isUnregistered())).collect(Collectors.toList()));
                 break;
             case SOLO:
                 f.addAll(this.getGames(GameModes.SOLO));
@@ -115,17 +113,17 @@ public class GamesManager extends GamesManagerAPI {
     public List<RSWMap> getGames(GameModes pt) {
         switch (pt) {
             case ALL:
-                return this.games;
+                return new ArrayList<>(this.games.values());
             case SOLO:
-                return this.games.stream().filter(r -> r.getGameMode().equals(RSWMap.Mode.SOLO) && r.isRegistered()).collect(Collectors.toList());
+                return this.games.values().stream().filter(r -> r.getGameMode().equals(RSWMap.Mode.SOLO) && r.isUnregistered()).collect(Collectors.toList());
             case TEAMS:
-                return this.games.stream().filter(r -> r.getGameMode().equals(RSWMap.Mode.TEAMS) && r.isRegistered()).collect(Collectors.toList());
+                return this.games.values().stream().filter(r -> r.getGameMode().equals(RSWMap.Mode.TEAMS) && r.isUnregistered()).collect(Collectors.toList());
             case RANKED:
-                return this.games.stream().filter(rswGame -> rswGame.isRanked() && rswGame.isRegistered()).collect(Collectors.toList());
+                return this.games.values().stream().filter(rswGame -> rswGame.isRanked() && rswGame.isUnregistered()).collect(Collectors.toList());
             case SOLO_RANKED:
-                return this.games.stream().filter(r -> r.isRanked() && r.isRegistered() && r.getGameMode().equals(RSWMap.Mode.SOLO)).collect(Collectors.toList());
+                return this.games.values().stream().filter(r -> r.isRanked() && r.isUnregistered() && r.getGameMode().equals(RSWMap.Mode.SOLO)).collect(Collectors.toList());
             case TEAMS_RANKED:
-                return this.games.stream().filter(r -> r.isRanked() && r.isRegistered() && r.getGameMode().equals(RSWMap.Mode.TEAMS)).collect(Collectors.toList());
+                return this.games.values().stream().filter(r -> r.isRanked() && r.isUnregistered() && r.getGameMode().equals(RSWMap.Mode.TEAMS)).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
@@ -197,8 +195,8 @@ public class GamesManager extends GamesManagerAPI {
     }
 
     @Override
-    public void addRoom(RSWMap s) {
-        this.games.add(s);
+    public void addMap(RSWMap s) {
+        this.games.put(s.getMapName(), s);
     }
 
     @Override
@@ -208,9 +206,7 @@ public class GamesManager extends GamesManagerAPI {
 
     @Override
     public List<String> getRoomNames() {
-        return this.games.stream()
-                .map(gameRoom -> Text.strip(gameRoom.getMapName()))
-                .collect(Collectors.toList());
+        return new ArrayList<>(this.games.keySet());
     }
 
     @Override
@@ -237,7 +233,7 @@ public class GamesManager extends GamesManagerAPI {
                     return;
                 }
 
-                TranslatableLine.GAME_FOUND.send(player, true);
+                TranslatableLine.MAP_FOUND.send(player, true);
                 if (player.isInMatch()) {
                     player.getMatch().removePlayer(player);
                 }
@@ -246,7 +242,7 @@ public class GamesManager extends GamesManagerAPI {
                     rs.getPlayerManagerAPI().getTeleporting().remove(player.getUUID());
                 }, 5);
             } else {
-                TranslatableLine.NO_GAME_FOUND.send(player, true);
+                TranslatableLine.NO_MAP_FOUND.send(player, true);
                 rs.getPlayerManagerAPI().getTeleporting().remove(player.getUUID());
 
                 if (this.getLobbyLocation() != null && this.getLobbyLocation().getWorld() != null && Objects.equals(this.getLobbyLocation().getWorld(), player.getWorld())) {
@@ -258,7 +254,7 @@ public class GamesManager extends GamesManagerAPI {
 
     @Override
     public Optional<RSWMap> findSuitableGame(RSWMap.Mode type) {
-        return type == null ? this.games.stream().findFirst() : this.games.stream()
+        return type == null ? this.games.values().stream().findFirst() : this.games.values().stream()
                 .filter(game -> game.getGameMode().equals(type) &&
                         (game.getState().equals(RSWMap.MapState.AVAILABLE) ||
                                 game.getState().equals(RSWMap.MapState.STARTING) ||

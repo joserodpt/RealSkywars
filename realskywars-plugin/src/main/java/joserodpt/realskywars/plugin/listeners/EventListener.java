@@ -51,7 +51,7 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void projectileHitEvent(ProjectileHitEvent e) {
-        RSWMap match = rs.getGameManagerAPI().getMatch(e.getEntity().getWorld());
+        RSWMap match = rs.getGameManagerAPI().getMap(e.getEntity().getWorld());
         if (match != null && match.getProjectileTier() == RSWMap.ProjectileType.BREAK_BLOCKS) {
             Projectile projectile = e.getEntity();
             if (projectile instanceof EnderPearl) {
@@ -71,13 +71,13 @@ public class EventListener implements Listener {
             event.setLine(0, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix());
             String name = event.getLine(1);
 
-            RSWMap m = rs.getGameManagerAPI().getGame(name);
+            RSWMap m = rs.getGameManagerAPI().getMap(name);
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(event.getPlayer());
 
             if (m != null && (event.getPlayer().isOp() || p.getPlayer().hasPermission("rs.admin"))) {
                 m.addSign(event.getBlock());
             } else {
-                TranslatableLine.NO_GAME_FOUND.send(p, true);
+                TranslatableLine.NO_MAP_FOUND.send(p, true);
             }
         }
     }

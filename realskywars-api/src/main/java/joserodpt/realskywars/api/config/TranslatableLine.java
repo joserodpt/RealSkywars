@@ -40,15 +40,20 @@ public enum TranslatableLine {
     CMD_MAPS(".Messages.Commands.Maps"),
     CMD_PLAYERS(".Messages.Commands.Players"),
     CMD_FINISHSETUP(".Messages.Commands.Finish-Setup"),
-    NO_GAME_FOUND(".Messages.Commands.No-Game-Found"),
-    GAME_FOUND(".Messages.Commands.Game-Found"),
+    NO_MAP_FOUND(".Messages.Commands.No-Map-Found"),
+    MAP_FOUND(".Messages.Commands.Map-Found"),
     NO_TIER_FOUND(".Messages.Commands.No-Tier-Found"),
     TIER_SET(".Messages.System.Tier-Set"),
     CHEST_BASIC(".Messages.Vote.Chests.Basic"),
     CHEST_NORMAL(".Messages.Vote.Chests.Normal"),
     CHEST_EPIC(".Messages.Vote.Chests.Epic"),
     NO_PLAYER_FOUND(".Messages.Commands.No-Player-Found"),
+    MAP_REGISTERED(".Messages.Commands.Map-Registered"),
+    MAP_IS_UNREGISTERED(".Messages.Commands.Map-Is-Unregistered"),
     MAP_UNREGISTERED(".Messages.Commands.Map-Unregistered"),
+    MAP_ALREADY_REGISTERED(".Messages.Commands.Map-Already-Registered"),
+    MAP_ALREADY_UNREGISTERED(".Messages.Commands.Map-Already-Unregistered"),
+    MAP_RENAMED(".Messages.Commands.Map-Renamed"),
     MAP_EXISTS(".Messages.Commands.Map-Exists"),
     KIT_EXISTS(".Messages.Commands.Kit-Exists"),
     LOBBYLOC_NOT_SET(".Messages.Commands.Lobby-Loc-Not-Set"),
@@ -198,7 +203,7 @@ public enum TranslatableLine {
     }
 
     public String getInLanguage(String l) {
-        return RSWLanguagesConfig.file().getString("Languages." + l + this.configPath);
+        return Text.color(RSWLanguagesConfig.file().getString("Languages." + l + this.configPath));
     }
 
     public String get(RSWPlayer player) {
@@ -210,7 +215,7 @@ public enum TranslatableLine {
     }
 
     public String getDefault() {
-        return getInLanguage(RSWConfig.file().getString("Config.Default-Language"));
+        return getInLanguage(RSWLanguagesConfig.file().getString("Default-Language"));
     }
 
     public void sendDefault(CommandSender p, boolean prefix) {

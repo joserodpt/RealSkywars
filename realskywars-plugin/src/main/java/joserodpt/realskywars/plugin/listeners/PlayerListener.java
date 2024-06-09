@@ -215,7 +215,7 @@ public class PlayerListener implements Listener {
                         Sign sign = (Sign) e.getClickedBlock().getState();
                         if (Text.strip(sign.getLine(0)).equals(Text.strip(rs.getLanguageManagerAPI().getPrefix()))) {
                             String mapName = Text.strip(sign.getLine(1));
-                            RSWMap game = rs.getGameManagerAPI().getGame(mapName);
+                            RSWMap game = rs.getGameManagerAPI().getMap(mapName);
 
                             if (game != null) {
                                 if (e.getPlayer().isSneaking() && (e.getPlayer().isOp() || e.getPlayer().hasPermission("rs.admin"))) {
@@ -225,7 +225,7 @@ public class PlayerListener implements Listener {
                                     game.addPlayer(p);
                                 }
                             } else {
-                                TranslatableLine.NO_GAME_FOUND.send(p, true);
+                                TranslatableLine.NO_MAP_FOUND.send(p, true);
                             }
                         }
                     }

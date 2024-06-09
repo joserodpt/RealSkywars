@@ -11,9 +11,9 @@ import java.util.Optional;
 public abstract class GamesManagerAPI {
     public Boolean endingGames = false;
 
-    public abstract RSWMap getMatch(World world);
+    public abstract RSWMap getMap(World world);
 
-    public abstract RSWMap getGame(String name);
+    public abstract RSWMap getMap(String name);
 
     public abstract void endGames();
 
@@ -35,7 +35,7 @@ public abstract class GamesManagerAPI {
 
     public abstract List<RSWMap> getGames(GameModes pt);
 
-    public abstract void addRoom(RSWMap s);
+    public abstract void addMap(RSWMap s);
 
     public abstract void setLobbyLoc(Location location);
 

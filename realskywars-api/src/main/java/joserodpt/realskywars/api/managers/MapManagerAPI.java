@@ -2,8 +2,8 @@ package joserodpt.realskywars.api.managers;
 
 import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.chests.RSWChest;
-import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -12,10 +12,6 @@ import java.util.List;
 
 public abstract class MapManagerAPI {
     public abstract void loadMaps();
-
-    public abstract void unregisterMap(RSWMap map);
-
-    public abstract void registerMap(RSWMap map);
 
     public abstract void deleteMap(RSWMap map);
 

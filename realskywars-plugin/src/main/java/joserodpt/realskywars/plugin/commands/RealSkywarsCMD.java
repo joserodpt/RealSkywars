@@ -211,7 +211,7 @@ public class RealSkywarsCMD extends CommandBase {
                     TranslatableLine.ALREADY_IN_MATCH.send(p, true);
                 }
             } else {
-                TranslatableLine.NO_GAME_FOUND.send(p, true);
+                TranslatableLine.NO_MAP_FOUND.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -477,12 +477,12 @@ public class RealSkywarsCMD extends CommandBase {
     public void map(final CommandSender commandSender, String name) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            RSWMap sw = rs.getGameManagerAPI().getGame(name);
+            RSWMap sw = rs.getGameManagerAPI().getMap(name);
             if (sw != null) {
                 MapSettingsGUI r = new MapSettingsGUI(sw, p.getUUID());
                 r.openInventory(p);
             } else {
-                TranslatableLine.NO_GAME_FOUND.send(p, true);
+                TranslatableLine.NO_MAP_FOUND.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -497,7 +497,7 @@ public class RealSkywarsCMD extends CommandBase {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
             if (p != null) {
                 p.getPlayer().setGameMode(GameMode.CREATIVE);
-                p.teleport(rs.getGameManagerAPI().getGame(name).getRSWWorld().getWorld().getSpawnLocation());
+                p.teleport(rs.getGameManagerAPI().getMap(name).getRSWWorld().getWorld().getSpawnLocation());
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -597,10 +597,15 @@ public class RealSkywarsCMD extends CommandBase {
     public void unregister(final CommandSender commandSender, String mapName) {
         RSWMap map = rs.getMapManagerAPI().getMap(mapName);
         if (map != null) {
-            rs.getMapManagerAPI().unregisterMap(map);
+            if (!map.isUnregistered()) {
+                TranslatableLine.MAP_ALREADY_UNREGISTERED.sendDefault(commandSender, true);
+                return;
+            }
+
+            map.setUnregistered(true);
             TranslatableLine.MAP_UNREGISTERED.sendDefault(commandSender, true);
         } else {
-            TranslatableLine.NO_GAME_FOUND.sendDefault(commandSender, true);
+            TranslatableLine.NO_MAP_FOUND.sendDefault(commandSender, true);
         }
     }
 
@@ -612,10 +617,34 @@ public class RealSkywarsCMD extends CommandBase {
     public void register(final CommandSender commandSender, String mapName) {
         RSWMap map = rs.getMapManagerAPI().getMap(mapName);
         if (map != null) {
-            rs.getMapManagerAPI().registerMap(map);
-            TranslatableLine.MAP_UNREGISTERED.sendDefault(commandSender, true);
+            if (map.isUnregistered()) {
+                TranslatableLine.MAP_ALREADY_REGISTERED.sendDefault(commandSender, true);
+                return;
+            }
+
+            map.setUnregistered(false);
+            TranslatableLine.MAP_REGISTERED.sendDefault(commandSender, true);
         } else {
-            TranslatableLine.NO_GAME_FOUND.sendDefault(commandSender, true);
+            TranslatableLine.NO_MAP_FOUND.sendDefault(commandSender, true);
+        }
+    }
+
+    @SubCommand("editmap")
+    @Completion("#maps")
+    @Alias("edit")
+    @Permission("rsw.admin")
+    @WrongUsage("&c/rsw edit <map>")
+    public void editmap(final CommandSender commandSender, String mapName) {
+        if (commandSender instanceof Player) {
+            RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
+            RSWMap sw = rs.getGameManagerAPI().getMap(mapName);
+            if (sw != null) {
+                //TODO: Implement map editing
+            } else {
+                TranslatableLine.NO_MAP_FOUND.send(p, true);
+            }
+        } else {
+            commandSender.sendMessage(onlyPlayer);
         }
     }
 
@@ -630,7 +659,7 @@ public class RealSkywarsCMD extends CommandBase {
             rs.getMapManagerAPI().deleteMap(map);
             TranslatableLine.MAP_UNREGISTERED.sendDefault(commandSender, true);
         } else {
-            TranslatableLine.NO_GAME_FOUND.sendDefault(commandSender, true);
+            TranslatableLine.NO_MAP_FOUND.sendDefault(commandSender, true);
         }
     }
 
@@ -644,9 +673,9 @@ public class RealSkywarsCMD extends CommandBase {
         if (map != null) {
             map.setDisplayName(displayName);
             map.save(RSWMap.Data.SETTINGS, true);
-            Text.send(commandSender, "&aMap renamed to &f" + displayName);
+            TranslatableLine.MAP_RENAMED.sendDefault(commandSender, true);
         } else {
-            TranslatableLine.NO_GAME_FOUND.sendDefault(commandSender, true);
+            TranslatableLine.NO_MAP_FOUND.sendDefault(commandSender, true);
         }
     }
 
@@ -662,7 +691,7 @@ public class RealSkywarsCMD extends CommandBase {
             map.reset();
             TranslatableLine.MAP_RESET_DONE.send(p, true);
         } else {
-            TranslatableLine.NO_GAME_FOUND.send(p, true);
+            TranslatableLine.NO_MAP_FOUND.send(p, true);
         }
     }
 

@@ -40,8 +40,8 @@ public class SoloMode extends RSWMap {
 
     private final List<RSWCage> cages;
 
-    public SoloMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, List<RSWCage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, List<RSWChest> chests, Boolean rankd, RealSkywarsAPI rs) {
-        super(nome, displayName, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border, pos1, pos2, chests, rankd, rs);
+    public SoloMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, List<RSWCage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, List<RSWChest> chests, Boolean rankd, Boolean unregistered, RealSkywarsAPI rs) {
+        super(nome, displayName, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border, pos1, pos2, chests, rankd, unregistered, rs);
         this.cages = cages;
     }
 
@@ -97,6 +97,11 @@ public class SoloMode extends RSWMap {
 
     @Override
     public void addPlayer(RSWPlayer p) {
+        if (!this.isUnregistered()) {
+            TranslatableLine.MAP_IS_UNREGISTERED.send(p, true);
+            return;
+        }
+
         if (super.getRealSkywarsAPI().getPartiesManagerAPI().checkForParties(p, this)) {
             switch (this.getState()) {
                 case RESETTING:

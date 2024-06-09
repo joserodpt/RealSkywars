@@ -77,6 +77,7 @@ public class MapManager extends MapManagerAPI {
             displayName = Text.color(displayName);
 
             RSWWorld.WorldType wt = getWorldType(RSWMapsConfig.file().getString(s + ".type"));
+            Boolean unregistered = RSWMapsConfig.file().getBoolean(s + ".Settings.Unregistered");
 
             boolean loaded = rs.getWorldManagerAPI().loadWorld(worldName, World.Environment.NORMAL);
             if (loaded) {
@@ -85,9 +86,9 @@ public class MapManager extends MapManagerAPI {
                 Location specLoc = getSpecLoc(s);
                 switch (t) {
                     case SOLO:
-                        SoloMode gs = new SoloMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, getCages(s, specLoc), RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s), rs);
+                        SoloMode gs = new SoloMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, getCages(s, specLoc), RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s), unregistered, rs);
                         gs.resetArena(RSWMap.OperationReason.LOAD);
-                        rs.getGameManagerAPI().addRoom(gs);
+                        rs.getGameManagerAPI().addMap(gs);
                         break;
                     case TEAMS:
                         List<RSWCage> cgs = getCages(s, specLoc);
@@ -97,26 +98,15 @@ public class MapManager extends MapManagerAPI {
                             ts.add(new Team(tc, (RSWMapsConfig.file().getInt(s + ".number-of-players") / cgs.size()), c.getLoc(), worldName));
                             ++tc;
                         }
-                        TeamsMode teas = new TeamsMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, ts, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s), rs);
+                        TeamsMode teas = new TeamsMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, ts, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), getChests(worldName, s), isRanked(s), unregistered, rs);
                         teas.resetArena(RSWMap.OperationReason.LOAD);
-                        rs.getGameManagerAPI().addRoom(teas);
+                        rs.getGameManagerAPI().addMap(teas);
                         break;
                     default:
                         throw new IllegalStateException("Mode doesnt exist: " + t.name());
                 }
             }
         }
-    }
-
-    @Override
-    public void unregisterMap(RSWMap map) {
-        map.kickPlayers(TranslatableLine.ADMIN_SHUTDOWN.getSingle());
-        map.setRegistered(false);
-    }
-
-    @Override
-    public void registerMap(RSWMap map) {
-        map.setRegistered(true);
     }
 
     @Override
@@ -268,7 +258,7 @@ public class MapManager extends MapManagerAPI {
             RSWMap.Mode gt = p.getSetupRoom().getGameType();
             switch (gt) {
                 case SOLO:
-                    SoloMode gs = new SoloMode(p.getSetupRoom().getName(), p.getSetupRoom().getDisplayName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), RSWMap.MapState.AVAILABLE, p.getSetupRoom().getCages(), p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), rs);
+                    SoloMode gs = new SoloMode(p.getSetupRoom().getName(), p.getSetupRoom().getDisplayName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), RSWMap.MapState.AVAILABLE, p.getSetupRoom().getCages(), p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), false, rs);
 
                     if (p.getSetupRoom().getWorldType() == RSWWorld.WorldType.DEFAULT) {
                         gs.getRSWWorld().resetWorld(RSWMap.OperationReason.LOAD);
@@ -276,7 +266,7 @@ public class MapManager extends MapManagerAPI {
                         gs.getRSWWorld().resetWorld(RSWMap.OperationReason.RESET);
                     }
 
-                    rs.getGameManagerAPI().addRoom(gs);
+                    rs.getGameManagerAPI().addMap(gs);
                     gs.save(RSWMap.Data.ALL, true);
 
                     //set chests
@@ -289,7 +279,7 @@ public class MapManager extends MapManagerAPI {
                         ts.add(new Team(tc, p.getSetupRoom().getPlayersPerTeam(), c.getLoc(), p.getSetupRoom().getWorld().getName()));
                         ++tc;
                     }
-                    TeamsMode t = new TeamsMode(p.getSetupRoom().getName(), p.getSetupRoom().getDisplayName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), RSWMap.MapState.AVAILABLE, ts, p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), rs);
+                    TeamsMode t = new TeamsMode(p.getSetupRoom().getName(), p.getSetupRoom().getDisplayName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), RSWMap.MapState.AVAILABLE, ts, p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), false, rs);
 
                     if (p.getSetupRoom().getWorldType() == RSWWorld.WorldType.DEFAULT) {
                         t.getRSWWorld().resetWorld(RSWMap.OperationReason.LOAD);
@@ -297,7 +287,7 @@ public class MapManager extends MapManagerAPI {
                         t.getRSWWorld().resetWorld(RSWMap.OperationReason.RESET);
                     }
 
-                    rs.getGameManagerAPI().addRoom(t);
+                    rs.getGameManagerAPI().addMap(t);
                     t.save(RSWMap.Data.ALL, true);
 
                     //set chests
