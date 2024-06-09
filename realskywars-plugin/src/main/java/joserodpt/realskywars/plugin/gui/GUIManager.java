@@ -22,6 +22,7 @@ import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.GUIBuilder;
+import joserodpt.realskywars.api.utils.ItemStackSpringer;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.plugin.gui.guis.AchievementViewerGUI;
 import joserodpt.realskywars.plugin.gui.guis.GameHistoryGUI;
@@ -112,7 +113,7 @@ public class GUIManager {
             if (i == 17) {
                 break;
             } else {
-                inventory.addItem(e -> RealSkywarsAPI.getInstance().getPlayerManagerAPI().setLanguage(p, language), Itens.createItem(Material.BOOK, 1, "&b" + language, Collections.singletonList(TranslatableLine.MENU_LANG_SELECT.get(p))), i);
+                inventory.addItem(e -> RealSkywarsAPI.getInstance().getPlayerManagerAPI().setLanguage(p, language), Itens.renameItem(ItemStackSpringer.getItemDeSerialized(Itens.sectionToMap("Languages." + language + ".Icon")), "&e&l" + language, p), i);
             }
             ++i;
         }

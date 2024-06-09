@@ -35,6 +35,28 @@ Strings:
       Description: "&fClick here to go to the main menu."
 Languages:
   ENGLISH:
+    Icon:
+      AMOUNT: 1
+      MATERIAL: BLUE_BANNER
+      BANNER_PATTERNS:
+        - color: RED
+          pattern: minecraft:cross
+        - color: WHITE
+          pattern: minecraft:stripe_downleft
+        - color: WHITE
+          pattern: minecraft:stripe_downright
+        - color: WHITE
+          pattern: minecraft:stripe_downright
+        - color: WHITE
+          pattern: minecraft:stripe_downleft
+        - color: RED
+          pattern: minecraft:cross
+        - color: WHITE
+          pattern: minecraft:stripe_center
+        - color: WHITE
+          pattern: minecraft:stripe_middle
+        - color: RED
+          pattern: minecraft:straight_cross
     Messages:
       Achievements:
         Get: "&fCongratulations! You have achieved &b%achievement% &fand won &a%reward%"
@@ -354,3 +376,687 @@ Languages:
       Select: "&fLeft click to &bselect&f. Right click to preview."
       Not-Found: "&cNo kit has been found with that name."
       Delete: "&fKit has been &adeleted&f."
+  PORTUGUÊS:
+    Icon:
+      AMOUNT: 1
+      BANNER_PATTERNS:
+        - color: LIME
+          pattern: minecraft:stripe_top
+        - color: YELLOW
+          pattern: minecraft:flower
+        - color: YELLOW
+          pattern: minecraft:circle
+      MATERIAL: RED_BANNER
+    Messages:
+      Achievements:
+        Get: "&fParabéns! Conquistaste &b%achievement% &e ganhaste &a%reward%"
+      Party:
+        Already-In: "&fTu já estás num grupo."
+        Kick: "&f%player% &cfoi expulso do grupo."
+        Join: "&f%player% &ajuntou-se ao grupo."
+        Leave: "&f%player% &saiu do grupo."
+        Not-In-Party: "&cTu não estás num grupo."
+        Already-Created: "&cTu já criaste um grupo."
+        Created: "&aTu criaste um grupo! Convida outros com /party invite <nome>"
+        Insufficient-Room-Space: "&cTu não podes teleportar o grupo para essa sala porque não há slots disponíveis suficientes."
+        Disband: "&cTu desfizeste o grupo."
+        Invite:
+          Not-Found: "&cO convite para esse jogador &cnão foi encontrado."
+          Sent: "&bConvite enviado para &f%player%"
+          Recieved: "&b%player% &foi convidado para se juntar ao teu grupo! Aceita com &a/party accept"
+          Accepted: "&aTu juntaste-te ao grupo de &b%player%"
+          Cant-Invite-Yourself: "&cTu não podes convidar-te a ti mesmo."
+        Not-Owner: "&cTu não podes executar esta ação porque não és o dono do grupo."
+      Coins:
+        Add: "&b%coins% &fforam adicionados ao teu saldo."
+        Remove: "&b%coins% &fforam removidos do teu saldo."
+        Set: "&fAgora tens &b%coins% &fmoedas."
+        Sender: "&fEnviaste &b%coins% moedas &fpara %player%."
+        Reciever: "&fRecebeste &b%coins% moedas &fde %player%."
+      Lobby-Teleport: "&fTeleportado para o lobby."
+      Compass-Teleport: "&fTeleportado para &b%name%&f."
+      Selection-Made: "&fSelecionaste &b%name% &fem %type%&f."
+      Game-Status-Set: "&fO status do jogo foi definido para &b%status%"
+      Language-Set: "&fO teu idioma agora é &b%language%&f."
+      Generating-World: "&aGerando um novo mundo.."
+      Tier-Set: "&fO nível foi definido para &b%chest%"
+      Cages-Done: "&fAs gaiolas foram colocadas. Define a localização do espectador com /rsw setspectator."
+      Team:
+        Join: "&fTu &ajuntaste-te &9%team%"
+        Leave: "&fTu &csaiste &9%team%"
+        Broadcast-Join: "&b%player% &fjuntou-se ao time."
+        Broadcast-Leave: "&b%player% &csaiu do time."
+        TeamMate-Damage-Cancel: "&fTu não podes ferir o teu &9companheiro de time&f."
+      Shop:
+        Buy: "&fCompraste &b%name% &fpor &a%coins% &fmoedas."
+        Click-To-Buy: "&fClica aqui para comprar por &a%coins% &fmoedas."
+        Already-Bought: "&fTu já compraste &b%name%&f."
+        No-Permission: "&fTu &cnão tens permissão &fpara comprar este item."
+        Not-Buyable: "&fEste item &cnão é &acomprável&f."
+        Click-To-Select: "&fClica aqui para selecionar este item."
+      Commands:
+        No-Permission: "&cTu não tens permissão para executar este comando."
+        Config-Reload: "&aConfiguração recarregada."
+        Coins: "&fTu tens &b%coins% &fmoedas."
+        Match-Force-Start: "&fA partida foi &aforçadamente &finiciada."
+        Match-Force-Start-Denial: "&fTu &cnão podes &fforçar o início desta partida porque não há jogadores suficientes."
+        No-Match: "&cTu não estás numa partida."
+        Lobby-Set: "&fO lobby &afoi definido&f."
+        Setup-Not-Finished: "&cA configuração não está concluída."
+        Maps: "&fHá &b%rooms% &fmapas registrados."
+        Players: "&fHá &b%players% &fJogadores online."
+        Finish-Setup: "&fTu agora podes &aconcluir a configuração &fcom /rsw finishsetup."
+        No-Game-Found: "&fNenhum jogo foi encontrado. Tenta novamente mais tarde!"
+        No-Map-Found: "&fNenhum mapa foi encontrado."
+        Map-Found: "&fJogo encontrado! Adicionando-te... por favor, aguarda.."
+        No-Tier-Found: "&fNenhum nível foi encontrado."
+        No-Player-Found: "&fNenhum jogador foi encontrado."
+        Map-Registered: "&fO mapa foi &aregistrado&f."
+        Map-Unregistered: "&fO mapa foi &cdesregistrado&f."
+        Map-Is-Unregistered: "&cEste mapa está desregistrado."
+        Map-Already-Registered: "&cEste mapa já está registrado."
+        Map-Already-Unregistered: "&cEste mapa já está desregistrado."
+        Map-Unregister-To-Edit: "&cTu precisas primeiro desregistrar este mapa para editá-lo."
+        Map-Renamed: "&fO mapa foi &arenomeado&f."
+        Map-Exists: "&cJá existe um mapa com esse nome."
+        Kit-Exists: "&cJá existe um kit com esse nome."
+        Lobby-Loc-Not-Set: "&fA localização do lobby &cnão está definida."
+        Insuficient-Coins: "&cTu não podes fazer isso. &fTens apenas &b%coins%&f moedas."
+        Command-Not-Found: "&fNenhum comando foi encontrado com essa sintaxe."
+        Add-Tier: "&fOs itens foram adicionados ao nível."
+        Set-Tier: "&fO nível foi definido."
+        Reset-Done: "&O reset foi executado com sucesso."
+      Map:
+        Saving: "&aSalvando o mapa.."
+        Reset: "&cO mapa está a ser resetado."
+        Reset-Done: "&aO mapa foi resetado."
+        Registered: "&fO mapa foi &aregistrado&f."
+        Suggest-Match-Cancel: "&cTu não podes fazer isso agora. &fPodes usar /rsw leave para sair deste jogo."
+        No-Boundaries: "&fOs limites &cnão estão definidos."
+        No-Setup-Mode: "&cTu não estás no modo de configuração."
+        Already-In-Match: "&cTu já estás num jogo."
+        Player-Join: "&b%player% &fjuntou-se ao jogo. (&9%players%&7/&9%maxplayers%&f)"
+        Player-Leave: "&b%player% &fsaiu do jogo. (&9%players%&7/&9%maxplayers%&f)"
+        Match-Cancelled: "&cJogo cancelado, jogadores insuficientes."
+        Start-Countdown: "&fSkywars começará em &9%time% &fsegundo(s)"
+        Match-End: "&fO jogo terminou. &aSerás teleportado para o lobby em &b%time% &asegundos."
+        Invincibility-End: "&fA invencibilidade acabou para todos os jogadores."
+        Play-Again: "&eQueres jogar novamente? &lClica aqui!"
+        Cant-Join: "&fTu &cnão podes &fentrar nesta sala agora."
+        Blocked-Command: "&fEste comando está &cbloqueado &fenquanto estás numa partida."
+        Spectating-Disabled: "&bAssistir &festá &cdesativado &fnesta sala."
+        Room-Full: "&fEsta sala está &ccheia&f."
+        Tracker-Found: "&fAgora rastreando &b%player%"
+        No-Tracker-Found: "&fNão há jogador para rastrear."
+        Winner-Broadcast: "&b%winner% &fvenceu no mapa &a%displayname%"
+        Leave: "&eTu saíste da partida."
+        Already-Started: "&fEsta partida já &ccomeçou&f."
+        Init-Setup:
+          - "&f&nTu agora estás no modo de configuração. Podes colar a tua esquemática ou fazer um novo mapa."
+          - "&9> &aUsa o farol para colocar %cages% gaiolas. "
+          - "&9> &bIMPORTANTE &cDefine os limites com //pos1 e //pos2 ou com um machado do WorldEdit, e então usa //expand vert para cobrir toda a altura do mapa!"
+        Events:
+          Refill:
+            - "&9&LREPOSIÇÃO DE BAÚS"
+            - "&6Os baús estão sendo reabastecidos!"
+          TNTRain:
+            - "&c&lCHUVA DE TNT"
+            - "&cCuidado com a TNT!"
+        Title:
+          Win: "&b%player% &avenceu!"
+          DeathMatch: "&cO mundo está encolhendo..."
+        Player-Spectator: "&fTu agora és um &b&lespectador&f."
+        Not-In-Region: "&cTu não estás numa região protegida."
+        Set-Loc: "&fTu &adefiniste &fa localização."
+      Cage:
+        Waiting:
+          - "&7&m&l                                 "
+          - "&9&lSKYWARS"
+          - "&fA partida inicia em"
+          - "&b&l%time%"
+          - "&7&m&l                                 "
+        Death:
+          - "&7&m&l                                 "
+          - "&c&lTU MORRESTE!"
+          - "&fTu serás teleportado para o lobby em"
+          - "&b&l%time%"
+          - "&7&m&l                                 "
+        Won:
+          - "&7&m&l                                 "
+          - "&a&lTU VENCESTE!"
+          - "&fTu serás teleportado para o lobby em"
+          - "&b&l%time%"
+          - "&7&m&l                                 "
+        Quit: "&e%player% saiu da partida."
+        Died: "&e%player% morreu."
+        Starting: "&eA partida está começando.."
+        You-Died: "&eTu morreste."
+        Killed: "&e%player% foi morto por %killer%"
+        Beds-Not-Found: "&cCamas não encontradas. Define a cama com /rsw setbed"
+        Beds-Destroyed: "&cTodas as camas foram destruídas. Define a cama com /rsw setbed."
+        Spectator-Location: "&fA localização do espectador foi definida."
+    Menus:
+      Maps-Title: "Mapas"
+      Achievements-Title: "&dConquistas"
+      Spectate-Title: "&9Jogadores"
+      Vote-Title: "&b&lVotação"
+      Chests-Vote-Title: "&7&lBaús"
+      Projectiles-Vote-Title: "&7&lProjéteis"
+      Time-Vote-Title: "&7&lTempo"
+      Game-History-Title: "&e&lHistórico de Jogos"
+      Language:
+        Title: "&9&lIdioma"
+        Select: "&fClica aqui para selecionar este idioma."
+      Player-Profile:
+        Title: "&9&lTeu Perfil"
+        View-Item: "&fClica aqui para ver este item."
+        Reset-Data:
+          Title: "&4Resetar Teus Dados"
+          Alert: "&cProcede com cautela. Esta ação não pode ser desfeita."
+      Shop-Menu-Title: "&fLoja &9Categorias"
+      Spectator-Shop-Menu-Title: "&0Loja de &fEspectador"
+    Itens:
+      Profile:
+        Name: "&9Teu Perfil &7(Clique Direito)"
+      CageSet:
+        Name: "&bColoca-me para adicionar uma Gaiola"
+      Maps:
+        Name: "&bMapas &7(Clique Direito)"
+      Shop:
+        Name: "&2Loja &7(Clique Direito)"
+      Leave:
+        Name: "&cSair &7(Clique Direito)"
+      Vote:
+        Name: "&bVotação &7(Clique Direito)"
+      Spectate:
+        Name: "&bEspectar &7(Clique Direito)"
+      Kit:
+        Name: "&eKits &7(Clique Direito)"
+      PlayAgain:
+        Name: "&dJogar Novamente &7(Clique Direito)"
+      Chest1:
+        Name: "Baú Comum"
+      Chest2:
+        Name: "Baú Médio"
+      Statistics:
+        Name: "&fEstatísticas de %player%"
+        Lore:
+          - "%space%"
+          - " &fMoedas: &e%coins%"
+          - "%space%"
+          - " &fVitórias Solo: &a%solowins%"
+          - " &fVitórias em Equipa: &a%teamwins%"
+          - " &fKills: &a%kills%"
+          - " &fMortes: &a%deaths%"
+          - "%space%"
+          - " &fJogos Disputados: &b%gamesplayed%"
+          - " &fDerrotas: &b%loses%"
+          - "%space%"
+      Map:
+        Not-Found: "&9Nenhum Mapa Encontrado"
+        Title: "&9&l%displayname% &7| &f&l%mode%"
+        Description:
+          - ""
+          - "&fJogadores: &b%players%&f/&b%maxplayers%"
+          - "&fClica para entrar!"
+          - ""
+    Scoreboards:
+      Lobby:
+        Lines:
+          - " &fMoedas: &e%coins%"
+          - "%space%"
+          - " &fVitórias SOLO: &a%solowins%"
+          - " &fVitórias EQUIPA: &a%teamwins%"
+          - " &fKills: &a%kills%"
+          - " &fMortes: &a%deaths%"
+          - "%space%"
+          - " &bR &fVit. SOLO: &b%rankedsolowins%"
+          - " &bR &fVit. EQUIPA: &b%rankedteamwins%"
+          - " &bR &fKills: &b%rankedkills%"
+          - " &bR &fMortes: &b%rankeddeaths%"
+          - "%space%"
+          - " &fJogos: &a%gamesplayed% &7/ &b%rankedgamesplayed%"
+          - " &fDerrotas: &a%loses% &7/ &b%rankedloses%"
+          - " &b%playing% &fjogando"
+        Title: "&aRealSkywars &fLobby"
+      Cage:
+        Lines:
+          - "%space%"
+          - " &fJogadores: &b%players%"
+          - " &fEstado: &b%state%"
+          - "%space%"
+        Title: "&fMapa: &b%displayname% &7- &b%mode%"
+      Game:
+        Lines:
+          - "%space%"
+          - " &fJogadores: &b%players%"
+          - " &fEspectadores: &b%spectators%"
+          - " &fPróximo Evento: &b%nextevent%"
+          - " &fModo: &b%mode%"
+          - " &fKills: &b%kills%"
+          - "%space%"
+          - " &fTempo de Jogo: &b%runtime%"
+          - "%space%"
+        Title: "&fMapa: &b%displayname% &7- &b%mode%"
+      Spectate:
+        Lines:
+          - "%space%"
+          - " &fJogadores: &b%players%"
+          - " &fEspectadores: &b%spectators%"
+          - " &fPróximo Evento: &b%nextevent%"
+          - " &fModo: &b%mode%"
+          - "%space%"
+          - " &fTempo de Jogo: &b%runtime%"
+          - "%space%"
+        Title: "&fMapa: &b%displayname%"
+    Tab:
+      Other:
+        Header:
+          - "&f"
+          - " &f&lReal&b&lSkywars"
+          - " &a&lLobby"
+          - "&f"
+        Footer:
+          - "&f"
+          - "&fJogadores: &b%players%"
+          - "&f"
+      In-Game:
+        Header:
+          - "&f"
+          - " &f&lReal&b&lSkywars"
+          - " &fEstás a jogar em:"
+          - " &b%displayname%"
+          - "&f"
+        Footer:
+          - "%space%"
+          - "&fJogadores: &b%players%"
+          - "%space%"
+    Titles:
+      Join-Room:
+        - "&fEscolhe o teu kit"
+        - "&fe vota!"
+    Modes:
+      Solo: "&eSolo"
+      Solo-Ranked: "&eSolo &bClassificado"
+      Teams: "&9Equipas"
+      Teams-Ranked: "&9Equipas &bClassificado"
+    States:
+      All: "&2Tudo"
+      Available: "&aDisponível"
+      Waiting: "&fÀ Espera"
+      Starting: "&eA Começar"
+    Shop-Categories:
+      Cage-Blocks: "&7Blocos de Gaiola"
+      Win-Blocks: "&9Blocos de Vitória"
+      Kits: "&9Kits"
+      Bow-Particles: "&aPartículas de Arco"
+    Vote:
+      Cant-Vote: "&cNão podes votar agora."
+      Vote: "&fVotaste em &b%thing%"
+      Already-Voted: "&fJá votaste."
+      Time:
+        Day: "&e&LDia"
+        Night: "&7&lNoite"
+        Rain: "&9&lChuva"
+        Sunset: "&6&lPôr do Sol"
+      Chests:
+        Name: "&f&lBaús"
+        Basic: "&b&lBásico"
+        Normal: "&f&lNormal"
+        Epic: "&a&lÉpico"
+      Projectiles:
+        Normal: "&f&lNormal"
+        Break: "&6&lQuebra de Blocos"
+    Kits:
+      Price: "&fPreço: &9%price%"
+      Contains: "&eEste kit contém:"
+      Item: "&fx%amount% &b%item%"
+      Buy: "&fClica esquerdo para &acomprar&f! Clica direito para pré-visualizar."
+      Select: "&fClica esquerdo para &bselecionar&f. Clica direito para pré-visualizar."
+      Not-Found: "&cNão foi encontrado nenhum kit com esse nome."
+      Delete: "&fKit foi &aeliminado&f."
+  ESPAÑOL:
+    Icon:
+      AMOUNT: 1
+      BANNER_PATTERNS:
+        - color: RED
+          pattern: minecraft:stripe_right
+        - color: RED
+          pattern: minecraft:stripe_left
+        - color: BROWN
+          pattern: minecraft:mojang
+        - color: BROWN
+          pattern: minecraft:flower
+        - color: RED
+          pattern: minecraft:stripe_left
+        - color: RED
+          pattern: minecraft:stripe_right
+      MATERIAL: YELLOW_BANNER
+    Messages:
+      Achievements:
+        Get: "&f¡Felicidades! Has logrado &b%achievement% &ey has ganado &a%reward%"
+      Party:
+        Already-In: "&fYa estás en un grupo."
+        Kick: "&f%player% &cha sido expulsado del grupo."
+        Join: "&f%player% &ase ha unido al grupo."
+        Leave: "&f%player% &ha dejado el grupo."
+        Not-In-Party: "&cNo estás en un grupo."
+        Already-Created: "&cYa has creado un grupo."
+        Created: "&a¡Has creado un grupo! Invita a otros con /party invite <nombre>"
+        Insufficient-Room-Space: "&cNo puedes teletransportar al grupo a esa sala porque no hay suficientes espacios disponibles."
+        Disband: "&cHas disuelto el grupo."
+        Invite:
+          Not-Found: "&cNo se ha encontrado la invitación para ese jugador."
+          Sent: "&bInvitación enviada a &f%player%"
+          Recieved: "&b%player% &fha sido invitado a unirse a tu grupo. Acepta con &a/party accept"
+          Accepted: "&aTe has unido al grupo de &b%player%"
+          Cant-Invite-Yourself: "&cNo puedes invitarte a ti mismo."
+        Not-Owner: "&cNo puedes realizar esta acción porque no eres el dueño del grupo."
+      Coins:
+        Add: "&b%coins% &fhan sido añadidas a tu saldo."
+        Remove: "&b%coins% &fhan sido retiradas de tu saldo."
+        Set: "&fAhora tienes &b%coins% &fmonedas."
+        Sender: "&fHas enviado &b%coins% monedas &fa %player%."
+        Reciever: "&fHas recibido &b%coins% monedas &fde %player%."
+      Lobby-Teleport: "&fTeletransportado al lobby."
+      Compass-Teleport: "&fTeletransportado a &b%name%&f."
+      Selection-Made: "&fHas seleccionado &b%name% &fen %type%&f."
+      Game-Status-Set: "&fEl estado del juego ha sido establecido a &b%status%"
+      Language-Set: "&fTu idioma ahora es &b%language%&f."
+      Generating-World: "&aGenerando un nuevo mundo.."
+      Tier-Set: "&fEl nivel ha sido establecido a &b%chest%"
+      Cages-Done: "&fLas jaulas han sido colocadas. Define la ubicación del espectador con /rsw setspectator."
+      Team:
+        Join: "&fTe has &aunido &9%team%"
+        Leave: "&fHas &cabandonado &9%team%"
+        Broadcast-Join: "&b%player% &fse ha unido al equipo."
+        Broadcast-Leave: "&b%player% &cha dejado el equipo."
+        TeamMate-Damage-Cancel: "&fNo puedes dañar a tu &9compañero de equipo&f."
+      Shop:
+        Buy: "&fHas comprado &b%name% &fpor &a%coins% &fmonedas."
+        Click-To-Buy: "&fHaz clic aquí para comprar por &a%coins% &fmonedas."
+        Already-Bought: "&fYa has comprado &b%name%&f."
+        No-Permission: "&fNo tienes &cpermiso &fpara comprar este artículo."
+        Not-Buyable: "&fEste artículo &cno es &acomprable&f."
+        Click-To-Select: "&fHaz clic aquí para seleccionar este artículo."
+      Commands:
+        No-Permission: "&cNo tienes permiso para ejecutar este comando."
+        Config-Reload: "&aConfiguración recargada."
+        Coins: "&fTienes &b%coins% &fmonedas."
+        Match-Force-Start: "&fLa partida ha sido &ainiciada forzosamente&f."
+        Match-Force-Start-Denial: "&fNo puedes &cforzar el inicio de esta partida porque no hay suficientes jugadores."
+        No-Match: "&cNo estás en una partida."
+        Lobby-Set: "&fEl lobby ha sido &adefinido&f."
+        Setup-Not-Finished: "&cLa configuración no está terminada."
+        Maps: "&fHay &b%rooms% &fmapas registrados."
+        Players: "&fHay &b%players% &fjugadores en línea."
+        Finish-Setup: "&fAhora puedes &acompletar la configuración &fcon /rsw finishsetup."
+        No-Game-Found: "&fNo se ha encontrado ningún juego. ¡Intenta de nuevo más tarde!"
+        No-Map-Found: "&fNo se ha encontrado ningún mapa."
+        Map-Found: "&f¡Juego encontrado! Añadiéndote... por favor, espera.."
+        No-Tier-Found: "&fNo se ha encontrado ningún nivel."
+        No-Player-Found: "&fNo se ha encontrado ningún jugador."
+        Map-Registered: "&fEl mapa ha sido &aregistrado&f."
+        Map-Unregistered: "&fEl mapa ha sido &cderegistrado&f."
+        Map-Is-Unregistered: "&cEste mapa está deregistrado."
+        Map-Already-Registered: "&cEste mapa ya está registrado."
+        Map-Already-Unregistered: "&cEste mapa ya está deregistrado."
+        Map-Unregister-To-Edit: "&cPrimero debes deregistrar este mapa para editarlo."
+        Map-Renamed: "&fEl mapa ha sido &arenombrado&f."
+        Map-Exists: "&cYa existe un mapa con ese nombre."
+        Kit-Exists: "&cYa existe un kit con ese nombre."
+        Lobby-Loc-Not-Set: "&fLa ubicación del lobby &cno está definida."
+        Insuficient-Coins: "&cNo puedes hacer eso. &fSolo tienes &b%coins%&f monedas."
+        Command-Not-Found: "&fNo se ha encontrado ningún comando con esa sintaxis."
+        Add-Tier: "&fLos ítems han sido añadidos al nivel."
+        Set-Tier: "&fEl nivel ha sido establecido."
+        Reset-Done: "&El reinicio se ha completado con éxito."
+      Map:
+        Saving: "&aGuardando mapa.."
+        Reset: "&cEl mapa se está reiniciando."
+        Reset-Done: "&aEl mapa se ha reiniciado."
+        Registered: "&fEl mapa ha sido &aregistrado&f."
+        Suggest-Match-Cancel: "&cNo puedes hacer esto ahora. &fPuedes usar /rsw leave para salir de este juego."
+        No-Boundaries: "&fLos límites &cno están definidos."
+        No-Setup-Mode: "&cNo estás en modo configuración."
+        Already-In-Match: "&cYa estás en un juego."
+        Player-Join: "&b%player% &fse ha unido al juego. (&9%players%&7/&9%maxplayers%&f)"
+        Player-Leave: "&b%player% &fha abandonado el juego. (&9%players%&7/&9%maxplayers%&f)"
+        Match-Cancelled: "&cJuego cancelado, jugadores insuficientes."
+        Start-Countdown: "&fSkywars comenzará en &9%time% &fsegundo(s)"
+        Match-End: "&fEl juego ha terminado. &aSerás teletransportado al lobby en &b%time% &asegundos."
+        Invincibility-End: "&fLa invencibilidad ha terminado para todos los jugadores."
+        Play-Again: "&e¿Quieres jugar de nuevo? &l¡Haz clic aquí!"
+        Cant-Join: "&fNo puedes &cunirte &fa esta sala ahora."
+        Blocked-Command: "&fEste comando está &cbloqueado &fmientras estás en una partida."
+        Spectating-Disabled: "&bEspectar &festá &cdeshabilitado &fen esta sala."
+        Room-Full: "&fEsta sala está &cllena&f."
+        Tracker-Found: "&fAhora rastreando a &b%player%"
+        No-Tracker-Found: "&fNo hay jugador para rastrear."
+        Winner-Broadcast: "&b%winner% &fha ganado en el mapa &a%displayname%"
+        Leave: "&eHas salido de la partida."
+        Already-Started: "&fEsta partida ya ha &cempezado&f."
+        Init-Setup:
+          - "&f&nAhora estás en modo configuración. Puedes pegar tu schematic o hacer un nuevo mapa."
+          - "&9> &aUsa el beacon para colocar %cages% jaulas."
+          - "&9> &bIMPORTANTE &c¡Define los límites con //pos1 y //pos2 o con un hacha de WorldEdit, y luego usa //expand vert para cubrir toda la altura del mapa!"
+        Events:
+          Refill:
+            - "&9&LRELLENO DE COFRES"
+            - "&6¡Los cofres están siendo rellenados!"
+          TNTRain:
+            - "&c&lLLUVIA DE TNT"
+            - "&c¡Cuidado con la TNT!"
+        Title:
+          Win: "&b%player% &aha ganado!"
+          DeathMatch: "&cEl mundo se está reduciendo..."
+        Player-Spectator: "&fAhora eres un &b&lespectador&f."
+        Not-In-Region: "&cNo estás en una región protegida."
+        Set-Loc: "&fHas &adefinido &fla ubicación."
+      Cage:
+        Waiting:
+          - "&7&m&l                                 "
+          - "&9&lSKYWARS"
+          - "&fPartida comenzando en"
+          - "&b&l%time%"
+          - "&7&m&l                                 "
+        Death:
+          - "&7&m&l                                 "
+          - "&c&l¡HAS MUERTO!"
+          - "&fSerás teletransportado al lobby en"
+          - "&b&l%time%"
+          - "&7&m&l                                 "
+        Won:
+          - "&7&m&l                                 "
+          - "&a&l¡HAS GANADO!"
+          - "&fSerás teletransportado al lobby en"
+          - "&b&l%time%"
+          - "&7&m&l                                 "
+        Quit: "&e%player% ha abandonado la partida."
+        Died: "&e%player% ha muerto."
+        Starting: "&eLa partida está comenzando.."
+        You-Died: "&eHas muerto."
+        Killed: "&e%player% fue asesinado por %killer%"
+        Beds-Not-Found: "&cCamas no encontradas. Define la cama con /rsw setbed"
+        Beds-Destroyed: "&cTodas las camas han sido destruidas. Define la cama con /rsw setbed."
+        Spectator-Location: "&fLa ubicación del espectador ha sido definida."
+    Menus:
+      Maps-Title: "Mapas"
+      Achievements-Title: "&dLogros"
+      Spectate-Title: "&9Jugadores"
+      Vote-Title: "&b&lVotación"
+      Chests-Vote-Title: "&7&lCofres"
+      Projectiles-Vote-Title: "&7&lProyectiles"
+      Time-Vote-Title: "&7&lTiempo"
+      Game-History-Title: "&e&lHistorial de Juegos"
+      Language:
+        Title: "&9&lIdioma"
+        Select: "&fHaz clic aquí para seleccionar este idioma."
+      Player-Profile:
+        Title: "&9&lTu Perfil"
+        View-Item: "&fHaz clic aquí para ver este ítem."
+        Reset-Data:
+          Title: "&4Restablecer Tus Datos"
+          Alert: "&cProcede con precaución. Esta acción no se puede deshacer."
+      Shop-Menu-Title: "&fTienda &9Categorías"
+      Spectator-Shop-Menu-Title: "&0Tienda del &fEspectador"
+    Itens:
+      Profile:
+        Name: "&9Tu Perfil &7(Clic Derecho)"
+      CageSet:
+        Name: "&bColócame para añadir una Jaula"
+      Maps:
+        Name: "&bMapas &7(Clic Derecho)"
+      Shop:
+        Name: "&2Tienda &7(Clic Derecho)"
+      Leave:
+        Name: "&cSalir &7(Clic Derecho)"
+      Vote:
+        Name: "&bVotación &7(Clic Derecho)"
+      Spectate:
+        Name: "&bEspectar &7(Clic Derecho)"
+      Kit:
+        Name: "&eKits &7(Clic Derecho)"
+      PlayAgain:
+        Name: "&dJugar de Nuevo &7(Clic Derecho)"
+      Chest1:
+        Name: "Cofre Común"
+      Chest2:
+        Name: "Cofre Intermedio"
+      Statistics:
+        Name: "&fEstadísticas de %player%"
+        Lore:
+          - "%space%"
+          - " &fMonedas: &e%coins%"
+          - "%space%"
+          - " &fVictorias Solo: &a%solowins%"
+          - " &fVictorias en Equipo: &a%teamwins%"
+          - " &fAsesinatos: &a%kills%"
+          - " &fMuertes: &a%deaths%"
+          - "%space%"
+          - " &fJuegos Disputados: &b%gamesplayed%"
+          - " &fDerrotas: &b%loses%"
+          - "%space%"
+      Map:
+        Not-Found: "&9Ningún Mapa Encontrado"
+        Title: "&9&l%displayname% &7| &f&l%mode%"
+        Description:
+          - ""
+          - "&fJugadores: &b%players%&f/&b%maxplayers%"
+          - "&fHaz clic para unirte!"
+          - ""
+    Scoreboards:
+      Lobby:
+        Lines:
+          - " &fMonedas: &e%coins%"
+          - "%space%"
+          - " &fVictorias SOLO: &a%solowins%"
+          - " &fVictorias EQUIPO: &a%teamwins%"
+          - " &fAsesinatos: &a%kills%"
+          - " &fMuertes: &a%deaths%"
+          - "%space%"
+          - " &bR &fVict. SOLO: &b%rankedsolowins%"
+          - " &bR &fVict. EQUIPO: &b%rankedteamwins%"
+          - " &bR &fAsesinatos: &b%rankedkills%"
+          - " &bR &fMuertes: &b%rankeddeaths%"
+          - "%space%"
+          - " &fJuegos: &a%gamesplayed% &7/ &b%rankedgamesplayed%"
+          - " &fDerrotas: &a%loses% &7/ &b%rankedloses%"
+          - " &b%playing% &fjugando"
+        Title: "&aRealSkywars &fLobby"
+      Cage:
+        Lines:
+          - "%space%"
+          - " &fJugadores: &b%players%"
+          - " &fEstado: &b%state%"
+          - "%space%"
+        Title: "&fMapa: &b%displayname% &7- &b%mode%"
+      Game:
+        Lines:
+          - "%space%"
+          - " &fJugadores: &b%players%"
+          - " &fEspectadores: &b%spectators%"
+          - " &fPróximo Evento: &b%nextevent%"
+          - " &fModo: &b%mode%"
+          - " &fAsesinatos: &b%kills%"
+          - "%space%"
+          - " &fTiempo de Juego: &b%runtime%"
+          - "%space%"
+        Title: "&fMapa: &b%displayname% &7- &b%mode%"
+      Spectate:
+        Lines:
+          - "%space%"
+          - " &fJugadores: &b%players%"
+          - " &fEspectadores: &b%spectators%"
+          - " &fPróximo Evento: &b%nextevent%"
+          - " &fModo: &b%mode%"
+          - "%space%"
+          - " &fTiempo de Juego: &b%runtime%"
+          - "%space%"
+        Title: "&fMapa: &b%displayname%"
+    Tab:
+      Other:
+        Header:
+          - "&f"
+          - " &f&lReal&b&lSkywars"
+          - " &a&lLobby"
+          - "&f"
+        Footer:
+          - "&f"
+          - "&fJugadores: &b%players%"
+          - "&f"
+      In-Game:
+        Header:
+          - "&f"
+          - " &f&lReal&b&lSkywars"
+          - " &fEstás jugando en:"
+          - " &b%displayname%"
+          - "&f"
+        Footer:
+          - "%space%"
+          - "&fJugadores: &b%players%"
+          - "%space%"
+    Titles:
+      Join-Room:
+        - "&fElige tu kit"
+        - "&fy vota!"
+    Modes:
+      Solo: "&eSolo"
+      Solo-Ranked: "&eSolo &bClasificado"
+      Teams: "&9Equipos"
+      Teams-Ranked: "&9Equipos &bClasificado"
+    States:
+      All: "&2Todo"
+      Available: "&aDisponible"
+      Waiting: "&fEn Espera"
+      Starting: "&eComenzando"
+    Shop-Categories:
+      Cage-Blocks: "&7Bloques de Jaula"
+      Win-Blocks: "&9Bloques de Victoria"
+      Kits: "&9Kits"
+      Bow-Particles: "&aPartículas de Arco"
+    Vote:
+      Cant-Vote: "&cNo puedes votar ahora."
+      Vote: "&fHas votado por &b%thing%"
+      Already-Voted: "&fYa has votado."
+      Time:
+        Day: "&e&LDía"
+        Night: "&7&lNoche"
+        Rain: "&9&lLluvia"
+        Sunset: "&6&lAtardecer"
+      Chests:
+        Name: "&f&lCofres"
+        Basic: "&b&lBásico"
+        Normal: "&f&lNormal"
+        Epic: "&a&lÉpico"
+      Projectiles:
+        Normal: "&f&lNormal"
+        Break: "&6&lRomper Bloques"
+    Kits:
+      Price: "&fPrecio: &9%price%"
+      Contains: "&eEste kit contiene:"
+      Item: "&fx%amount% &b%item%"
+      Buy: "&fHaz clic izquierdo para &acomprar&f. Haz clic derecho para previsualizar."
+      Select: "&fHaz clic izquierdo para &bseleccionar&f. Haz clic derecho para previsualizar."
+      Not-Found: "&cNo se encontró ningún kit con ese nombre."
+      Delete: "&fEl kit ha sido &aeliminado&f."

@@ -29,6 +29,7 @@ import joserodpt.realskywars.api.managers.TransactionManager;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.utils.ItemStackSpringer;
 import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.api.utils.WorldEditUtils;
 import joserodpt.realskywars.plugin.gui.GUIManager;
@@ -725,6 +726,19 @@ public class RealSkywarsCMD extends CommandBase {
     public void reset(final CommandSender commandSender) {
         rs.getLeaderboardManagerAPI().refreshLeaderboards();
         Text.send(commandSender, "Leaderboards Refreshed.");
+    }
+
+    @SubCommand("item2config")
+    @Permission("rsw.admin")
+    @WrongUsage("&c/rsw item2config")
+    public void item2config(final CommandSender commandSender) {
+        if (commandSender instanceof Player) {
+            Player p = (Player) commandSender;
+            RSWConfig.file().set("Config.Item", ItemStackSpringer.getItemSerialized(p.getInventory().getItemInMainHand()));
+            RSWConfig.save();
+        } else {
+            commandSender.sendMessage(onlyPlayer);
+        }
     }
 
     public enum KIT_OPERATION {CREATE, DELETE, GIVE}

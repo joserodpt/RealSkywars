@@ -15,6 +15,9 @@ package joserodpt.realskywars.api.utils;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realskywars.api.config.RSWLanguagesConfig;
+import joserodpt.realskywars.api.config.TranslatableLine;
+import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,7 +28,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Itens {
 
@@ -64,6 +71,23 @@ public class Itens {
         } else {
             return null;
         }
+    }
+
+    public static Map<String, Object> sectionToMap(String section) {
+        Map<String, Object> newMap = new HashMap<>();
+        RSWLanguagesConfig.file().getSection(section).getRoutesAsStrings(false).forEach(route -> {
+            newMap.put(route, RSWLanguagesConfig.file().get(section + "." + route));
+        });
+
+        return newMap;
+    }
+
+    public static ItemStack renameItem(ItemStack item, String name, RSWPlayer p) {
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+        meta.setLore(Collections.singletonList(TranslatableLine.MENU_LANG_SELECT.get(p)));
+        item.setItemMeta(meta);
+        return item;
     }
 
     public static ItemStack createItem(Material material, int quantidade, String nome) {

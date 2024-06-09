@@ -24,12 +24,14 @@ import java.io.IOException;
 
 public class EPICChestConfig {
 
-    private static final String name = "epicchest.yml";
+    private static final String name = "epic.yml";
     private static YamlDocument document;
 
     public static void setup(final JavaPlugin rm) {
         try {
-            document = YamlDocument.create(new File(rm.getDataFolder(), name), rm.getResource(name));
+            File folder = new File(RealSkywarsAPI.getInstance().getPlugin().getDataFolder(), "chests");
+            File file = new File(folder, name);
+            document = YamlDocument.create(file, rm.getResource(name));
         } catch (final IOException e) {
             RealSkywarsAPI.getInstance().getLogger().severe("Couldn't setup " + name + "!");
             RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());
@@ -44,7 +46,7 @@ public class EPICChestConfig {
         try {
             document.save();
         } catch (final IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe( "Couldn't save " + name + "!");
+            RealSkywarsAPI.getInstance().getLogger().severe("Couldn't save " + name + "!");
         }
     }
 
@@ -52,7 +54,7 @@ public class EPICChestConfig {
         try {
             document.reload();
         } catch (final IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe( "Couldn't reload " + name + "!");
+            RealSkywarsAPI.getInstance().getLogger().severe("Couldn't reload " + name + "!");
         }
     }
 }
