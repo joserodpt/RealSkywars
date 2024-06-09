@@ -118,7 +118,7 @@ public class MapManager extends MapManagerAPI {
                         Map<Location, Team> ts = new HashMap<>();
                         int tc = 1;
                         for (RSWCage c : cgs.values()) {
-                            ts.put(c.getLocation(), new Team(tc, (RSWMapsConfig.file().getInt(s + ".number-of-players") / cgs.size()), c.getLocation(), worldName));
+                            ts.put(c.getLocation(), new Team(tc, (RSWMapsConfig.file().getInt(s + ".number-of-players") / cgs.size()), c.getLocation()));
                             ++tc;
                         }
                         TeamsMode teas = new TeamsMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, ts, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), chests, isRanked(s), unregistered, rs);
@@ -138,6 +138,8 @@ public class MapManager extends MapManagerAPI {
 
         map.getSigns().forEach(RSWSign::delete);
         this.maps.remove(map.getMapName());
+
+        map.getRSWWorld().getWorld().getPlayers().forEach(player -> rs.getLobbyManagerAPI().tpToLobby(player));
 
         RSWMapsConfig.file().remove(map.getMapName());
         RSWMapsConfig.save();
@@ -211,14 +213,14 @@ public class MapManager extends MapManagerAPI {
     }
 
     @Override
-    public Map<Location, RSWCage> getMapCages(String s, Location specLoc) {
+    public Map<Location, RSWCage> getMapCages(String mapName, Location specLoc) {
         Map<Location, RSWCage> locs = new HashMap<>();
         int id = 0;
-        for (String i : RSWMapsConfig.file().getSection(s + ".Locations.Cages").getRoutesAsStrings(false)) {
-            int x = RSWMapsConfig.file().getInt(s + ".Locations.Cages." + i + ".X");
-            int y = RSWMapsConfig.file().getInt(s + ".Locations.Cages." + i + ".Y");
-            int z = RSWMapsConfig.file().getInt(s + ".Locations.Cages." + i + ".Z");
-            locs.put(new Location(Bukkit.getWorld(RSWMapsConfig.file().getString(s + ".world")), x, y, z), new RSWSoloCage(id, x, y, z, RSWMapsConfig.file().getString(s + ".world"), specLoc.getBlockX(), specLoc.getBlockY(), specLoc.getBlockZ()));
+        for (String i : RSWMapsConfig.file().getSection(mapName + ".Locations.Cages").getRoutesAsStrings(false)) {
+            int x = RSWMapsConfig.file().getInt(mapName + ".Locations.Cages." + i + ".X");
+            int y = RSWMapsConfig.file().getInt(mapName + ".Locations.Cages." + i + ".Y");
+            int z = RSWMapsConfig.file().getInt(mapName + ".Locations.Cages." + i + ".Z");
+            locs.put(new Location(specLoc.getWorld(), x, y, z), new RSWSoloCage(id, x, y, z, specLoc.getBlockX(), specLoc.getBlockY(), specLoc.getBlockZ()));
             ++id;
         }
         return locs;
@@ -363,7 +365,7 @@ public class MapManager extends MapManagerAPI {
                     Map<Location, Team> ts = new HashMap<>();
                     int tc = 1;
                     for (RSWCage c : p.getSetupRoom().getCages().values()) {
-                        ts.put(c.getLocation(), new Team(tc, p.getSetupRoom().getPlayersPerTeam(), c.getLocation(), p.getSetupRoom().getWorld().getName()));
+                        ts.put(c.getLocation(), new Team(tc, p.getSetupRoom().getPlayersPerTeam(), c.getLocation()));
                         ++tc;
                     }
                     TeamsMode t = new TeamsMode(p.getSetupRoom().getName(), p.getSetupRoom().getDisplayName(), p.getSetupRoom().getWorld(), p.getSetupRoom().getSchematic(), p.getSetupRoom().getWorldType(), RSWMap.MapState.AVAILABLE, ts, p.getSetupRoom().getMaxPlayers(), p.getSetupRoom().getSpectatorLocation(), p.getSetupRoom().isSpectatingON(), p.getSetupRoom().isInstantEnding(), p.getSetupRoom().isBorderEnabled(), pos1, pos2, p.getSetupRoom().getChests(), p.getSetupRoom().isRanked(), false, rs);
@@ -548,6 +550,7 @@ public class MapManager extends MapManagerAPI {
             return;
         }
 
+        p.setGameMode(GameMode.CREATIVE);
         p.teleport(map.getSpectatorLocation());
         Text.sendList(p.getPlayer(), Text.replaceVarInList(TranslatableList.INITSETUP_ARENA.get(p), "%cages%", map.getCages().size() + ""), map.getGameMode() == RSWMap.Mode.SOLO ? map.getMaxPlayers() : map.getTeams().size());
         RSWPlayerItems.SETUP.giveSet(p);
@@ -573,15 +576,10 @@ public class MapManager extends MapManagerAPI {
             // Beacon Remove
             sw.getCages().forEach(cage -> sw.getRSWWorld().getWorld().getBlockAt(cage.getLocation()).setType(Material.AIR));
 
-            sw.clear();
-
             //Remove dropped items
             rs.getWorldManagerAPI().clearDroppedItems(sw.getRSWWorld().getWorld());
 
             rs.getLobbyManagerAPI().tpToLobby(p);
-            RSWPlayerItems.LOBBY.giveSet(p);
-
-            sw.getRSWWorld().save();
 
             if (sw.isUnregistered()) {
                 sw.setUnregistered(false);

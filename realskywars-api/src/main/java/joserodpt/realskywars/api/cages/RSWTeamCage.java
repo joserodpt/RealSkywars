@@ -15,8 +15,8 @@ package joserodpt.realskywars.api.cages;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -27,16 +27,21 @@ import java.util.List;
 public class RSWTeamCage implements RSWCage {
 
     private final int id;
-    private final String worldName;
     private final int maxPlayers;
     private final List<RSWPlayer> p = new ArrayList<>();
-    private final Location loc;
+    private final int x, y, z;
+    private RSWMap map;
 
-    public RSWTeamCage(int i, int x, int y, int z, String worldName, int maxM) {
+    public RSWTeamCage(int i, int x, int y, int z, int maxM) {
         this.id = i;
-        this.loc = new Location(Bukkit.getWorld(worldName), x, y, z);
-        this.worldName = worldName;
+        this.x = x;
+        this.y = y;
+        this.z = z;
         this.maxPlayers = maxM;
+    }
+
+    public void setMap(RSWMap map) {
+        this.map = map;
     }
 
     public int getID() {
@@ -44,7 +49,7 @@ public class RSWTeamCage implements RSWCage {
     }
 
     public Location getLocation() {
-        return new Location(Bukkit.getWorld(this.worldName), this.loc.getBlockX(), this.loc.getBlockY(), this.loc.getBlockZ()).add(0.5, 0, 0.5);
+        return new Location(map.getRSWWorld().getWorld(), this.x, this.y, this.z).add(0.5, 0, 0.5);
     }
 
     public boolean isEmpty() {
@@ -52,86 +57,86 @@ public class RSWTeamCage implements RSWCage {
     }
 
     public void setCage(Material m) {
-        World w = Bukkit.getWorld(this.worldName);
+        World w = map.getRSWWorld().getWorld();
 
-        int x = this.loc.getBlockX();
-        int y = this.loc.getBlockY();
-        int z = this.loc.getBlockZ();
+        int xCage = x;
+        int yCage = y;
+        int zCage = z;
 
         // chao
-        w.getBlockAt(x + 1, y - 1, z).setType(m);
-        w.getBlockAt(x + 1, y - 1, z + 1).setType(m);
-        w.getBlockAt(x + 1, y - 1, z - 1).setType(m);
-        w.getBlockAt(x, y - 1, z + 1).setType(m);
-        w.getBlockAt(x, y - 1, z - 1).setType(m);
-        w.getBlockAt(x, y - 1, z).setType(m);
-        w.getBlockAt(x - 1, y - 1, z).setType(m);
-        w.getBlockAt(x - 1, y - 1, z - 1).setType(m);
-        w.getBlockAt(x - 1, y - 1, z + 1).setType(m);
+        w.getBlockAt(xCage + 1, yCage - 1, zCage).setType(m);
+        w.getBlockAt(xCage + 1, yCage - 1, zCage + 1).setType(m);
+        w.getBlockAt(xCage + 1, yCage - 1, zCage - 1).setType(m);
+        w.getBlockAt(xCage, yCage - 1, zCage + 1).setType(m);
+        w.getBlockAt(xCage, yCage - 1, zCage - 1).setType(m);
+        w.getBlockAt(xCage, yCage - 1, zCage).setType(m);
+        w.getBlockAt(xCage - 1, yCage - 1, zCage).setType(m);
+        w.getBlockAt(xCage - 1, yCage - 1, zCage - 1).setType(m);
+        w.getBlockAt(xCage - 1, yCage - 1, zCage + 1).setType(m);
 
-        y = y + 4;
+        yCage = yCage + 4;
 
         // teto
-        w.getBlockAt(x + 1, y - 1, z).setType(m);
-        w.getBlockAt(x + 1, y - 1, z + 1).setType(m);
-        w.getBlockAt(x + 1, y - 1, z - 1).setType(m);
-        w.getBlockAt(x, y - 1, z + 1).setType(m);
-        w.getBlockAt(x, y - 1, z - 1).setType(m);
-        w.getBlockAt(x, y - 1, z).setType(m);
-        w.getBlockAt(x - 1, y - 1, z).setType(m);
-        w.getBlockAt(x - 1, y - 1, z - 1).setType(m);
-        w.getBlockAt(x - 1, y - 1, z + 1).setType(m);
+        w.getBlockAt(xCage + 1, yCage - 1, zCage).setType(m);
+        w.getBlockAt(xCage + 1, yCage - 1, zCage + 1).setType(m);
+        w.getBlockAt(xCage + 1, yCage - 1, zCage - 1).setType(m);
+        w.getBlockAt(xCage, yCage - 1, zCage + 1).setType(m);
+        w.getBlockAt(xCage, yCage - 1, zCage - 1).setType(m);
+        w.getBlockAt(xCage, yCage - 1, zCage).setType(m);
+        w.getBlockAt(xCage - 1, yCage - 1, zCage).setType(m);
+        w.getBlockAt(xCage - 1, yCage - 1, zCage - 1).setType(m);
+        w.getBlockAt(xCage - 1, yCage - 1, zCage + 1).setType(m);
 
         // paredes 1 e 3
-        y = this.loc.getBlockY();
-        x = x + 2;
-        w.getBlockAt(x, y, z).setType(m);
-        w.getBlockAt(x, y + 1, z).setType(m);
-        w.getBlockAt(x, y + 2, z).setType(m);
-        w.getBlockAt(x, y, z - 1).setType(m);
-        w.getBlockAt(x, y + 1, z - 1).setType(m);
-        w.getBlockAt(x, y + 2, z - 1).setType(m);
-        w.getBlockAt(x, y, z + 1).setType(m);
-        w.getBlockAt(x, y + 1, z + 1).setType(m);
-        w.getBlockAt(x, y + 2, z + 1).setType(m);
+        yCage = y;
+        xCage = xCage + 2;
+        w.getBlockAt(xCage, yCage, zCage).setType(m);
+        w.getBlockAt(xCage, yCage + 1, zCage).setType(m);
+        w.getBlockAt(xCage, yCage + 2, zCage).setType(m);
+        w.getBlockAt(xCage, yCage, zCage - 1).setType(m);
+        w.getBlockAt(xCage, yCage + 1, zCage - 1).setType(m);
+        w.getBlockAt(xCage, yCage + 2, zCage - 1).setType(m);
+        w.getBlockAt(xCage, yCage, zCage + 1).setType(m);
+        w.getBlockAt(xCage, yCage + 1, zCage + 1).setType(m);
+        w.getBlockAt(xCage, yCage + 2, zCage + 1).setType(m);
 
-        x = this.loc.getBlockX();
-        x = x - 2;
-        w.getBlockAt(x, y, z).setType(m);
-        w.getBlockAt(x, y + 1, z).setType(m);
-        w.getBlockAt(x, y + 2, z).setType(m);
-        w.getBlockAt(x, y, z - 1).setType(m);
-        w.getBlockAt(x, y + 1, z - 1).setType(m);
-        w.getBlockAt(x, y + 2, z - 1).setType(m);
-        w.getBlockAt(x, y, z + 1).setType(m);
-        w.getBlockAt(x, y + 1, z + 1).setType(m);
-        w.getBlockAt(x, y + 2, z + 1).setType(m);
+        xCage = x;
+        xCage = xCage - 2;
+        w.getBlockAt(xCage, yCage, zCage).setType(m);
+        w.getBlockAt(xCage, yCage + 1, zCage).setType(m);
+        w.getBlockAt(xCage, yCage + 2, zCage).setType(m);
+        w.getBlockAt(xCage, yCage, zCage - 1).setType(m);
+        w.getBlockAt(xCage, yCage + 1, zCage - 1).setType(m);
+        w.getBlockAt(xCage, yCage + 2, zCage - 1).setType(m);
+        w.getBlockAt(xCage, yCage, zCage + 1).setType(m);
+        w.getBlockAt(xCage, yCage + 1, zCage + 1).setType(m);
+        w.getBlockAt(xCage, yCage + 2, zCage + 1).setType(m);
 
         // paredes 3 e 4
-        x = this.loc.getBlockX();
-        z = this.loc.getBlockZ();
-        z = z - 2;
-        w.getBlockAt(x, y, z).setType(m);
-        w.getBlockAt(x - 1, y, z).setType(m);
-        w.getBlockAt(x + 1, y, z).setType(m);
-        w.getBlockAt(x, y + 1, z).setType(m);
-        w.getBlockAt(x - 1, y + 1, z).setType(m);
-        w.getBlockAt(x + 1, y + 1, z).setType(m);
-        w.getBlockAt(x, y + 2, z).setType(m);
-        w.getBlockAt(x - 1, y + 2, z).setType(m);
-        w.getBlockAt(x + 1, y + 2, z).setType(m);
+        xCage = x;
+        zCage = z;
+        zCage = zCage - 2;
+        w.getBlockAt(xCage, yCage, zCage).setType(m);
+        w.getBlockAt(xCage - 1, yCage, zCage).setType(m);
+        w.getBlockAt(xCage + 1, yCage, zCage).setType(m);
+        w.getBlockAt(xCage, yCage + 1, zCage).setType(m);
+        w.getBlockAt(xCage - 1, yCage + 1, zCage).setType(m);
+        w.getBlockAt(xCage + 1, yCage + 1, zCage).setType(m);
+        w.getBlockAt(xCage, yCage + 2, zCage).setType(m);
+        w.getBlockAt(xCage - 1, yCage + 2, zCage).setType(m);
+        w.getBlockAt(xCage + 1, yCage + 2, zCage).setType(m);
 
-        z = this.loc.getBlockZ();
-        z = z + 2;
-        w.getBlockAt(x, y, z).setType(m);
-        w.getBlockAt(x - 1, y, z).setType(m);
-        w.getBlockAt(x + 1, y, z).setType(m);
-        w.getBlockAt(x, y + 1, z).setType(m);
-        w.getBlockAt(x - 1, y + 1, z).setType(m);
-        w.getBlockAt(x + 1, y + 1, z).setType(m);
-        w.getBlockAt(x, y + 2, z).setType(m);
-        w.getBlockAt(x - 1, y + 2, z).setType(m);
-        w.getBlockAt(x + 1, y + 2, z).setType(m);
+        zCage = z;
+        zCage = zCage + 2;
+        w.getBlockAt(xCage, yCage, zCage).setType(m);
+        w.getBlockAt(xCage - 1, yCage, zCage).setType(m);
+        w.getBlockAt(xCage + 1, yCage, zCage).setType(m);
+        w.getBlockAt(xCage, yCage + 1, zCage).setType(m);
+        w.getBlockAt(xCage - 1, yCage + 1, zCage).setType(m);
+        w.getBlockAt(xCage + 1, yCage + 1, zCage).setType(m);
+        w.getBlockAt(xCage, yCage + 2, zCage).setType(m);
+        w.getBlockAt(xCage - 1, yCage + 2, zCage).setType(m);
+        w.getBlockAt(xCage + 1, yCage + 2, zCage).setType(m);
 
     }
 
@@ -170,18 +175,13 @@ public class RSWTeamCage implements RSWCage {
 
     public void open() {
         Material m = Material.AIR;
-        World w = Bukkit.getWorld(worldName);
-
-        int x = this.loc.getBlockX();
-        int y = this.loc.getBlockY();
-        int z = this.loc.getBlockZ();
 
         int[] xOffset = {0, 1, -1};
         int[] zOffset = {0, 1, -1};
 
         for (int dx : xOffset) {
             for (int dz : zOffset) {
-                w.getBlockAt(x + dx, y - 1, z + dz).setType(m);
+                map.getRSWWorld().getWorld().getBlockAt(x + dx, y - 1, z + dz).setType(m);
             }
         }
 

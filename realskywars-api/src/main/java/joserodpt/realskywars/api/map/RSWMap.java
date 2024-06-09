@@ -867,7 +867,6 @@ public abstract class RSWMap {
 
     public void removeChest(Location loc) {
         for (Location location : this.chests.keySet()) {
-
             if (location.getX() == loc.getX() && location.getY() == loc.getY() && location.getZ() == loc.getZ()) {
                 this.chests.remove(location);
                 this.save(Data.CHESTS, true);

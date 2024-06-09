@@ -33,9 +33,9 @@ public class Team {
     private final List<RSWPlayer> members = new ArrayList<>();
     private Boolean eliminated = false, playing = false;
 
-    public Team(int i, int maxMemb, Location c, String worldName) {
+    public Team(int i, int maxMemb, Location c) {
         this.id = i;
-        this.tc = new RSWTeamCage(i, c.getBlockX(), c.getBlockY(), c.getBlockZ(), worldName, maxMemb);
+        this.tc = new RSWTeamCage(i, c.getBlockX(), c.getBlockY(), c.getBlockZ(), maxMemb);
         this.maxMembers = maxMemb;
     }
 

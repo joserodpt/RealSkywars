@@ -271,7 +271,6 @@ public class PlayerListener implements Listener {
         if (event.getPlayer().isOp()) {
             if (event.getBlock().getType() == Material.BEACON) {
                 Location loc = event.getBlock().getLocation();
-                Bukkit.getLogger().warning(loc.toString());
 
                 RSWMap mp = rs.getMapManagerAPI().getMap(event.getBlock().getLocation().getWorld());
                 if (mp != null && mp.isUnregistered()) {
@@ -431,10 +430,10 @@ public class PlayerListener implements Listener {
         int i = p.getSetupRoom().getCages().size() + 1;
         switch (p.getSetupRoom().getGameType()) {
             case SOLO:
-                p.getSetupRoom().addCage(loc, new RSWSoloCage(i, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getWorld().getName(), 0, 64, 0));
+                p.getSetupRoom().addCage(loc, new RSWSoloCage(i, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), 0, 64, 0));
                 break;
             case TEAMS:
-                p.getSetupRoom().addCage(loc, new RSWTeamCage(i, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getWorld().getName(), p.getSetupRoom().getPlayersPerTeam()));
+                p.getSetupRoom().addCage(loc, new RSWTeamCage(i, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), p.getSetupRoom().getPlayersPerTeam()));
                 break;
         }
         e.getPlayer().sendMessage(ChatColor.GREEN + "You placed cage number " + i);

@@ -36,7 +36,6 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TeamsMode extends RSWMap {
@@ -49,6 +48,8 @@ public class TeamsMode extends RSWMap {
 
         this.teams = teams;
         this.maxMembersTeam = teams.get(0).getMaxMembers();
+
+        this.teams.forEach((loc, team) -> team.getTeamCage().setMap(this));
     }
 
     @Override
@@ -287,13 +288,20 @@ public class TeamsMode extends RSWMap {
 
     @Override
     public void removeCage(Location loc) {
-        this.teams.remove(loc);
-        this.save(Data.CAGES, true);
+        for (Location location : this.teams.keySet()) {
+            if (location.getBlockX() == loc.getX() && location.getBlockY() == loc.getY() && location.getBlockZ() == loc.getZ()) {
+                this.teams.remove(location);
+                this.save(Data.CAGES, true);
+                break;
+            }
+        }
     }
 
     @Override
     public void addCage(Location location) {
-        this.teams.put(location, new Team(this.getTeams().size() + 1, this.getMaxTeamMembers(), location, Objects.requireNonNull(location.getWorld()).getName()));
+        Team t = new Team(this.getTeams().size() + 1, this.getMaxTeamMembers(), location);
+        t.getTeamCage().setMap(this);
+        this.teams.put(location, t);
         this.save(Data.CAGES, true);
     }
 }

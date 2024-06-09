@@ -15,6 +15,7 @@ package joserodpt.realskywars.api.cages;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -45,4 +46,6 @@ public interface RSWCage {
     void setCage(Material m);
 
     void open();
+
+    void setMap(RSWMap map);
 }

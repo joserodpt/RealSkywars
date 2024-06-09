@@ -48,6 +48,7 @@ public class SoloMode extends RSWMap {
     public SoloMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, Map<Location, RSWCage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, Map<Location, RSWChest> chests, Boolean rankd, Boolean unregistered, RealSkywarsAPI rs) {
         super(nome, displayName, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border, pos1, pos2, chests, rankd, unregistered, rs);
         this.cages = cages;
+        this.cages.forEach((location, rswCage) -> rswCage.setMap(this));
     }
 
     @Override
@@ -273,13 +274,20 @@ public class SoloMode extends RSWMap {
 
     @Override
     public void removeCage(Location loc) {
-        this.cages.remove(loc);
-        this.save(Data.CAGES, true);
+        for (Location location : this.cages.keySet()) {
+            if (location.getBlockX() == loc.getX() && location.getBlockY() == loc.getY() && location.getBlockZ() == loc.getZ()) {
+                this.cages.remove(location);
+                this.save(Data.CAGES, true);
+                break;
+            }
+        }
     }
 
     @Override
     public void addCage(Location location) {
-        this.cages.put(location, new RSWSoloCage(this.cages.size() + 1, location, this.getSpectatorLocation()));
+        RSWSoloCage cage = new RSWSoloCage(this.cages.size() + 1, location, this.getSpectatorLocation());
+        cage.setMap(this);
+        this.cages.put(location, cage);
         this.save(Data.CAGES, true);
     }
 }

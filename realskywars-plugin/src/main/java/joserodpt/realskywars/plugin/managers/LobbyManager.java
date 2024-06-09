@@ -24,6 +24,7 @@ import joserodpt.realskywars.api.player.RSWPlayerItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 public class LobbyManager extends LobbyManagerAPI {
 
@@ -48,9 +49,16 @@ public class LobbyManager extends LobbyManagerAPI {
     }
 
     @Override
+    public void tpToLobby(Player player) {
+        if (this.lobbyLOC != null) {
+            player.teleport(this.lobbyLOC);
+        }
+    }
+
+    @Override
     public void tpToLobby(RSWPlayer p) {
         if (this.lobbyLOC != null) {
-            p.teleport(this.lobbyLOC);
+            tpToLobby(p.getPlayer());
             TranslatableLine.LOBBY_TELEPORT.send(p, true);
             RSWPlayerItems.LOBBY.giveSet(p);
         } else {

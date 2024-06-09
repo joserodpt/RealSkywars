@@ -15,24 +15,23 @@ package joserodpt.realskywars.api.cages;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 
 import java.util.Collections;
 import java.util.List;
 
 public class RSWSoloCage implements RSWCage {
 
-    private int id;
-    private int x, y, z;
-    private int specx, specy, specz;
-    private String worldName;
+    private final int id;
+    private final int x, y, z;
+    private final int specx, specy, specz;
     private RSWPlayer p;
+    private RSWMap map;
 
-    public RSWSoloCage(int i, int x, int y, int z, String worldName, int specx, int specy, int specz) {
+    public RSWSoloCage(int i, int x, int y, int z, int specx, int specy, int specz) {
         this.id = i;
         this.x = x;
         this.y = y;
@@ -40,21 +39,24 @@ public class RSWSoloCage implements RSWCage {
         this.specx = specx;
         this.specy = specy;
         this.specz = specz;
-        this.worldName = worldName;
     }
 
     public RSWSoloCage(int i, Location l, Location specLoc) {
-        this(i, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName(), specLoc.getBlockX(), specLoc.getBlockY(), specLoc.getBlockZ());
+        this(i, l.getBlockX(), l.getBlockY(), l.getBlockZ(), specLoc.getBlockX(), specLoc.getBlockY(), specLoc.getBlockZ());
     }
 
     public Location getLocation() {
-        return new Location(Bukkit.getWorld(this.worldName), this.x, this.y, this.z).add(0.5, 0, 0.5);
+        return new Location(map.getRSWWorld().getWorld(), this.x, this.y, this.z).add(0.5, 0, 0.5);
     }
 
     public void tpPlayer(RSWPlayer p) {
         this.p = p;
-        Location lookat = new Location(Bukkit.getWorld(this.worldName), this.specx, this.specy, this.specz);
-        p.teleport(lookAt(getLocation(), lookat));
+
+        p.teleport(lookAt(getLocation(), new Location(map.getRSWWorld().getWorld(), this.specx, this.specy, this.specz)));
+    }
+
+    public void setMap(RSWMap map) {
+        this.map = map;
     }
 
     public int getID() {
@@ -66,8 +68,9 @@ public class RSWSoloCage implements RSWCage {
     }
 
     public void setCage(Material m) {
-        World w = Bukkit.getWorld(this.worldName);
-
+        if (m == null) {
+            m = Material.GLASS;
+        }
         int[][] positions = {
                 {0, -1, 0}, {0, 0, 1}, {0, 0, -1}, {0, 3, 0},
                 {0, 1, 1}, {0, 2, 1}, {0, 1, -1}, {0, 2, -1},
@@ -76,7 +79,7 @@ public class RSWSoloCage implements RSWCage {
         };
 
         for (int[] pos : positions) {
-            w.getBlockAt(x + pos[0], y + pos[1], z + pos[2]).setType(m);
+            map.getRSWWorld().getWorld().getBlockAt(x + pos[0], y + pos[1], z + pos[2]).setType(m);
         }
     }
 
@@ -111,8 +114,7 @@ public class RSWSoloCage implements RSWCage {
     }
 
     public void open() {
-        World w = Bukkit.getWorld(this.worldName);
-        w.getBlockAt(x, y - 1, z).setType(Material.AIR);
+        map.getRSWWorld().getWorld().getBlockAt(x, y - 1, z).setType(Material.AIR);
 
         if (this.p != null)
             this.p.setInvincible(true);
