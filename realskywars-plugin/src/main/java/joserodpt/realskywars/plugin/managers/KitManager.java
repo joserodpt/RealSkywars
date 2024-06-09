@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 public class KitManager extends KitManagerAPI {
 
-    private final ArrayList<RSWKit> SWKits = new ArrayList<>();
+    private final List<RSWKit> SWKits = new ArrayList<>();
 
     @Override
     public void loadKits() {

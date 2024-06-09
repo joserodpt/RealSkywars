@@ -298,10 +298,6 @@ public class RSWPlayer {
         return this.language;
     }
 
-    public void setLanguage(String lang) {
-        this.language = lang;
-    }
-
     public Player getPlayer() {
         return this.p;
     }
@@ -314,10 +310,13 @@ public class RSWPlayer {
                 break;
             case KIT:
                 this.swKit = (RSWKit) o;
+                if (this.swKit == null) {
+                    this.swKit = new RSWKit();
+                }
+                this.saveData(PlayerData.KIT);
                 break;
             case BOW_PARTICLES:
                 this.bowParticle = (Particle) o;
-                this.saveData(PlayerData.BOW_PARTICLES);
                 break;
             case CAGE_BLOCK:
                 Material m = (Material) o;
@@ -536,7 +535,7 @@ public class RSWPlayer {
         return this.rt;
     }
 
-    public enum PlayerData {CAGE_BLOCK, GAME, COINS, LANG, MAPVIEWER_PREF, BOW_PARTICLES, BOUGHT_ITEMS}
+    public enum PlayerData {CAGE_BLOCK, GAME, COINS, LANG, MAPVIEWER_PREF, BOUGHT_ITEMS, KIT}
 
     public void buyItem(String s) {
         this.bought.add(Text.strip(s));

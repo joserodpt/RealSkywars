@@ -64,6 +64,16 @@ public class PlayerManager extends PlayerManagerAPI {
             if (cageBlock != null) {
                 gp.setProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK, Material.getMaterial(cageBlock));
             }
+
+            String choosenKit = playerData.getChoosen_kit();
+            if (choosenKit == null || choosenKit.isEmpty()) {
+                choosenKit = "none";
+            }
+
+            if (!choosenKit.equalsIgnoreCase("none")) {
+                gp.setProperty(RSWPlayer.PlayerProperties.KIT, rs.getKitManagerAPI().getKit(choosenKit));
+            }
+
             gp.heal();
 
             rs.getPlayerManagerAPI().addPlayer(gp);
@@ -138,6 +148,9 @@ public class PlayerManager extends PlayerManagerAPI {
             PlayerData playerData = rs.getDatabaseManagerAPI().getPlayerData(p.getPlayer());
 
             switch (pd) {
+                case KIT:
+                    playerData.setKit(p.getKit().getName());
+                    break;
                 case BOUGHT_ITEMS:
                     playerData.setBoughtItems(p.getBoughtItems());
                     break;

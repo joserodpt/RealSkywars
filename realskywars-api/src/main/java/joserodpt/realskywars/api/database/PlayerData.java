@@ -43,6 +43,9 @@ public class PlayerData {
     @DatabaseField(columnName = "prefs_mapviewer")
     private String prefs_mapviewer;
 
+    @DatabaseField(columnName = "choosen_kit")
+    private String choosen_kit;
+
     @DatabaseField(columnName = "prefs_cage_material")
     private String prefs_cage_material;
 
@@ -92,87 +95,75 @@ public class PlayerData {
         return this.games_list;
     }
 
+    public String getChoosen_kit() {
+        return choosen_kit;
+    }
+
     public void setGames_list(String games_list) {
         this.games_list = games_list;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return this.name;
     }
 
-    public String getMapViewerPref()
-    {
+    public String getMapViewerPref() {
         return this.prefs_mapviewer;
     }
 
-    public String getCageMaterial()
-    {
+    public String getCageMaterial() {
         return this.prefs_cage_material;
     }
 
-    public int getStats_wins_ranked_solo()
-    {
+    public int getStats_wins_ranked_solo() {
         return this.stats_wins_ranked_solo;
     }
 
-    public int getStats_wins_teams()
-    {
+    public int getStats_wins_teams() {
         return this.stats_wins_teams;
     }
 
-    public int getStats_wins_ranked_teams()
-    {
+    public int getStats_wins_ranked_teams() {
         return this.stats_wins_ranked_teams;
     }
 
-    public int getKills()
-    {
+    public int getKills() {
         return this.kills;
     }
 
-    public int getRanked_kills()
-    {
+    public int getRanked_kills() {
         return this.ranked_kills;
     }
 
-    public int getLoses()
-    {
+    public int getLoses() {
         return this.loses;
     }
 
-    public int getLoses_ranked()
-    {
+    public int getLoses_ranked() {
         return this.ranked_loses;
     }
 
-    public int getDeaths()
-    {
+    public int getDeaths() {
         return this.deaths;
     }
 
-    public int getStats_wins_solo()
-    {
+    public int getStats_wins_solo() {
         return this.stats_wins_solo;
     }
 
-    public int getRanked_deaths()
-    {
+    public int getRanked_deaths() {
         return this.ranked_deaths;
     }
 
-    public int getGames_played()
-    {
+    public int getGames_played() {
         return this.games_played;
     }
 
-    public int getRanked_games_played()
-    {
+    public int getRanked_games_played() {
         return this.ranked_games_played;
     }
 
-    public List<String> getBought_items()
-    {
+    public List<String> getBought_items() {
         return new ArrayList<>(Arrays.asList(this.bought_items.split("/")));
     }
 
@@ -180,8 +171,7 @@ public class PlayerData {
         return this.coins;
     }
 
-    public String getLanguage()
-    {
+    public String getLanguage() {
         return this.lang;
     }
 
@@ -203,7 +193,7 @@ public class PlayerData {
     }
 
     public void setLanguage(String language) {
-    this.lang = language;
+        this.lang = language;
     }
 
     public void setCoins(double coins) {
@@ -223,8 +213,7 @@ public class PlayerData {
     }
 
     public void setWinsSolo(Object a, boolean b) {
-        if (b)
-        {
+        if (b) {
             this.stats_wins_ranked_solo = (int) a;
         } else {
             this.stats_wins_solo = (int) a;
@@ -232,8 +221,7 @@ public class PlayerData {
     }
 
     public void setWinsTeams(Object a, boolean b) {
-        if (b)
-        {
+        if (b) {
             this.stats_wins_ranked_teams = (int) a;
         } else {
             this.stats_wins_teams = (int) a;
@@ -241,8 +229,7 @@ public class PlayerData {
     }
 
     public void setKills(Object a, boolean b) {
-        if (b)
-        {
+        if (b) {
             this.ranked_kills = (int) a;
         } else {
             this.kills = (int) a;
@@ -250,8 +237,7 @@ public class PlayerData {
     }
 
     public void setDeaths(Object a, boolean b) {
-        if (b)
-        {
+        if (b) {
             this.ranked_deaths = (int) a;
         } else {
             this.deaths = (int) a;
@@ -259,8 +245,7 @@ public class PlayerData {
     }
 
     public void setLoses(Object a, boolean b) {
-        if (b)
-        {
+        if (b) {
             this.ranked_loses = (int) a;
         } else {
             this.loses = (int) a;
@@ -268,8 +253,7 @@ public class PlayerData {
     }
 
     public void setGamesPlayed(Object a, boolean b) {
-        if (b)
-        {
+        if (b) {
             this.ranked_games_played = (int) a;
         } else {
             this.games_played = (int) a;
@@ -278,5 +262,9 @@ public class PlayerData {
 
     public UUID getUUID() {
         return this.uuid;
+    }
+
+    public void setKit(String name) {
+        this.choosen_kit = name;
     }
 }

@@ -32,9 +32,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.UUID;
 
 public class DatabaseManager extends DatabaseManagerAPI {
@@ -60,7 +61,34 @@ public class DatabaseManager extends DatabaseManagerAPI {
 
         this.playerDataDao = DaoManager.createDao(connectionSource, PlayerData.class);
 
+        // add new choosen_kit (v0.8)
+        createColumnIfNotExists(connectionSource, "choosen_kit", "VARCHAR");
+
         getPlayerData();
+    }
+
+    public void createColumnIfNotExists(ConnectionSource cs, String columnName, String columnType) {
+        try {
+            if (!doesColumnExist(cs, columnName)) {
+                Bukkit.getLogger().warning("[RealSkywars] RealSkywars.db: Upgrading SQL table to add choosen_kit to realscoreboard_playerdata...");
+                playerDataDao.executeRaw("ALTER TABLE realscoreboard_playerdata ADD COLUMN " + columnName + " " + columnType);
+                Bukkit.getLogger().warning("[RealSkywars] RealSkywars.db: Upgrade complete!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean doesColumnExist(ConnectionSource cs, String columnName) {
+        try {
+            DatabaseMetaData metaData = cs.getReadOnlyConnection(null).getUnderlyingConnection().getMetaData();
+            ResultSet columns = metaData.getColumns(null, null, "realscoreboard_playerdata", columnName);
+
+            return columns.next(); // Return true if the column exists
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
