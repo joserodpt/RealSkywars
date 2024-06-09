@@ -50,12 +50,12 @@ public class PlayerProfileContentsGUI {
     int pageNumber = 0;
     Pagination<RSWShopDisplayItem> p;
     private final Inventory inv;
-    private final UUID uuid;
+    private final RSWPlayer rswp;
     private final Map<Integer, RSWShopDisplayItem> display = new HashMap<>();
     private final ShopManagerAPI.ShopCategory cat;
 
     public PlayerProfileContentsGUI(RSWPlayer p, ShopManagerAPI.ShopCategory t) {
-        this.uuid = p.getUUID();
+        this.rswp = p;
         this.cat = t;
         inv = Bukkit.getServer().createInventory(null, 54, t.getCategoryTitle(p));
 
@@ -128,7 +128,7 @@ public class PlayerProfileContentsGUI {
                                     p.setProperty(RSWPlayer.PlayerProperties.BOW_PARTICLES, a.getInfo("Particle"));
                                     break;
                                 case CAGE_BLOCKS:
-                                    p.setProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK, a.getItemStack().getType());
+                                    p.setProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK, a.getItemStack(current.rswp).getType());
                                     break;
                                 case WIN_BLOCKS:
                                     if (a.containsInfo("RandomBlock")) {
@@ -216,7 +216,7 @@ public class PlayerProfileContentsGUI {
             if (i == null) {
                 if (!items.isEmpty()) {
                     RSWShopDisplayItem s = items.get(0);
-                    inv.setItem(slot, s.getItemStack());
+                    inv.setItem(slot, s.getItemStack(this.rswp));
                     display.put(slot, s);
                     items.remove(0);
                 }
@@ -244,10 +244,10 @@ public class PlayerProfileContentsGUI {
     }
 
     private void register() {
-        inventories.put(this.uuid, this);
+        inventories.put(this.rswp.getUUID(), this);
     }
 
     private void unregister() {
-        inventories.remove(this.uuid);
+        inventories.remove(this.rswp.getUUID());
     }
 }

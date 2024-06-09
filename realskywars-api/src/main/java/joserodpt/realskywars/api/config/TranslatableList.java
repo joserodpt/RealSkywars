@@ -7,22 +7,22 @@ import java.util.List;
 
 public enum TranslatableList {
 
-    ARENA_START(".Messages.Arena.Start"),
-    ARENA_END(".Messages.Arena.End-Log"),
-    INITSETUP_ARENA(".Messages.System.Arena.Init-Setup"),
+    ARENA_START(".Messages.Map.Start"),
+    ARENA_END(".Messages.Map.End-Log"),
+    INITSETUP_ARENA(".Messages.Map.Init-Setup"),
     SCOREBOARD_LOBBY_LINES(".Scoreboards.Lobby.Lines"),
     SCOREBOARD_CAGE_LINES(".Scoreboards.Cage.Lines"),
     SCOREBOARD_PLAYING_LINES(".Scoreboards.Game.Lines"),
     SCOREBOARD_SPECTATOR_LINES(".Scoreboards.Spectate.Lines"),
     ITEMS_MAP_DESCRIPTION(".Itens.Map.Description"),
-    TITLE_ROOMJOIN(".Messages.System.Titles.Join-Room"),
+    TITLE_ROOMJOIN(".Titles.Join-Room"),
     STATS_ITEM_LORE(".Itens.Statistics.Lore"),
-    REFILL_EVENT_TITLE(".Messages.Arena.Events.Refill"),
-    TNTRAIN_EVENT_TITLE(".Messages.Arena.Events.TNTRain"),
-    TAB_HEADER_MATCH(".Messages.System.TAB.InGame.Header"),
-    TAB_FOOTER_MATCH(".Messages.System.TAB.InGame.Footer"),
-    TAB_HEADER_OTHER(".Messages.System.TAB.Other.Header"),
-    TAB_FOOTER_OTHER(".Messages.System.TAB.Other.Footer");
+    REFILL_EVENT_TITLE(".Messages.Map.Events.Refill"),
+    TNTRAIN_EVENT_TITLE(".Messages.Map.Events.TNTRain"),
+    TAB_HEADER_MATCH(".Tab.In-Game.Header"),
+    TAB_FOOTER_MATCH(".Tab.In-Game.Footer"),
+    TAB_HEADER_OTHER(".Tab.Other.Header"),
+    TAB_FOOTER_OTHER(".Tab.Other.Footer");
 
     private final String configPath;
 

@@ -80,7 +80,7 @@ public class EventListener implements Listener {
             if (m != null && (event.getPlayer().isOp() || p.getPlayer().hasPermission("rs.admin"))) {
                 m.addSign(event.getBlock());
             } else {
-                TranslatableLine.NO_MAP_FOUND.send(p, true);
+                TranslatableLine.CMD_NO_MAP_FOUND.send(p, true);
             }
         }
     }

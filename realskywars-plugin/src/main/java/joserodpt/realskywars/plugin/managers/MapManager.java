@@ -499,7 +499,7 @@ public class MapManager extends MapManagerAPI {
                     return;
                 }
 
-                TranslatableLine.MAP_FOUND.send(player, true);
+                TranslatableLine.CMD_MAP_FOUND.send(player, true);
                 if (player.isInMatch()) {
                     player.getMatch().removePlayer(player);
                 }
@@ -508,7 +508,7 @@ public class MapManager extends MapManagerAPI {
                     rs.getPlayerManagerAPI().getTeleporting().remove(player.getUUID());
                 }, 5);
             } else {
-                TranslatableLine.NO_MAP_FOUND.send(player, true);
+                TranslatableLine.CMD_NO_MAP_FOUND.send(player, true);
                 rs.getPlayerManagerAPI().getTeleporting().remove(player.getUUID());
 
                 if (rs.getLobbyManagerAPI().getLobbyLocation() != null && rs.getLobbyManagerAPI().getLobbyLocation().getWorld() != null && Objects.equals(rs.getLobbyManagerAPI().getLobbyLocation().getWorld(), player.getWorld())) {

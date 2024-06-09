@@ -1130,9 +1130,9 @@ public abstract class RSWMap {
         public String getDisplayName(RSWPlayer p) {
             switch (this) {
                 case NORMAL:
-                    return TranslatableLine.PROJECTILE_NORMAL.get(p);
+                    return TranslatableLine.VOTE_PROJECTILE_NORMAL.get(p);
                 case BREAK_BLOCKS:
-                    return TranslatableLine.PROJECTILE_BREAK.get(p);
+                    return TranslatableLine.VOTE_PROJECTILE_BREAK.get(p);
                 default:
                     return "?";
             }
@@ -1145,13 +1145,13 @@ public abstract class RSWMap {
         public String getDisplayName(RSWPlayer p) {
             switch (this) {
                 case DAY:
-                    return TranslatableLine.TIME_DAY.get(p);
+                    return TranslatableLine.VOTE_TIME_DAY.get(p);
                 case NIGHT:
-                    return TranslatableLine.TIME_NIGHT.get(p);
+                    return TranslatableLine.VOTE_TIME_NIGHT.get(p);
                 case RAIN:
-                    return TranslatableLine.TIME_RAIN.get(p);
+                    return TranslatableLine.VOTE_TIME_RAIN.get(p);
                 case SUNSET:
-                    return TranslatableLine.TIME_SUNSET.get(p);
+                    return TranslatableLine.VOTE_TIME_SUNSET.get(p);
                 default:
                     return "?";
             }

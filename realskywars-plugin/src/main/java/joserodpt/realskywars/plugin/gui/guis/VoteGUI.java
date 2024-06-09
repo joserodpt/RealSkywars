@@ -68,19 +68,19 @@ public class VoteGUI {
 
         switch (def) {
             case CHESTS:
-                this.inv.setItem(13, Itens.createItem(Material.WOODEN_SWORD, 1, TranslatableLine.CHEST_BASIC.get(p)));
-                this.inv.setItem(14, Itens.createItem(Material.CHEST, 1, TranslatableLine.CHEST_NORMAL.get(p)));
-                this.inv.setItem(15, Itens.createItem(Material.ENDER_CHEST, 1, TranslatableLine.CHEST_EPIC.get(p)));
+                this.inv.setItem(13, Itens.createItem(Material.WOODEN_SWORD, 1, TranslatableLine.VOTE_CHEST_BASIC.get(p)));
+                this.inv.setItem(14, Itens.createItem(Material.CHEST, 1, TranslatableLine.VOTE_CHEST_NORMAL.get(p)));
+                this.inv.setItem(15, Itens.createItem(Material.ENDER_CHEST, 1, TranslatableLine.VOTE_CHEST_EPIC.get(p)));
                 break;
             case TIME:
-                this.inv.setItem(22, Itens.createItem(Material.YELLOW_CONCRETE, 1, TranslatableLine.TIME_DAY.get(p)));
-                this.inv.setItem(23, Itens.createItem(Material.RED_CONCRETE, 1, TranslatableLine.TIME_SUNSET.get(p)));
-                this.inv.setItem(24, Itens.createItem(Material.BLACK_CONCRETE, 1, TranslatableLine.TIME_NIGHT.get(p)));
-                this.inv.setItem(25, Itens.createItem(Material.WATER_BUCKET, 1, TranslatableLine.TIME_RAIN.get(p)));
+                this.inv.setItem(22, Itens.createItem(Material.YELLOW_CONCRETE, 1, TranslatableLine.VOTE_TIME_DAY.get(p)));
+                this.inv.setItem(23, Itens.createItem(Material.RED_CONCRETE, 1, TranslatableLine.VOTE_TIME_SUNSET.get(p)));
+                this.inv.setItem(24, Itens.createItem(Material.BLACK_CONCRETE, 1, TranslatableLine.VOTE_TIME_NIGHT.get(p)));
+                this.inv.setItem(25, Itens.createItem(Material.WATER_BUCKET, 1, TranslatableLine.VOTE_TIME_RAIN.get(p)));
                 break;
             case PROJECTILE:
-                this.inv.setItem(31, Itens.createItem(Material.EGG, 1, TranslatableLine.PROJECTILE_NORMAL.get(p)));
-                this.inv.setItem(33, Itens.createItem(Material.COBBLESTONE, 1, TranslatableLine.PROJECTILE_BREAK.get(p)));
+                this.inv.setItem(31, Itens.createItem(Material.EGG, 1, TranslatableLine.VOTE_PROJECTILE_NORMAL.get(p)));
+                this.inv.setItem(33, Itens.createItem(Material.COBBLESTONE, 1, TranslatableLine.VOTE_PROJECTILE_BREAK.get(p)));
                 break;
         }
 
@@ -146,10 +146,10 @@ public class VoteGUI {
                                     if (p.getPlayer().hasPermission("rs.basic")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.CHESTS, 1);
 
-                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.CHEST_BASIC.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_CHEST_BASIC.get(p)));
                                     } else {
                                         p.closeInventory();
-                                        TranslatableLine.CMD_NOPERM.send(p, true);
+                                        TranslatableLine.CMD_NO_PERM.send(p, true);
                                     }
                                 }
                                 break;
@@ -160,9 +160,9 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.normal")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.CHESTS, 2);
-                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.CHEST_NORMAL.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_CHEST_NORMAL.get(p)));
                                     } else {
-                                        TranslatableLine.CMD_NOPERM.send(p, true);
+                                        TranslatableLine.CMD_NO_PERM.send(p, true);
                                         p.closeInventory();
                                     }
                                 }
@@ -174,10 +174,10 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.epic")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.CHESTS, 3);
-                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.CHEST_EPIC.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_CHEST_EPIC.get(p)));
 
                                     } else {
-                                        TranslatableLine.CMD_NOPERM.send(p, true);
+                                        TranslatableLine.CMD_NO_PERM.send(p, true);
                                         p.closeInventory();
                                     }
                                 }
@@ -192,9 +192,9 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.day")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 1);
-                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.TIME_DAY.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_TIME_DAY.get(p)));
                                     } else {
-                                        TranslatableLine.CMD_NOPERM.send(p, true);
+                                        TranslatableLine.CMD_NO_PERM.send(p, true);
                                         p.closeInventory();
                                     }
                                 }
@@ -207,9 +207,9 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.sunset")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 2);
-                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.TIME_SUNSET.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_TIME_SUNSET.get(p)));
                                     } else {
-                                        TranslatableLine.CMD_NOPERM.send(p, true);
+                                        TranslatableLine.CMD_NO_PERM.send(p, true);
                                         p.closeInventory();
                                     }
                                 }
@@ -221,9 +221,9 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.night")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 3);
-                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.TIME_NIGHT.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_TIME_NIGHT.get(p)));
                                     } else {
-                                        TranslatableLine.CMD_NOPERM.send(p, true);
+                                        TranslatableLine.CMD_NO_PERM.send(p, true);
                                         p.closeInventory();
                                     }
                                 }
@@ -235,9 +235,9 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.rain")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 4);
-                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.TIME_NIGHT.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_TIME_NIGHT.get(p)));
                                     } else {
-                                        TranslatableLine.CMD_NOPERM.send(p, true);
+                                        TranslatableLine.CMD_NO_PERM.send(p, true);
                                         p.closeInventory();
                                     }
                                 }
@@ -251,9 +251,9 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.normal-projectile")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.PROJECTILES, 1);
-                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.PROJECTILE_NORMAL.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_PROJECTILE_NORMAL.get(p)));
                                     } else {
-                                        TranslatableLine.CMD_NOPERM.send(p, true);
+                                        TranslatableLine.CMD_NO_PERM.send(p, true);
                                         p.closeInventory();
                                     }
                                 }
@@ -265,9 +265,9 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.break-projectile")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.PROJECTILES, 2);
-                                        p.sendMessage(TranslatableLine.VOTE.get(p, true).replace("%thing%", TranslatableLine.PROJECTILE_BREAK.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_PROJECTILE_BREAK.get(p)));
                                     } else {
-                                        TranslatableLine.CMD_NOPERM.send(p, true);
+                                        TranslatableLine.CMD_NO_PERM.send(p, true);
                                         p.closeInventory();
                                     }
                                 }

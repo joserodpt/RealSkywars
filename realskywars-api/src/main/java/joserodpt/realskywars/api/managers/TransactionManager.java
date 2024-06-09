@@ -78,7 +78,7 @@ public class TransactionManager {
                     break;
                 case SET:
                     if (!this.fromPlayer.getPlayer().hasPermission("rs.admin")) {
-                        TranslatableLine.CMD_NOPERM.send(this.fromPlayer, true);
+                        TranslatableLine.CMD_NO_PERM.send(this.fromPlayer, true);
                         return;
                     }
 
@@ -86,7 +86,7 @@ public class TransactionManager {
                     break;
                 case ADD:
                     if (!this.fromPlayer.getPlayer().hasPermission("rs.admin")) {
-                        TranslatableLine.CMD_NOPERM.send(this.fromPlayer, true);
+                        TranslatableLine.CMD_NO_PERM.send(this.fromPlayer, true);
                         return;
                     }
 
@@ -94,7 +94,7 @@ public class TransactionManager {
                     break;
                 case REMOVE:
                     if (!this.fromPlayer.getPlayer().hasPermission("rs.admin")) {
-                        TranslatableLine.CMD_NOPERM.send(this.fromPlayer, true);
+                        TranslatableLine.CMD_NO_PERM.send(this.fromPlayer, true);
                         return;
                     }
 

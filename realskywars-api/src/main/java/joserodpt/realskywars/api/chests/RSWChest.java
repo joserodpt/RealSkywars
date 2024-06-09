@@ -221,11 +221,11 @@ public class RSWChest {
         public String getDisplayName(RSWPlayer p) {
             switch (this) {
                 case BASIC:
-                    return TranslatableLine.CHEST_BASIC.get(p);
+                    return TranslatableLine.VOTE_CHEST_BASIC.get(p);
                 case NORMAL:
-                    return TranslatableLine.CHEST_NORMAL.get(p);
+                    return TranslatableLine.VOTE_CHEST_NORMAL.get(p);
                 case EPIC:
-                    return TranslatableLine.CHEST_EPIC.get(p);
+                    return TranslatableLine.VOTE_CHEST_EPIC.get(p);
                 default:
                     return "?";
             }

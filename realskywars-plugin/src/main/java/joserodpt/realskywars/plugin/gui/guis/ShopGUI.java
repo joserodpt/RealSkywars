@@ -54,12 +54,12 @@ public class ShopGUI {
     private int pageNumber = 0;
     private Pagination<RSWShopDisplayItem> p;
     private final Inventory inv;
-    private final UUID uuid;
+    private final RSWPlayer rswp;
     private final Map<Integer, RSWShopDisplayItem> display = new HashMap<>();
     private final ShopManagerAPI.ShopCategory cat;
 
     public ShopGUI(RSWPlayer rswp, ShopManagerAPI.ShopCategory t) {
-        this.uuid = rswp.getUUID();
+        this.rswp = rswp;
         this.cat = t;
         inv = Bukkit.getServer().createInventory(null, 54, t.getCategoryTitle(rswp));
 
@@ -107,7 +107,7 @@ public class ShopGUI {
             if (i == null) {
                 if (!items.isEmpty()) {
                     RSWShopDisplayItem s = items.get(0);
-                    inv.setItem(slot, s.getItemStack());
+                    inv.setItem(slot, s.getItemStack(this.rswp));
                     display.put(slot, s);
                     items.remove(0);
                 }
@@ -165,11 +165,11 @@ public class ShopGUI {
                                 switch (e.getClick()) {
                                     case SWAP_OFFHAND:
                                         a.addAmount(1);
-                                        current.inv.setItem(e.getRawSlot(), a.getItemStack());
+                                        current.inv.setItem(e.getRawSlot(), a.getItemStack(current.rswp));
                                         break;
                                     case DROP:
                                         a.addAmount(-1);
-                                        current.inv.setItem(e.getRawSlot(), a.getItemStack());
+                                        current.inv.setItem(e.getRawSlot(), a.getItemStack(current.rswp));
                                         break;
                                     default:
                                         if (p.getPlayer().hasPermission(a.getPermission())) {
@@ -285,10 +285,10 @@ public class ShopGUI {
     }
 
     private void register() {
-        inventories.put(this.uuid, this);
+        inventories.put(this.rswp.getUUID(), this);
     }
 
     private void unregister() {
-        inventories.remove(this.uuid);
+        inventories.remove(this.rswp.getUUID());
     }
 }

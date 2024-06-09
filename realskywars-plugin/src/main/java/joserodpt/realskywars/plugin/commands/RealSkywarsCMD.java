@@ -98,11 +98,11 @@ public class RealSkywarsCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
             this.rs.reload();
-            TranslatableLine.CONFIG_RELOAD.send(p, true);
+            TranslatableLine.CMD_CONFIG_RELOAD.send(p, true);
         } else {
             this.rs.reload();
             commandSender.sendMessage("Reloaded RealSkywars!");
-            TranslatableLine.CONFIG_RELOAD.sendDefault(commandSender, true);
+            TranslatableLine.CMD_CONFIG_RELOAD.sendDefault(commandSender, true);
         }
     }
 
@@ -166,9 +166,9 @@ public class RealSkywarsCMD extends CommandBase {
                     RSWKit k2 = rs.getKitManagerAPI().getKit(name);
                     if (k2 != null) {
                         rs.getKitManagerAPI().unregisterKit(k2);
-                        TranslatableLine.DELETEKIT_DONE.send(p, true);
+                        TranslatableLine.KIT_DELETE.send(p, true);
                     } else {
-                        TranslatableLine.NO_KIT_FOUND.send(p, true);
+                        TranslatableLine.KIT_NOT_FOUND.send(p, true);
                     }
                     break;
                 case GIVE:
@@ -177,7 +177,7 @@ public class RealSkywarsCMD extends CommandBase {
                         k3.give(p);
                         p.playSound(Sound.ENTITY_VILLAGER_YES, 50, 50);
                     } else {
-                        TranslatableLine.NO_KIT_FOUND.send(p, true);
+                        TranslatableLine.KIT_NOT_FOUND.send(p, true);
                     }
                     break;
             }
@@ -211,10 +211,10 @@ public class RealSkywarsCMD extends CommandBase {
                 if (!(p.getState() == RSWPlayer.PlayerState.CAGE)) {
                     rs.getMapManagerAPI().findMap(p, type);
                 } else {
-                    TranslatableLine.ALREADY_IN_MATCH.send(p, true);
+                    TranslatableLine.CMD_CALREADY_IN_MATCH.send(p, true);
                 }
             } else {
-                TranslatableLine.NO_MAP_FOUND.send(p, true);
+                TranslatableLine.CMD_NO_MAP_FOUND.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -305,7 +305,7 @@ public class RealSkywarsCMD extends CommandBase {
                 p.getSetupRoom().setSpectatorConfirm(true);
                 TranslatableLine.CMD_FINISHSETUP.send(p, true);
             } else {
-                TranslatableLine.NO_SETUP_MODE.send(p, true);
+                TranslatableLine.CMD_CNO_SETUP_MODE.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -348,7 +348,7 @@ public class RealSkywarsCMD extends CommandBase {
             if (p.isInMatch()) {
                 p.sendMessage(p.getMatch().forceStart(p));
             } else {
-                TranslatableLine.NO_MATCH.send(p, true);
+                TranslatableLine.CMD_CNO_MATCH.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -364,7 +364,7 @@ public class RealSkywarsCMD extends CommandBase {
                 p.getMatch().addPlayer(new RSWPlayer(true));
                 p.sendMessage(Text.color("&4&lEXPERIMENTAL FEATURE. CAN RESULT IN SERVER & CLIENT CRASHES. &c&lAdded Null Player"));
             } else {
-                TranslatableLine.NO_MATCH.send(p, true);
+                TranslatableLine.CMD_CNO_MATCH.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -379,7 +379,7 @@ public class RealSkywarsCMD extends CommandBase {
             if (p.isInMatch()) {
                 p.getMatch().removePlayer(p);
             } else {
-                TranslatableLine.NO_MATCH.send(p, true);
+                TranslatableLine.CMD_CNO_MATCH.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -399,7 +399,7 @@ public class RealSkywarsCMD extends CommandBase {
             RSWConfig.file().set("Config.Lobby.Pitch", p.getLocation().getPitch());
             RSWConfig.save();
             rs.getLobbyManagerAPI().setLobbyLoc(p.getLocation());
-            TranslatableLine.LOBBY_SET.send(p, true);
+            TranslatableLine.CMD_CLOBBY_SET.send(p, true);
         } else {
             commandSender.sendMessage(onlyPlayer);
         }
@@ -413,7 +413,7 @@ public class RealSkywarsCMD extends CommandBase {
             if (p.getSetupRoom() != null) {
                 rs.getMapManagerAPI().cancelSetup(p);
             } else {
-                TranslatableLine.NO_SETUP_MODE.send(p, true);
+                TranslatableLine.CMD_CNO_SETUP_MODE.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -429,10 +429,10 @@ public class RealSkywarsCMD extends CommandBase {
                 if (p.getSetupRoom().areCagesConfirmed() & p.getSetupRoom().isSpectatorLocConfirmed()) {
                     rs.getMapManagerAPI().finishSetup(p);
                 } else {
-                    TranslatableLine.SETUP_NOT_FINISHED.send(p, true);
+                    TranslatableLine.CMD_SETUP_NOT_FINISHED.send(p, true);
                 }
             } else {
-                TranslatableLine.NO_SETUP_MODE.send(p, true);
+                TranslatableLine.CMD_CNO_SETUP_MODE.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -448,7 +448,7 @@ public class RealSkywarsCMD extends CommandBase {
                 MapsListGUI v = new MapsListGUI(p);
                 v.openInventory(p);
             } else {
-                TranslatableLine.ALREADY_IN_MATCH.send(p, true);
+                TranslatableLine.CMD_CALREADY_IN_MATCH.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -485,7 +485,7 @@ public class RealSkywarsCMD extends CommandBase {
                 MapSettingsGUI r = new MapSettingsGUI(sw, p.getUUID());
                 r.openInventory(p);
             } else {
-                TranslatableLine.NO_MAP_FOUND.send(p, true);
+                TranslatableLine.CMD_NO_MAP_FOUND.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -579,7 +579,7 @@ public class RealSkywarsCMD extends CommandBase {
                 RSWMap map = rs.getMapManagerAPI().getMap(mapname);
                 if (map == null) {
                     if (p.getSetupRoom() != null) {
-                        TranslatableLine.SETUP_NOT_FINISHED.send(p, true);
+                        TranslatableLine.CMD_SETUP_NOT_FINISHED.send(p, true);
                     } else {
                         if (teamPlayers == null) {
                             rs.getMapManagerAPI().setupSolo(p, Text.strip(mapname), mapname, wt, maxPlayersandTeams);
@@ -614,7 +614,7 @@ public class RealSkywarsCMD extends CommandBase {
             map.setUnregistered(true);
             TranslatableLine.MAP_UNREGISTERED.sendDefault(commandSender, true);
         } else {
-            TranslatableLine.NO_MAP_FOUND.sendDefault(commandSender, true);
+            TranslatableLine.CMD_NO_MAP_FOUND.sendDefault(commandSender, true);
         }
     }
 
@@ -634,7 +634,7 @@ public class RealSkywarsCMD extends CommandBase {
             map.setUnregistered(false);
             TranslatableLine.MAP_COMMAND_REGISTERED.sendDefault(commandSender, true);
         } else {
-            TranslatableLine.NO_MAP_FOUND.sendDefault(commandSender, true);
+            TranslatableLine.CMD_NO_MAP_FOUND.sendDefault(commandSender, true);
         }
     }
 
@@ -650,7 +650,7 @@ public class RealSkywarsCMD extends CommandBase {
             if (sw != null) {
                 rs.getMapManagerAPI().editMap(p, sw);
             } else {
-                TranslatableLine.NO_MAP_FOUND.send(p, true);
+                TranslatableLine.CMD_NO_MAP_FOUND.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -666,7 +666,7 @@ public class RealSkywarsCMD extends CommandBase {
             if (sw != null) {
                 rs.getMapManagerAPI().finishEdit(p, sw);
             } else {
-                TranslatableLine.NO_MAP_FOUND.send(p, true);
+                TranslatableLine.CMD_NO_MAP_FOUND.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -684,7 +684,7 @@ public class RealSkywarsCMD extends CommandBase {
             rs.getMapManagerAPI().deleteMap(map);
             TranslatableLine.MAP_UNREGISTERED.sendDefault(commandSender, true);
         } else {
-            TranslatableLine.NO_MAP_FOUND.sendDefault(commandSender, true);
+            TranslatableLine.CMD_NO_MAP_FOUND.sendDefault(commandSender, true);
         }
     }
 
@@ -700,7 +700,7 @@ public class RealSkywarsCMD extends CommandBase {
             map.save(RSWMap.Data.SETTINGS, true);
             TranslatableLine.MAP_RENAMED.sendDefault(commandSender, true);
         } else {
-            TranslatableLine.NO_MAP_FOUND.sendDefault(commandSender, true);
+            TranslatableLine.CMD_NO_MAP_FOUND.sendDefault(commandSender, true);
         }
     }
 
@@ -716,7 +716,7 @@ public class RealSkywarsCMD extends CommandBase {
             map.reset();
             TranslatableLine.MAP_RESET_DONE.send(p, true);
         } else {
-            TranslatableLine.NO_MAP_FOUND.send(p, true);
+            TranslatableLine.CMD_NO_MAP_FOUND.send(p, true);
         }
     }
 

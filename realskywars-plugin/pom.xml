@@ -6,7 +6,7 @@
 
     <groupId>joserodpt</groupId>
     <artifactId>RealSkywarsPlugin</artifactId>
-    <version>0.8</version>P
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>RealSkywarsPlugin</name>
@@ -144,7 +144,7 @@
         <dependency>
             <groupId>joserodpt</groupId>
             <artifactId>RealSkywarsAPI</artifactId>
-            <version>0.8</version>
+            <version>1.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

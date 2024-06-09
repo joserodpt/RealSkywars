@@ -228,7 +228,7 @@ public class PlayerListener implements Listener {
                                     game.addPlayer(p);
                                 }
                             } else {
-                                TranslatableLine.NO_MAP_FOUND.send(p, true);
+                                TranslatableLine.CMD_NO_MAP_FOUND.send(p, true);
                             }
                         }
                     }

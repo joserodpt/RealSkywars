@@ -44,7 +44,7 @@ public class SairCMD extends CommandBase {
             if (p.isInMatch()) {
                 p.getMatch().removePlayer(p);
             } else {
-                TranslatableLine.NO_MATCH.send(p, true);
+                TranslatableLine.CMD_CNO_MATCH.send(p, true);
             }
         } else {
             commandSender.sendMessage("[RealSkywars] Only players can run this command.");

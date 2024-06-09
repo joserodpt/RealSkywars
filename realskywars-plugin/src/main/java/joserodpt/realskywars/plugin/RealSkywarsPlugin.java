@@ -29,6 +29,7 @@ import joserodpt.realskywars.api.config.RSWLanguagesConfig;
 import joserodpt.realskywars.api.config.RSWMapsConfig;
 import joserodpt.realskywars.api.config.RSWSQLConfig;
 import joserodpt.realskywars.api.config.RSWShopsConfig;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.config.chests.BasicChestConfig;
 import joserodpt.realskywars.api.config.chests.EPICChestConfig;
 import joserodpt.realskywars.api.config.chests.NormalChestConfig;
@@ -244,8 +245,8 @@ public class RealSkywarsPlugin extends JavaPlugin {
         });
 
         //command messages
-        commandManager.getMessageHandler().register("cmd.no.exists", sender -> sender.sendMessage(realSkywars.getLanguageManagerAPI().getPrefix() + Text.color("&cThe command you're trying to run doesn't exist!")));
-        commandManager.getMessageHandler().register("cmd.no.permission", sender -> sender.sendMessage(realSkywars.getLanguageManagerAPI().getPrefix() + Text.color("&fYou &cdon't &fhave permission to execute this command!")));
+        commandManager.getMessageHandler().register("cmd.no.exists", sender -> sender.sendMessage(realSkywars.getLanguageManagerAPI().getPrefix() + TranslatableLine.CMD_NOT_FOUND.getDefault()));
+        commandManager.getMessageHandler().register("cmd.no.permission", sender -> sender.sendMessage(realSkywars.getLanguageManagerAPI().getPrefix() + TranslatableLine.CMD_NO_PERM.getDefault()));
         commandManager.getMessageHandler().register("cmd.wrong.usage", sender -> sender.sendMessage(realSkywars.getLanguageManagerAPI().getPrefix() + Text.color("&cWrong usage for the command!")));
 
         //registo de comandos #portugal

@@ -38,7 +38,7 @@ import java.util.Collections;
 public class GUIManager {
 
     public static void openShopMenu(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENUS_SHOP_TILE.get(p), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_SHOP_TILE.get(p), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -88,7 +88,7 @@ public class GUIManager {
     }
 
     public static void openSpectate(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENUS_SPECTATE_TITLE.get(p), 54, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_SPECTATE_TITLE.get(p), 54, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         int i = 0;
         for (RSWPlayer s : p.getMatch().getPlayers()) {
