@@ -465,7 +465,7 @@ Languages:
         Command-Not-Found: "&fNenhum comando foi encontrado com essa sintaxe."
         Add-Tier: "&fOs itens foram adicionados ao nível."
         Set-Tier: "&fO nível foi definido."
-        Reset-Done: "&O reset foi executado com sucesso."
+        Reset-Done: "&fO reset foi executado com sucesso."
       Map:
         Saving: "&aSalvando o mapa.."
         Reset: "&cO mapa está a ser resetado."
@@ -491,6 +491,7 @@ Languages:
         Winner-Broadcast: "&b%winner% &fvenceu no mapa &a%displayname%"
         Leave: "&eTu saíste da partida."
         Already-Started: "&fEsta partida já &ccomeçou&f."
+        Player-Spectate: "&fEstás agora em modo &aespectador."
         Init-Setup:
           - "&f&nTu agora estás no modo de configuração. Podes colar a tua esquemática ou fazer um novo mapa."
           - "&9> &aUsa o farol para colocar %cages% gaiolas. "
@@ -508,6 +509,22 @@ Languages:
         Player-Spectator: "&fTu agora és um &b&lespectador&f."
         Not-In-Region: "&cTu não estás numa região protegida."
         Set-Loc: "&fTu &adefiniste &fa localização."
+        Start:
+          - "&7&m&l                                 "
+          - "&fO jogo &bcomeçou!"
+          - "&fBaús selecionados: &b%chests%"
+          - "&fProjéteis selecionados: &b%project%"
+          - "&fTempo selecionado: &b%time%"
+          - "&fKit selecionado: &b%kit%"
+          - "&7&m&l                                 "
+        End-Log:
+          - "&7&m&l                                 "
+          - "&bSumário"
+          - "&fTempo: &b%time%"
+          - "&fMoedas recebidas: &b%recvcoins%"
+          - "&fMoedas totais: &b%totalcoins%"
+          - "&fKills: &b%kills%"
+          - "&7&m&l                                 "
       Cage:
         Waiting:
           - "&7&m&l                                 "
@@ -685,6 +702,10 @@ Languages:
       Available: "&aDisponível"
       Waiting: "&fÀ Espera"
       Starting: "&eA Começar"
+      Playing: "&cJogando"
+      Finishing: "&4A acabar"
+      Resetting: "&0Resettando"
+      Spectating: "&5Assistir"
     Shop-Categories:
       Cage-Blocks: "&7Blocos de Gaiola"
       Win-Blocks: "&9Blocos de Vitória"
@@ -853,6 +874,23 @@ Languages:
         Player-Spectator: "&fAhora eres un &b&lespectador&f."
         Not-In-Region: "&cNo estás en una región protegida."
         Set-Loc: "&fHas &adefinido &fla ubicación."
+        Player-Spectate: "&fEstás ahora en modo &aespectador."
+        Start:
+          - "&7&m&l                                 "
+          - "&f¡El juego ha comenzado!"
+          - "&fCofres seleccionados: &b%chests%"
+          - "&fProyectiles seleccionados: &b%project%"
+          - "&fTiempo seleccionado: &b%time%"
+          - "&fKit seleccionado: &b%kit%"
+          - "&7&m&l                                 "
+        End-Log:
+          - "&7&m&l                                 "
+          - "&bResumen"
+          - "&fTiempo: &b%time%"
+          - "&fMonedas recibidas: &b%recvcoins%"
+          - "&fTotal de monedas: &b%totalcoins%"
+          - "&fMuertes: &b%kills%"
+          - "&7&m&l                                 "
       Cage:
         Waiting:
           - "&7&m&l                                 "
@@ -1030,6 +1068,10 @@ Languages:
       Available: "&aDisponible"
       Waiting: "&fEn Espera"
       Starting: "&eComenzando"
+      Playing: "&cJugando"
+      Finishing: "&4Acabando"
+      Resetting: "&0Resetando"
+      Spectating: "&5Espectando"
     Shop-Categories:
       Cage-Blocks: "&7Bloques de Jaula"
       Win-Blocks: "&9Bloques de Victoria"

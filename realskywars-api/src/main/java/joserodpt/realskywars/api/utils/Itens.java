@@ -17,7 +17,6 @@ package joserodpt.realskywars.api.utils;
 
 import joserodpt.realskywars.api.config.RSWLanguagesConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -82,10 +81,11 @@ public class Itens {
         return newMap;
     }
 
-    public static ItemStack renameItem(ItemStack item, String name, RSWPlayer p) {
+    public static ItemStack renameItem(ItemStack item, String name, String lang) {
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
-        meta.setLore(Collections.singletonList(TranslatableLine.MENU_LANG_SELECT.get(p)));
+        meta.setLore(Collections.singletonList(TranslatableLine.MENU_LANG_SELECT.getInLanguage(lang)));
+        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
         item.setItemMeta(meta);
         return item;
     }

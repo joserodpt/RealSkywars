@@ -113,7 +113,7 @@ public class GUIManager {
             if (i == 17) {
                 break;
             } else {
-                inventory.addItem(e -> RealSkywarsAPI.getInstance().getPlayerManagerAPI().setLanguage(p, language), Itens.renameItem(ItemStackSpringer.getItemDeSerialized(Itens.sectionToMap("Languages." + language + ".Icon")), "&e&l" + language, p), i);
+                inventory.addItem(e -> RealSkywarsAPI.getInstance().getPlayerManagerAPI().setLanguage(p, language), Itens.renameItem(ItemStackSpringer.getItemDeSerialized(Itens.sectionToMap("Languages." + language + ".Icon")), "&e&l" + language, language), i);
             }
             ++i;
         }
