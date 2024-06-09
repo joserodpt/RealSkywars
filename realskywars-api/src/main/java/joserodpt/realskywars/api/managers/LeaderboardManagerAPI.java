@@ -10,15 +10,10 @@ import java.util.List;
 public abstract class LeaderboardManagerAPI {
     public abstract void refreshLeaderboards();
 
-    public abstract void refreshLeaderboard(LeaderboardCategories l) throws SQLException;
+    public abstract void refreshLeaderboard(RSWLeaderboard.RSWLeaderboardCategories l) throws SQLException;
 
     @NotNull
-    protected abstract RSWLeaderboard getLeaderboard(LeaderboardCategories l, List<PlayerData> expansions);
+    protected abstract RSWLeaderboard getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories l, List<PlayerData> expansions);
 
-    public abstract RSWLeaderboard getLeaderboard(LeaderboardCategories l);
-
-    public enum LeaderboardCategories {
-        SOLO_WINS, SOLO_RANKED_WINS, TEAMS_WINS, TEAMS_RANKED_WINS,
-        KILLS, DEATHS, KILLS_RANKED, DEATHS_RANKED
-    }
+    public abstract RSWLeaderboard getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories l);
 }

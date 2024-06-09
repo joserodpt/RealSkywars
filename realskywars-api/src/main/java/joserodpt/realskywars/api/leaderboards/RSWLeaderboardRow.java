@@ -21,10 +21,10 @@ public class RSWLeaderboardRow {
 
     private final UUID uuid;
     private final String player;
-    private final Object total;
+    private final int total;
     private int place;
 
-    public RSWLeaderboardRow(UUID uuid, String player, Object statistic) {
+    public RSWLeaderboardRow(UUID uuid, String player, int statistic) {
         this.uuid = uuid;
         this.player = player;
         this.total = statistic;

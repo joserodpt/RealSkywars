@@ -16,7 +16,7 @@ package joserodpt.realskywars.plugin;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.managers.LeaderboardManagerAPI;
+import joserodpt.realskywars.api.leaderboards.RSWLeaderboard;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
@@ -115,130 +115,130 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
                 return rsa.getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.RANKED) + "";
             //SOLO
             case "solo_wins_1":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_WINS).getIndex(1);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_WINS).getIndex(1);
             case "solo_wins_2":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_WINS).getIndex(2);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_WINS).getIndex(2);
             case "solo_wins_3":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_WINS).getIndex(3);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_WINS).getIndex(3);
             case "solo_wins_4":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_WINS).getIndex(4);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_WINS).getIndex(4);
             case "solo_wins_5":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_WINS).getIndex(5);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_WINS).getIndex(5);
             case "solo_wins_6":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_WINS).getIndex(6);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_WINS).getIndex(6);
             case "solo_wins_7":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_WINS).getIndex(7);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_WINS).getIndex(7);
             case "solo_wins_8":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_WINS).getIndex(8);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_WINS).getIndex(8);
             case "solo_wins_9":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_WINS).getIndex(9);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_WINS).getIndex(9);
             case "solo_wins_10":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_WINS).getIndex(10);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_WINS).getIndex(10);
             //TEAMS
             case "teams_wins_1":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_WINS).getIndex(1);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_WINS).getIndex(1);
             case "teams_wins_2":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_WINS).getIndex(2);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_WINS).getIndex(2);
             case "teams_wins_3":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_WINS).getIndex(3);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_WINS).getIndex(3);
             case "teams_wins_4":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_WINS).getIndex(4);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_WINS).getIndex(4);
             case "teams_wins_5":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_WINS).getIndex(5);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_WINS).getIndex(5);
             case "teams_wins_6":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_WINS).getIndex(6);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_WINS).getIndex(6);
             case "teams_wins_7":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_WINS).getIndex(7);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_WINS).getIndex(7);
             case "teams_wins_8":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_WINS).getIndex(8);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_WINS).getIndex(8);
             case "teams_wins_9":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_WINS).getIndex(9);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_WINS).getIndex(9);
             case "teams_wins_10":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_WINS).getIndex(10);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_WINS).getIndex(10);
             //SOLO RANKED
             case "solo_ranked_wins_1":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_RANKED_WINS).getIndex(1);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_RANKED_WINS).getIndex(1);
             case "solo_ranked_wins_2":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_RANKED_WINS).getIndex(2);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_RANKED_WINS).getIndex(2);
             case "solo_ranked_wins_3":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_RANKED_WINS).getIndex(3);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_RANKED_WINS).getIndex(3);
             case "solo_ranked_wins_4":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_RANKED_WINS).getIndex(4);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_RANKED_WINS).getIndex(4);
             case "solo_ranked_wins_5":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_RANKED_WINS).getIndex(5);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_RANKED_WINS).getIndex(5);
             case "solo_ranked_wins_6":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_RANKED_WINS).getIndex(6);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_RANKED_WINS).getIndex(6);
             case "solo_ranked_wins_7":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_RANKED_WINS).getIndex(7);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_RANKED_WINS).getIndex(7);
             case "solo_ranked_wins_8":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_RANKED_WINS).getIndex(8);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_RANKED_WINS).getIndex(8);
             case "solo_ranked_wins_9":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_RANKED_WINS).getIndex(9);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_RANKED_WINS).getIndex(9);
             case "solo_ranked_wins_10":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_RANKED_WINS).getIndex(10);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_RANKED_WINS).getIndex(10);
             //TEAMS RANKED
             case "teams_ranked_wins_1":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_RANKED_WINS).getIndex(1);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_RANKED_WINS).getIndex(1);
             case "teams_ranked_wins_2":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_RANKED_WINS).getIndex(2);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_RANKED_WINS).getIndex(2);
             case "teams_ranked_wins_3":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_RANKED_WINS).getIndex(3);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_RANKED_WINS).getIndex(3);
             case "teams_ranked_wins_4":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_RANKED_WINS).getIndex(4);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_RANKED_WINS).getIndex(4);
             case "teams_ranked_wins_5":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_RANKED_WINS).getIndex(5);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_RANKED_WINS).getIndex(5);
             case "teams_ranked_wins_6":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_RANKED_WINS).getIndex(6);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_RANKED_WINS).getIndex(6);
             case "teams_ranked_wins_7":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_RANKED_WINS).getIndex(7);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_RANKED_WINS).getIndex(7);
             case "teams_ranked_wins_8":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_RANKED_WINS).getIndex(8);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_RANKED_WINS).getIndex(8);
             case "teams_ranked_wins_9":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_RANKED_WINS).getIndex(9);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_RANKED_WINS).getIndex(9);
             case "teams_ranked_wins_10":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.TEAMS_RANKED_WINS).getIndex(10);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.TEAMS_RANKED_WINS).getIndex(10);
             //KILLS
             case "kills_1":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS).getIndex(1);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS).getIndex(1);
             case "kills_2":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS).getIndex(2);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS).getIndex(2);
             case "kills_3":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS).getIndex(3);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS).getIndex(3);
             case "kills_4":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS).getIndex(4);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS).getIndex(4);
             case "kills_5":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS).getIndex(5);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS).getIndex(5);
             case "kills_6":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS).getIndex(6);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS).getIndex(6);
             case "kills_7":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS).getIndex(7);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS).getIndex(7);
             case "kills_8":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS).getIndex(8);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS).getIndex(8);
             case "kills_9":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS).getIndex(9);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS).getIndex(9);
             case "kills_10":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS).getIndex(10);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS).getIndex(10);
             //KILLS RANKED
             case "kills_ranked_1":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS_RANKED).getIndex(1);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS_RANKED).getIndex(1);
             case "kills_ranked_2":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS_RANKED).getIndex(2);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS_RANKED).getIndex(2);
             case "kills_ranked_3":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS_RANKED).getIndex(3);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS_RANKED).getIndex(3);
             case "kills_ranked_4":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS_RANKED).getIndex(4);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS_RANKED).getIndex(4);
             case "kills_ranked_5":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS_RANKED).getIndex(5);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS_RANKED).getIndex(5);
             case "kills_ranked_6":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS_RANKED).getIndex(6);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS_RANKED).getIndex(6);
             case "kills_ranked_7":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS_RANKED).getIndex(7);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS_RANKED).getIndex(7);
             case "kills_ranked_8":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS_RANKED).getIndex(8);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS_RANKED).getIndex(8);
             case "kills_ranked_9":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS_RANKED).getIndex(9);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS_RANKED).getIndex(9);
             case "kills_ranked_10":
-                return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.KILLS_RANKED).getIndex(10);
+                return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.KILLS_RANKED).getIndex(10);
         }
 
         return null; // Placeholder is unknown by the Expansion
