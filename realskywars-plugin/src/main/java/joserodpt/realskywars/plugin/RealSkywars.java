@@ -30,11 +30,11 @@ import joserodpt.realskywars.api.currency.CurrencyAdapter;
 import joserodpt.realskywars.api.managers.AchievementsManagerAPI;
 import joserodpt.realskywars.api.managers.ChestManagerAPI;
 import joserodpt.realskywars.api.managers.DatabaseManagerAPI;
-import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.HologramManagerAPI;
 import joserodpt.realskywars.api.managers.KitManagerAPI;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.LeaderboardManagerAPI;
+import joserodpt.realskywars.api.managers.LobbyManagerAPI;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.managers.PartiesManagerAPI;
 import joserodpt.realskywars.api.managers.PlayerManagerAPI;
@@ -44,11 +44,11 @@ import joserodpt.realskywars.api.nms.RSWnms;
 import joserodpt.realskywars.plugin.managers.AchievementsManager;
 import joserodpt.realskywars.plugin.managers.ChestManager;
 import joserodpt.realskywars.plugin.managers.DatabaseManager;
-import joserodpt.realskywars.plugin.managers.GamesManager;
 import joserodpt.realskywars.plugin.managers.HologramManager;
 import joserodpt.realskywars.plugin.managers.KitManager;
 import joserodpt.realskywars.plugin.managers.LanguageManager;
 import joserodpt.realskywars.plugin.managers.LeaderboardManager;
+import joserodpt.realskywars.plugin.managers.LobbyManager;
 import joserodpt.realskywars.plugin.managers.MapManager;
 import joserodpt.realskywars.plugin.managers.PartiesManager;
 import joserodpt.realskywars.plugin.managers.PlayerManager;
@@ -71,7 +71,7 @@ public class RealSkywars extends RealSkywarsAPI {
     private final LanguageManagerAPI languageManagerAPI = new LanguageManager();
     private final PlayerManagerAPI playerManagerAPI;
     private final MapManagerAPI mapManagerAPI;
-    private final GamesManagerAPI gamesManagerAPI;
+    private final LobbyManagerAPI lobbyManagerAPI;
     private final ShopManagerAPI shopManagerAPI;
     private final KitManagerAPI kitManager = new KitManager();
     private final PartiesManagerAPI partiesManagerAPI;
@@ -90,7 +90,7 @@ public class RealSkywars extends RealSkywarsAPI {
         worldManagerAPI = new WorldManager(this);
         playerManagerAPI = new PlayerManager(this);
         mapManagerAPI = new MapManager(this);
-        gamesManagerAPI = new GamesManager(this);
+        lobbyManagerAPI = new LobbyManager(this);
         shopManagerAPI = new ShopManager(this);
         partiesManagerAPI = new PartiesManager(this);
         leaderboardManagerAPI = new LeaderboardManager(this);
@@ -140,8 +140,8 @@ public class RealSkywars extends RealSkywarsAPI {
     }
 
     @Override
-    public GamesManagerAPI getGameManagerAPI() {
-        return this.gamesManagerAPI;
+    public LobbyManagerAPI getLobbyManagerAPI() {
+        return this.lobbyManagerAPI;
     }
 
     @Override
@@ -211,7 +211,7 @@ public class RealSkywars extends RealSkywarsAPI {
 
     @Override
     public void reload() {
-        gamesManagerAPI.endGames();
+        mapManagerAPI.endMaps();
 
         RSWConfig.reload();
         RSWMapsConfig.reload();
@@ -236,7 +236,7 @@ public class RealSkywars extends RealSkywarsAPI {
         leaderboardManagerAPI.refreshLeaderboards();
 
         mapManagerAPI.loadMaps();
-        gamesManagerAPI.loadLobby();
+        lobbyManagerAPI.loadLobby();
     }
 
     @Override

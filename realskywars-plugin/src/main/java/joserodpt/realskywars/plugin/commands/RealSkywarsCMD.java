@@ -23,7 +23,7 @@ import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.kits.KitInventory;
 import joserodpt.realskywars.api.kits.RSWKit;
-import joserodpt.realskywars.api.managers.GamesManagerAPI;
+import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.managers.TransactionManager;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.RSWMap;
@@ -109,8 +109,9 @@ public class RealSkywarsCMD extends CommandBase {
     public void listcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            p.sendMessage(TranslatableLine.CMD_MAPS.get(p).replace("%rooms%", "" + rs.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL).size()));
-            for (RSWMap s : rs.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL)) {
+            List<RSWMap> tmp = rs.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL);
+            p.sendMessage(TranslatableLine.CMD_MAPS.get(p).replace("%rooms%", "" + tmp.size()));
+            for (RSWMap s : tmp) {
                 TextComponent a = new TextComponent(Text.color("&7- &f" + s.getDisplayName()));
                 a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw map " + s.getMapName()));
                 a.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Text.color("&fClick to open &b" + s.getDisplayName() + "&f settings!")).create()));
@@ -206,7 +207,7 @@ public class RealSkywarsCMD extends CommandBase {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(pobj);
             if (type != null && p != null && p.getPlayer() != null) {
                 if (!(p.getState() == RSWPlayer.PlayerState.CAGE)) {
-                    rs.getGameManagerAPI().findGame(p, type);
+                    rs.getMapManagerAPI().findMap(p, type);
                 } else {
                     TranslatableLine.ALREADY_IN_MATCH.send(p, true);
                 }
@@ -274,7 +275,7 @@ public class RealSkywarsCMD extends CommandBase {
             for (TranslatableLine value : TranslatableLine.values()) {
                 if (value.getPath().startsWith(".")) {
                     String val = value.getInLanguage(language);
-                    if (val == null) {
+                    if (val.isEmpty()) {
                         Text.send(commandSender, "&cMissing translation for &f" + value.name() + " &cin language &f" + language);
                     }
                 }
@@ -328,7 +329,7 @@ public class RealSkywarsCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
             if (p.getMatch() == null) {
-                rs.getGameManagerAPI().tpToLobby(p);
+                rs.getLobbyManagerAPI().tpToLobby(p);
             } else {
                 TranslatableLine.CMD_MATCH_CANCEL.send(p, true);
             }
@@ -395,7 +396,7 @@ public class RealSkywarsCMD extends CommandBase {
             RSWConfig.file().set("Config.Lobby.Yaw", p.getLocation().getYaw());
             RSWConfig.file().set("Config.Lobby.Pitch", p.getLocation().getPitch());
             RSWConfig.save();
-            rs.getGameManagerAPI().setLobbyLoc(p.getLocation());
+            rs.getLobbyManagerAPI().setLobbyLoc(p.getLocation());
             TranslatableLine.LOBBY_SET.send(p, true);
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -477,7 +478,7 @@ public class RealSkywarsCMD extends CommandBase {
     public void map(final CommandSender commandSender, String name) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            RSWMap sw = rs.getGameManagerAPI().getMap(name);
+            RSWMap sw = rs.getMapManagerAPI().getMap(name);
             if (sw != null) {
                 MapSettingsGUI r = new MapSettingsGUI(sw, p.getUUID());
                 r.openInventory(p);
@@ -497,7 +498,7 @@ public class RealSkywarsCMD extends CommandBase {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
             if (p != null) {
                 p.getPlayer().setGameMode(GameMode.CREATIVE);
-                p.teleport(rs.getGameManagerAPI().getMap(name).getRSWWorld().getWorld().getSpawnLocation());
+                p.teleport(rs.getMapManagerAPI().getMap(name).getRSWWorld().getWorld().getSpawnLocation());
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -637,7 +638,7 @@ public class RealSkywarsCMD extends CommandBase {
     public void editmap(final CommandSender commandSender, String mapName) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            RSWMap sw = rs.getGameManagerAPI().getMap(mapName);
+            RSWMap sw = rs.getMapManagerAPI().getMap(mapName);
             if (sw != null) {
                 //TODO: Implement map editing
             } else {

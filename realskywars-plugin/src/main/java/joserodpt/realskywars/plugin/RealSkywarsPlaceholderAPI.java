@@ -16,8 +16,8 @@ package joserodpt.realskywars.plugin;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.managers.GamesManagerAPI;
 import joserodpt.realskywars.api.managers.LeaderboardManagerAPI;
+import joserodpt.realskywars.api.managers.MapManagerAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -106,13 +106,13 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
     public String onRequest(OfflinePlayer player, String identifier) {
         switch (identifier.toLowerCase(Locale.ROOT)) {
             case "playing":
-                return rsa.getPlayerManagerAPI().getPlayingPlayers(GamesManagerAPI.GameModes.ALL) + "";
+                return rsa.getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.ALL) + "";
             case "playing_solo":
-                return rsa.getPlayerManagerAPI().getPlayingPlayers(GamesManagerAPI.GameModes.SOLO) + "";
+                return rsa.getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.SOLO) + "";
             case "playing_teams":
-                return rsa.getPlayerManagerAPI().getPlayingPlayers(GamesManagerAPI.GameModes.TEAMS) + "";
+                return rsa.getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.TEAMS) + "";
             case "playing_ranked":
-                return rsa.getPlayerManagerAPI().getPlayingPlayers(GamesManagerAPI.GameModes.RANKED) + "";
+                return rsa.getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.RANKED) + "";
             //SOLO
             case "solo_wins_1":
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(LeaderboardManagerAPI.LeaderboardCategories.SOLO_WINS).getIndex(1);

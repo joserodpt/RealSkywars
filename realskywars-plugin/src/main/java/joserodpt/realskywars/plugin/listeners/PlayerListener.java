@@ -116,7 +116,7 @@ public class PlayerListener implements Listener {
     public void items(PlayerInteractEvent e) {
         switch (e.getAction()) {
             case PHYSICAL:
-                if (rs.getGameManagerAPI().getLobbyLocation() != null && e.getPlayer().getWorld().equals(rs.getGameManagerAPI().getLobbyLocation().getWorld())) {
+                if (rs.getLobbyManagerAPI().getLobbyLocation() != null && e.getPlayer().getWorld().equals(rs.getLobbyManagerAPI().getLobbyLocation().getWorld())) {
                     switch (e.getClickedBlock().getType()) {
                         case STONE_PRESSURE_PLATE:
                             e.getPlayer().performCommand("rsw play SOLO");
@@ -215,7 +215,7 @@ public class PlayerListener implements Listener {
                         Sign sign = (Sign) e.getClickedBlock().getState();
                         if (Text.strip(sign.getLine(0)).equals(Text.strip(rs.getLanguageManagerAPI().getPrefix()))) {
                             String mapName = Text.strip(sign.getLine(1));
-                            RSWMap game = rs.getGameManagerAPI().getMap(mapName);
+                            RSWMap game = rs.getMapManagerAPI().getMap(mapName);
 
                             if (game != null) {
                                 if (e.getPlayer().isSneaking() && (e.getPlayer().isOp() || e.getPlayer().hasPermission("rs.admin"))) {
@@ -232,7 +232,7 @@ public class PlayerListener implements Listener {
                 }
 
 
-                if (rs.getGameManagerAPI().isInLobby(p.getLocation().getWorld())) {
+                if (rs.getLobbyManagerAPI().isInLobby(p.getLocation().getWorld())) {
                     if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().hasItemMeta()) {
                         switch (e.getPlayer().getInventory().getItemInMainHand().getType()) {
                             case BOOK:
@@ -282,7 +282,7 @@ public class PlayerListener implements Listener {
             p.getSetupRoom().removeChest(event.getBlock().getLocation());
             p.getPlayer().sendMessage(ChatColor.RED + "You removed this chest.");
         }
-        if (rs.getGameManagerAPI().isInLobby(event.getBlock().getWorld()) && !p.getPlayer().isOp()) {
+        if (rs.getLobbyManagerAPI().isInLobby(event.getBlock().getWorld()) && !p.getPlayer().isOp()) {
             event.setCancelled(true);
         }
     }
@@ -402,10 +402,10 @@ public class PlayerListener implements Listener {
                 } else {
                     e.setCancelled(true);
                     damaged.heal();
-                    rs.getGameManagerAPI().tpToLobby(damaged);
+                    rs.getLobbyManagerAPI().tpToLobby(damaged);
                 }
             } else {
-                if (damaged.isInvencible() || rs.getGameManagerAPI().isInLobby(damaged.getLocation().getWorld())) {
+                if (damaged.isInvencible() || rs.getLobbyManagerAPI().isInLobby(damaged.getLocation().getWorld())) {
                     e.setCancelled(true);
                 }
             }
@@ -495,7 +495,7 @@ public class PlayerListener implements Listener {
     public void onAsyncPlayerJoin(AsyncPlayerPreLoginEvent e) {
         // auto join random match
         if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
-            Optional<RSWMap> suitableGame = rs.getGameManagerAPI().findSuitableGame(null);
+            Optional<RSWMap> suitableGame = rs.getMapManagerAPI().findSuitableGame(null);
             if (suitableGame.isPresent()) {
                 RSWMap game = suitableGame.get();
                 if (game.getState() == RSWMap.MapState.RESETTING) {

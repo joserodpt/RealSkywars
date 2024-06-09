@@ -49,6 +49,11 @@ Languages:
       System:
         Achievements:
           Get: "&fCongratulations! You have achieved &b%achievement% &fand won &a%reward%"
+        Modes:
+          Solo: "&eSolo"
+          Solo-Ranked: "&eSolo &bRanked"
+          Teams: "&9Teams"
+          Teams-Ranked: "&9Teams &bRanked"
         Party:
           Already-In: "&fYou are already in a party."
           Kick: "&f%player% &chas been kicked from the party."

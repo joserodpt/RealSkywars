@@ -27,7 +27,7 @@ public abstract class PlayerManagerAPI {
 
     public abstract List<RSWShopDisplayItem> getBoughtItems(RSWPlayer player, ShopManagerAPI.Categories t);
 
-    public abstract int getPlayingPlayers(GamesManagerAPI.GameModes pt);
+    public abstract int getPlayingPlayers(MapManagerAPI.MapGamemodes pt);
 
     public abstract void stopScoreboards();
 

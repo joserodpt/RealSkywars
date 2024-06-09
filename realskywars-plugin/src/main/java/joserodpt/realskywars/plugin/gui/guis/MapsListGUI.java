@@ -58,7 +58,7 @@ public class MapsListGUI {
         this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MAPS_NAME.get(p, false) + ": " + p.getMapViewerPref().getDisplayName(p));
 
         this.gp = p;
-        List<RSWMap> items = RealSkywarsAPI.getInstance().getGameManagerAPI().getRoomsWithSelection(p);
+        List<RSWMap> items = RealSkywarsAPI.getInstance().getMapManagerAPI().getMapsForPlayer(p);
 
         this.p = new Pagination<>(28, items);
         fillChest(this.p.getPage(pageNumber), p);

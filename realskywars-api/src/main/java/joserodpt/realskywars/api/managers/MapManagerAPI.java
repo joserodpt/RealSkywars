@@ -9,15 +9,28 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.List;
+import java.util.Optional;
 
 public abstract class MapManagerAPI {
+    public Boolean endMaps = false;
+
     public abstract void loadMaps();
 
     public abstract void deleteMap(RSWMap map);
 
+    public abstract RSWMap getMap(World w);
+
     public abstract RSWMap getMap(String s);
 
-    public abstract List<RSWCage> getCages(String s, Location specLoc);
+    public abstract void endMaps();
+
+    public abstract List<RSWMap> getMapsForPlayer(RSWPlayer rswPlayer);
+
+    public abstract List<RSWMap> getMaps(MapGamemodes pt);
+
+    protected abstract List<RSWCage> getMapCages(String s, Location specLoc);
+
+    protected abstract List<RSWChest> getMapChests(String worldName, String section);
 
     public abstract void setupSolo(RSWPlayer p, String mapname, String displayName, RSWWorld.WorldType wt, int maxP);
 
@@ -47,5 +60,15 @@ public abstract class MapManagerAPI {
 
     protected abstract Boolean isRanked(String s);
 
-    protected abstract List<RSWChest> getChests(String worldName, String section);
+    public abstract void findMap(RSWPlayer player, RSWMap.Mode type);
+
+    public abstract Optional<RSWMap> findSuitableGame(RSWMap.Mode type);
+
+    public abstract void clearMaps();
+
+    public abstract void addMap(RSWMap s);
+
+    public abstract List<String> getMapNames();
+
+    public enum MapGamemodes {SOLO, SOLO_RANKED, TEAMS, TEAMS_RANKED, RANKED, ALL}
 }

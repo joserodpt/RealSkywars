@@ -32,7 +32,7 @@ import joserodpt.realskywars.api.config.RSWShopsConfig;
 import joserodpt.realskywars.api.config.chests.BasicChestConfig;
 import joserodpt.realskywars.api.config.chests.EPICChestConfig;
 import joserodpt.realskywars.api.config.chests.NormalChestConfig;
-import joserodpt.realskywars.api.managers.GamesManagerAPI;
+import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.managers.TransactionManager;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.RSWMap;
@@ -123,7 +123,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
         Debugger.debug = RSWConfig.file().getBoolean("Debug-Mode");
         Debugger.print(RealSkywars.class, "DEBUG MODE ENABLED");
         Debugger.execute();
-        realSkywars.getGameManagerAPI().loadLobby();
+        realSkywars.getLobbyManagerAPI().loadLobby();
 
         //config
         RSWAchievementsConfig.setup(this);
@@ -165,7 +165,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
         getLogger().info("Loaded " + realSkywars.getKitManagerAPI().getKits().size() + " kits.");
 
         realSkywars.getMapManagerAPI().loadMaps();
-        getLogger().info("Loaded " + realSkywars.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL).size() + " maps.");
+        getLogger().info("Loaded " + realSkywars.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL).size() + " maps.");
         realSkywars.getPlayerManagerAPI().loadPlayers();
 
         if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
@@ -187,7 +187,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
                 .mapToObj(i -> "Map" + i)
                 .collect(Collectors.toCollection(ArrayList::new)));
 
-        commandManager.getCompletionHandler().register("#maps", input -> realSkywars.getGameManagerAPI().getRoomNames());
+        commandManager.getCompletionHandler().register("#maps", input -> realSkywars.getMapManagerAPI().getMapNames());
         commandManager.getCompletionHandler().register("#boolean", input -> Arrays.asList("false", "true"));
         commandManager.getCompletionHandler().register("#worldtype", input -> Arrays.asList("DEFAULT", "SCHEMATIC"));
         commandManager.getCompletionHandler().register("#kits", input -> realSkywars.getKitManagerAPI().getKits().stream()
@@ -334,11 +334,15 @@ public class RealSkywarsPlugin extends JavaPlugin {
     }
 
     public void onDisable() {
-        realSkywars.getGameManagerAPI().endGames();
-        realSkywars.getGameManagerAPI().getGames(GamesManagerAPI.GameModes.ALL).forEach(RSWMap::clear);
+        realSkywars.getMapManagerAPI().endMaps();
+
+        if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
+            this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
+        }
 
         HandlerList.unregisterAll(this);
         Bukkit.getPluginManager().disablePlugin(this);
+
     }
 
     private boolean setupNMS() {

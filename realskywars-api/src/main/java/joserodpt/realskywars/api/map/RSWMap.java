@@ -584,7 +584,7 @@ public abstract class RSWMap {
 
     public void sendLog(RSWPlayer p, boolean winner) {
         if (p.getPlayer() != null) {
-            TranslatableList.ARENA_END.get(p).forEach(s -> p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE, this.isRanked()) + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS, this.isRanked()) + "").replace("%time%", Text.formatSeconds(this.mapTimer.getPassedSeconds()))));
+            TranslatableList.ARENA_END.get(p).forEach(s -> p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE) + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + "").replace("%time%", Text.formatSeconds(this.mapTimer.getPassedSeconds()))));
 
             p.addGameLog(new RSWGameLog(this.getMapName(), this.getGameMode(), this.isRanked(), this.getMaxPlayers(), winner, this.getTimePassed(), Text.getDayAndTime()));
 
@@ -698,7 +698,7 @@ public abstract class RSWMap {
         }
 
         if (!kicked) {
-            rs.getGameManagerAPI().tpToLobby(p);
+            rs.getLobbyManagerAPI().tpToLobby(p);
             RSWPlayerItems.LOBBY.giveSet(p);
         }
 
@@ -838,7 +838,7 @@ public abstract class RSWMap {
     public void setUnregistered(boolean b) {
         this.unregistered = b;
         if (!b) {
-            this.kickPlayers(TranslatableLine.ADMIN_SHUTDOWN.getSingle());
+            this.kickPlayers(null);
         }
         this.save(Data.SETTINGS, true);
     }
@@ -950,13 +950,43 @@ public abstract class RSWMap {
 
     //enums
     public enum MapState {
-        AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING
+        AVAILABLE, STARTING, WAITING, PLAYING, FINISHING, RESETTING;
+
+        public String getDisplayName(RSWPlayer p) {
+            switch (this) {
+                case AVAILABLE:
+                    return TranslatableLine.MAP_STATE_AVAILABLE.get(p);
+                case STARTING:
+                    return TranslatableLine.MAP_STATE_STARTING.get(p);
+                case WAITING:
+                    return TranslatableLine.MAP_STATE_WAITING.get(p);
+                case PLAYING:
+                    return TranslatableLine.MAP_STATE_PLAYING.get(p);
+                case FINISHING:
+                    return TranslatableLine.MAP_STATE_FINISHING.get(p);
+                case RESETTING:
+                    return TranslatableLine.MAP_STATE_RESETTING.get(p);
+                default:
+                    return "?";
+            }
+        }
     }
 
     public enum OperationReason {SHUTDOWN, RESET, LOAD}
 
     public enum Mode {
-        SOLO, TEAMS
+        SOLO, TEAMS;
+
+        public String getDisplayName(RSWPlayer p) {
+            switch (this) {
+                case SOLO:
+                    return TranslatableLine.SOLO_MODE.get(p);
+                case TEAMS:
+                    return TranslatableLine.TEAMS_MODE.get(p);
+                default:
+                    return "?";
+            }
+        }
     }
 
     public enum VoteType {

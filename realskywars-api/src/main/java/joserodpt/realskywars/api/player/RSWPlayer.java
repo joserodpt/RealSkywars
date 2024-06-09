@@ -376,7 +376,11 @@ public class RSWPlayer {
             case GAME_KILLS:
                 return this.gamekills;
         }
-        return null;
+        return "-1";
+    }
+
+    public Object getStatistics(PlayerStatistics pp) {
+        return getStatistics(pp, this.isInMatch() && this.room.isRanked());
     }
 
     public RSWPlayer.PlayerState getState() {
@@ -522,12 +526,12 @@ public class RSWPlayer {
     }
 
     public void hidePlayer(Plugin plugin, Player pl) {
-        if (!this.bot && pl != null && !RealSkywarsAPI.getInstance().getGameManagerAPI().endingGames)
+        if (!this.bot && pl != null && !RealSkywarsAPI.getInstance().getMapManagerAPI().endMaps)
             this.getPlayer().hidePlayer(plugin, pl);
     }
 
     public void showPlayer(Plugin plugin, Player pl) {
-        if (!this.bot && pl != null && !RealSkywarsAPI.getInstance().getGameManagerAPI().endingGames)
+        if (!this.bot && pl != null && !RealSkywarsAPI.getInstance().getMapManagerAPI().endMaps)
             this.getPlayer().showPlayer(plugin, pl);
     }
 
@@ -635,21 +639,21 @@ public class RSWPlayer {
                 case MAPV_ALL:
                     return TranslatableLine.MAP_ALL.get(p);
                 case MAPV_WAITING:
-                    return TranslatableLine.MAP_WAITING.get(p);
+                    return TranslatableLine.MAP_STATE_WAITING.get(p);
                 case MAPV_SPECTATE:
                     return TranslatableLine.MAP_SPECTATE.get(p);
                 case MAPV_STARTING:
-                    return TranslatableLine.MAP_STARTING.get(p);
+                    return TranslatableLine.MAP_STATE_STARTING.get(p);
                 case MAPV_AVAILABLE:
-                    return TranslatableLine.MAP_AVAILABLE.get(p);
+                    return TranslatableLine.MAP_STATE_AVAILABLE.get(p);
                 case SOLO:
-                    return Text.color("&eSolo");
+                    return RSWMap.Mode.SOLO.getDisplayName(p);
                 case SOLO_RANKED:
-                    return Text.color("&eSolo &b&LRANKED");
+                    return TranslatableLine.SOLO_RANKED_MODE.get(p);
                 case TEAMS_RANKED:
-                    return Text.color("&9Teams &b&LRANKED");
+                    return TranslatableLine.TEAMS_RANKED_MODE.get(p);
                 case TEAMS:
-                    return Text.color("&9Teams");
+                    return RSWMap.Mode.TEAMS.getDisplayName(p);
                 default:
                     return "?";
             }

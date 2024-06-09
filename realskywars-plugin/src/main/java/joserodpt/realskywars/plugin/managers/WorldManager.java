@@ -37,7 +37,7 @@ import java.util.List;
 
 public class WorldManager extends WorldManagerAPI {
 
-    private RealSkywarsAPI rs;
+    private final RealSkywarsAPI rs;
 
     public WorldManager(RealSkywarsAPI rs) {
         this.rs = rs;
@@ -45,15 +45,10 @@ public class WorldManager extends WorldManagerAPI {
 
     @Override
     public void clearItems(World w) {
-        for (Entity entity : w.getEntities()) {
-            if (entity.getType() == EntityType.DROPPED_ITEM) {
-                entity.remove();
-            }
-        }
+        w.getEntities().stream().filter(entity -> entity.getType() == EntityType.DROPPED_ITEM).forEach(Entity::remove);
     }
 
     //CREDIT to open source
-
     @Override
     public File[] verifiedListFiles(File directory) throws IOException {
         if (!directory.exists()) {
@@ -146,8 +141,8 @@ public class WorldManager extends WorldManagerAPI {
 
     @Override
     protected void tpToLobby(Player p) {
-        if (rs.getGameManagerAPI().getLobbyLocation() != null) {
-            p.teleport(rs.getGameManagerAPI().getLobbyLocation());
+        if (rs.getLobbyManagerAPI().getLobbyLocation() != null) {
+            p.teleport(rs.getLobbyManagerAPI().getLobbyLocation());
             TranslatableLine.LOBBY_TELEPORT.sendDefault(p, true);
         } else {
             TranslatableLine.LOBBYLOC_NOT_SET.sendDefault(p, true);

@@ -18,7 +18,7 @@ package joserodpt.realskywars.plugin.managers;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.database.PlayerData;
-import joserodpt.realskywars.api.managers.GamesManagerAPI;
+import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.managers.PlayerManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWGameLog;
@@ -78,8 +78,8 @@ public class PlayerManager extends PlayerManagerAPI {
 
             rs.getPlayerManagerAPI().addPlayer(gp);
 
-            if (rs.getGameManagerAPI().tpLobbyOnJoin()) {
-                rs.getGameManagerAPI().tpToLobby(gp);
+            if (rs.getLobbyManagerAPI().tpLobbyOnJoin()) {
+                rs.getLobbyManagerAPI().tpToLobby(gp);
             }
             Bukkit.getOnlinePlayers().forEach(player -> gp.getTab().add(player));
             gp.getTab().updateRoomTAB();
@@ -219,8 +219,8 @@ public class PlayerManager extends PlayerManagerAPI {
     }
 
     @Override
-    public int getPlayingPlayers(GamesManagerAPI.GameModes pt) {
-        return rs.getGameManagerAPI().getGames(pt).stream().mapToInt(RSWMap::getPlayerCount).sum();
+    public int getPlayingPlayers(MapManagerAPI.MapGamemodes pt) {
+        return rs.getMapManagerAPI().getMaps(pt).stream().mapToInt(RSWMap::getPlayerCount).sum();
     }
 
     @Override
