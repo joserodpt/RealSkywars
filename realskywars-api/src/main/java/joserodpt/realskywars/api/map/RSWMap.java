@@ -313,9 +313,9 @@ public abstract class RSWMap {
         return new Location(this.getRSWWorld().getWorld(), this.spectatorLocation.getBlockX(), this.spectatorLocation.getBlockY(), this.spectatorLocation.getBlockZ());
     }
 
-    public void setTierType(RSWChest.Tier b) {
-        this.chestTier = b;
-        this.chests.forEach(swChest -> swChest.setLoot(rs.getChestManagerAPI().getChest(this.chestTier, swChest.getType()), rs.getChestManagerAPI().getMaxItems(this.chestTier)));
+    public void setTierType(RSWChest.Tier tier) {
+        this.chestTier = tier;
+        this.chests.forEach(swChest -> swChest.setLoot(tier.getChest(swChest.getType()), tier.getMaxItemsPerChest()));
     }
 
     public void setTime(TimeType tt) {

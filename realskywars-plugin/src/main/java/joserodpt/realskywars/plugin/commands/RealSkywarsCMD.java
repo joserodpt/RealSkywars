@@ -58,6 +58,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -508,10 +509,16 @@ public class RealSkywarsCMD extends CommandBase {
     @SubCommand("set2chest")
     @Completion({"#enum", "#enum"})
     @Permission("rsw.admin")
-    public void setchest(final CommandSender commandSender, RSWChest.Tier tt, RSWChest.Type t) {
+    public void setchest(final CommandSender commandSender, RSWChest.Tier tt, RSWChest.Type t) throws IOException {
         if (commandSender instanceof Player) {
             final Player p = (Player) commandSender;
-            rs.getChestManagerAPI().set2Chest(tt, t, Arrays.asList(IntStream.range(9, 35).boxed().map(p.getInventory()::getItem).filter(Objects::nonNull).toArray(ItemStack[]::new)));
+            if (tt != null && t != null) {
+                tt.set2Chest(t, Arrays.asList(IntStream.range(9, 35).boxed().map(p.getInventory()::getItem).filter(Objects::nonNull).toArray(ItemStack[]::new)));
+                Text.send(commandSender, "Itens set for " + tt.name() + " (middle: " + t.name() + ")");
+            } else {
+                Text.send(commandSender, "Invalid chest tier and/or type.");
+            }
+
             Text.send(commandSender, "Itens set for " + tt.name() + " (middle: " + t.name() + ")");
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -598,7 +605,7 @@ public class RealSkywarsCMD extends CommandBase {
     public void unregister(final CommandSender commandSender, String mapName) {
         RSWMap map = rs.getMapManagerAPI().getMap(mapName);
         if (map != null) {
-            if (!map.isUnregistered()) {
+            if (map.isUnregistered()) {
                 TranslatableLine.MAP_ALREADY_UNREGISTERED.sendDefault(commandSender, true);
                 return;
             }
@@ -618,7 +625,7 @@ public class RealSkywarsCMD extends CommandBase {
     public void register(final CommandSender commandSender, String mapName) {
         RSWMap map = rs.getMapManagerAPI().getMap(mapName);
         if (map != null) {
-            if (map.isUnregistered()) {
+            if (!map.isUnregistered()) {
                 TranslatableLine.MAP_ALREADY_REGISTERED.sendDefault(commandSender, true);
                 return;
             }

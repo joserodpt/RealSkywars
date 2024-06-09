@@ -28,7 +28,6 @@ import joserodpt.realskywars.api.config.chests.EPICChestConfig;
 import joserodpt.realskywars.api.config.chests.NormalChestConfig;
 import joserodpt.realskywars.api.currency.CurrencyAdapter;
 import joserodpt.realskywars.api.managers.AchievementsManagerAPI;
-import joserodpt.realskywars.api.managers.ChestManagerAPI;
 import joserodpt.realskywars.api.managers.DatabaseManagerAPI;
 import joserodpt.realskywars.api.managers.HologramManagerAPI;
 import joserodpt.realskywars.api.managers.KitManagerAPI;
@@ -42,7 +41,6 @@ import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.managers.WorldManagerAPI;
 import joserodpt.realskywars.api.nms.RSWnms;
 import joserodpt.realskywars.plugin.managers.AchievementsManager;
-import joserodpt.realskywars.plugin.managers.ChestManager;
 import joserodpt.realskywars.plugin.managers.DatabaseManager;
 import joserodpt.realskywars.plugin.managers.HologramManager;
 import joserodpt.realskywars.plugin.managers.KitManager;
@@ -78,7 +76,6 @@ public class RealSkywars extends RealSkywarsAPI {
     private final LeaderboardManagerAPI leaderboardManagerAPI;
     private final AchievementsManagerAPI achievementsManagerAPI;
     public final RSWEventsAPI rswEventsAPI = new RSWEventsAPI();
-    private final ChestManagerAPI chestManagerAPI;
     private DatabaseManagerAPI databaseManagerAPI;
     private final HologramManagerAPI hologramManagerAPI;
     private CurrencyAdapter currencyAdapter;
@@ -95,7 +92,6 @@ public class RealSkywars extends RealSkywarsAPI {
         partiesManagerAPI = new PartiesManager(this);
         leaderboardManagerAPI = new LeaderboardManager(this);
         achievementsManagerAPI = new AchievementsManager(this);
-        chestManagerAPI = new ChestManager(this);
         hologramManagerAPI = new HologramManager(this);
     }
 
@@ -162,11 +158,6 @@ public class RealSkywars extends RealSkywarsAPI {
     @Override
     public Random getRandom() {
         return this.rand;
-    }
-
-    @Override
-    public ChestManagerAPI getChestManagerAPI() {
-        return this.chestManagerAPI;
     }
 
     @Override

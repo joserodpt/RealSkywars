@@ -15,14 +15,20 @@ package joserodpt.realskywars.api.chests;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import com.google.common.collect.ImmutableMap;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
+import joserodpt.realskywars.api.config.chests.BasicChestConfig;
+import joserodpt.realskywars.api.config.chests.EPICChestConfig;
+import joserodpt.realskywars.api.config.chests.NormalChestConfig;
 import joserodpt.realskywars.api.managers.holograms.RSWHologram;
 import joserodpt.realskywars.api.map.RSWEvent;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.CountdownTimer;
+import joserodpt.realskywars.api.utils.ItemStackSpringer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -35,10 +41,14 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class RSWChest {
     private final int x, y, z;
@@ -209,7 +219,56 @@ public class RSWChest {
                     return "?";
             }
         }
+
+        public YamlDocument getConfig() {
+            switch (this) {
+                case BASIC:
+                    return BasicChestConfig.file();
+                case NORMAL:
+                    return NormalChestConfig.file();
+                case EPIC:
+                    return EPICChestConfig.file();
+                default:
+                    return null;
+            }
+        }
+
+        public int getMaxItemsPerChest() {
+            return this.getConfig() == null ? 0 : this.getConfig().getInt("Max-Itens-Per-Chest");
+        }
+
+        public List<RSWChestItem> getChest(RSWChest.Type type) {
+            return Objects.requireNonNull(this.getConfig()).getMapList(type.getConfigName()).stream()
+                    .map(this::createSWChestItemFromMap)
+                    .collect(Collectors.toList());
+        }
+
+        private RSWChestItem createSWChestItemFromMap(Map<?, ?> map) {
+            ItemStack itemStack = ItemStackSpringer.getItemDeSerialized(ImmutableMap.copyOf((Map<String, Object>) map.get("Item")));
+            Integer chance = (Integer) map.get("Chance");
+            return new RSWChestItem(itemStack, chance);
+        }
+
+        public void set2ChestRaw(RSWChest.Type type, List<RSWChestItem> itens) throws IOException {
+            List<Map<String, Object>> map = itens.stream().map(swChestItem -> ImmutableMap.of("Chance", swChestItem.getChance(), "Item", ItemStackSpringer.getItemSerialized(swChestItem.getItemStack()))).collect(Collectors.toList());
+
+            this.getConfig().set(type.getConfigName(), map);
+            this.getConfig().save();
+        }
+
+        public void set2Chest(RSWChest.Type type, List<ItemStack> itens) throws IOException {
+            List<Map<String, Object>> map = itens.stream().map(itemStack -> ImmutableMap.of("Chance", 50, "Item", ItemStackSpringer.getItemSerialized(itemStack))).collect(Collectors.toList());
+
+            this.getConfig().set(type.getConfigName(), map);
+            this.getConfig().save();
+        }
     }
 
-    public enum Type {NORMAL, MID}
+    public enum Type {
+        NORMAL, MID;
+
+        public String getConfigName() {
+            return (this == MID) ? "Mid-Items" : "Items";
+        }
+    }
 }

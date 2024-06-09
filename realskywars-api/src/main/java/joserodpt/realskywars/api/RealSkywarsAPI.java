@@ -3,7 +3,6 @@ package joserodpt.realskywars.api;
 import com.google.common.base.Preconditions;
 import joserodpt.realskywars.api.currency.CurrencyAdapter;
 import joserodpt.realskywars.api.managers.AchievementsManagerAPI;
-import joserodpt.realskywars.api.managers.ChestManagerAPI;
 import joserodpt.realskywars.api.managers.DatabaseManagerAPI;
 import joserodpt.realskywars.api.managers.HologramManagerAPI;
 import joserodpt.realskywars.api.managers.KitManagerAPI;
@@ -72,9 +71,7 @@ public abstract class RealSkywarsAPI {
     public abstract PartiesManagerAPI getPartiesManagerAPI();
 
     public abstract Random getRandom();
-
-    public abstract ChestManagerAPI getChestManagerAPI();
-
+    
     public abstract DatabaseManagerAPI getDatabaseManagerAPI();
 
     public abstract LeaderboardManagerAPI getLeaderboardManagerAPI();

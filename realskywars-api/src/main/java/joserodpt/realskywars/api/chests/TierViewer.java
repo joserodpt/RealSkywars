@@ -60,7 +60,7 @@ public class TierViewer {
         this.cte = cte;
         this.inv = Bukkit.getServer().createInventory(null, 54, Text.color("&8" + ct.name() + " - " + cte.name()));
 
-        this.items = RealSkywarsAPI.getInstance().getChestManagerAPI().getChest(ct, cte);
+        this.items = ct.getChest(cte);
 
         this.p = new Pagination<>(28, this.items);
         fillChest(this.p.getPage(this.pageNumber));
@@ -189,7 +189,7 @@ public class TierViewer {
 
                                 a.setChance(val);
 
-                                RealSkywarsAPI.getInstance().getChestManagerAPI().set2ChestRaw(current.ct, current.cte, current.items);
+                                current.ct.set2ChestRaw(current.cte, current.items);
 
                                 TierViewer tv = new TierViewer(p.getPlayer(), current.ct, current.cte);
                                 tv.openInventory(p.getPlayer());
