@@ -173,7 +173,7 @@ public class ShopGUI {
                                         break;
                                     default:
                                         if (p.getPlayer().hasPermission(a.getPermission())) {
-                                            TransactionManager cm = new TransactionManager(RealSkywarsAPI.getInstance().getCurrencyAdapter(), p, a.getPrice(), TransactionManager.Operations.REMOVE, false);
+                                            TransactionManager cm = new TransactionManager(p, a.getPrice(), TransactionManager.Operations.REMOVE, false);
                                             p.closeInventory();
 
                                             if (cm.removeCoins()) {
@@ -182,7 +182,7 @@ public class ShopGUI {
 
                                                 p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.get(p, true).replace("%name%", a.getName()).replace("%coins%", a.getPrice() + ""));
                                             } else {
-                                                p.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(p, true).replace("%coins%", RealSkywarsAPI.getInstance().getCurrencyAdapter().getCoins(p) + ""));
+                                                p.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(p, true).replace("%coins%", RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoins(p) + ""));
                                             }
                                         } else {
                                             TranslatableLine.SHOP_NO_PERM.send(p, true);
@@ -206,7 +206,7 @@ public class ShopGUI {
                                     if (a.isBought()) {
                                         p.sendMessage(TranslatableLine.SHOP_ALREADY_BOUGHT.get(p, true).replace("%name%", a.getName()));
                                     } else {
-                                        TransactionManager cm = new TransactionManager(RealSkywarsAPI.getInstance().getCurrencyAdapter(), p, a.getPrice(), TransactionManager.Operations.REMOVE, false);
+                                        TransactionManager cm = new TransactionManager(p, a.getPrice(), TransactionManager.Operations.REMOVE, false);
                                         if (cm.removeCoins()) {
                                             p.buyItem(a.getName() + "|" + current.cat.name());
 
@@ -214,7 +214,7 @@ public class ShopGUI {
                                             current.inv.setItem(e.getRawSlot(), Itens.createItemLoreEnchanted(e.getCurrentItem().getType(), 1, e.getCurrentItem().getItemMeta().getDisplayName(), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_SELECT.get(p))));
                                             p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.get(p, true).replace("%name%", a.getName()).replace("%coins%", a.getPrice() + ""));
                                         } else {
-                                            p.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(p, true).replace("%coins%", RealSkywarsAPI.getInstance().getCurrencyAdapter().getCoins(p) + ""));
+                                            p.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(p, true).replace("%coins%", RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoins(p) + ""));
                                         }
                                     }
                                 } else {

@@ -461,7 +461,7 @@ public class PlayerListener implements Listener {
             if (e.getCause() == EntityDamageEvent.DamageCause.VOID) {
                 if (damaged.isInMatch()) {
                     e.setDamage(0);
-                    if (damaged.getState().name().contains("SPEC")) {
+                    if (damaged.getState() == RSWPlayer.PlayerState.SPECTATOR || damaged.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
                         Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
                             damaged.getPlayer().spigot().respawn();
                             damaged.teleport(damaged.getMatch().getSpectatorLocation());
@@ -512,7 +512,7 @@ public class PlayerListener implements Listener {
 
         RSWPlayer killed = rs.getPlayerManagerAPI().getPlayer(pkilled);
 
-        if (killed.getState().name().contains("SPEC")) {
+        if (killed.getState() == RSWPlayer.PlayerState.SPECTATOR || killed.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
                 killed.getPlayer().spigot().respawn();
                 killed.teleport(killed.getMatch().getSpectatorLocation());

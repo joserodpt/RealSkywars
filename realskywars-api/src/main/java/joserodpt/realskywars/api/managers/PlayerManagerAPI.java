@@ -18,8 +18,6 @@ public abstract class PlayerManagerAPI {
 
     public abstract RSWPlayer getPlayer(Player p);
 
-    public abstract RSWPlayer getPlayer(UUID u);
-
     public abstract void savePlayer(RSWPlayer p, RSWPlayer.PlayerData pd);
 
     public abstract void setLanguage(RSWPlayer player, String s);

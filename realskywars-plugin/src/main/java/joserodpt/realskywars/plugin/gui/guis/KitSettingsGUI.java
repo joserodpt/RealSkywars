@@ -16,6 +16,7 @@ package joserodpt.realskywars.plugin.gui.guis;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
@@ -98,7 +99,7 @@ public class KitSettingsGUI {
 
                                 p.closeInventory();
 
-                                p.sendMessage(Text.color("&aKit has been created!"));
+                                TranslatableLine.KIT_CREATED.send(RealSkywarsAPI.getInstance().getPlayerManagerAPI().getPlayer(p), true);
                             }
 
                             // settings

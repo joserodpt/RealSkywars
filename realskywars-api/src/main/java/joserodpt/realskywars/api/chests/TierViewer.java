@@ -54,11 +54,11 @@ public class TierViewer {
     private Pagination<RSWChestItem> p;
     private List<RSWChestItem> items;
 
-    public TierViewer(Player p, RSWChest.Tier ct, RSWChest.Type cte) {
-        this.uuid = p.getUniqueId();
+    public TierViewer(RSWPlayer p, RSWChest.Tier ct, RSWChest.Type cte) {
+        this.uuid = p.getUUID();
         this.ct = ct;
         this.cte = cte;
-        this.inv = Bukkit.getServer().createInventory(null, 54, Text.color("&8" + ct.name() + " - " + cte.name()));
+        this.inv = Bukkit.getServer().createInventory(null, 54, Text.color("&8" + ct.getDisplayName(p) + " - " + cte.name()));
 
         this.items = ct.getChest(cte);
 
@@ -191,10 +191,10 @@ public class TierViewer {
 
                                 current.ct.set2ChestRaw(current.cte, current.items);
 
-                                TierViewer tv = new TierViewer(p.getPlayer(), current.ct, current.cte);
+                                TierViewer tv = new TierViewer(p, current.ct, current.cte);
                                 tv.openInventory(p.getPlayer());
                             }, input -> {
-                                TierViewer tv = new TierViewer(p.getPlayer(), current.ct, current.cte);
+                                TierViewer tv = new TierViewer(p, current.ct, current.cte);
                                 tv.openInventory(p.getPlayer());
                             });
                         }

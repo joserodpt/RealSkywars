@@ -55,6 +55,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -72,10 +73,17 @@ public class MapManager extends MapManagerAPI {
         this.clearMaps();
 
         for (String s : RSWMapsConfig.file().getRoot().getRoutesAsStrings(false)) {
-            RSWMap.Mode t = getGameType(s);
+            String modeSTR = RSWMapsConfig.file().getString(s + ".Settings.GameType");
+            if (modeSTR == null || modeSTR.isEmpty()) {
+                rs.getLogger().severe("Mode: " + s + " is invalid! Skipping map: " + s);
+                continue;
+            }
 
-            if (t == null) {
-                rs.getLogger().severe("Mode " + getGameType(s) + " doesnt exist! Skipping map: " + s);
+
+            try {
+                RSWMap.Mode.valueOf(modeSTR);
+            } catch (IllegalArgumentException e) {
+                rs.getLogger().severe("Mode: " + s + " isn't supported by this version of RealSkywars! Skipping map: " + s);
                 continue;
             }
 
@@ -108,25 +116,27 @@ public class MapManager extends MapManagerAPI {
 
                 World w = Bukkit.getWorld(worldName);
 
-                switch (t) {
+                switch (RSWMap.Mode.valueOf(modeSTR)) {
                     case SOLO:
                         SoloMode gs = new SoloMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, cgs, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), chests, isRanked(s), unregistered, rs);
                         gs.resetArena(RSWMap.OperationReason.LOAD);
                         this.addMap(gs);
                         break;
                     case TEAMS:
-                        Map<Location, Team> ts = new HashMap<>();
-                        int tc = 1;
-                        for (RSWCage c : cgs.values()) {
-                            ts.put(c.getLocation(), new Team(tc, (RSWMapsConfig.file().getInt(s + ".number-of-players") / cgs.size()), c.getLocation()));
-                            ++tc;
-                        }
+                        int numberOfPlayers = RSWMapsConfig.file().getInt(s + ".number-of-players");
+                        AtomicInteger tc = new AtomicInteger(1);
+                        Map<Location, Team> ts = cgs.values().stream()
+                                .filter(c -> c.getLocation() != null)
+                                .collect(Collectors.toMap(
+                                        RSWCage::getLocation,
+                                        c -> new Team(tc.getAndIncrement(), numberOfPlayers / cgs.size(), c.getLocation())
+                                ));
                         TeamsMode teas = new TeamsMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, ts, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), isBorderEnabled(s), getPOS1(w, s), getPOS2(w, s), chests, isRanked(s), unregistered, rs);
                         teas.resetArena(RSWMap.OperationReason.LOAD);
                         this.addMap(teas);
                         break;
                     default:
-                        throw new IllegalStateException("Mode doesnt exist: " + t.name());
+                        throw new IllegalStateException("Mode doesnt exist: " + modeSTR);
                 }
             }
         }
@@ -227,6 +237,32 @@ public class MapManager extends MapManagerAPI {
     }
 
     @Override
+    protected Map<Location, RSWChest> getMapChests(String worldName, String section) {
+        Map<Location, RSWChest> chests = new HashMap<>();
+        if (RSWMapsConfig.file().isSection(section + ".Chests")) {
+            for (String i : RSWMapsConfig.file().getSection(section + ".Chests").getRoutesAsStrings(false)) {
+                int x = RSWMapsConfig.file().getInt(section + ".Chests." + i + ".LocationX");
+                int y = RSWMapsConfig.file().getInt(section + ".Chests." + i + ".LocationY");
+                int z = RSWMapsConfig.file().getInt(section + ".Chests." + i + ".LocationZ");
+                BlockFace f = BlockFace.valueOf(RSWMapsConfig.file().getString(section + ".Chests." + i + ".Face"));
+
+                RSWChest.Type ct;
+                try {
+                    ct = RSWChest.Type.valueOf(RSWMapsConfig.file().getString(section + ".Chests." + i + ".Type"));
+                } catch (IllegalArgumentException e) {
+                    Bukkit.getLogger().warning("Chest type invalid while loading " + worldName + "!! >> Chest id: " + i + ". Assigning NORMAL type.");
+                    ct = RSWChest.Type.NORMAL;
+                }
+
+                chests.put(new Location(Bukkit.getWorld(worldName), x, y, z), new RSWChest(ct, worldName, x, y, z, f));
+            }
+        } else {
+            Debugger.print(MapManager.class, "There are no chests in " + worldName + " (possibly a bug? Check config pls!)");
+        }
+        return chests;
+    }
+
+    @Override
     public void setupSolo(RSWPlayer p, String mapname, String displayName, RSWWorld.WorldType wt, int maxP) {
         RSWSetupMap s = new RSWSetupMap(mapname, displayName, null, wt, maxP);
         s.setSchematic(mapname);
@@ -245,7 +281,6 @@ public class MapManager extends MapManagerAPI {
         SetupRoomSettingsGUI m = new SetupRoomSettingsGUI(p, s);
         m.openInventory(p);
     }
-
 
     @Override
     public void cancelSetup(RSWPlayer p) {
@@ -394,11 +429,6 @@ public class MapManager extends MapManagerAPI {
     }
 
     @Override
-    protected RSWMap.Mode getGameType(String s) {
-        return (RSWMapsConfig.file().getString(s + ".Settings.GameType") == null) ? null : RSWMap.Mode.valueOf(RSWMapsConfig.file().getString(s + ".Settings.GameType"));
-    }
-
-    @Override
     protected Boolean isInstantEndingEnabled(String s) {
         return RSWMapsConfig.file().getBoolean(s + ".Settings.Instant-End");
     }
@@ -449,29 +479,6 @@ public class MapManager extends MapManagerAPI {
     @Override
     protected Boolean isRanked(String s) {
         return RSWMapsConfig.file().getBoolean(s + ".ranked");
-    }
-
-    @Override
-    protected Map<Location, RSWChest> getMapChests(String worldName, String section) {
-        Map<Location, RSWChest> chests = new HashMap<>();
-        if (RSWMapsConfig.file().isSection(section + ".Chests")) {
-            for (String i : RSWMapsConfig.file().getSection(section + ".Chests").getRoutesAsStrings(false)) {
-                int x = RSWMapsConfig.file().getInt(section + ".Chests." + i + ".LocationX");
-                int y = RSWMapsConfig.file().getInt(section + ".Chests." + i + ".LocationY");
-                int z = RSWMapsConfig.file().getInt(section + ".Chests." + i + ".LocationZ");
-                BlockFace f = BlockFace.valueOf(RSWMapsConfig.file().getString(section + ".Chests." + i + ".Face"));
-
-                RSWChest.Type ct = RSWChest.Type.valueOf(RSWMapsConfig.file().getString(section + ".Chests." + i + ".Type"));
-                if (ct == null) {
-                    Debugger.print(MapManager.class, "CHEST FACE INVALID WHILE LOADING " + worldName + "!! >> " + RSWMapsConfig.file().getString(section + ".Chests." + i + ".Type"));
-                }
-
-                chests.put(new Location(Bukkit.getWorld(worldName), x, y, z), new RSWChest(ct, worldName, x, y, z, f));
-            }
-        } else {
-            Debugger.print(MapManager.class, "There are no chests in " + worldName + " (possibly a bug? Check config pls!)");
-        }
-        return chests;
     }
 
     @Override

@@ -17,10 +17,10 @@ package joserodpt.realskywars.plugin.currency;
 
 
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.currency.CurrencyAdapter;
+import joserodpt.realskywars.api.currency.CurrencyAdapterAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 
-public class LocalCurrencyAdapter implements CurrencyAdapter {
+public class LocalCurrencyAdapter implements CurrencyAdapterAPI {
     @Override
     public void transferCoins(RSWPlayer toPlayer, RSWPlayer fromPlayer, double amount) {
         removeCoins(fromPlayer, amount);

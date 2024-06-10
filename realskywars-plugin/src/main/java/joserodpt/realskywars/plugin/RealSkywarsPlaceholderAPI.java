@@ -22,8 +22,6 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
-
 public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
 
     private final RealSkywarsAPI rsa;
@@ -104,7 +102,7 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, String identifier) {
-        switch (identifier.toLowerCase(Locale.ROOT)) {
+        switch (identifier.toLowerCase()) {
             case "playing":
                 return rsa.getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.ALL) + "";
             case "playing_solo":

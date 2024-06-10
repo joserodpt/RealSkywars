@@ -140,11 +140,6 @@ public class PlayerManager extends PlayerManagerAPI {
     }
 
     @Override
-    public RSWPlayer getPlayer(UUID u) {
-        return this.players.get(u);
-    }
-
-    @Override
     public void savePlayer(RSWPlayer p, RSWPlayer.PlayerData pd) {
         if (p.getPlayer() != null) {
             PlayerData playerData = rs.getDatabaseManagerAPI().getPlayerData(p.getPlayer());
@@ -160,7 +155,7 @@ public class PlayerManager extends PlayerManagerAPI {
                     playerData.setCageBlock(((Material) p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK)).name());
                     break;
                 case COINS:
-                    playerData.setCoins(rs.getCurrencyAdapter().getCoins(p));
+                    playerData.setCoins(rs.getCurrencyAdapterAPI().getCoins(p));
                     break;
                 case GAME:
                     playerData.setWinsSolo(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false), false);

@@ -13,6 +13,10 @@ public enum TranslatableLine {
     TEAMS_RANKED_MODE(".Modes.Teams-Ranked"),
 
     ACHIEVEMENT_GET(".Messages.Achievements.Get"),
+    ACHIEVEMENT_REWARD(".Messages.Achievements.Reward"),
+    ACHIEVEMENT_NAME_COINS(".Messages.Achievements.Names.Coins"),
+    ACHIEVEMENT_GOAL(".Messages.Achievements.Goal"),
+
     ARENA_CANCEL(".Messages.Map.Match-Cancelled"),
     ARENA_START_COUNTDOWN(".Messages.Map.Start-Countdown"),
     LOBBY_TELEPORT(".Messages.Lobby-Teleport"),
@@ -128,6 +132,7 @@ public enum TranslatableLine {
     KIT_SELECT(".Kits.Select"),
     KIT_NOT_FOUND(".Kits.Not-Found"),
     KIT_DELETE(".Kits.Delete"),
+    KIT_CREATED(".Kits.Created"),
 
     CANT_JOIN(".Messages.Map.Cant-Join"),
     ROOM_FULL(".Messages.Map.Room-Full"),
@@ -183,6 +188,15 @@ public enum TranslatableLine {
     ALREADY_STARTED(".Messages.Map.Already-Started"),
     NO_TRACKER(".Messages.Map.No-Tracker-Found"),
     TRACK_FOUND(".Messages.Map.Tracker-Found"),
+
+    STATISTIC_WINS_SOLO(".Statistics.Wins.Solo"),
+    STATISTIC_WINS_TEAMS(".Statistics.Wins.Teams"),
+    STATISTIC_KILLS(".Statistics.Kills"),
+    STATISTIC_DEATHS(".Statistics.Deaths"),
+    STATISTIC_LOSES(".Statistics.Loses"),
+    STATISTIC_GAMES_PLAYED(".Statistics.Games.Played"),
+    STATISTIC_GAMES_BALANCE(".Statistics.Games.Balance"),
+    STATISTIC_GAMES_KILLS(".Statistics.Games.Kills"),
 
     //singles
     BOSSBAR_ARENA_RUNTIME("Strings.Boss-Bar.Run-Time"),

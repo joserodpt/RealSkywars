@@ -207,7 +207,7 @@ public class RSWPlayer {
                 a.giveAchievement(this);
             }
 
-            RealSkywarsAPI.getInstance().getCurrencyAdapter().addCoins(this, this.balanceGame);
+            RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().addCoins(this, this.balanceGame);
             this.balanceGame = 0D;
             this.gamekills = 0;
         }
@@ -216,7 +216,7 @@ public class RSWPlayer {
     }
 
     public double getGameBalance() {
-        return RealSkywarsAPI.getInstance().getCurrencyAdapter().getCoins(this) + this.balanceGame;
+        return RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoins(this) + this.balanceGame;
     }
 
     public void sendMessage(String string) {
@@ -292,7 +292,7 @@ public class RSWPlayer {
     }
 
     public UUID getUUID() {
-        return player.getUniqueId();
+        return player == null ? null : player.getUniqueId();
     }
 
     public String getLanguage() {
@@ -631,7 +631,32 @@ public class RSWPlayer {
 
     public enum Statistic {KILL, SOLO_WIN, TEAM_WIN, LOSE, DEATH, GAMES_PLAYED}
 
-    public enum PlayerStatistics {WINS_SOLO, WINS_TEAMS, KILLS, DEATHS, LOSES, GAMES_PLAYED, GAME_BALANCE, GAME_KILLS}
+    public enum PlayerStatistics {
+        WINS_SOLO, WINS_TEAMS, KILLS, DEATHS, LOSES, GAMES_PLAYED, GAME_BALANCE, GAME_KILLS;
+
+        public String getDisplayName(RSWPlayer p) {
+            switch (this) {
+                case WINS_SOLO:
+                    return TranslatableLine.STATISTIC_WINS_SOLO.get(p);
+                case WINS_TEAMS:
+                    return TranslatableLine.STATISTIC_WINS_TEAMS.get(p);
+                case KILLS:
+                    return TranslatableLine.STATISTIC_KILLS.get(p);
+                case DEATHS:
+                    return TranslatableLine.STATISTIC_DEATHS.get(p);
+                case LOSES:
+                    return TranslatableLine.STATISTIC_LOSES.get(p);
+                case GAMES_PLAYED:
+                    return TranslatableLine.STATISTIC_GAMES_PLAYED.get(p);
+                case GAME_BALANCE:
+                    return TranslatableLine.STATISTIC_GAMES_BALANCE.get(p);
+                case GAME_KILLS:
+                    return TranslatableLine.STATISTIC_GAMES_KILLS.get(p);
+                default:
+                    return "?";
+            }
+        }
+    }
 
     public enum MapViewerPref {
         MAPV_SPECTATE, MAPV_AVAILABLE, MAPV_STARTING, MAPV_WAITING, MAPV_ALL, SOLO, TEAMS, SOLO_RANKED, TEAMS_RANKED;

@@ -21,15 +21,16 @@ import joserodpt.realskywars.api.achievements.types.RSWAchievementRCoin;
 import joserodpt.realskywars.api.config.RSWAchievementsConfig;
 import joserodpt.realskywars.api.managers.AchievementsManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.Itens;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class AchievementsManager extends AchievementsManagerAPI {
     private final RealSkywarsAPI rs;
+
     public AchievementsManager(RealSkywarsAPI rs) {
         this.rs = rs;
     }
@@ -92,17 +93,5 @@ public class AchievementsManager extends AchievementsManagerAPI {
             }
         }
         return null;
-    }
-
-    @Override
-    public ItemStack getItem(RSWAchievement s, UUID uuid) {
-        RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(uuid);
-
-        return Itens.createItem(getColor(s, p), 1, "&b&l" + s.getGoal(), Collections.singletonList("&aReward: &e" + s.getReward() + " coins"));
-    }
-
-    @Override
-    protected Material getColor(RSWAchievement s, RSWPlayer p) {
-        return ((int) p.getStatistics(s.getType(), false)) >= s.getGoal() ? Material.GREEN_CONCRETE : Material.RED_CONCRETE;
     }
 }

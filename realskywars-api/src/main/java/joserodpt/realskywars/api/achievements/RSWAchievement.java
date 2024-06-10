@@ -17,14 +17,24 @@ package joserodpt.realskywars.api.achievements;
 
 
 import joserodpt.realskywars.api.player.RSWPlayer;
+import org.bukkit.inventory.ItemStack;
 
 public interface RSWAchievement {
     String getAchievementName();
+
     String getRewardName();
+
     void giveAchievement(RSWPlayer rswPlayer);
+
     RSWPlayer.PlayerStatistics getType();
+
     RSWAchievement.RewardType getRewardType();
+
     int getGoal();
+
     Object getReward();
-    enum RewardType { COINS }
+
+    ItemStack getItem(RSWPlayer p);
+
+    enum RewardType {COINS}
 }

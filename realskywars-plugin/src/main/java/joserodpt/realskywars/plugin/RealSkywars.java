@@ -26,7 +26,7 @@ import joserodpt.realskywars.api.config.RSWShopsConfig;
 import joserodpt.realskywars.api.config.chests.BasicChestConfig;
 import joserodpt.realskywars.api.config.chests.EPICChestConfig;
 import joserodpt.realskywars.api.config.chests.NormalChestConfig;
-import joserodpt.realskywars.api.currency.CurrencyAdapter;
+import joserodpt.realskywars.api.currency.CurrencyAdapterAPI;
 import joserodpt.realskywars.api.managers.AchievementsManagerAPI;
 import joserodpt.realskywars.api.managers.DatabaseManagerAPI;
 import joserodpt.realskywars.api.managers.HologramManagerAPI;
@@ -78,7 +78,7 @@ public class RealSkywars extends RealSkywarsAPI {
     public final RSWEventsAPI rswEventsAPI = new RSWEventsAPI();
     private DatabaseManagerAPI databaseManagerAPI;
     private final HologramManagerAPI hologramManagerAPI;
-    private CurrencyAdapter currencyAdapter;
+    private CurrencyAdapterAPI currencyAdapterAPI;
 
     public RealSkywars(RealSkywarsPlugin plugin) {
         this.plugin = plugin;
@@ -181,8 +181,8 @@ public class RealSkywars extends RealSkywarsAPI {
     }
 
     @Override
-    public CurrencyAdapter getCurrencyAdapter() {
-        return this.currencyAdapter;
+    public CurrencyAdapterAPI getCurrencyAdapterAPI() {
+        return this.currencyAdapterAPI;
     }
 
     @Override
@@ -235,8 +235,8 @@ public class RealSkywars extends RealSkywarsAPI {
         return this.plugin.getEconomy();
     }
 
-    public void setCurrencyAdapter(CurrencyAdapter c) {
-        this.currencyAdapter = c;
+    public void setCurrencyAdapter(CurrencyAdapterAPI c) {
+        this.currencyAdapterAPI = c;
     }
 
     public void setNMS(RSWnms nms) {

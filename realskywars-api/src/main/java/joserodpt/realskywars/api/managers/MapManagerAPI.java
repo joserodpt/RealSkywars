@@ -44,7 +44,7 @@ public abstract class MapManagerAPI {
 
     public abstract void finishSetup(RSWPlayer p);
 
-    protected abstract RSWMap.Mode getGameType(String s);
+    protected abstract RSWWorld.WorldType getWorldType(String s);
 
     protected abstract Boolean isInstantEndingEnabled(String s);
 
@@ -57,8 +57,6 @@ public abstract class MapManagerAPI {
     public abstract Boolean isSpecEnabled(String s);
 
     public abstract Location getSpecLoc(String nome);
-
-    protected abstract RSWWorld.WorldType getWorldType(String s);
 
     protected abstract Boolean isRanked(String s);
 

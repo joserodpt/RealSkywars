@@ -17,7 +17,7 @@ package joserodpt.realskywars.api.managers;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.currency.CurrencyAdapter;
+import joserodpt.realskywars.api.currency.CurrencyAdapterAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
 
@@ -26,10 +26,9 @@ public class TransactionManager {
     private Double operationQuantity = 0D;
     private final RSWPlayer toPlayer;
     private Boolean console = false;
-    private final CurrencyAdapter ca;
+    private final CurrencyAdapterAPI ca = RealSkywarsAPI.getInstance().getCurrencyAdapterAPI();
 
-    public TransactionManager(CurrencyAdapter ca, RSWPlayer to, RSWPlayer from, Double coins, Operations op, boolean executeNow) {
-        this.ca = ca;
+    public TransactionManager(RSWPlayer to, RSWPlayer from, Double coins, Operations op, boolean executeNow) {
         this.toPlayer = to;
         this.fromPlayer = from;
 
@@ -45,8 +44,7 @@ public class TransactionManager {
         }
     }
 
-    public TransactionManager(CurrencyAdapter ca, RSWPlayer to, Double coins, Operations op, boolean executeNow) {
-        this.ca = ca;
+    public TransactionManager(RSWPlayer to, Double coins, Operations op, boolean executeNow) {
         this.toPlayer = to;
 
         if (coins == null) {

@@ -15,13 +15,15 @@ package joserodpt.realskywars.api.achievements.types;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.achievements.RSWAchievement;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.TransactionManager;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.utils.Itens;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.Locale;
+import java.util.Collections;
 
 public class RSWAchievementRCoin implements RSWAchievement {
 
@@ -42,12 +44,12 @@ public class RSWAchievementRCoin implements RSWAchievement {
 
     @Override
     public String getRewardName() {
-        return this.getReward() + " " + this.getRewardType().name().toLowerCase(Locale.ROOT);
+        return this.getReward() + " " + this.getRewardType().name().toLowerCase();
     }
 
     @Override
     public void giveAchievement(RSWPlayer p) {
-        new TransactionManager(RealSkywarsAPI.getInstance().getCurrencyAdapter(), p, (Double) this.getReward(), TransactionManager.Operations.ADD, true);
+        new TransactionManager(p, (Double) this.getReward(), TransactionManager.Operations.ADD, true);
         p.sendMessage(TranslatableLine.ACHIEVEMENT_GET.get(p, true).replace("%achievement%", this.goal + " - " + this.getAchievementName()).replace("%reward%", this.getRewardName()));
     }
 
@@ -69,5 +71,11 @@ public class RSWAchievementRCoin implements RSWAchievement {
     @Override
     public Object getReward() {
         return this.reward;
+    }
+
+    @Override
+    public ItemStack getItem(RSWPlayer p) {
+        return Itens.createItem(((int) p.getStatistics(this.getType(), false)) >= this.getGoal() ? Material.GREEN_CONCRETE : Material.RED_CONCRETE
+                , 1, TranslatableLine.ACHIEVEMENT_GOAL.get(p).replace("%goal%", String.valueOf(this.getGoal())), Collections.singletonList(TranslatableLine.ACHIEVEMENT_REWARD.get(p).replace("%reward%", this.getReward().toString()) + " " + TranslatableLine.ACHIEVEMENT_NAME_COINS.get(p)));
     }
 }

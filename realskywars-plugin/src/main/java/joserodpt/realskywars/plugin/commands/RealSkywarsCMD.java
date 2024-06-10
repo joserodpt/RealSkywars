@@ -102,7 +102,7 @@ public class RealSkywarsCMD extends CommandBase {
             TranslatableLine.CMD_CONFIG_RELOAD.send(p, true);
         } else {
             this.rs.reload();
-            commandSender.sendMessage("Reloaded RealSkywars!");
+            commandSender.sendMessage("Reloaded RealSkywars configuration - version: " + rs.getPlugin().getDescription().getVersion());
             TranslatableLine.CMD_CONFIG_RELOAD.sendDefault(commandSender, true);
         }
     }
@@ -145,7 +145,7 @@ public class RealSkywarsCMD extends CommandBase {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
 
             if (action == null) {
-                p.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "Unknown kit command action.");
+                p.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "Unknown kit command syntax.");
                 return;
             }
             switch (action) {
@@ -230,7 +230,7 @@ public class RealSkywarsCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
 
-            p.sendMessage(TranslatableLine.CMD_COINS.get(p).replace("%coins%", rs.getCurrencyAdapter().getCoins(p) + ""));
+            p.sendMessage(TranslatableLine.CMD_COINS.get(p).replace("%coins%", rs.getCurrencyAdapterAPI().getCoins(p) + ""));
         } else {
             commandSender.sendMessage(onlyPlayer);
         }
@@ -256,14 +256,14 @@ public class RealSkywarsCMD extends CommandBase {
                 return;
             }
 
-            new TransactionManager(rs.getCurrencyAdapter(), search, p, coins, o, true);
+            new TransactionManager(search, p, coins, o, true);
         } else {
             if (search == null) {
                 TranslatableLine.NO_PLAYER_FOUND.sendDefault(commandSender, true);
                 return;
             }
 
-            new TransactionManager(rs.getCurrencyAdapter(), search, coins, o, true);
+            new TransactionManager(search, coins, o, true);
         }
     }
 
@@ -363,7 +363,7 @@ public class RealSkywarsCMD extends CommandBase {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
             if (p.isInMatch()) {
                 p.getMatch().addPlayer(new RSWPlayer(true));
-                p.sendMessage(Text.color("&4&lEXPERIMENTAL FEATURE. CAN RESULT IN SERVER & CLIENT CRASHES. &c&lAdded Null Player"));
+                p.sendMessage(Text.color("&6&lEXPERIMENTAL FEATURE. &eCAN RESULT IN SERVER & CLIENT CRASHES. &fAdded Null Player"));
             } else {
                 TranslatableLine.CMD_CNO_MATCH.send(p, true);
             }
@@ -533,7 +533,7 @@ public class RealSkywarsCMD extends CommandBase {
     public void seetier(final CommandSender commandSender, RSWChest.Tier tt, RSWChest.Type t) {
         if (commandSender instanceof Player) {
             Player p = (Player) commandSender;
-            TierViewer tv = new TierViewer(p, tt, t);
+            TierViewer tv = new TierViewer(rs.getPlayerManagerAPI().getPlayer(p), tt, t);
             tv.openInventory(p);
         } else {
             commandSender.sendMessage(onlyPlayer);

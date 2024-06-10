@@ -26,18 +26,19 @@ import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class KitManager extends KitManagerAPI {
 
-    private final List<RSWKit> SWKits = new ArrayList<>();
+    private final Map<String, RSWKit> kits = new HashMap<>();
 
     @Override
     public void loadKits() {
-        this.SWKits.clear();
+        this.kits.clear();
 
         if (RSWKitsConfig.file().isSection("Kits")) {
             Debugger.print(KitManager.class, "KITS: " + RSWKitsConfig.file().getSection("Kits").getRoutesAsStrings(false));
@@ -73,13 +74,12 @@ public class KitManager extends KitManagerAPI {
                                 .forEach(rswKit::addPerk);
                     }
 
-                    this.getKits().add(rswKit);
+                    this.kits.put(name, rswKit);
 
                     Debugger.print(KitManager.class, "Loaded " + rswKit);
                 } catch (Exception e) {
                     Bukkit.getLogger().warning("Error loading kit: " + name + "! Skipping kit.");
-                    e.printStackTrace();
-                    continue;
+                    Bukkit.getLogger().warning(e.getMessage());
                 }
             }
         }
@@ -109,15 +109,12 @@ public class KitManager extends KitManagerAPI {
     }
 
     @Override
-    public List<RSWKit> getKits() {
-        return this.SWKits;
+    public Collection<RSWKit> getKits() {
+        return this.kits.values();
     }
 
     @Override
     public RSWKit getKit(String string) {
-        return this.SWKits.stream()
-                .filter(k -> k.getName().equalsIgnoreCase(string))
-                .findFirst()
-                .orElse(null);
+        return this.kits.get(string);
     }
 }

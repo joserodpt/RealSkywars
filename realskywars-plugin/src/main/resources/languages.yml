@@ -60,6 +60,10 @@ Languages:
     Messages:
       Achievements:
         Get: "&fCongratulations! You have achieved &b%achievement% &fand won &a%reward%"
+        Reward: "&aReward: &e%reward%"
+        Goal: "&fGoal: &e%goal%"
+        Names:
+          Coins: "coins"
       Party:
         Already-In: "&fYou are already in a party."
         Kick: "&f%player% &chas been kicked from the party."
@@ -376,6 +380,18 @@ Languages:
       Select: "&fLeft click to &bselect&f. Right click to preview."
       Not-Found: "&cNo kit has been found with that name."
       Delete: "&fKit has been &adeleted&f."
+      Created: "&fKit has been &acreated&f."
+    Statistics:
+      Wins:
+        Solo: "&fSolo &bWins"
+        Teams: "&fTeams &bWins"
+      Kills: "&cKills"
+      Deaths: "&eDeaths"
+      Loses: "&5Loses"
+      Games:
+        Played: "&fGames &bPlayed"
+        Balance: "&fGame &aBalance"
+        Kills: "&fGame &cKills"
   PORTUGUÊS:
     Icon:
       AMOUNT: 1
@@ -390,6 +406,10 @@ Languages:
     Messages:
       Achievements:
         Get: "&fParabéns! Conquistaste &b%achievement% &e ganhaste &a%reward%"
+        Reward: "&aPrémio: &e%reward%"
+        Goal: "&fObjetivo: &e%goal%"
+        Names:
+          Coins: "moedas"
       Party:
         Already-In: "&fTu já estás num grupo."
         Kick: "&f%player% &cfoi expulso do grupo."
@@ -565,7 +585,7 @@ Languages:
         Title: "&9&lIdioma"
         Select: "&fClica aqui para selecionar este idioma."
       Player-Profile:
-        Title: "&9&lTeu Perfil"
+        Title: "&9&lPerfil"
         View-Item: "&fClica aqui para ver este item."
         Reset-Data:
           Title: "&4Resetar Teus Dados"
@@ -574,23 +594,23 @@ Languages:
       Spectator-Shop-Menu-Title: "&0Loja de &fEspectador"
     Itens:
       Profile:
-        Name: "&9Teu Perfil &7(Clique Direito)"
+        Name: "&9Perfil &7(Click Direito)"
       CageSet:
         Name: "&bColoca-me para adicionar uma Gaiola"
       Maps:
-        Name: "&bMapas &7(Clique Direito)"
+        Name: "&bMapas &7(Click Direito)"
       Shop:
-        Name: "&2Loja &7(Clique Direito)"
+        Name: "&2Loja &7(Click Direito)"
       Leave:
-        Name: "&cSair &7(Clique Direito)"
+        Name: "&cSair &7(Click Direito)"
       Vote:
-        Name: "&bVotação &7(Clique Direito)"
+        Name: "&bVotação &7(Click Direito)"
       Spectate:
-        Name: "&bEspectar &7(Clique Direito)"
+        Name: "&bEspectar &7(Click Direito)"
       Kit:
-        Name: "&eKits &7(Clique Direito)"
+        Name: "&eKits &7(Click Direito)"
       PlayAgain:
-        Name: "&dJogar Novamente &7(Clique Direito)"
+        Name: "&dJogar Novamente &7(Click Direito)"
       Chest1:
         Name: "Baú Comum"
       Chest2:
@@ -735,7 +755,19 @@ Languages:
       Buy: "&fClica esquerdo para &acomprar&f! Clica direito para pré-visualizar."
       Select: "&fClica esquerdo para &bselecionar&f. Clica direito para pré-visualizar."
       Not-Found: "&cNão foi encontrado nenhum kit com esse nome."
-      Delete: "&fKit foi &aeliminado&f."
+      Delete: "&fO Kit foi &aeliminado&f."
+      Created: "&fO Kit foi &acriado&f."
+    Statistics:
+      Wins:
+        Solo: "&bVitórias &fSolo"
+        Teams: "&bVitórias &fEquipas"
+      Kills: "&cKills"
+      Deaths: "&eMortes"
+      Loses: "&5Derrotas"
+      Games:
+        Played: "&fJogos &bJogados"
+        Balance: "&aBalanço &fJogo"
+        Kills: "&cKills &fJogo"
   ESPAÑOL:
     Icon:
       AMOUNT: 1
@@ -756,6 +788,10 @@ Languages:
     Messages:
       Achievements:
         Get: "&f¡Felicidades! Has logrado &b%achievement% &ey has ganado &a%reward%"
+        Reward: "&aRegalo: &e%reward%"
+        Goal: "&fObjetivo: &e%goal%"
+        Names:
+          Coins: "monedas"
       Party:
         Already-In: "&fYa estás en un grupo."
         Kick: "&f%player% &cha sido expulsado del grupo."
@@ -1102,3 +1138,15 @@ Languages:
       Select: "&fHaz clic izquierdo para &bseleccionar&f. Haz clic derecho para previsualizar."
       Not-Found: "&cNo se encontró ningún kit con ese nombre."
       Delete: "&fEl kit ha sido &aeliminado&f."
+      Created: "&fEl kit ha sido &acreado&f."
+    Statistics:
+      Wins:
+        Solo: "&bVictorias &fIndividuales"
+        Teams: "&bVictorias &fen Equipos"
+      Kills: "&cAsesinatos"
+      Deaths: "&eMuertes"
+      Loses: "&5Derrotas"
+      Games:
+        Played: "&fPartidas &bJugadas"
+        Balance: "&fBalance del Juego"
+        Kills: "&fAsesinatos en el Juego"

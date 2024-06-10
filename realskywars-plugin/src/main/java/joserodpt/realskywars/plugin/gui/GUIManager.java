@@ -245,25 +245,25 @@ public class GUIManager {
             p.closeInventory();
             AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.KILLS);
             v.openInventory(p);
-        }, Itens.createItem(Material.DIAMOND_SWORD, 1, "&b&l" + RSWPlayer.PlayerStatistics.KILLS.name(), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 10);
+        }, Itens.createItem(Material.DIAMOND_SWORD, 1, RSWPlayer.PlayerStatistics.KILLS.getDisplayName(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 10);
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.WINS_SOLO);
             v.openInventory(p);
-        }, Itens.createItem(Material.LEATHER_BOOTS, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_SOLO.name().replace("_", " "), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 12);
+        }, Itens.createItem(Material.LEATHER_BOOTS, 1, RSWPlayer.PlayerStatistics.WINS_SOLO.getDisplayName(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 12);
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.WINS_TEAMS);
             v.openInventory(p);
-        }, Itens.createItem(Material.CHAINMAIL_CHESTPLATE, 1, "&b&l" + RSWPlayer.PlayerStatistics.WINS_TEAMS.name().replace("_", " "), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 14);
+        }, Itens.createItem(Material.CHAINMAIL_CHESTPLATE, 1, RSWPlayer.PlayerStatistics.WINS_TEAMS.getDisplayName(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 14);
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.GAMES_PLAYED);
             v.openInventory(p);
-        }, Itens.createItem(Material.FILLED_MAP, 1, "&b&l" + RSWPlayer.PlayerStatistics.GAMES_PLAYED.name().replace("_", " "), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 16);
+        }, Itens.createItem(Material.FILLED_MAP, 1, RSWPlayer.PlayerStatistics.GAMES_PLAYED.getDisplayName(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 16);
 
         inventory.addItem(e -> {
             p.closeInventory();

@@ -17,10 +17,14 @@ package joserodpt.realskywars.api.currency;
 
 import joserodpt.realskywars.api.player.RSWPlayer;
 
-public interface CurrencyAdapter {
+public interface CurrencyAdapterAPI {
     void transferCoins(RSWPlayer toPlayer, RSWPlayer fromPLayer, double amount);
+
     void addCoins(RSWPlayer p, double amount);
+
     boolean removeCoins(RSWPlayer p, double amount);
+
     void setCoins(RSWPlayer p, double amount);
+
     double getCoins(RSWPlayer p);
 }

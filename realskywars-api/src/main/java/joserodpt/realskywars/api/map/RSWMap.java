@@ -122,9 +122,6 @@ public abstract class RSWMap {
 
         this.bossbar = new RSWBossbar(this);
 
-        //load events
-        this.events = parseEvents();
-
         //load signs
         this.signs = loadSigns();
     }
@@ -182,8 +179,7 @@ public abstract class RSWMap {
     }
 
     private void tickEvents() {
-        List<RSWEvent> tmp = new ArrayList<>(this.events);
-        tmp.forEach(RSWEvent::tick);
+        new ArrayList<>(this.events).forEach(RSWEvent::tick);
     }
 
     public BukkitTask getTimeCounterTask() {
@@ -286,9 +282,7 @@ public abstract class RSWMap {
     }
 
     public void kickPlayers(String msg) {
-        List<RSWPlayer> tmp = new ArrayList<>(this.inRoom);
-
-        for (RSWPlayer p : tmp) {
+        for (RSWPlayer p : new ArrayList<>(this.inRoom)) {
             if (msg != null) {
                 p.sendMessage(Text.color(msg));
             } else {
@@ -822,7 +816,19 @@ public abstract class RSWMap {
         }
         for (String s1 : RSWConfig.file().getStringList("Config.Events." + search)) {
             String[] parse = s1.split("@");
-            RSWEvent.EventType et = RSWEvent.EventType.valueOf(parse[0]);
+            if (parse.length != 2) {
+                Bukkit.getLogger().warning("Invalid event format: " + s1 + " in map: " + this.getMapName());
+                continue;
+            }
+
+            RSWEvent.EventType et;
+            try {
+                et = RSWEvent.EventType.valueOf(parse[0]);
+            } catch (Exception e) {
+                Bukkit.getLogger().warning("Invalid event type: " + parse[0] + " in map: " + this.getMapName());
+                continue;
+            }
+
             int time = Integer.parseInt(parse[1]);
             ret.add(new RSWEvent(this, et, time));
         }
