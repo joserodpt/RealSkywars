@@ -821,7 +821,7 @@ public abstract class RSWMap {
                 break;
         }
         for (String s1 : RSWConfig.file().getStringList("Config.Events." + search)) {
-            String[] parse = s1.split("&");
+            String[] parse = s1.split("@");
             RSWEvent.EventType et = RSWEvent.EventType.valueOf(parse[0]);
             int time = Integer.parseInt(parse[1]);
             ret.add(new RSWEvent(this, et, time));

@@ -54,14 +54,14 @@ Config:
   # Events: REFILL, TNTRAIN
   # REFILL refills the chests.
   # TNTRAIN, when executed, summons a TNT above all game players.
-  # Event Config: <event>&<time of execution>
+  # Event Config: <event>@<time of execution in seconds>
   Events:
     Solo:
-      - REFILL&60
-      - REFILL&120
+      - REFILL@60
+      - REFILL@120
     Teams:
-      - REFILL&120
-      - REFILL&260
+      - REFILL@120
+      - REFILL@260
   Coins:
     Per-Win: 10
     Per-Kill: 5
