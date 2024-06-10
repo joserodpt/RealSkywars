@@ -2,7 +2,7 @@
 
 ![Logo](https://i.imgur.com/MsyVYtt.png)
 ## RealSkywars
-### A New SkyWars plugin that's been coded on the 1.14 API
+### A SkyWars plugin that's been coded on the recent 1.14 API
 
 [![Build](https://img.shields.io/github/actions/workflow/status/joserodpt/RealSkywars/maven.yml?branch=master)](https://github.com/joserodpt/RealSkywars/actions)
 ![Issues](https://img.shields.io/github/issues-raw/joserodpt/RealSkywars)
@@ -25,7 +25,7 @@ A New SkyWars plugin that's been coded on the **1.14 API**.
  - 1.17.1 [v1_17_R1]
  - 1.18.2 [v1_18_R2]
  - 1.19.4 [v1_19_R3]
- - 1.20.1 [v1_20_R1]
+ - 1.20.6 [v1_20_R3]
 
 ---
 
@@ -71,6 +71,21 @@ Permissions to vote:
 | Game Normal Projectiles |rsw.normal-projectile|
 | Game Break Projectiles |rsw.break-projectile|
 ## Commands
+
+**/rsw create** - Creates a new map.
+ Permission: rsw.admin
+
+ **/rsw unregister** - Unregisters a map.
+ Permission: rsw.admin
+
+ **/rsw edit** - Edits a map (cage and chest add/removal)
+ Permission: rsw.join
+
+ **/rsw register** - Registers a map.
+ Permission: rsw.join
+
+ **/rsw delete** - Deletes a map.
+ Permission: rsw.admin
 
 **/rsw list** - Opens the maps menu
  Permission: rsw.join
@@ -157,10 +172,9 @@ rswAPI.getPlayerManagerAPI() and others.
 
 The managers on the API are:
 [AchievementsManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FAchievementsManagerAPI.java)
-[ChestManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FChestManagerAPI.java)
 [CurrencyManager.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FCurrencyManager.java)
 [DatabaseManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FDatabaseManagerAPI.java)
-[GameManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FGameManagerAPI.java)
+[LobbyManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FLobbyManagerAPI.java)
 [HologramManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FHologramManagerAPI.java)
 [KitManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FKitManagerAPI.java)
 [LanguageManagerAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2Fmanagers%2FLanguageManagerAPI.java)
