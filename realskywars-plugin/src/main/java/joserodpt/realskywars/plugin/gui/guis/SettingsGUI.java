@@ -103,6 +103,8 @@ public class SettingsGUI {
             new SettingEntry("Disable Player Reset", "Config.Disable-Player-Reset", 0),
             new SettingEntry("Disable Language Selection", "Config.Disable-Language-Selection", 0),
             new SettingEntry("Shuffle Items In Chests", "Config.Shuffle-Items-In-Chest", 0),
+            new SettingEntry("Enable Server as Bungeecord", "Config.Bungeecord.Enabled", 0),
+            new SettingEntry("Bungeecord: Kick Player instead of Moving Player to Lobby", "Config.Bungeecord.Kick-Player", 0),
 
             new SettingEntry("Profile Item Slot in the Lobby", "Config.Item-Slots.Lobby.Profile", 1),
             new SettingEntry("Maps Item Slot in the Lobby", "Config.Item-Slots.Lobby.Maps", 1),
@@ -117,6 +119,8 @@ public class SettingsGUI {
             new SettingEntry("Chest1 Item Slot in Setup", "Config.Item-Slots.Setup.Chest1", 1),
             new SettingEntry("Cage Item Slot in Setup", "Config.Item-Slots.Setup.Cage", 1),
             new SettingEntry("Chest2 Item Slot in Setup", "Config.Item-Slots.Setup.Chest2", 1),
+            new SettingEntry("Invincibility Seconds", "Config.Invincibility-Seconds", 1),
+
             new SettingEntry("Time Offset", "Config.Time.Offset", 1),
             new SettingEntry("Time To Start", "Config.Time-To-Start", 1),
             new SettingEntry("Min Players To Start", "Config.Min-Players-ToStart", 1),
