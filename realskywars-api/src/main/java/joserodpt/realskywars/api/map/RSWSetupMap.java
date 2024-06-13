@@ -134,11 +134,11 @@ public class RSWSetupMap {
         return this.spectatorLocation;
     }
 
-    public Boolean isSpectatingON() {
+    public Boolean isSpectatorEnabled() {
         return this.spec;
     }
 
-    public Boolean isInstantEnding() {
+    public Boolean isInstantEndEnabled() {
         return this.instantEnding;
     }
 

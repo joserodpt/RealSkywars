@@ -360,11 +360,11 @@ public abstract class RSWMap {
 
     abstract public void resetArena(OperationReason rr);
 
-    public void setSpectator(boolean b) {
+    public void setSpectating(boolean b) {
         this.specEnabled = b;
     }
 
-    public void setInstantEnd(boolean b) {
+    public void setInstantEnding(boolean b) {
         this.instantEnding = b;
     }
 

@@ -258,15 +258,10 @@ public class MapsListGUI {
     }
 
     private ItemStack makeIcon(RSWPlayer p, RSWMap g) {
-        int count = 1;
         if (g.isPlaceHolder()) {
-            return Itens.createItem(Material.BUCKET, count, TranslatableLine.ITEM_MAP_NOTFOUND_NAME.get(p));
+            return Itens.createItem(Material.DEAD_BUSH, 1, TranslatableLine.ITEM_MAP_NOTFOUND_NAME.get(p));
         } else {
-            if (g.getPlayerCount() > 0) {
-                count = g.getPlayerCount();
-            }
-
-            return Itens.createItem(g.getState().getStateMaterial(g.isRanked()), count, TranslatableLine.ITEM_MAP_NAME.get(p).replace("%map%", g.getMapName()).replace("%displayname%", g.getDisplayName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(g.isRanked()), variableList(TranslatableList.ITEMS_MAP_DESCRIPTION.get(p), g));
+            return Itens.createItem(g.getState().getStateMaterial(g.isRanked()), Math.min(64, Math.max(1, g.getPlayerCount())), TranslatableLine.ITEM_MAP_NAME.get(p).replace("%map%", g.getMapName()).replace("%displayname%", g.getDisplayName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(g.isRanked()), variableList(TranslatableList.ITEMS_MAP_DESCRIPTION.get(p), g));
         }
     }
 

@@ -32,9 +32,11 @@ Config:
       Shop: 4
       Leave: 7
     Setup:
-      Chest1: 0
-      Cage: 4
-      Chest2: 8
+      Cage: 1
+      Chest1: 3
+      Chest2: 4
+      Settings: 6
+      Save: 7
   # Time in seconds
   Time:
     Formatting: dd-MM-yyyy HH:mm:ss

@@ -95,6 +95,8 @@ public enum TranslatableLine {
     ITEM_SHOP_NAME(".Itens.Shop.Name"),
     ITEM_SPECTATE_NAME(".Itens.Spectate.Name"),
     ITEM_VOTE_NAME(".Itens.Vote.Name"),
+    ITEM_SETTINGS_NAME(".Itens.Settings.Name"),
+    ITEM_SAVE_NAME(".Itens.Save.Name"),
 
     MENU_PLAYER_RESET_ALERT(".Menus.Player-Profile.Reset-Data.Alert"),
     MENU_PLAYERP_VIEWITEM(".Menus.Player-Profile.View-Item"),

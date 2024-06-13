@@ -168,7 +168,8 @@ Languages:
         Init-Setup:
           - "&f&nYou are now in setup mode. You can paste your shematic or make a new map."
           - "&9> &aUse the beacon to place %cages% cages. "
-          - "&9> &bIMPORTANT &cSet the boundaries with //pos1 and //pos2 or an WorldEdit axe, and then do //expand vert to cover the entire height of the map!"
+          - "&9> &aChange the map settings in the hotbar."
+          - "&9> &c&lIMPORTANT &r&fSet the boundaries with //pos1 and //pos2 or an WorldEdit axe, and then do //expand vert to cover the entire height of the map!"
         Events:
           Refill:
             - "&9&LCHEST REFILL"
@@ -239,6 +240,10 @@ Languages:
         Name: "Common Chest"
       Chest2:
         Name: "MID Chest"
+      Settings:
+        Name: "&eSettings"
+      Save:
+        Name: "&aSave"
       Statistics:
         Name: "&f%player% &fstatistics"
         Lore:
@@ -440,7 +445,7 @@ Languages:
       Language-Set: "&fO teu idioma agora é &b%language%&f."
       Generating-World: "&aGerando um novo mundo.."
       Tier-Set: "&fO nível foi definido para &b%chest%"
-      Cages-Done: "&fAs gaiolas foram colocadas. Define a localização do espectador com /rsw setspectator."
+      Cages-Done: "&fAs jaulas foram colocadas. Define a localização do espectador com /rsw setspectator."
       Team:
         Join: "&fTu &ajuntaste-te &9%team%"
         Leave: "&fTu &csaiste &9%team%"
@@ -465,7 +470,7 @@ Languages:
         Setup-Not-Finished: "&cA configuração não está concluída."
         Maps: "&fHá &b%rooms% &fmapas registrados."
         Players: "&fHá &b%players% &fJogadores online."
-        Finish-Setup: "&fTu agora podes &aconcluir a configuração &fcom /rsw finishsetup."
+        Finish-Setup: "&fPodes &aconcluir a configuração &fcom /rsw finishsetup."
         No-Game-Found: "&fNenhum jogo foi encontrado. Tenta novamente mais tarde!"
         No-Map-Found: "&fNenhum mapa foi encontrado."
         Map-Found: "&fJogo encontrado! Adicionando-te... por favor, aguarda.."
@@ -514,8 +519,9 @@ Languages:
         Player-Spectate: "&fEstás agora em modo &aespectador."
         Init-Setup:
           - "&f&nTu agora estás no modo de configuração. Podes colar a tua esquemática ou fazer um novo mapa."
-          - "&9> &aUsa o farol para colocar %cages% gaiolas. "
-          - "&9> &bIMPORTANTE &cDefine os limites com //pos1 e //pos2 ou com um machado do WorldEdit, e então usa //expand vert para cobrir toda a altura do mapa!"
+          - "&9> &aUsa o Beacon para colocar %cages% jaulas. "
+          - "&9> &aAltera as definições do mapa na hotbar."
+          - "&9> &c&lIMPORTANTE &fDefine os limites com //pos1 e //pos2 ou com um machado do WorldEdit, e então usa //expand vert para cobrir toda a altura do mapa!"
         Events:
           Refill:
             - "&9&LREPOSIÇÃO DE BAÚS"
@@ -596,7 +602,7 @@ Languages:
       Profile:
         Name: "&9Perfil &7(Click Direito)"
       CageSet:
-        Name: "&bColoca-me para adicionar uma Gaiola"
+        Name: "&bColoca-me para adicionar uma Jaula"
       Maps:
         Name: "&bMapas &7(Click Direito)"
       Shop:
@@ -614,7 +620,11 @@ Languages:
       Chest1:
         Name: "Baú Comum"
       Chest2:
-        Name: "Baú Médio"
+        Name: "Baú Mid"
+      Settings:
+        Name: "&eDefinições"
+      Save:
+        Name: "&aSalvar"
       Statistics:
         Name: "&fEstatísticas de %player%"
         Lore:
@@ -727,7 +737,7 @@ Languages:
       Resetting: "&0Resettando"
       Spectating: "&5Assistir"
     Shop-Categories:
-      Cage-Blocks: "&7Blocos de Gaiola"
+      Cage-Blocks: "&7Blocos de Jaula"
       Win-Blocks: "&9Blocos de Vitória"
       Kits: "&9Kits"
       Bow-Particles: "&aPartículas de Arco"
@@ -896,7 +906,8 @@ Languages:
         Init-Setup:
           - "&f&nAhora estás en modo configuración. Puedes pegar tu schematic o hacer un nuevo mapa."
           - "&9> &aUsa el beacon para colocar %cages% jaulas."
-          - "&9> &bIMPORTANTE &c¡Define los límites con //pos1 y //pos2 o con un hacha de WorldEdit, y luego usa //expand vert para cubrir toda la altura del mapa!"
+          - "&9> &aAltera las definiciones del mapa en la hotbar."
+          - "&9> &c&lIMPORTANTE &r&f¡Define los límites con //pos1 y //pos2 o con un hacha de WorldEdit, y luego usa //expand vert para cubrir toda la altura del mapa!"
         Events:
           Refill:
             - "&9&LRELLENO DE COFRES"
@@ -996,7 +1007,11 @@ Languages:
       Chest1:
         Name: "Cofre Común"
       Chest2:
-        Name: "Cofre Intermedio"
+        Name: "Cofre Mid"
+      Settings:
+        Name: "&eDefiniciones"
+      Save:
+        Name: "&aSalvar"
       Statistics:
         Name: "&fEstadísticas de %player%"
         Lore:

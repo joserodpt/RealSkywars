@@ -91,7 +91,7 @@ public class WorldManager extends WorldManagerAPI {
             loadWorld(name, environment);
             return org.bukkit.Bukkit.getWorld(name);
         }
-        return null;
+        return org.bukkit.Bukkit.getWorld(name);
     }
 
     @Override

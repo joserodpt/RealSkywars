@@ -28,13 +28,13 @@ import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.plugin.gui.GUIManager;
+import joserodpt.realskywars.plugin.gui.guis.MapSettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerProfileContentsGUI;
 import joserodpt.realskywars.plugin.gui.guis.ShopGUI;
 import joserodpt.realskywars.plugin.gui.guis.VoteGUI;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -133,82 +133,100 @@ public class PlayerListener implements Listener {
             case RIGHT_CLICK_BLOCK:
             case RIGHT_CLICK_AIR:
                 RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(e.getPlayer());
-                if (p != null && p.isInMatch()) {
-                    switch (p.getState()) {
-                        case PLAYING:
-                            //fill chests
-                            if (e.getClickedBlock() != null && e.getClickedBlock().getState() instanceof Chest) {
-                                RSWChest chest = p.getMatch().getChest(e.getClickedBlock().getLocation());
-                                if (chest != null) {
-                                    chest.populate();
-                                    if (chest.isOpened()) {
-                                        Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> chest.startTasks(p.getMatch()), 1);
-                                    }
+                if (p != null) {
+                    if (p.getPlayer() != null && p.getPlayer().isOp()) {
+                        if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().getType() == Material.COMPARATOR) {
+                            if (p.getSetupRoom() != null) {
+                                MapSettingsGUI m = new MapSettingsGUI(p, p.getSetupRoom());
+                                m.openInventory(p);
+                            } else {
+                                RSWMap map = rs.getMapManagerAPI().getMap(p.getPlayer().getWorld());
+                                if (map != null) {
+                                    MapSettingsGUI m = new MapSettingsGUI(p, map);
+                                    m.openInventory(p);
                                 }
                             }
-                            if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().getType() == Material.COMPASS) {
-                                e.setCancelled(true);
-                                rs.getPlayerManagerAPI().trackPlayer(p);
-                            }
-                            break;
-                        case CAGE:
-                            switch (e.getPlayer().getInventory().getItemInMainHand().getType()) {
-                                case BOW:
+                        } else if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().getType() == Material.EMERALD) {
+                            p.getPlayer().performCommand(p.getSetupRoom() != null ? "rsw finishsetup" : "rsw finishedit");
+                        }
+                    }
+                    if (p.isInMatch()) {
+                        switch (p.getState()) {
+                            case PLAYING:
+                                //fill chests
+                                if (e.getClickedBlock() != null && e.getClickedBlock().getState() instanceof Chest) {
+                                    RSWChest chest = p.getMatch().getChest(e.getClickedBlock().getLocation());
+                                    if (chest != null) {
+                                        chest.populate();
+                                        if (chest.isOpened()) {
+                                            Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> chest.startTasks(p.getMatch()), 1);
+                                        }
+                                    }
+                                }
+                                if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().getType() == Material.COMPASS) {
                                     e.setCancelled(true);
-                                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.KITS);
-                                    v.openInventory(p);
-                                    e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-                                    break;
-                                case MINECART:
-                                    e.setCancelled(true);
-                                    p.getMatch().removePlayer(p);
-                                    break;
-                                case HOPPER:
-                                    e.setCancelled(true);
+                                    rs.getPlayerManagerAPI().trackPlayer(p);
+                                }
+                                break;
+                            case CAGE:
+                                switch (e.getPlayer().getInventory().getItemInMainHand().getType()) {
+                                    case BOW:
+                                        e.setCancelled(true);
+                                        PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.KITS);
+                                        v.openInventory(p);
+                                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                        break;
+                                    case MINECART:
+                                        e.setCancelled(true);
+                                        p.getMatch().removePlayer(p);
+                                        break;
+                                    case HOPPER:
+                                        e.setCancelled(true);
 
-                                    if (p.getMatch().getStartMapTimer() != null) {
-                                        if (p.getMatch().getStartMapTimer().getSecondsLeft() > RSWConfig.file().getInt("Config.Vote-Before-Seconds")) {
+                                        if (p.getMatch().getStartMapTimer() != null) {
+                                            if (p.getMatch().getStartMapTimer().getSecondsLeft() > RSWConfig.file().getInt("Config.Vote-Before-Seconds")) {
+                                                VoteGUI vg = new VoteGUI(p);
+                                                vg.openInventory(p.getPlayer());
+                                            } else {
+                                                TranslatableLine.CANT_VOTE.send(p, true);
+                                            }
+                                        } else {
                                             VoteGUI vg = new VoteGUI(p);
                                             vg.openInventory(p.getPlayer());
-                                        } else {
-                                            TranslatableLine.CANT_VOTE.send(p, true);
                                         }
-                                    } else {
-                                        VoteGUI vg = new VoteGUI(p);
-                                        vg.openInventory(p.getPlayer());
-                                    }
 
-                                    break;
-                            }
-                            break;
-                        case SPECTATOR:
-                        case EXTERNAL_SPECTATOR:
-                            switch (e.getPlayer().getInventory().getItemInMainHand().getType()) {
-                                case TOTEM_OF_UNDYING:
-                                    e.setCancelled(true);
-                                    e.getPlayer().performCommand("rsw play " + p.getMatch().getGameMode().name());
-                                    break;
-                                case MAP:
-                                    e.setCancelled(true);
-                                    e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-                                    GUIManager.openSpectate(p);
-                                    break;
-                                case MINECART:
-                                    e.setCancelled(true);
-                                    p.getMatch().removePlayer(p);
-                                    break;
-                                case EMERALD:
-                                    e.setCancelled(true);
-                                    ShopGUI ss = new ShopGUI(p, ShopManagerAPI.ShopCategory.SPEC_SHOP);
-                                    ss.openInventory(p);
+                                        break;
+                                }
+                                break;
+                            case SPECTATOR:
+                            case EXTERNAL_SPECTATOR:
+                                switch (e.getPlayer().getInventory().getItemInMainHand().getType()) {
+                                    case TOTEM_OF_UNDYING:
+                                        e.setCancelled(true);
+                                        e.getPlayer().performCommand("rsw play " + p.getMatch().getGameMode().name());
+                                        break;
+                                    case MAP:
+                                        e.setCancelled(true);
+                                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                        GUIManager.openSpectate(p);
+                                        break;
+                                    case MINECART:
+                                        e.setCancelled(true);
+                                        p.getMatch().removePlayer(p);
+                                        break;
+                                    case EMERALD:
+                                        e.setCancelled(true);
+                                        ShopGUI ss = new ShopGUI(p, ShopManagerAPI.ShopCategory.SPEC_SHOP);
+                                        ss.openInventory(p);
 
-                                    e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-                                    break;
-                                default:
-                                    e.setCancelled(true);
-                                    break;
-                            }
-                            break;
+                                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                        break;
+                                    default:
+                                        e.setCancelled(true);
+                                        break;
+                                }
+                                break;
+                        }
                     }
                 }
 
@@ -275,13 +293,13 @@ public class PlayerListener implements Listener {
                 RSWMap mp = rs.getMapManagerAPI().getMap(event.getBlock().getLocation().getWorld());
                 if (mp != null && mp.isUnregistered()) {
                     mp.removeCage(loc);
-                    p.getPlayer().sendMessage(ChatColor.RED + "You removed this cage.");
+                    Text.send(event.getPlayer(), rs.getLanguageManagerAPI().getPrefix() + "&cYou removed this cage.");
                     return;
                 }
 
                 if (p.getSetupRoom() != null) {
                     p.getSetupRoom().removeCage(loc);
-                    p.getPlayer().sendMessage(ChatColor.RED + "You removed this cage.");
+                    Text.send(event.getPlayer(), rs.getLanguageManagerAPI().getPrefix() + "&cYou removed this cage.");
                 }
             }
 
@@ -291,13 +309,13 @@ public class PlayerListener implements Listener {
                 RSWMap mp = rs.getMapManagerAPI().getMap(event.getBlock().getLocation().getWorld());
                 if (mp != null && mp.isUnregistered()) {
                     mp.removeChest(loc);
-                    p.getPlayer().sendMessage(ChatColor.RED + "You removed this chest.");
+                    Text.send(event.getPlayer(), rs.getLanguageManagerAPI().getPrefix() + "&cYou removed this chest.");
                     return;
                 }
 
                 if (p.getSetupRoom() != null) {
                     p.getSetupRoom().removeChest(loc);
-                    p.getPlayer().sendMessage(ChatColor.RED + "You removed this chest.");
+                    Text.send(event.getPlayer(), rs.getLanguageManagerAPI().getPrefix() + "&cYou removed this chest.");
                 }
             }
         }
@@ -329,20 +347,20 @@ public class PlayerListener implements Listener {
                     switch (mp.getGameMode()) {
                         case SOLO:
                             if ((mp.getCages().size() + 1) > mp.getMaxPlayers()) {
-                                pg.sendMessage("&cYou can't place more cages than the max players.");
+                                pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "&cYou can't place more cages than the max players.");
                                 return;
                             }
                             break;
                         case TEAMS:
                             if ((mp.getCages().size() + 1) > mp.getTeams().size()) {
-                                pg.sendMessage("&cYou can't place more cages than the max teams.");
+                                pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "&cYou can't place more cages than the max teams.");
                                 return;
                             }
                             break;
                     }
 
                     mp.addCage(event.getBlock().getLocation());
-                    pg.sendMessage("&aYou placed a new cage.");
+                    pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "&aYou placed a new cage.");
                     return;
                 }
 
@@ -350,7 +368,7 @@ public class PlayerListener implements Listener {
                     switch (pg.getSetupRoom().getGameType()) {
                         case SOLO:
                             if (((pg.getSetupRoom().getCages().size() + 1) > pg.getSetupRoom().getMaxPlayers())) {
-                                pg.sendMessage("&cYou can't place more cages than the max players.");
+                                pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "&cYou can't place more cages than the max players.");
                                 return;
                             }
 
@@ -364,7 +382,7 @@ public class PlayerListener implements Listener {
                             break;
                         case TEAMS:
                             if (((pg.getSetupRoom().getCages().size() + 1) > pg.getSetupRoom().getTeamCount())) {
-                                pg.sendMessage("&cYou can't place more cages than the max teams.");
+                                pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "&cYou can't place more cages than the max teams.");
                             }
 
                             if ((pg.getSetupRoom().getCages().size() + 1) < pg.getSetupRoom().getTeamCount()) {
@@ -382,16 +400,13 @@ public class PlayerListener implements Listener {
             if (event.getBlock().getType() == Material.CHEST) {
                 RSWMap mp2 = rs.getMapManagerAPI().getMap(event.getBlock().getLocation().getWorld());
                 if (mp2 != null && mp2.isUnregistered()) {
-                    String name = event.getItemInHand().getItemMeta().getDisplayName();
-                    switch (Text.strip(name).toLowerCase()) {
-                        case "common chest":
-                            mp2.addChest(event.getBlock(), RSWChest.Type.NORMAL);
-                            pg.sendMessage("Added Normal Chest.");
-                            break;
-                        case "mid chest":
-                            mp2.addChest(event.getBlock(), RSWChest.Type.MID);
-                            pg.sendMessage("Added Mid Chest.");
-                            break;
+
+                    if (event.getPlayer().getInventory().getHeldItemSlot() == RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest1")) {
+                        mp2.addChest(event.getBlock(), RSWChest.Type.NORMAL);
+                        pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "Added Normal Chest.");
+                    } else if (event.getPlayer().getInventory().getHeldItemSlot() == RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest2")) {
+                        mp2.addChest(event.getBlock(), RSWChest.Type.MID);
+                        pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "Added Mid Chest.");
                     }
 
                     return;
@@ -402,15 +417,13 @@ public class PlayerListener implements Listener {
                     Block b = event.getBlock();
                     BlockData blockData = b.getBlockData();
                     BlockFace f = ((Directional) blockData).getFacing();
-                    switch (Text.strip(name).toLowerCase()) {
-                        case "common chest":
-                            pg.getSetupRoom().addChest(new RSWChest(RSWChest.Type.NORMAL, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f));
-                            pg.sendMessage("Added Normal Chest.");
-                            break;
-                        case "mid chest":
-                            pg.getSetupRoom().addChest(new RSWChest(RSWChest.Type.MID, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f));
-                            pg.sendMessage("Added Mid Chest.");
-                            break;
+
+                    if (event.getPlayer().getInventory().getHeldItemSlot() == RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest1")) {
+                        pg.getSetupRoom().addChest(new RSWChest(RSWChest.Type.NORMAL, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f));
+                        pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "Added Normal Chest.");
+                    } else if (event.getPlayer().getInventory().getHeldItemSlot() == RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest2")) {
+                        pg.getSetupRoom().addChest(new RSWChest(RSWChest.Type.MID, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f));
+                        pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "Added Mid Chest.");
                     }
                 }
             }
@@ -436,7 +449,7 @@ public class PlayerListener implements Listener {
                 p.getSetupRoom().addCage(loc, new RSWTeamCage(i, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), p.getSetupRoom().getPlayersPerTeam()));
                 break;
         }
-        e.getPlayer().sendMessage(ChatColor.GREEN + "You placed cage number " + i);
+        Text.send(p.getPlayer(), rs.getLanguageManagerAPI().getPrefix() + "&fYou placed cage number &a" + i);
     }
 
     //player join, leave, drop item, player damage, on kill, on hit, on shoot

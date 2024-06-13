@@ -34,7 +34,7 @@ import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.api.utils.WorldEditUtils;
 import joserodpt.realskywars.plugin.gui.GUIManager;
 import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
-import joserodpt.realskywars.plugin.gui.guis.MapSettingsGUI;
+import joserodpt.realskywars.plugin.gui.guis.MapDashboardGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerProfileContentsGUI;
@@ -483,7 +483,7 @@ public class RealSkywarsCMD extends CommandBase {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
             RSWMap sw = rs.getMapManagerAPI().getMap(name);
             if (sw != null) {
-                MapSettingsGUI r = new MapSettingsGUI(sw, p.getUUID());
+                MapDashboardGUI r = new MapDashboardGUI(sw, p.getUUID());
                 r.openInventory(p);
             } else {
                 TranslatableLine.CMD_NO_MAP_FOUND.send(p, true);
