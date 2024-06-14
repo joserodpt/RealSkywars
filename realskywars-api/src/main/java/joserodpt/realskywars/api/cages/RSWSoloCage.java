@@ -60,7 +60,7 @@ public class RSWSoloCage extends RSWCage {
 
     @Override
     public void setCage() {
-        setCage((Material) this.p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK));
+        setCage(this.p.getCageBlock());
     }
 
     @Override

@@ -25,6 +25,7 @@ import joserodpt.realskywars.api.utils.Pagination;
 import joserodpt.realskywars.plugin.gui.GUIManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -121,21 +122,17 @@ public class PlayerProfileContentsGUI {
 
                             switch (current.cat) {
                                 case KITS:
-                                    p.setProperty(RSWPlayer.PlayerProperties.KIT, RealSkywarsAPI.getInstance().getKitManagerAPI().getKit(a.getName()));
+                                    p.setKit(RealSkywarsAPI.getInstance().getKitManagerAPI().getKit(a.getName()));
                                     p.closeInventory();
                                     break;
                                 case BOW_PARTICLES:
-                                    p.setProperty(RSWPlayer.PlayerProperties.BOW_PARTICLES, a.getInfo("Particle"));
+                                    p.setBowParticle((Particle) a.getInfo("Particle"));
                                     break;
                                 case CAGE_BLOCKS:
-                                    p.setProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK, a.getItemStack(current.rswp).getType());
+                                    p.setCageBlock(a.getMaterial());
                                     break;
                                 case WIN_BLOCKS:
-                                    if (a.containsInfo("RandomBlock")) {
-                                        p.setProperty(RSWPlayer.PlayerProperties.WIN_BLOCKS, "RandomBlock");
-                                    } else {
-                                        p.setProperty(RSWPlayer.PlayerProperties.WIN_BLOCKS, a.getMaterial().name());
-                                    }
+                                    p.setWinBlock(a.containsInfo("RandomBlock") ? "RandomBlock" : a.getMaterial().name());
                                     break;
                             }
                             p.sendMessage(TranslatableLine.PROFILE_SELECTED.get(p, true).replace("%name%", a.getName()).replace("%type%", current.cat.getCategoryTitle(p)));

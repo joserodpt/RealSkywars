@@ -47,56 +47,68 @@ public class PlayerManager extends PlayerManagerAPI {
         this.rs = rs;
     }
 
+    Map<UUID, RSWMap> fastJoin = new HashMap<>();
     public List<UUID> teleporting = new ArrayList<>();
     private final Map<Player, Player> trackingPlayers = new HashMap<>();
     private final Map<UUID, RSWPlayer> players = new HashMap<>();
 
     @Override
-    public RSWPlayer loadPlayer(Player p) {
+    public RSWPlayer loadPlayer(Player player) {
         try {
-            PlayerData playerData = rs.getDatabaseManagerAPI().getPlayerData(p);
+            PlayerData playerData = rs.getDatabaseManagerAPI().getPlayerData(player);
 
-            RSWPlayer gp = new RSWPlayer(p, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, playerData.getKills(), playerData.getDeaths(), playerData.getStats_wins_solo(), playerData.getStats_wins_teams(), playerData.getCoins(), playerData.getLanguage(), playerData.getBought_items(), playerData.getLoses(), playerData.getGames_played(), playerData.getRanked_kills(), playerData.getRanked_deaths(), playerData.getStats_wins_ranked_solo(), playerData.getStats_wins_ranked_teams(), playerData.getLoses_ranked(), playerData.getRanked_games_played(), this.processGamesList(playerData.getGames_list()));
+            RSWPlayer p = new RSWPlayer(player, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, playerData.getKills(), playerData.getDeaths(), playerData.getStats_wins_solo(), playerData.getStats_wins_teams(), playerData.getCoins(), playerData.getLanguage(), playerData.getBought_items(), playerData.getLoses(), playerData.getGames_played(), playerData.getRanked_kills(), playerData.getRanked_deaths(), playerData.getStats_wins_ranked_solo(), playerData.getStats_wins_ranked_teams(), playerData.getLoses_ranked(), playerData.getRanked_games_played(), this.processGamesList(playerData.getGames_list()));
 
             String mapv = playerData.getMapViewerPref();
             if (mapv != null) {
-                gp.setProperty(RSWPlayer.PlayerProperties.MAPVIEWER_PREF, mapv);
+                try {
+                    p.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.valueOf(mapv));
+                } catch (Exception e) {
+                    p.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_ALL);
+                }
             }
+
             String cageBlock = playerData.getCageMaterial();
             if (cageBlock != null) {
-                gp.setProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK, Material.getMaterial(cageBlock));
+                try {
+                    p.setCageBlock(Material.getMaterial(cageBlock));
+                } catch (Exception e) {
+                    p.setCageBlock(Material.GLASS);
+                }
             }
 
             String choosenKit = playerData.getChoosen_kit();
-            if (choosenKit == null || choosenKit.isEmpty()) {
-                choosenKit = "none";
+            if (choosenKit != null && !choosenKit.isEmpty()) {
+                p.setKit(rs.getKitManagerAPI().getKit(choosenKit));
             }
 
-            if (!choosenKit.equalsIgnoreCase("none")) {
-                gp.setProperty(RSWPlayer.PlayerProperties.KIT, rs.getKitManagerAPI().getKit(choosenKit));
-            }
-
-            gp.heal();
-
-            rs.getPlayerManagerAPI().addPlayer(gp);
-
-            if (rs.getLobbyManagerAPI().tpLobbyOnJoin()) {
-                rs.getLobbyManagerAPI().tpToLobby(gp);
-            }
-            Bukkit.getOnlinePlayers().forEach(player -> gp.getTab().add(player));
-            gp.getTab().updateRoomTAB();
+            p.heal();
 
             rs.getPlayerManagerAPI().getPlayers().stream()
                     .filter(RSWPlayer::isInMatch)
-                    .forEach(player -> {
-                        RSWPlayerTab rt = player.getTab();
-                        rt.remove(p);
+                    .forEach(plr -> {
+                        RSWPlayerTab rt = plr.getTab();
+                        rt.remove(plr.getPlayer());
                         rt.updateRoomTAB();
                     });
 
-            return gp;
+            Bukkit.getOnlinePlayers().forEach(plr -> p.getTab().add(plr));
+            p.getTab().updateRoomTAB();
+
+            rs.getPlayerManagerAPI().addPlayer(p);
+
+            if (rs.getPlayerManagerAPI().getFastJoin().containsKey(player.getUniqueId())) {
+                rs.getPlayerManagerAPI().getFastJoin().get(player.getUniqueId()).addPlayer(p);
+                rs.getPlayerManagerAPI().getFastJoin().remove(player.getUniqueId());
+            } else {
+                if (rs.getLobbyManagerAPI().tpLobbyOnJoin()) {
+                    rs.getLobbyManagerAPI().tpToLobby(p);
+                }
+            }
+
+            return p;
         } catch (Exception e) {
-            RealSkywarsAPI.getInstance().getLogger().severe("Error while loading player data for " + p.getName() + " ->" + e.getMessage());
+            RealSkywarsAPI.getInstance().getLogger().severe("Error while loading player data for " + player.getName() + " ->" + e.getMessage());
         }
         return null;
     }
@@ -146,13 +158,13 @@ public class PlayerManager extends PlayerManagerAPI {
 
             switch (pd) {
                 case KIT:
-                    playerData.setKit(p.getPlayerKit().getName());
+                    playerData.setChoosenKit(p.getPlayerKit().getName());
                     break;
                 case BOUGHT_ITEMS:
                     playerData.setBoughtItems(p.getBoughtItems());
                     break;
                 case CAGE_BLOCK:
-                    playerData.setCageBlock(((Material) p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK)).name());
+                    playerData.setCageBlock(p.getCageBlock().name());
                     break;
                 case COINS:
                     playerData.setCoins(rs.getCurrencyAdapterAPI().getCoins(p));
@@ -192,7 +204,7 @@ public class PlayerManager extends PlayerManagerAPI {
 
     @Override
     public void setLanguage(RSWPlayer player, String s) {
-        player.setProperty(RSWPlayer.PlayerProperties.LANGUAGE, s);
+        player.setLanguage(s);
         player.sendMessage(TranslatableLine.LANGUAGE_SET.get(player, true).replace("%language%", s));
         player.closeInventory();
     }
@@ -213,6 +225,10 @@ public class PlayerManager extends PlayerManagerAPI {
             bought.add(new RSWShopDisplayItem());
         }
         return bought;
+    }
+
+    public Map<UUID, RSWMap> getFastJoin() {
+        return this.fastJoin;
     }
 
     @Override

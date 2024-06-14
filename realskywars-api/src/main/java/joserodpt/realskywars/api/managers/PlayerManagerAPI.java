@@ -1,5 +1,6 @@
 package joserodpt.realskywars.api.managers;
 
+import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWGameLog;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.shop.RSWShopDisplayItem;
@@ -7,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public abstract class PlayerManagerAPI {
@@ -40,4 +42,5 @@ public abstract class PlayerManagerAPI {
 
     public abstract List<UUID> getTeleporting();
 
+    public abstract Map<UUID, RSWMap> getFastJoin();
 }

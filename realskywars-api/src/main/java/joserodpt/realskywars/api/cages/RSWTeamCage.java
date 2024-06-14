@@ -63,7 +63,7 @@ public class RSWTeamCage extends RSWCage {
 
     @Override
     public void setCage() {
-        setCage(this.players.isEmpty() ? Material.GLASS : (Material) this.players.get(0).getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK));
+        setCage(this.players.isEmpty() ? Material.GLASS : this.players.get(0).getCageBlock());
     }
 
     @Override

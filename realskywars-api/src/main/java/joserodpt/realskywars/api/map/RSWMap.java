@@ -378,7 +378,7 @@ public abstract class RSWMap {
 
         switch (st) {
             case INSIDE_GAME:
-                p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.SPECTATOR);
+                p.setState(RSWPlayer.PlayerState.SPECTATOR);
                 p.heal();
                 p.getPlayer().teleport(killLoc.add(0, 1, 0));
 
@@ -418,7 +418,7 @@ public abstract class RSWMap {
                 p.setPlayerMap(this);
                 this.getBossBar().addPlayer(p.getPlayer());
 
-                p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.EXTERNAL_SPECTATOR);
+                p.setState(RSWPlayer.PlayerState.SPECTATOR);
                 p.teleport(this.getSpectatorLocation());
                 p.heal();
 
@@ -657,7 +657,7 @@ public abstract class RSWMap {
         p.setInvincible(false);
         TranslatableLine.MATCH_LEAVE.send(p, true);
 
-        p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.LOBBY_OR_NOGAME);
+        p.setState(RSWPlayer.PlayerState.LOBBY_OR_NOGAME);
         p.setFlying(false);
         p.setGameMode(GameMode.SURVIVAL);
         p.heal();

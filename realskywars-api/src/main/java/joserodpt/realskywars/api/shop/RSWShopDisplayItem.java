@@ -136,7 +136,7 @@ public class RSWShopDisplayItem {
                 RSWKit k = RealSkywarsAPI.getInstance().getKitManagerAPI().getKit(name);
                 return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), "&r&f" + k.getDisplayName(), k.getDescription(p, false)) : Itens.createItem(m, 1, "&r&f" + k.getDisplayName(), k.getDescription(p, true));
             case SPEC_SHOP:
-                return Itens.createItem(m, 1, "&f" + this.amount + "x " + this.getDisplayName(), Arrays.asList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%price%", this.getPrice().toString()), "", "&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount."));
+                return Itens.createItem(this.getMaterial(), 1, "&f" + this.amount + "x " + this.getDisplayName(), Arrays.asList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%price%", this.getPrice().toString()), "", "&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount."));
             default:
                 return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), formatName(name), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_SELECT.get(p))) : Itens.createItem(m, 1, formatName(this.getDisplayName()), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%coins%", this.getPrice().toString())));
         }

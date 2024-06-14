@@ -303,59 +303,52 @@ public class RSWPlayer {
         return this.player;
     }
 
-    public void setProperty(PlayerProperties pp, Object o) {
-        switch (pp) {
-            case MAPVIEWER_PREF:
-                this.playerMapViewerPref = MapViewerPref.valueOf((String) o);
-                this.saveData(PlayerData.MAPVIEWER_PREF);
-                break;
-            case KIT:
-                this.playerKit = (RSWKit) o;
-                if (this.playerKit == null) {
-                    this.playerKit = new RSWKit();
-                }
-                this.saveData(PlayerData.KIT);
-                break;
-            case BOW_PARTICLES:
-                this.bowParticle = (Particle) o;
-                break;
-            case CAGE_BLOCK:
-                Material m = (Material) o;
-                if (m != this.cageBlock) {
-                    this.cageBlock = m;
-                    if (isInMatch()) {
-                        switch (this.getMatch().getGameMode()) {
-                            case SOLO:
-                                if (hasCage()) {
-                                    this.playerCage.setCage();
-                                }
-                                break;
-                            case TEAMS:
-                                if (hasTeam()) {
-                                    this.getTeam().getTeamCage().setCage();
-                                }
-                                break;
+    public void setKit(RSWKit playerKit) {
+        this.playerKit = playerKit;
+        this.saveData(PlayerData.KIT);
+    }
+
+    public void setBowParticle(Particle bowParticle) {
+        this.bowParticle = bowParticle;
+    }
+
+    public void setCageBlock(Material m) {
+        if (m != this.cageBlock) {
+            this.cageBlock = m;
+            if (isInMatch()) {
+                switch (this.getMatch().getGameMode()) {
+                    case SOLO:
+                        if (hasCage()) {
+                            this.playerCage.setCage();
                         }
-                    }
+                        break;
+                    case TEAMS:
+                        if (hasTeam()) {
+                            this.getTeam().getTeamCage().setCage();
+                        }
+                        break;
                 }
-                RealSkywarsAPI.getInstance().getPlayerManagerAPI().savePlayer(this, PlayerData.CAGE_BLOCK);
-                break;
-            case WIN_BLOCKS:
-                if (o.equals("RandomBlock")) {
-                    this.winblockRandom = true;
-                } else {
-                    this.winblockRandom = false;
-                    this.winblockMaterial = Material.getMaterial((String) o);
-                }
-                break;
-            case STATE:
-                this.state = (PlayerState) o;
-                break;
-            case LANGUAGE:
-                this.language = (String) o;
-                this.saveData(PlayerData.LANG);
-                break;
+            }
         }
+        RealSkywarsAPI.getInstance().getPlayerManagerAPI().savePlayer(this, PlayerData.CAGE_BLOCK);
+    }
+
+    public void setWinBlock(String mat) {
+        if (mat.equals("RandomBlock")) {
+            this.winblockRandom = true;
+        } else {
+            this.winblockRandom = false;
+            this.winblockMaterial = Material.getMaterial(mat);
+        }
+    }
+
+    public void setState(PlayerState state) {
+        this.state = state;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+        this.saveData(PlayerData.LANG);
     }
 
     public Object getStatistics(PlayerStatistics pp, Boolean ranked) {
@@ -377,7 +370,7 @@ public class RSWPlayer {
             case GAME_KILLS:
                 return this.gamekills;
         }
-        return "-1";
+        return 1;
     }
 
     public Object getStatistics(PlayerStatistics pp) {
@@ -420,16 +413,12 @@ public class RSWPlayer {
         this.playerTeam = o;
     }
 
-    public Object getProperty(PlayerProperties pp) {
-        switch (pp) {
-            case CAGE_BLOCK:
-                return this.cageBlock;
-            case BOW_PARTICLES:
-                return this.bowParticle;
-            case MAPVIEWER_PREF:
-                return this.playerMapViewerPref;
-        }
-        return null;
+    public Material getCageBlock() {
+        return this.cageBlock;
+    }
+
+    public Particle getBowParticle() {
+        return this.bowParticle;
     }
 
     public double getLocalCoins() {
@@ -618,8 +607,6 @@ public class RSWPlayer {
     public enum PlayerState {
         LOBBY_OR_NOGAME, CAGE, PLAYING, SPECTATOR, EXTERNAL_SPECTATOR
     }
-
-    public enum PlayerProperties {KIT, BOW_PARTICLES, CAGE_BLOCK, STATE, LANGUAGE, MAPVIEWER_PREF, WIN_BLOCKS}
 
     public enum Statistic {KILL, SOLO_WIN, TEAM_WIN, LOSE, DEATH, GAMES_PLAYED}
 

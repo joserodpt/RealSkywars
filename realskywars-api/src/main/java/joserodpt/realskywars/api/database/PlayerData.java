@@ -264,7 +264,7 @@ public class PlayerData {
         return this.uuid;
     }
 
-    public void setKit(String name) {
+    public void setChoosenKit(String name) {
         this.choosen_kit = name;
     }
 }

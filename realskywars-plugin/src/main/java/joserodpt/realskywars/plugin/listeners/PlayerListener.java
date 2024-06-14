@@ -35,7 +35,6 @@ import joserodpt.realskywars.plugin.gui.guis.VoteGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
@@ -59,10 +58,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 public class PlayerListener implements Listener {
     private final RealSkywarsAPI rs;
@@ -503,8 +499,6 @@ public class PlayerListener implements Listener {
         }
     }
 
-    Map<UUID, RSWMap> fastJoin = new HashMap<>();
-
     @EventHandler
     public void onAsyncPlayerJoin(AsyncPlayerPreLoginEvent e) {
         // auto join random match
@@ -520,7 +514,7 @@ public class PlayerListener implements Listener {
                 if (suitableGame.get().isFull() && !game.isSpectatorEnabled()) {
                     e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_FULL.getSingle());
                 } else {
-                    fastJoin.put(e.getUniqueId(), suitableGame.get());
+                    rs.getPlayerManagerAPI().getFastJoin().put(e.getUniqueId(), suitableGame.get());
                     e.allow();
                 }
             } else {
@@ -535,11 +529,7 @@ public class PlayerListener implements Listener {
             Text.send(e.getPlayer(), "&6&LWARNING! &r&fThere is a new update available for Real&bSkywars&f! https://www.spigotmc.org/resources/105115/");
         }
 
-        RSWPlayer p = rs.getPlayerManagerAPI().loadPlayer(e.getPlayer());
-        if (fastJoin.containsKey(e.getPlayer().getUniqueId())) {
-            fastJoin.get(e.getPlayer().getUniqueId()).addPlayer(p);
-            fastJoin.remove(e.getPlayer().getUniqueId());
-        }
+        rs.getPlayerManagerAPI().loadPlayer(e.getPlayer());
     }
 
     @EventHandler
@@ -556,8 +546,8 @@ public class PlayerListener implements Listener {
             Player p = (Player) e.getEntity().getShooter();
             RSWPlayer gp = rs.getPlayerManagerAPI().getPlayer(p);
             assert gp != null;
-            if (gp.getProperty(RSWPlayer.PlayerProperties.BOW_PARTICLES) != null && gp.isInMatch()) {
-                gp.addTrail(new RSWBowTrail((Particle) gp.getProperty(RSWPlayer.PlayerProperties.BOW_PARTICLES), e.getEntity(), gp));
+            if (gp.getBowParticle() != null && gp.isInMatch()) {
+                gp.addTrail(new RSWBowTrail(gp.getBowParticle(), e.getEntity(), gp));
             }
         }
     }

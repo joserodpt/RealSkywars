@@ -88,7 +88,7 @@ public class TeamsMode extends RSWMap {
                         TranslatableList.MAP_START.get(p).forEach(s -> p.sendCenterMessage(s.replace("%chests%", super.getChestTier().getDisplayName(p)).replace("%kit%", p.getPlayerKit().getDisplayName()).replace("%project%", super.getProjectileTier().getDisplayName(p)).replace("%time%", super.getTimeType().getDisplayName(p))));
 
                         p.getPlayerKit().give(p);
-                        p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.PLAYING);
+                        p.setState(RSWPlayer.PlayerState.PLAYING);
                     }
                 }
                 t.openCage();
@@ -153,7 +153,7 @@ public class TeamsMode extends RSWMap {
                     }
 
                     p.setPlayerMap(this);
-                    p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.CAGE);
+                    p.setState(RSWPlayer.PlayerState.CAGE);
 
                     for (RSWPlayer ws : super.getAllPlayers()) {
                         if (p.getPlayer() != null) {
