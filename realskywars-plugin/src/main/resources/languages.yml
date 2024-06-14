@@ -360,8 +360,8 @@ Languages:
       Resetting: "&0Resetting"
       Spectating: "&5Spectating"
     Shop-Categories:
-      Cage-Blocks: "&8Cage Blocks"
-      Win-Blocks: "&9Win Blocks"
+      Cage-Blocks: "&eCage Blocks"
+      Win-Blocks: "&5Win Blocks"
       Kits: "&9Kits"
       Bow-Particles: "&aBow Particles"
     Vote:
@@ -745,8 +745,8 @@ Languages:
       Resetting: "&0Resettando"
       Spectating: "&5Assistir"
     Shop-Categories:
-      Cage-Blocks: "&8Blocos de Jaula"
-      Win-Blocks: "&9Blocos de Vitória"
+      Cage-Blocks: "&eBlocos de Jaula"
+      Win-Blocks: "&5Blocos de Vitória"
       Kits: "&9Kits"
       Bow-Particles: "&aPartículas de Arco"
     Vote:
@@ -1136,8 +1136,8 @@ Languages:
       Resetting: "&0Resetando"
       Spectating: "&5Espectando"
     Shop-Categories:
-      Cage-Blocks: "&8Bloques de Jaula"
-      Win-Blocks: "&9Bloques de Victoria"
+      Cage-Blocks: "&eBloques de Jaula"
+      Win-Blocks: "&5Bloques de Victoria"
       Kits: "&9Kits"
       Bow-Particles: "&aPartículas de Arco"
     Vote:
