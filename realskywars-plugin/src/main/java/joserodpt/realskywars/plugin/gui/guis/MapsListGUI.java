@@ -55,7 +55,7 @@ public class MapsListGUI {
 
     public MapsListGUI(RSWPlayer p) {
         this.uuid = p.getUUID();
-        this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MENU_MAPS_TITLE.get(p, false) + ": " + p.getMapViewerPref().getDisplayName(p));
+        this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MENU_MAPS_TITLE.get(p, false) + ": " + p.getPlayerMapViewerPref().getDisplayName(p));
 
         this.gp = p;
         List<RSWMap> items = RealSkywarsAPI.getInstance().getMapManagerAPI().getMapsForPlayer(p);
@@ -114,33 +114,33 @@ public class MapsListGUI {
             }
 
             private void selectNext(RSWPlayer gp, MapsListGUI curr) {
-                switch (gp.getMapViewerPref()) {
+                switch (gp.getPlayerMapViewerPref()) {
                     case MAPV_ALL:
-                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.MAPV_AVAILABLE);
+                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_AVAILABLE);
                         break;
                     case MAPV_AVAILABLE:
-                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.MAPV_WAITING);
+                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_WAITING);
                         break;
                     case MAPV_WAITING:
-                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.MAPV_STARTING);
+                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_STARTING);
                         break;
                     case MAPV_STARTING:
-                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.MAPV_SPECTATE);
+                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_SPECTATE);
                         break;
                     case MAPV_SPECTATE:
-                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.SOLO);
+                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.SOLO);
                         break;
                     case SOLO:
-                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.SOLO_RANKED);
+                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.SOLO_RANKED);
                         break;
                     case SOLO_RANKED:
-                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.TEAMS);
+                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.TEAMS);
                         break;
                     case TEAMS:
-                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.TEAMS_RANKED);
+                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.TEAMS_RANKED);
                         break;
                     case TEAMS_RANKED:
-                        gp.setMapViewerPref(RSWPlayer.MapViewerPref.MAPV_ALL);
+                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_ALL);
                         break;
                 }
                 curr.gp = gp;

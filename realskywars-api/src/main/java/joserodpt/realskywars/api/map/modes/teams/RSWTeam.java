@@ -25,7 +25,7 @@ import org.bukkit.Location;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Team {
+public class RSWTeam {
 
     private final int id;
     private final int maxMembers;
@@ -33,9 +33,9 @@ public class Team {
     private final List<RSWPlayer> members = new ArrayList<>();
     private Boolean eliminated = false, playing = false;
 
-    public Team(int i, int maxMemb, Location c) {
+    public RSWTeam(int i, int maxMemb, Location c) {
         this.id = i;
-        this.tc = new RSWTeamCage(i, c.getBlockX(), c.getBlockY(), c.getBlockZ(), maxMemb);
+        this.tc = new RSWTeamCage(i, c.getBlockX(), c.getBlockY(), c.getBlockZ());
         this.maxMembers = maxMemb;
     }
 
@@ -65,7 +65,7 @@ public class Team {
     }
 
     public Boolean isTeamFull() {
-        return this.maxMembers == getMembers().size();
+        return this.maxMembers == this.getMembers().size();
     }
 
     public void sendMessage(String s) {

@@ -1,7 +1,9 @@
 <div align="center">
 
 ![Logo](https://i.imgur.com/MsyVYtt.png)
+
 ## RealSkywars
+
 ### A SkyWars plugin that's been coded on the recent 1.14 API
 
 [![Build](https://img.shields.io/github/actions/workflow/status/joserodpt/RealSkywars/maven.yml?branch=master)](https://github.com/joserodpt/RealSkywars/actions)
@@ -18,37 +20,38 @@
 ----
 
 A New SkyWars plugin that's been coded on the **1.14 API**.
-**Version support**: 
- - 1.14.4 [v1_14_R1]
- - 1.15.2 [v1_15_R1]
- - 1.16.5 [v1_16_R3]
- - 1.17.1 [v1_17_R1]
- - 1.18.2 [v1_18_R2]
- - 1.19.4 [v1_19_R3]
- - 1.20.6 [v1_20_R3]
+**Version support**:
+
+- 1.14.4 [v1_14_R1]
+- 1.15.2 [v1_15_R1]
+- 1.16.5 [v1_16_R3]
+- 1.17.1 [v1_17_R1]
+- 1.18.2 [v1_18_R2]
+- 1.19.4 [v1_19_R3]
+- 1.20.6 [v1_20_R3]
 
 ---
 
 # Features
 
- - Multi-language and Multi-arena support.
- - Default and Schematic arenas support.
- - SOLO and TEAMS arenas.
- - Cage Blocks, Bow Trails and Win Blocks.
- - Custom animations and game events.
- - Party system built in.
- - GUI based management and interaction system.
- - Sign maps supported.
- - Configurable messages.
- - 3 configurable tiersw.
- - Game history logging.
- - Chest, Time and Projectile voting per arena.
- - SQLLite, MySQL, MariaDB and other database solutions supported.
- - Tab costumizing option.
- - Achievements and Leaderboards.
- - Supports PlaceholderAPI for custom placeholder injection.
- - Hooks onto DecentHolograms and HolographicDisplays
- - API System.
+- Multi-language and Multi-arena support.
+- Default and Schematic arenas support.
+- SOLO and TEAMS arenas.
+- Cage Blocks, Bow Trails and Win Blocks.
+- Custom animations and game events.
+- Party system built in.
+- GUI based management and interaction system.
+- Sign maps supported.
+- Configurable messages.
+- 3 configurable tiersw.
+- Game history logging.
+- Chest, Time and Projectile voting per arena.
+- SQLLite, MySQL, MariaDB and other database solutions supported.
+- Tab costumizing option.
+- Achievements and Leaderboards.
+- Supports PlaceholderAPI for custom placeholder injection.
+- Hooks onto DecentHolograms and HolographicDisplays
+- API System.
 
 # Dependencies
 
@@ -70,73 +73,74 @@ Permissions to vote:
 | Game Time Night|rsw.night|
 | Game Normal Projectiles |rsw.normal-projectile|
 | Game Break Projectiles |rsw.break-projectile|
+
 ## Commands
 
 **/rsw create** - Creates a new map.
- Permission: rsw.admin
+Permission: rsw.admin
 
- **/rsw unregister** - Unregisters a map.
- Permission: rsw.admin
+**/rsw unregister** - Unregisters a map.
+Permission: rsw.admin
 
- **/rsw edit** - Edits a map (cage and chest add/removal)
- Permission: rsw.join
+**/rsw edit** - Edits a map (cage and chest add/removal)
+Permission: rsw.join
 
- **/rsw register** - Registers a map.
- Permission: rsw.join
+**/rsw register** - Registers a map.
+Permission: rsw.join
 
- **/rsw delete** - Deletes a map.
- Permission: rsw.admin
+**/rsw delete** - Deletes a map.
+Permission: rsw.admin
 
 **/rsw list** - Opens the maps menu
- Permission: rsw.join
+Permission: rsw.join
 
 **/rsw kits** - Opens the kits menu
- Permission: rsw.kits
+Permission: rsw.kits
 
 **/rsw shop** - Opens the shop menu
- Permission: rsw.shop
+Permission: rsw.shop
 
 **/rsw coins** - Sends the players current balance.
- Permission: rsw.coins
+Permission: rsw.coins
 
 **/rsw lobby** - Teleport to the lobby.
- Permission: rsw.lobby
+Permission: rsw.lobby
 
 **/rsw forcestart** - Force starts the current match.
- Permission: rsw.forcestart
+Permission: rsw.forcestart
 
 **/rsw leave** - Leaves the current match.
- Permission: rsw.leave
+Permission: rsw.leave
 
 **/party create** - Creates a party.
- Permission: rsw.party.owner
+Permission: rsw.party.owner
 
 **/party disband** - Disbands a party.
- Permission: rsw.party.owner
+Permission: rsw.party.owner
 
 **/party kick** - Disbands a party.
- Permission: rsw.party.owner
+Permission: rsw.party.owner
 
 **/party invite** - Disbands a party.
- Permission: rsw.party.invite
+Permission: rsw.party.invite
 
 **/party accept** - Accepts a party invite.
- Permission: rsw.party.accept
+Permission: rsw.party.accept
 
 **/party leave** - Accepts a party invite.
- Permission: rsw.party.leave
- 
+Permission: rsw.party.leave
+
 ## Creating an Arena
 
- 1. Use **/rsw create name type players** or /**rsw create name type number of teams players-per-team**
- 2. A GUI will appear. Click on the settings to change then, and then save the changes.
- 3. RealSkywars will attempt to generate a world and, if sucessfull, it will teleport the player to the world.
- 4. If the game is SHEMATIC based, RealSkywars will try to paste the shematic provided in the arena name.
- 5. Set normal, mid chests and cages with the items on the hotbar.
- 6. Set the spectator location with /rsw setspectator.
- 7. Set the arena boundaries with //pos1 or //pos2 or with the worldedit axe.
-	 > NOTE: Don't forget to do //expand vert to cover the entire arena height.
-8.  Save the arena with /rsw finishsetup
+1. Use **/rsw create name type players** or /**rsw create name type number of teams players-per-team**
+2. A GUI will appear. Click on the settings to change then, and then save the changes.
+3. RealSkywars will attempt to generate a world and, if sucessfull, it will teleport the player to the world.
+4. If the game is SHEMATIC based, RealSkywars will try to paste the shematic provided in the arena name.
+5. Set normal, mid chests and cages with the items on the hotbar.
+6. Set the spectator location with /rsw setspectator.
+7. Set the arena boundaries with //pos1 or //pos2 or with the worldedit axe.
+   > NOTE: Don't forget to do //expand vert to cover the entire arena height.
+8. Save the arena with /rsw finish
 
 ## Creating a game sign
 
@@ -148,16 +152,19 @@ Line 2: -map name-
 
 ## Creating a schematic from a world with WorldEdit
 
- 1. Select the area that's going to be saved as a shematic.
- 2. //copy
- 3. //schem save name
- 4. It will be saved to the shematics directory of WorldEdit.
+1. Select the area that's going to be saved as a shematic.
+2. //copy
+3. //schem save name
+4. It will be saved to the shematics directory of WorldEdit.
 5. If you want to use this schematic, you have to copy the .schem file to the RealSkywars/maps folder.
 
 ----
 
 ## API
-You can access the RealSkywars API via the [RealSkywarsAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2FRealSkywarsAPI.java) API class:
+
+You can access the RealSkywars API via
+the [RealSkywarsAPI.java](realskywars-api%2Fsrc%2Fmain%2Fjava%2Fjoserodpt%2Frealskywars%2Fapi%2FRealSkywarsAPI.java) API
+class:
 
 ```java
 var rswAPI = RealSkywarsAPI.getInstance();
@@ -167,7 +174,9 @@ You can access the plugin managers that are responsible for varios tasks in the 
 
 ```java
 var rswAPI = RealSkywarsAPI.getInstance();
-rswAPI.getPlayerManagerAPI() and others.
+rswAPI.
+
+getPlayerManagerAPI() and others.
 ```
 
 The managers on the API are:

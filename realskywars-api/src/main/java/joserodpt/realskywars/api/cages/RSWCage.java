@@ -20,32 +20,55 @@ import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-import java.util.List;
+import java.util.Collection;
 
-public interface RSWCage {
-    int getID();
+public abstract class RSWCage {
+    protected final int id;
+    protected final int x, y, z;
+    protected RSWMap map;
 
-    Location getLocation();
+    public RSWCage(int id, int x, int y, int z) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 
-    boolean isEmpty();
+    public RSWCage(int id, Location l) {
+        this(id, l.getBlockX(), l.getBlockY(), l.getBlockZ());
+    }
 
-    void setCage();
+    public int getID() {
+        return this.id;
+    }
 
-    void addPlayer(RSWPlayer p);
+    public Location getLocation() {
+        return new Location(this.map.getRSWWorld().getWorld(), this.x, this.y, this.z).add(0.5, 0, 0.5);
+    }
 
-    void removePlayer(RSWPlayer p);
+    public RSWMap getMap() {
+        return this.map;
+    }
 
-    void tpPlayer(RSWPlayer p);
+    public void setMap(RSWMap map) {
+        this.map = map;
+    }
 
-    int getMaxPlayers();
+    public abstract boolean isEmpty();
 
-    List<RSWPlayer> getPlayers();
+    public abstract void setCage();
 
-    void clearCage();
+    public abstract void addPlayer(RSWPlayer p);
 
-    void setCage(Material m);
+    public abstract void removePlayer(RSWPlayer p);
 
-    void open();
+    public abstract void tpPlayer(RSWPlayer p);
 
-    void setMap(RSWMap map);
+    public abstract Collection<RSWPlayer> getPlayers();
+
+    public abstract void clearCage();
+
+    public abstract void setCage(Material m);
+
+    public abstract void open();
 }

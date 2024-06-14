@@ -64,7 +64,7 @@ public class MapDashboardGUI {
         this.uuid = id;
         this.game = g;
 
-        inv = Bukkit.getServer().createInventory(null, 27, Text.color(g.getMapName() + " Settings"));
+        inv = Bukkit.getServer().createInventory(null, 27, Text.color(g.getMapName() + " settings"));
 
         loadInv();
 

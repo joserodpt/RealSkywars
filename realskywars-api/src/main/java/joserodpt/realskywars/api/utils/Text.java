@@ -83,10 +83,6 @@ public class Text {
         list.forEach(s -> p.sendMessage(color(s)));
     }
 
-    public static void sendList(Player p, List<String> list, Object var) {
-        list.forEach(s -> p.sendMessage(color(s).replace("%CAGES%", var + "")));
-    }
-
     public static void sendList(CommandSender p, List<String> list) {
         list.forEach(s -> p.sendMessage(color(s)));
     }

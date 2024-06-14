@@ -7,9 +7,9 @@ import java.util.List;
 
 public enum TranslatableList {
 
-    ARENA_START(".Messages.Map.Start"),
-    ARENA_END(".Messages.Map.End-Log"),
-    INITSETUP_ARENA(".Messages.Map.Init-Setup"),
+    MAP_START(".Messages.Map.Start"),
+    MAP_END_LOG(".Messages.Map.End-Log"),
+    EDIT_MAP(".Messages.Map.Edit-Map"),
     SCOREBOARD_LOBBY_LINES(".Scoreboards.Lobby.Lines"),
     SCOREBOARD_CAGE_LINES(".Scoreboards.Cage.Lines"),
     SCOREBOARD_PLAYING_LINES(".Scoreboards.Game.Lines"),

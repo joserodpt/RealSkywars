@@ -36,7 +36,7 @@ import com.sk89q.worldedit.world.block.BlockState;
 import com.sk89q.worldedit.world.block.BlockType;
 import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.map.RSWSetupMap;
+import joserodpt.realskywars.api.map.RSWMap;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -47,8 +47,7 @@ public class WorldEditUtils {
 
     public static boolean schemFileExists(String name) {
         File folder = new File(RealSkywarsAPI.getInstance().getPlugin().getDataFolder(), "maps");
-        File file = new File(folder, name);
-        return file.exists();
+        return new File(folder, name).exists();
     }
 
     public static void setBlocks(Location loc1, Location loc2, BlockType type) {
@@ -76,7 +75,7 @@ public class WorldEditUtils {
         }
     }
 
-    public static void pasteSchematic(String name, Location location, RSWSetupMap sr) {
+    public static void pasteSchematic(String name, Location location, RSWMap map) {
         Debugger.print(WorldEditUtils.class, "Pasting schematic named " + name);
         File folder = new File(RealSkywarsAPI.getInstance().getPlugin().getDataFolder(), "maps");
         File file = new File(folder, name);
@@ -107,12 +106,12 @@ public class WorldEditUtils {
                                 .build();
                         Operations.completeLegacy(operation);
 
-                        if (sr != null) {
+                        if (map != null) {
                             BlockVector3 clipboardOffset = clipboard.getRegion().getMinimumPoint().subtract(clipboard.getOrigin());
                             Vector3 min = to.toVector3().add(holder.getTransform().apply(clipboardOffset.toVector3()));
                             Vector3 max = min.add(holder.getTransform().apply(region.getMaximumPoint().subtract(region.getMinimumPoint()).toVector3()));
 
-                            sr.setBoundaries(toLocation(min, location.getWorld()), WorldEditUtils.toLocation(max, location.getWorld()));
+                            map.setBoundaries(toLocation(min, location.getWorld()), WorldEditUtils.toLocation(max, location.getWorld()));
 
                             for (Player p : location.getWorld().getPlayers()) {
                                 p.sendMessage("&aThe boundaries have been set automatically using the schematic boundaries!");

@@ -17,7 +17,7 @@ package joserodpt.realskywars.api.map.modes;
 
 import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.map.RSWMap;
-import joserodpt.realskywars.api.map.modes.teams.Team;
+import joserodpt.realskywars.api.map.modes.teams.RSWTeam;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.Location;
 
@@ -70,7 +70,7 @@ public class PlaceholderMode extends RSWMap {
     }
 
     @Override
-    public Collection<Team> getTeams() {
+    public Collection<RSWTeam> getTeams() {
         return null;
     }
 

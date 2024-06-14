@@ -64,7 +64,7 @@ public class SWWorldSchematicEngine implements SWWorldEngine {
 
                     WorldBorder wb = this.world.getWorldBorder();
 
-                    wb.setCenter(this.gameRoom.getArena().getCenter());
+                    wb.setCenter(this.gameRoom.getMapCuboid().getCenter());
                     wb.setSize(this.gameRoom.getBorderSize());
 
                     this.gameRoom.setState(RSWMap.MapState.AVAILABLE);

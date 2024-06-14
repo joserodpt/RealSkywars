@@ -146,7 +146,7 @@ public class PlayerManager extends PlayerManagerAPI {
 
             switch (pd) {
                 case KIT:
-                    playerData.setKit(p.getKit().getName());
+                    playerData.setKit(p.getPlayerKit().getName());
                     break;
                 case BOUGHT_ITEMS:
                     playerData.setBoughtItems(p.getBoughtItems());
@@ -182,7 +182,7 @@ public class PlayerManager extends PlayerManagerAPI {
                     playerData.setLanguage(p.getLanguage());
                     break;
                 case MAPVIEWER_PREF:
-                    playerData.setMapViewerPref(p.getMapViewerPref().name());
+                    playerData.setMapViewerPref(p.getPlayerMapViewerPref().name());
                     break;
             }
 

@@ -24,7 +24,7 @@ import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.modes.RSWSign;
-import joserodpt.realskywars.api.map.modes.teams.Team;
+import joserodpt.realskywars.api.map.modes.teams.RSWTeam;
 import joserodpt.realskywars.api.player.RSWGameLog;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.player.RSWPlayerItems;
@@ -70,10 +70,10 @@ public abstract class RSWMap {
     private final Map<Location, RSWSign> signs;
     private final String name;
     private String displayName;
-    private final int maxPlayers, borderSize;
+    private int maxPlayers, borderSize;
     private int timePassed;
-    private final WorldBorder border;
-    private final Location spectatorLocation;
+    private WorldBorder border;
+    private Location spectatorLocation;
     private final String schematicName;
     private final List<RSWPlayer> inRoom = new ArrayList<>();
     private final HashMap<UUID, Integer> chestVotes = new HashMap<>();
@@ -99,12 +99,15 @@ public abstract class RSWMap {
         this.schematicName = schematicName;
         this.unregistered = unregistered;
 
-        this.mapCuboid = new MapCuboid(pos1, pos2);
-        this.borderSize = this.mapCuboid.getSizeX();
-        this.border = w.getWorldBorder();
-        this.border.setCenter(this.mapCuboid.getCenter());
-        this.border.setSize(this.borderSize);
         this.world = new RSWWorld(this, w, wt);
+
+        if (pos1 != null && pos2 != null) {
+            this.mapCuboid = new MapCuboid(pos1, pos2);
+            this.borderSize = this.mapCuboid.getSizeX();
+            this.border = w.getWorldBorder();
+            this.border.setCenter(this.mapCuboid.getCenter());
+            this.border.setSize(this.borderSize);
+        }
 
         this.state = estado;
         this.maxPlayers = maxPlayers;
@@ -310,7 +313,7 @@ public abstract class RSWMap {
     abstract public void removePlayer(RSWPlayer p);
 
     public Location getSpectatorLocation() {
-        return new Location(this.getRSWWorld().getWorld(), this.spectatorLocation.getBlockX(), this.spectatorLocation.getBlockY(), this.spectatorLocation.getBlockZ());
+        return this.spectatorLocation == null ? this.getRSWWorld().getWorld().getSpawnLocation() : new Location(this.getRSWWorld().getWorld(), this.spectatorLocation.getBlockX(), this.spectatorLocation.getBlockY(), this.spectatorLocation.getBlockZ());
     }
 
     public void setTierType(RSWChest.Tier tier) {
@@ -380,10 +383,10 @@ public abstract class RSWMap {
                 p.getPlayer().teleport(killLoc.add(0, 1, 0));
 
                 if (p.hasTeam()) {
-                    Team t = p.getTeam();
+                    RSWTeam t = p.getTeam();
                     t.removeMember(p);
                     if (t.isEliminated()) {
-                        new Demolition(this.getSpectatorLocation(), p.getCage(), 5, 3).start(rs.getPlugin());
+                        new Demolition(this.getSpectatorLocation(), p.getPlayerCage(), 5, 3).start(rs.getPlugin());
                     }
                 }
                 //update tab
@@ -398,7 +401,7 @@ public abstract class RSWMap {
                 }
 
                 if (p.hasKit()) {
-                    p.getKit().cancelTasks();
+                    p.getPlayerKit().cancelTasks();
                 }
 
                 this.sendLog(p, false);
@@ -412,7 +415,7 @@ public abstract class RSWMap {
                 break;
             case EXTERNAL:
                 this.inRoom.add(p);
-                p.setRoom(this);
+                p.setPlayerMap(this);
                 this.getBossBar().addPlayer(p.getPlayer());
 
                 p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.EXTERNAL_SPECTATOR);
@@ -445,7 +448,7 @@ public abstract class RSWMap {
 
     abstract public Collection<RSWCage> getCages();
 
-    abstract public Collection<Team> getTeams();
+    abstract public Collection<RSWTeam> getTeams();
 
     abstract public int getMaxTeamMembers();
 
@@ -460,7 +463,7 @@ public abstract class RSWMap {
         this.resetArena(OperationReason.RESET);
     }
 
-    public MapCuboid getArena() {
+    public MapCuboid getMapCuboid() {
         return this.mapCuboid;
     }
 
@@ -585,7 +588,7 @@ public abstract class RSWMap {
 
     public void sendLog(RSWPlayer p, boolean winner) {
         if (p.getPlayer() != null) {
-            TranslatableList.ARENA_END.get(p).forEach(s -> p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE) + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + "").replace("%time%", Text.formatSeconds(this.mapTimer.getPassedSeconds()))));
+            TranslatableList.MAP_END_LOG.get(p).forEach(s -> p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE) + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + "").replace("%time%", Text.formatSeconds(this.mapTimer.getPassedSeconds()))));
 
             p.addGameLog(new RSWGameLog(this.getMapName(), this.getGameMode(), this.isRanked(), this.getMaxPlayers(), winner, this.getTimePassed(), Text.getDayAndTime()));
 
@@ -660,11 +663,11 @@ public abstract class RSWMap {
         p.heal();
 
         if (p.hasKit()) {
-            p.getKit().cancelTasks();
+            p.getPlayerKit().cancelTasks();
         }
 
         this.inRoom.remove(p);
-        p.setRoom(null);
+        p.setPlayerMap(null);
 
         //update tab
         if (!p.isBot()) {
@@ -721,7 +724,7 @@ public abstract class RSWMap {
                 t.killTask();
                 for (RSWPlayer p : this.inRoom) {
                     if (p.getWorld() != this.getRSWWorld().getWorld() && p.hasCage()) {
-                        p.getCage().tpPlayer(p);
+                        p.getPlayerCage().tpPlayer(p);
                     }
 
                     TranslatableLine.ARENA_CANCEL.send(p, true);
@@ -733,7 +736,7 @@ public abstract class RSWMap {
                 this.setState(MapState.STARTING);
                 for (RSWPlayer p : this.inRoom) {
                     if (p.getWorld() != this.getRSWWorld().getWorld() && p.hasCage()) {
-                        p.getCage().tpPlayer(p);
+                        p.getPlayerCage().tpPlayer(p);
                     }
 
                     if (!RSWConfig.file().getBoolean("Config.Disable-Map-Starting-Countdown.Message")) {
@@ -881,6 +884,20 @@ public abstract class RSWMap {
         }
     }
 
+    public void setBoundaries(Location pos1, Location pos2) {
+        this.mapCuboid = new MapCuboid(pos1, pos2);
+        this.borderSize = this.mapCuboid.getSizeX();
+        this.border = this.getRSWWorld().getWorld().getWorldBorder();
+        this.border.setCenter(this.mapCuboid.getCenter());
+        this.border.setSize(this.borderSize);
+        this.save(Data.BORDER, true);
+    }
+
+    public void setSpectatorLocation(Location location) {
+        this.spectatorLocation = location;
+        this.save(Data.SPECT_LOC, true);
+    }
+
     public enum Data {
         ALL, SETTINGS, WORLD, NAME, TYPE, NUM_PLAYERS, CAGES, CHESTS, SPECT_LOC, BORDER
     }
@@ -926,7 +943,7 @@ public abstract class RSWMap {
                         }
                         break;
                     case TEAMS:
-                        for (Team c : this.getTeams()) {
+                        for (RSWTeam c : this.getTeams()) {
                             Location loc = c.getTeamCage().getLocation();
                             RSWMapsConfig.file().set(this.getMapName() + ".Locations.Cages." + c.getTeamCage().getID() + ".X", loc.getBlockX());
                             RSWMapsConfig.file().set(this.getMapName() + ".Locations.Cages." + c.getTeamCage().getID() + ".Y", loc.getBlockY());

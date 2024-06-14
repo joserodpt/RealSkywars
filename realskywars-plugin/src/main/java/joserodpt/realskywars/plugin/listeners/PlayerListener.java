@@ -17,8 +17,6 @@ package joserodpt.realskywars.plugin.listeners;
 
 import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.cages.RSWSoloCage;
-import joserodpt.realskywars.api.cages.RSWTeamCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
@@ -39,12 +37,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -136,18 +130,15 @@ public class PlayerListener implements Listener {
                 if (p != null) {
                     if (p.getPlayer() != null && p.getPlayer().isOp()) {
                         if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().getType() == Material.COMPARATOR) {
-                            if (p.getSetupRoom() != null) {
-                                MapSettingsGUI m = new MapSettingsGUI(p, p.getSetupRoom());
+                            RSWMap map = rs.getMapManagerAPI().getMap(p.getPlayer().getWorld());
+                            if (map != null && map.isUnregistered()) {
+                                MapSettingsGUI m = new MapSettingsGUI(p, map);
                                 m.openInventory(p);
-                            } else {
-                                RSWMap map = rs.getMapManagerAPI().getMap(p.getPlayer().getWorld());
-                                if (map != null) {
-                                    MapSettingsGUI m = new MapSettingsGUI(p, map);
-                                    m.openInventory(p);
-                                }
+                                return;
                             }
                         } else if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().getType() == Material.EMERALD) {
-                            p.getPlayer().performCommand(p.getSetupRoom() != null ? "rsw finishsetup" : "rsw finishedit");
+                            p.getPlayer().performCommand("rsw finish");
+                            return;
                         }
                     }
                     if (p.isInMatch()) {
@@ -296,11 +287,6 @@ public class PlayerListener implements Listener {
                     Text.send(event.getPlayer(), rs.getLanguageManagerAPI().getPrefix() + "&cYou removed this cage.");
                     return;
                 }
-
-                if (p.getSetupRoom() != null) {
-                    p.getSetupRoom().removeCage(loc);
-                    Text.send(event.getPlayer(), rs.getLanguageManagerAPI().getPrefix() + "&cYou removed this cage.");
-                }
             }
 
             if (event.getBlock().getType() == Material.CHEST) {
@@ -311,11 +297,6 @@ public class PlayerListener implements Listener {
                     mp.removeChest(loc);
                     Text.send(event.getPlayer(), rs.getLanguageManagerAPI().getPrefix() + "&cYou removed this chest.");
                     return;
-                }
-
-                if (p.getSetupRoom() != null) {
-                    p.getSetupRoom().removeChest(loc);
-                    Text.send(event.getPlayer(), rs.getLanguageManagerAPI().getPrefix() + "&cYou removed this chest.");
                 }
             }
         }
@@ -363,38 +344,6 @@ public class PlayerListener implements Listener {
                     pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "&aYou placed a new cage.");
                     return;
                 }
-
-                if (pg.getSetupRoom() != null) {
-                    switch (pg.getSetupRoom().getGameType()) {
-                        case SOLO:
-                            if (((pg.getSetupRoom().getCages().size() + 1) > pg.getSetupRoom().getMaxPlayers())) {
-                                pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "&cYou can't place more cages than the max players.");
-                                return;
-                            }
-
-                            if ((pg.getSetupRoom().getCages().size() + 1) < pg.getSetupRoom().getMaxPlayers()) {
-                                log(event, pg);
-                            } else {
-                                log(event, pg);
-                                pg.getSetupRoom().confirmCages(true);
-                                TranslatableLine.CAGES_SET.send(pg, true);
-                            }
-                            break;
-                        case TEAMS:
-                            if (((pg.getSetupRoom().getCages().size() + 1) > pg.getSetupRoom().getTeamCount())) {
-                                pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "&cYou can't place more cages than the max teams.");
-                            }
-
-                            if ((pg.getSetupRoom().getCages().size() + 1) < pg.getSetupRoom().getTeamCount()) {
-                                log(event, pg);
-                            } else {
-                                log(event, pg);
-                                pg.getSetupRoom().confirmCages(true);
-                                TranslatableLine.CAGES_SET.send(pg, true);
-                            }
-                            break;
-                    }
-                }
             }
 
             if (event.getBlock().getType() == Material.CHEST) {
@@ -411,21 +360,6 @@ public class PlayerListener implements Listener {
 
                     return;
                 }
-
-                if (pg.getSetupRoom() != null) {
-                    String name = event.getItemInHand().getItemMeta().getDisplayName();
-                    Block b = event.getBlock();
-                    BlockData blockData = b.getBlockData();
-                    BlockFace f = ((Directional) blockData).getFacing();
-
-                    if (event.getPlayer().getInventory().getHeldItemSlot() == RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest1")) {
-                        pg.getSetupRoom().addChest(new RSWChest(RSWChest.Type.NORMAL, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f));
-                        pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "Added Normal Chest.");
-                    } else if (event.getPlayer().getInventory().getHeldItemSlot() == RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest2")) {
-                        pg.getSetupRoom().addChest(new RSWChest(RSWChest.Type.MID, event.getBlock().getLocation().getWorld().getName(), event.getBlock().getLocation().getBlockX(), event.getBlock().getLocation().getBlockY(), event.getBlock().getLocation().getBlockZ(), f));
-                        pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "Added Mid Chest.");
-                    }
-                }
             }
         }
 
@@ -436,20 +370,6 @@ public class PlayerListener implements Listener {
                 event.setCancelled(true);
                 break;
         }
-    }
-
-    public void log(BlockPlaceEvent e, RSWPlayer p) {
-        Location loc = e.getBlock().getLocation().add(0.5, 0, 0.5);
-        int i = p.getSetupRoom().getCages().size() + 1;
-        switch (p.getSetupRoom().getGameType()) {
-            case SOLO:
-                p.getSetupRoom().addCage(loc, new RSWSoloCage(i, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), 0, 64, 0));
-                break;
-            case TEAMS:
-                p.getSetupRoom().addCage(loc, new RSWTeamCage(i, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), p.getSetupRoom().getPlayersPerTeam()));
-                break;
-        }
-        Text.send(p.getPlayer(), rs.getLanguageManagerAPI().getPrefix() + "&fYou placed cage number &a" + i);
     }
 
     //player join, leave, drop item, player damage, on kill, on hit, on shoot

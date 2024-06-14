@@ -24,7 +24,7 @@ import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.RSWMap;
-import joserodpt.realskywars.api.map.modes.teams.Team;
+import joserodpt.realskywars.api.map.modes.teams.RSWTeam;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.player.RSWPlayerItems;
 import joserodpt.realskywars.api.player.RSWPlayerTab;
@@ -37,6 +37,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,6 +45,12 @@ import java.util.stream.Collectors;
 public class SoloMode extends RSWMap {
 
     private final Map<Location, RSWCage> cages;
+
+    //para dar setup
+    public SoloMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, int maxPlayers, RealSkywarsAPI rs) {
+        super(nome.replace(".schematic", "").replace(".schem", ""), displayName.replace(".schematic", "").replace(".schem", ""), w, schematicName, wt, MapState.RESETTING, maxPlayers, null, true, false, true, null, null, new HashMap<>(), false, true, rs);
+        this.cages = new HashMap<>();
+    }
 
     public SoloMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, Map<Location, RSWCage> cages, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, Map<Location, RSWChest> chests, Boolean rankd, Boolean unregistered, RealSkywarsAPI rs) {
         super(nome, displayName, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border, pos1, pos2, chests, rankd, unregistered, rs);
@@ -75,11 +82,11 @@ public class SoloMode extends RSWMap {
                     super.getBossBar().addPlayer(p.getPlayer());
 
                     //start msg
-                    TranslatableList.ARENA_START.get(p).forEach(s -> p.sendCenterMessage(s.replace("%chests%", super.getChestTier().getDisplayName(p)).replace("%kit%", p.getKit().getDisplayName()).replace("%project%", super.getProjectileTier().getDisplayName(p)).replace("%time%", super.getTimeType().getDisplayName(p))));
+                    TranslatableList.MAP_START.get(p).forEach(s -> p.sendCenterMessage(s.replace("%chests%", super.getChestTier().getDisplayName(p)).replace("%kit%", p.getPlayerKit().getDisplayName()).replace("%project%", super.getProjectileTier().getDisplayName(p)).replace("%time%", super.getTimeType().getDisplayName(p))));
 
-                    p.getKit().give(p);
+                    p.getPlayerKit().give(p);
                     p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.PLAYING);
-                    p.getCage().open();
+                    p.getPlayerCage().open();
                 }
             }
 
@@ -95,7 +102,7 @@ public class SoloMode extends RSWMap {
     @Override
     public void removePlayer(RSWPlayer p) {
         if (p.hasCage()) {
-            p.getCage().removePlayer(p);
+            p.getPlayerCage().removePlayer(p);
         }
 
         super.commonRemovePlayer(p);
@@ -141,7 +148,7 @@ public class SoloMode extends RSWMap {
                         }
                     }
 
-                    p.setRoom(this);
+                    p.setPlayerMap(this);
                     p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.CAGE);
 
                     super.getAllPlayers().add(p);
@@ -253,7 +260,7 @@ public class SoloMode extends RSWMap {
     }
 
     @Override
-    public Collection<Team> getTeams() {
+    public Collection<RSWTeam> getTeams() {
         return Collections.emptyList();
     }
 
@@ -285,7 +292,7 @@ public class SoloMode extends RSWMap {
 
     @Override
     public void addCage(Location location) {
-        RSWSoloCage cage = new RSWSoloCage(this.cages.size() + 1, location, this.getSpectatorLocation());
+        RSWSoloCage cage = new RSWSoloCage(this.cages.size() + 1, location);
         cage.setMap(this);
         this.cages.put(location, cage);
         this.save(Data.CAGES, true);

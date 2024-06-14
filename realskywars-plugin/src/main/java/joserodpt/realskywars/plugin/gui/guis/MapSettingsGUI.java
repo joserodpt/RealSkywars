@@ -16,7 +16,6 @@ package joserodpt.realskywars.plugin.gui.guis;
  */
 
 import joserodpt.realskywars.api.map.RSWMap;
-import joserodpt.realskywars.api.map.RSWSetupMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Text;
@@ -54,26 +53,13 @@ public class MapSettingsGUI {
     private final ItemStack borderoff = Itens.createItem(Material.ITEM_FRAME, 1, "&9Border", Collections.singletonList("&7Border is turned &cOFF&7."));
 
     private final UUID uuid;
-    private RSWPlayer p;
-    private RSWSetupMap setupMap;
     private RSWMap map;
-
-    public MapSettingsGUI(RSWPlayer p, RSWSetupMap sr) {
-        this.uuid = p.getUUID();
-        this.p = p;
-        this.setupMap = sr;
-
-        inv = Bukkit.getServer().createInventory(null, 27, Text.color(p.getSetupRoom().getName() + " Settings"));
-
-        loadInv();
-    }
 
     public MapSettingsGUI(RSWPlayer p, RSWMap map) {
         this.uuid = p.getUUID();
-        this.p = p;
         this.map = map;
 
-        inv = Bukkit.getServer().createInventory(null, 27, Text.color(map.getMapName() + " Settings"));
+        inv = Bukkit.getServer().createInventory(null, 27, Text.color(map.getMapName() + " settings"));
 
         loadInv();
     }
@@ -85,17 +71,10 @@ public class MapSettingsGUI {
             inv.setItem(slot, placeholder);
         }
 
-        if (setupMap != null) {
-            inv.setItem(10, setupMap.isSpectatorEnabled() ? specon : specoff);
-            inv.setItem(12, setupMap.isRanked() ? rankedon : rankedoff);
-            inv.setItem(14, setupMap.isInstantEndEnabled() ? ieon : ieoff);
-            inv.setItem(16, setupMap.isBorderEnabled() ? borderon : borderoff);
-        } else {
-            inv.setItem(10, map.isSpectatorEnabled() ? specon : specoff);
-            inv.setItem(12, map.isRanked() ? rankedon : rankedoff);
-            inv.setItem(14, map.isInstantEndEnabled() ? ieon : ieoff);
-            inv.setItem(16, map.isBorderEnabled() ? borderon : borderoff);
-        }
+        inv.setItem(10, map.isSpectatorEnabled() ? specon : specoff);
+        inv.setItem(12, map.isRanked() ? rankedon : rankedoff);
+        inv.setItem(14, map.isInstantEndEnabled() ? ieon : ieoff);
+        inv.setItem(16, map.isBorderEnabled() ? borderon : borderoff);
 
         inv.setItem(22, confirm);
     }
@@ -120,38 +99,25 @@ public class MapSettingsGUI {
 
                             e.setCancelled(true);
 
-                            if (e.getRawSlot() == 22) {
-                                if (current.map != null) {
-                                    current.map.save(RSWMap.Data.SETTINGS, true);
-                                }
-                                p.closeInventory();
-                                return;
-
-                                //Settings
-                            } else if (e.getRawSlot() == 10) {
-                                if (current.setupMap != null) {
-                                    current.setupMap.setSpectating(!current.setupMap.isSpectatorEnabled());
-                                } else {
+                            //Settings
+                            switch (e.getRawSlot()) {
+                                case 10:
                                     current.map.setSpectating(!current.map.isSpectatorEnabled());
-                                }
-                            } else if (e.getRawSlot() == 12) {
-                                if (current.setupMap != null) {
-                                    current.setupMap.setRanked(!current.setupMap.isRanked());
-                                } else {
+                                    break;
+                                case 12:
                                     current.map.setRanked(!current.map.isRanked());
-                                }
-                            } else if (e.getRawSlot() == 14) {
-                                if (current.setupMap != null) {
-                                    current.setupMap.setInstantEnding(!current.setupMap.isInstantEndEnabled());
-                                } else {
+                                    break;
+                                case 14:
                                     current.map.setInstantEnding(!current.map.isInstantEndEnabled());
-                                }
-                            } else if (e.getRawSlot() == 16) {
-                                if (current.setupMap != null) {
-                                    current.setupMap.setBorderEnabled(!current.setupMap.isBorderEnabled());
-                                } else {
+                                    break;
+                                case 16:
                                     current.map.setBorderEnabled(!current.map.isBorderEnabled());
-                                }
+                                    break;
+                                case 22:
+                                    current.map.save(RSWMap.Data.SETTINGS, true);
+                                    p.closeInventory();
+                                    break;
+
                             }
                             current.loadInv();
                         }

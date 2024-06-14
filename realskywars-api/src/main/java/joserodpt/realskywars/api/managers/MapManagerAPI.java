@@ -30,7 +30,7 @@ public abstract class MapManagerAPI {
 
     public abstract Collection<RSWMap> getMaps(MapGamemodes pt);
 
-    protected abstract Map<Location, RSWCage> getMapCages(String s, Location specLoc);
+    protected abstract Map<Location, RSWCage> getMapCages(String s, World w);
 
     protected abstract Map<Location, RSWChest> getMapChests(String worldName, String section);
 
@@ -38,17 +38,11 @@ public abstract class MapManagerAPI {
 
     public abstract void setupTeams(RSWPlayer p, String mapname, String displayName, RSWWorld.WorldType wt, int teams, int pperteam);
 
-    public abstract void cancelSetup(RSWPlayer p);
-
-    public abstract void continueSetup(RSWPlayer p);
-
-    public abstract void finishSetup(RSWPlayer p);
+    public abstract void finishMap(RSWPlayer p);
 
     protected abstract RSWWorld.WorldType getWorldType(String s);
 
     protected abstract Boolean isInstantEndingEnabled(String s);
-
-    protected abstract Boolean isBorderEnabled(String s);
 
     protected abstract Location getPOS1(World w, String s);
 
@@ -71,8 +65,6 @@ public abstract class MapManagerAPI {
     public abstract Collection<String> getMapNames();
 
     public abstract void editMap(RSWPlayer p, RSWMap sw);
-
-    public abstract void finishEdit(RSWPlayer p, RSWMap sw);
 
     public enum MapGamemodes {SOLO, SOLO_RANKED, TEAMS, TEAMS_RANKED, RANKED, ALL}
 }

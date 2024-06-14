@@ -15,115 +15,91 @@ package joserodpt.realskywars.api.cages;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
-public class RSWSoloCage implements RSWCage {
+public class RSWSoloCage extends RSWCage {
 
-    private final int id;
-    private final int x, y, z;
-    private final int specx, specy, specz;
-    private RSWPlayer p;
-    private RSWMap map;
+    protected RSWPlayer p;
 
-    public RSWSoloCage(int i, int x, int y, int z, int specx, int specy, int specz) {
-        this.id = i;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.specx = specx;
-        this.specy = specy;
-        this.specz = specz;
+    public RSWSoloCage(int id, int x, int y, int z) {
+        super(id, x, y, z);
     }
 
-    public RSWSoloCage(int i, Location l, Location specLoc) {
-        this(i, l.getBlockX(), l.getBlockY(), l.getBlockZ(), specLoc.getBlockX(), specLoc.getBlockY(), specLoc.getBlockZ());
+    public RSWSoloCage(int id, Location l) {
+        super(id, l);
     }
 
-    public Location getLocation() {
-        return new Location(map.getRSWWorld().getWorld(), this.x, this.y, this.z).add(0.5, 0, 0.5);
+    @Override
+    public boolean isEmpty() {
+        return this.p == null;
     }
 
+    @Override
     public void tpPlayer(RSWPlayer p) {
         this.p = p;
-
-        p.teleport(lookAt(getLocation(), new Location(map.getRSWWorld().getWorld(), this.specx, this.specy, this.specz)));
+        p.teleport(lookAt(getLocation(), super.getMap().getSpectatorLocation()));
     }
 
-    public void setMap(RSWMap map) {
-        this.map = map;
-    }
-
-    public int getID() {
-        return this.id;
-    }
-
-    public boolean isEmpty() {
-        return p == null;
-    }
-
+    @Override
     public void setCage(Material m) {
         if (m == null) {
             m = Material.GLASS;
         }
-        int[][] positions = {
-                {0, -1, 0}, {0, 0, 1}, {0, 0, -1}, {0, 3, 0},
+        for (int[] pos : new int[][]{{0, -1, 0}, {0, 0, 1}, {0, 0, -1}, {0, 3, 0},
                 {0, 1, 1}, {0, 2, 1}, {0, 1, -1}, {0, 2, -1},
                 {-1, 0, 0}, {-1, 1, 0}, {-1, 2, 0},
-                {1, 0, 0}, {1, 1, 0}, {1, 2, 0}
-        };
-
-        for (int[] pos : positions) {
+                {1, 0, 0}, {1, 1, 0}, {1, 2, 0}}) {
             map.getRSWWorld().getWorld().getBlockAt(x + pos[0], y + pos[1], z + pos[2]).setType(m);
         }
     }
 
-
+    @Override
     public void setCage() {
         setCage((Material) this.p.getProperty(RSWPlayer.PlayerProperties.CAGE_BLOCK));
     }
 
+    @Override
     public void clearCage() {
         setCage(Material.AIR);
         this.p = null;
     }
 
+    @Override
     public void addPlayer(RSWPlayer pl) {
         this.p = pl;
-        pl.setCage(this);
+        pl.setPlayerCage(this);
         this.setCage();
         this.tpPlayer(pl);
     }
 
+    @Override
     public void removePlayer(RSWPlayer p) {
-        p.setCage(null);
+        p.setPlayerCage(null);
         this.p = null;
     }
 
-    public int getMaxPlayers() {
-        return 1;
-    }
-
-    public List<RSWPlayer> getPlayers() {
+    @Override
+    public Collection<RSWPlayer> getPlayers() {
         return Collections.singletonList(this.p);
     }
 
+    @Override
     public void open() {
         map.getRSWWorld().getWorld().getBlockAt(x, y - 1, z).setType(Material.AIR);
 
-        if (this.p != null)
+        if (this.p != null) {
             this.p.setInvincible(true);
-
+        }
     }
 
-    //CREDIT open source spigot
+    // CREDIT open source spigot
     public static Location lookAt(Location loc, Location lookat) {
-        //Clone the loc to prevent applied changes to the input loc
+        // Clone the loc to prevent applied changes to the input loc
         loc = loc.clone();
 
         // Values of change in distance (make it relative)

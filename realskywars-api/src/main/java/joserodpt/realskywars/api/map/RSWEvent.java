@@ -75,7 +75,7 @@ public class RSWEvent {
                 this.room.getAllPlayers().forEach(rswPlayer -> rswPlayer.playSound(Sound.ENTITY_ENDER_DRAGON_GROWL, 50, 50));
 
                 this.room.getBorder().setSize((double) this.room.getBorderSize() / 2, 30L);
-                this.room.getBorder().setCenter(this.room.getArena().getCenter());
+                this.room.getBorder().setCenter(this.room.getMapCuboid().getCenter());
                 break;
         }
     }

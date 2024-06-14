@@ -53,7 +53,7 @@ public class KitSettingsGUI {
         this.uuid = id;
         this.kt = k;
 
-        inv = Bukkit.getServer().createInventory(null, 27, Text.color(k.getDisplayName() + " Settings"));
+        inv = Bukkit.getServer().createInventory(null, 27, Text.color(k.getDisplayName() + " settings"));
 
         load();
     }

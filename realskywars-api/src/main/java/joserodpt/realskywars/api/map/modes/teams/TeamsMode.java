@@ -34,6 +34,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,9 +42,16 @@ import java.util.stream.Collectors;
 public class TeamsMode extends RSWMap {
 
     private final int maxMembersTeam;
-    private final Map<Location, Team> teams;
+    private final Map<Location, RSWTeam> teams;
 
-    public TeamsMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, Map<Location, Team> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, Map<Location, RSWChest> chests, Boolean rankd, Boolean unregistered, RealSkywarsAPI rs) {
+    public TeamsMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, int teams, int playersPerTeam, RealSkywarsAPI rs) {
+        super(nome, displayName, w, schematicName, wt, MapState.RESETTING, teams * playersPerTeam, null, true, false, true, null, null, new HashMap<>(), false, true, rs);
+
+        this.teams = new HashMap<>();
+        this.maxMembersTeam = playersPerTeam;
+    }
+
+    public TeamsMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, Map<Location, RSWTeam> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, Map<Location, RSWChest> chests, Boolean rankd, Boolean unregistered, RealSkywarsAPI rs) {
         super(nome, displayName, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border, pos1, pos2, chests, rankd, unregistered, rs);
 
         this.teams = teams;
@@ -68,7 +76,7 @@ public class TeamsMode extends RSWMap {
 
             super.calculateVotes();
 
-            for (Team t : this.getTeams()) {
+            for (RSWTeam t : this.getTeams()) {
                 for (RSWPlayer p : t.getMembers()) {
                     if (p.getPlayer() != null) {
                         p.setBarNumber(0);
@@ -77,9 +85,9 @@ public class TeamsMode extends RSWMap {
                         super.getBossBar().addPlayer(p.getPlayer());
 
                         //start msg
-                        TranslatableList.ARENA_START.get(p).forEach(s -> p.sendCenterMessage(s.replace("%chests%", super.getChestTier().getDisplayName(p)).replace("%kit%", p.getKit().getDisplayName()).replace("%project%", super.getProjectileTier().getDisplayName(p)).replace("%time%", super.getTimeType().getDisplayName(p))));
+                        TranslatableList.MAP_START.get(p).forEach(s -> p.sendCenterMessage(s.replace("%chests%", super.getChestTier().getDisplayName(p)).replace("%kit%", p.getPlayerKit().getDisplayName()).replace("%project%", super.getProjectileTier().getDisplayName(p)).replace("%time%", super.getTimeType().getDisplayName(p))));
 
-                        p.getKit().give(p);
+                        p.getPlayerKit().give(p);
                         p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.PLAYING);
                     }
                 }
@@ -137,14 +145,14 @@ public class TeamsMode extends RSWMap {
                     }
 
                     //cage
-                    for (Team c : this.getTeams()) {
+                    for (RSWTeam c : this.getTeams()) {
                         if (!c.isTeamFull()) {
                             c.addPlayer(p);
                             break;
                         }
                     }
 
-                    p.setRoom(this);
+                    p.setPlayerMap(this);
                     p.setProperty(RSWPlayer.PlayerProperties.STATE, RSWPlayer.PlayerState.CAGE);
 
                     for (RSWPlayer ws : super.getAllPlayers()) {
@@ -193,7 +201,7 @@ public class TeamsMode extends RSWMap {
 
     @Override
     public void resetArena(OperationReason rr) {
-        this.getTeams().forEach(Team::reset);
+        this.getTeams().forEach(RSWTeam::reset);
         super.commonResetArena(rr);
     }
 
@@ -208,20 +216,20 @@ public class TeamsMode extends RSWMap {
         if (this.getAliveTeams() == 1 && this.getState() != MapState.FINISHING) {
             this.setState(MapState.FINISHING);
 
-            Team winTeam = getPlayers().get(0).getTeam();
+            RSWTeam winRSWTeam = getPlayers().get(0).getTeam();
 
             super.getMapTimer().killTask();
             super.getTimeCounterTask().cancel();
 
-            super.getRealSkywarsAPI().getPlayerManagerAPI().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(TranslatableLine.WINNER_BROADCAST.get(gamePlayer, true).replace("%winner%", winTeam.getNames()).replace("%map%", super.getMapName()).replace("%displayname%", super.getDisplayName())));
+            super.getRealSkywarsAPI().getPlayerManagerAPI().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(TranslatableLine.WINNER_BROADCAST.get(gamePlayer, true).replace("%winner%", winRSWTeam.getNames()).replace("%map%", super.getMapName()).replace("%displayname%", super.getDisplayName())));
 
             if (this.isInstantEndEnabled()) {
-                winTeam.getMembers().forEach(rswPlayer -> this.sendLog(rswPlayer, true));
+                winRSWTeam.getMembers().forEach(rswPlayer -> this.sendLog(rswPlayer, true));
                 this.kickPlayers(null);
                 this.resetArena(OperationReason.RESET);
             } else {
                 super.setFinishingTimer(new CountdownTimer(super.getRealSkywarsAPI().getPlugin(), RSWConfig.file().getInt("Config.Time-EndGame"), () -> {
-                    for (RSWPlayer p : winTeam.getMembers()) {
+                    for (RSWPlayer p : winRSWTeam.getMembers()) {
                         if (p.getPlayer() != null) {
                             p.setInvincible(true);
                             p.addStatistic(RSWPlayer.Statistic.TEAM_WIN, 1, this.isRanked());
@@ -233,11 +241,11 @@ public class TeamsMode extends RSWMap {
                     for (RSWPlayer g : super.getAllPlayers()) {
                         if (g.getPlayer() != null) {
                             g.sendMessage(TranslatableLine.MATCH_END.get(g, true).replace("%time%", Text.formatSeconds(RSWConfig.file().getInt("Config.Time-EndGame"))));
-                            g.getPlayer().sendTitle("", Text.color(TranslatableLine.TITLE_WIN.get(g).replace("%player%", winTeam.getNames())), 10, 40, 10);
+                            g.getPlayer().sendTitle("", Text.color(TranslatableLine.TITLE_WIN.get(g).replace("%player%", winRSWTeam.getNames())), 10, 40, 10);
                         }
                     }
                 }, () -> {
-                    winTeam.getMembers().forEach(rswPlayer -> this.sendLog(rswPlayer, true));
+                    winRSWTeam.getMembers().forEach(rswPlayer -> this.sendLog(rswPlayer, true));
                     this.kickPlayers(null);
                     this.resetArena(OperationReason.RESET);
                 }, (t) -> {
@@ -267,7 +275,7 @@ public class TeamsMode extends RSWMap {
     }
 
     @Override
-    public Collection<Team> getTeams() {
+    public Collection<RSWTeam> getTeams() {
         return this.teams.values();
     }
 
@@ -299,7 +307,7 @@ public class TeamsMode extends RSWMap {
 
     @Override
     public void addCage(Location location) {
-        Team t = new Team(this.getTeams().size() + 1, this.getMaxTeamMembers(), location);
+        RSWTeam t = new RSWTeam(this.getTeams().size() + 1, this.getMaxTeamMembers(), location);
         t.getTeamCage().setMap(this);
         this.teams.put(location, t);
         this.save(Data.CAGES, true);

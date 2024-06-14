@@ -25,8 +25,7 @@ import joserodpt.realskywars.api.effects.RSWTrail;
 import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
-import joserodpt.realskywars.api.map.RSWSetupMap;
-import joserodpt.realskywars.api.map.modes.teams.Team;
+import joserodpt.realskywars.api.map.modes.teams.RSWTeam;
 import joserodpt.realskywars.api.party.RSWParty;
 import joserodpt.realskywars.api.utils.Text;
 import net.md_5.bungee.api.ChatMessageType;
@@ -49,29 +48,30 @@ import java.util.List;
 import java.util.UUID;
 
 public class RSWPlayer {
+
+    private Player player;
+    private String anonName = "?";
+    private String language = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getDefaultLanguage();
+
     private final List<RSWTrail> RSWTrails = new ArrayList<>();
     private List<RSWGameLog> gamesList = new ArrayList<>();
-    private RSWPlayerTab rt;
-    private String anonName = "?";
-    private Player player;
     private PlayerState state = PlayerState.LOBBY_OR_NOGAME;
-    private String language = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getDefaultLanguage();
-    private RSWMap room;
-    private RSWSetupMap setup;
-    private Team team;
-    private RSWCage cage;
-    private RSWParty rswParty;
+    private MapViewerPref playerMapViewerPref;
+    private RSWTeam playerTeam;
+    private RSWMap playerMap;
+    private RSWKit playerKit;
+    private RSWCage playerCage;
+    private RSWParty playerParty;
+    private RSWPlayerSB playerSB;
+    private RSWPlayerTab playerTab;
 
     //statistics
     private int gamekills, kills, deaths, winsSolo, winsTEAMS, loses, gamesPlayed;
     private int rankedTotalkills, rankedDeaths, rankedWinsSolo, rankedWinsTEAMS, rankedLoses, rankedGamesPlayed;
 
     private Double coins = 0D, balanceGame = 0D;
-    private RSWPlayerSB playerscoreboard;
     private Material cageBlock = Material.GLASS;
     private List<String> boughtList = new ArrayList<>();
-    private MapViewerPref mapViewerPref;
-    private RSWKit swKit;
     private Particle bowParticle;
     private Material winblockMaterial;
     private Boolean invincible = false, bot = false, winblockRandom = false;
@@ -90,7 +90,7 @@ public class RSWPlayer {
         this.boughtList = new ArrayList<>(bgh);
         this.loses = l;
         this.gamesPlayed = gp;
-        this.playerscoreboard = new RSWPlayerSB(this);
+        this.playerSB = new RSWPlayerSB(this);
 
         this.gamesList = new ArrayList<>(gamesList);
 
@@ -101,7 +101,7 @@ public class RSWPlayer {
         this.rankedLoses = rankedLoses;
         this.rankedGamesPlayed = rankedGamesPlayed;
 
-        this.rt = new RSWPlayerTab(this);
+        this.playerTab = new RSWPlayerTab(this);
     }
 
     public RSWPlayer(boolean anonName) {
@@ -121,7 +121,7 @@ public class RSWPlayer {
     }
 
     public boolean isInMatch() {
-        return this.room != null;
+        return this.playerMap != null;
     }
 
     public void addStatistic(RSWPlayer.Statistic t, int i, Boolean ranked) {
@@ -281,7 +281,7 @@ public class RSWPlayer {
     }
 
     public void delCage() {
-        if (this.cage != null) this.cage.removePlayer(this);
+        if (this.playerCage != null) this.playerCage.removePlayer(this);
     }
 
     public void setFlying(boolean b) {
@@ -306,13 +306,13 @@ public class RSWPlayer {
     public void setProperty(PlayerProperties pp, Object o) {
         switch (pp) {
             case MAPVIEWER_PREF:
-                this.mapViewerPref = MapViewerPref.valueOf((String) o);
+                this.playerMapViewerPref = MapViewerPref.valueOf((String) o);
                 this.saveData(PlayerData.MAPVIEWER_PREF);
                 break;
             case KIT:
-                this.swKit = (RSWKit) o;
-                if (this.swKit == null) {
-                    this.swKit = new RSWKit();
+                this.playerKit = (RSWKit) o;
+                if (this.playerKit == null) {
+                    this.playerKit = new RSWKit();
                 }
                 this.saveData(PlayerData.KIT);
                 break;
@@ -327,7 +327,7 @@ public class RSWPlayer {
                         switch (this.getMatch().getGameMode()) {
                             case SOLO:
                                 if (hasCage()) {
-                                    this.cage.setCage();
+                                    this.playerCage.setCage();
                                 }
                                 break;
                             case TEAMS:
@@ -381,7 +381,7 @@ public class RSWPlayer {
     }
 
     public Object getStatistics(PlayerStatistics pp) {
-        return getStatistics(pp, this.isInMatch() && this.room.isRanked());
+        return getStatistics(pp, this.isInMatch() && this.playerMap.isRanked());
     }
 
     public RSWPlayer.PlayerState getState() {
@@ -389,19 +389,11 @@ public class RSWPlayer {
     }
 
     public RSWMap getMatch() {
-        return this.room;
+        return this.playerMap;
     }
 
-    public void setRoom(RSWMap o) {
-        this.room = o;
-    }
-
-    public RSWSetupMap getSetupRoom() {
-        return this.setup;
-    }
-
-    public void setSetup(RSWSetupMap o) {
-        this.setup = o;
+    public void setPlayerMap(RSWMap o) {
+        this.playerMap = o;
     }
 
     public List<String> getBoughtItems() {
@@ -413,19 +405,19 @@ public class RSWPlayer {
     }
 
     public RSWPlayerSB getScoreboard() {
-        return this.playerscoreboard;
+        return this.playerSB;
     }
 
-    public RSWKit getKit() {
-        return this.hasKit() ? this.swKit : new RSWKit();
+    public RSWKit getPlayerKit() {
+        return this.hasKit() ? this.playerKit : new RSWKit();
     }
 
-    public Team getTeam() {
-        return this.team;
+    public RSWTeam getTeam() {
+        return this.playerTeam;
     }
 
-    public void setTeam(Team o) {
-        this.team = o;
+    public void setTeam(RSWTeam o) {
+        this.playerTeam = o;
     }
 
     public Object getProperty(PlayerProperties pp) {
@@ -435,7 +427,7 @@ public class RSWPlayer {
             case BOW_PARTICLES:
                 return this.bowParticle;
             case MAPVIEWER_PREF:
-                return this.mapViewerPref;
+                return this.playerMapViewerPref;
         }
         return null;
     }
@@ -458,12 +450,12 @@ public class RSWPlayer {
         }
     }
 
-    public RSWCage getCage() {
-        return this.cage;
+    public RSWCage getPlayerCage() {
+        return this.playerCage;
     }
 
-    public void setCage(RSWCage c) {
-        this.cage = c;
+    public void setPlayerCage(RSWCage c) {
+        this.playerCage = c;
     }
 
     public boolean isInvencible() {
@@ -475,8 +467,8 @@ public class RSWPlayer {
     }
 
     public void leave() {
-        if (this.room != null) {
-            this.room.removePlayer(this);
+        if (this.playerMap != null) {
+            this.playerMap.removePlayer(this);
         }
 
         if (this.hasParty()) {
@@ -489,7 +481,7 @@ public class RSWPlayer {
 
         this.stopTrails();
 
-        this.playerscoreboard.stop();
+        this.playerSB.stop();
         this.saveData(PlayerData.GAME);
         RealSkywarsAPI.getInstance().getPlayerManagerAPI().removePlayer(this);
     }
@@ -499,11 +491,11 @@ public class RSWPlayer {
     }
 
     public boolean hasKit() {
-        return this.swKit != null;
+        return this.playerKit != null;
     }
 
     public boolean hasCage() {
-        return this.cage != null;
+        return this.playerCage != null;
     }
 
     public PlayerInventory getInventory() {
@@ -511,7 +503,7 @@ public class RSWPlayer {
     }
 
     public boolean hasTeam() {
-        return this.team != null;
+        return this.playerTeam != null;
     }
 
     public String getDisplayName() {
@@ -537,7 +529,7 @@ public class RSWPlayer {
     }
 
     public RSWPlayerTab getTab() {
-        return this.rt;
+        return this.playerTab;
     }
 
     public enum PlayerData {CAGE_BLOCK, GAME, COINS, LANG, MAPVIEWER_PREF, BOUGHT_ITEMS, KIT}
@@ -553,37 +545,37 @@ public class RSWPlayer {
     }
 
     public boolean hasParty() {
-        return this.rswParty != null;
+        return this.playerParty != null;
     }
 
     public void createParty() {
-        this.rswParty = new RSWParty(this);
+        this.playerParty = new RSWParty(this);
     }
 
     public void disbandParty() {
-        this.rswParty.disband();
+        this.playerParty.disband();
     }
 
     public RSWParty getParty() {
-        return this.rswParty;
+        return this.playerParty;
     }
 
     public void joinParty(RSWPlayer player) {
-        this.rswParty = player.getParty();
+        this.playerParty = player.getParty();
     }
 
     public void leaveParty() {
-        this.rswParty.playerLeave(this);
-        this.rswParty = null;
+        this.playerParty.playerLeave(this);
+        this.playerParty = null;
         this.sendMessage(TranslatableLine.PARTY_LEAVE.get(this, true).replace("%player%", this.getDisplayName()));
     }
 
-    public MapViewerPref getMapViewerPref() {
-        return this.mapViewerPref;
+    public MapViewerPref getPlayerMapViewerPref() {
+        return this.playerMapViewerPref;
     }
 
-    public void setMapViewerPref(MapViewerPref a) {
-        this.mapViewerPref = a;
+    public void setPlayerMapViewerPref(MapViewerPref a) {
+        this.playerMapViewerPref = a;
     }
 
     public void closeInventory() {

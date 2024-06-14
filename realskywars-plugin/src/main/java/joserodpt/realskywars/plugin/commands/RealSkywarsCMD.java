@@ -279,7 +279,7 @@ public class RealSkywarsCMD extends CommandBase {
                 if (value.getPath().startsWith(".")) {
                     String val = value.getInLanguage(language);
                     if (val.isEmpty()) {
-                        Text.send(commandSender, "&cMissing translation for &f" + value.name() + " &cin language &f" + language);
+                        Text.send(commandSender, "&cMissing translation for &9" + value.name() + " &cin language &b" + language);
                     }
                 }
             }
@@ -288,7 +288,7 @@ public class RealSkywarsCMD extends CommandBase {
             for (TranslatableList value : TranslatableList.values()) {
                 List<String> tmp = value.getInLanguage(language);
                 if (tmp == null || tmp.isEmpty()) {
-                    Text.send(commandSender, "&cMissing translation for &f" + value.name() + " &cin language &f" + language);
+                    Text.send(commandSender, "&cMissing translation for &9" + value.name() + " &cin language &b" + language);
                 }
             }
         }
@@ -301,12 +301,16 @@ public class RealSkywarsCMD extends CommandBase {
     public void setspectator(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            if (p.getSetupRoom() != null) {
-                p.getSetupRoom().setSpectatorLoc(p.getLocation());
-                p.getSetupRoom().setSpectatorConfirm(true);
-                TranslatableLine.CMD_FINISHSETUP.send(p, true);
+            RSWMap sw = rs.getMapManagerAPI().getMap(p.getWorld());
+            if (sw != null) {
+                if (sw.isUnregistered()) {
+                    sw.setSpectatorLocation(p.getLocation());
+                    TranslatableLine.CMD_SPEC_SET.send(p, true);
+                } else {
+                    TranslatableLine.MAP_UNREGISTER_TO_EDIT.send(p, true);
+                }
             } else {
-                TranslatableLine.CMD_CNO_SETUP_MODE.send(p, true);
+                TranslatableLine.CMD_NO_MAP_FOUND.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -406,35 +410,12 @@ public class RealSkywarsCMD extends CommandBase {
         }
     }
 
-    @SubCommand("cancelsetup")
+    @SubCommand("finish")
     @Permission("rsw.admin")
-    public void cancelsetup(final CommandSender commandSender) {
+    public void finish(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            if (p.getSetupRoom() != null) {
-                rs.getMapManagerAPI().cancelSetup(p);
-            } else {
-                TranslatableLine.CMD_CNO_SETUP_MODE.send(p, true);
-            }
-        } else {
-            commandSender.sendMessage(onlyPlayer);
-        }
-    }
-
-    @SubCommand("finishsetup")
-    @Permission("rsw.admin")
-    public void finishsetup(final CommandSender commandSender) {
-        if (commandSender instanceof Player) {
-            RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            if (p.getSetupRoom() != null) {
-                if (p.getSetupRoom().areCagesConfirmed() & p.getSetupRoom().isSpectatorLocConfirmed()) {
-                    rs.getMapManagerAPI().finishSetup(p);
-                } else {
-                    TranslatableLine.CMD_SETUP_NOT_FINISHED.send(p, true);
-                }
-            } else {
-                TranslatableLine.CMD_CNO_SETUP_MODE.send(p, true);
-            }
+            rs.getMapManagerAPI().finishMap(p);
         } else {
             commandSender.sendMessage(onlyPlayer);
         }
@@ -579,14 +560,10 @@ public class RealSkywarsCMD extends CommandBase {
             if (RSWConfig.file().isSection("Config.Lobby")) {
                 RSWMap map = rs.getMapManagerAPI().getMap(mapname);
                 if (map == null) {
-                    if (p.getSetupRoom() != null) {
-                        TranslatableLine.CMD_SETUP_NOT_FINISHED.send(p, true);
+                    if (teamPlayers == null) {
+                        rs.getMapManagerAPI().setupSolo(p, Text.strip(mapname), mapname, wt, maxPlayersandTeams);
                     } else {
-                        if (teamPlayers == null) {
-                            rs.getMapManagerAPI().setupSolo(p, Text.strip(mapname), mapname, wt, maxPlayersandTeams);
-                        } else {
-                            rs.getMapManagerAPI().setupTeams(p, Text.strip(mapname), mapname, wt, maxPlayersandTeams, teamPlayers);
-                        }
+                        rs.getMapManagerAPI().setupTeams(p, Text.strip(mapname), mapname, wt, maxPlayersandTeams, teamPlayers);
                     }
                 } else {
                     TranslatableLine.MAP_EXISTS.send(p, true);
@@ -658,22 +635,6 @@ public class RealSkywarsCMD extends CommandBase {
         }
     }
 
-    @SubCommand("finishedit")
-    @Permission("rsw.admin")
-    public void finishedit(final CommandSender commandSender) {
-        if (commandSender instanceof Player) {
-            RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            RSWMap sw = rs.getMapManagerAPI().getMap(p.getWorld());
-            if (sw != null) {
-                rs.getMapManagerAPI().finishEdit(p, sw);
-            } else {
-                TranslatableLine.CMD_NO_MAP_FOUND.send(p, true);
-            }
-        } else {
-            commandSender.sendMessage(onlyPlayer);
-        }
-    }
-
     @SubCommand("delete")
     @Completion("#maps")
     @Alias("del")
@@ -683,7 +644,7 @@ public class RealSkywarsCMD extends CommandBase {
         RSWMap map = rs.getMapManagerAPI().getMap(mapName);
         if (map != null) {
             rs.getMapManagerAPI().deleteMap(map);
-            TranslatableLine.MAP_UNREGISTERED.sendDefault(commandSender, true);
+            TranslatableLine.MAP_DELETED.sendDefault(commandSender, true);
         } else {
             TranslatableLine.CMD_NO_MAP_FOUND.sendDefault(commandSender, true);
         }
