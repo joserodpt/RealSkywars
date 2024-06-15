@@ -132,7 +132,7 @@ public class PlayerListener implements Listener {
                                 m.openInventory(p);
                                 return;
                             }
-                        } else if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().getType() == Material.EMERALD) {
+                        } else if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().getType() == Material.CHEST_MINECART) {
                             p.getPlayer().performCommand("rsw finish");
                             return;
                         }
@@ -203,10 +203,12 @@ public class PlayerListener implements Listener {
                                         break;
                                     case EMERALD:
                                         e.setCancelled(true);
-                                        ShopGUI ss = new ShopGUI(p, ShopManagerAPI.ShopCategory.SPEC_SHOP);
-                                        ss.openInventory(p);
+                                        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Spectator-Shop")) {
+                                            ShopGUI ss = new ShopGUI(p, ShopManagerAPI.ShopCategory.SPEC_SHOP);
+                                            ss.openInventory(p);
+                                            e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                        }
 
-                                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                         break;
                                     default:
                                         e.setCancelled(true);
@@ -256,9 +258,11 @@ public class PlayerListener implements Listener {
                                 break;
                             case EMERALD:
                                 e.setCancelled(true);
-                                GUIManager.openShopMenu(p);
+                                if (RSWConfig.file().getBoolean("Config.Shops.Enable-Shop")) {
+                                    GUIManager.openShopMenu(p);
+                                    e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+                                }
 
-                                e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 break;
                         }
                     }

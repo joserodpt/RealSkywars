@@ -9,7 +9,13 @@ Config:
   Invincibility-Seconds: 3
   Auto-Teleport-To-Lobby: true
   Scoreboard-In-Lobby: true
-  Spectator-Shop: true
+  Shops:
+    Enable-Shop: true
+    Enable-Spectator-Shop: true
+    Enable-Kit-Shop: true
+    Enable-Cage-Block-Shop: true
+    Enable-Win-Block-Shop: true
+    Enable-Bow-Particles-Shop: true
   Right-Click-Player-Info: true
   PlaceholderAPI-In-Scoreboard: false
   Disable-Player-Reset: false

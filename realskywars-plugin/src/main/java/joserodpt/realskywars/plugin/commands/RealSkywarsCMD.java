@@ -191,7 +191,8 @@ public class RealSkywarsCMD extends CommandBase {
     @Permission("rsw.shop")
     public void shopcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
-            GUIManager.openShopMenu(rs.getPlayerManagerAPI().getPlayer((Player) commandSender));
+            if (RSWConfig.file().getBoolean("Config.Shops.Enable-Shop"))
+                GUIManager.openShopMenu(rs.getPlayerManagerAPI().getPlayer((Player) commandSender));
         } else {
             commandSender.sendMessage(onlyPlayer);
         }

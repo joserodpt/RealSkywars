@@ -107,13 +107,13 @@ public class ShopManager extends ShopManagerAPI {
                 if (material.equalsIgnoreCase("randomblock")) {
                     m = Material.COMMAND_BLOCK;
                 } else {
-                    m = Material.getMaterial(material);
-                }
-
-                if (m == null) {
-                    m = Material.BARRIER;
-                    Debugger.print(ShopManager.class, "[FATAL] Material: " + material + " isn't valid! Changed to Barrier Material.");
-                    error = true;
+                    try {
+                        m = Material.valueOf(material);
+                    } catch (Exception e) {
+                        m = Material.BARRIER;
+                        Debugger.print(ShopManager.class, "[Warning] Material: " + material + " isn't valid! Changed to Barrier Material.");
+                        error = true;
+                    }
                 }
 
                 RSWShopDisplayItem s = new RSWShopDisplayItem(name, displayName, m, price, p.boughtItem(name, cat), perm, ShopCategory.CAGE_BLOCKS);
@@ -125,7 +125,7 @@ public class ShopManager extends ShopManagerAPI {
                     try {
                         s.addInfo("Particle", Particle.valueOf(parse[4]));
                     } catch (Exception e) {
-                        RealSkywarsAPI.getInstance().getLogger().warning("[FATAL] " + parse[4] + " isn't a valid particle! Changed to drip lava.");
+                        Debugger.print(ShopManager.class, "[Warning] " + parse[4] + " isn't a valid particle! Changed to drip lava.");
                         s.addInfo("Particle", Particle.DRIP_LAVA);
                     }
                 }

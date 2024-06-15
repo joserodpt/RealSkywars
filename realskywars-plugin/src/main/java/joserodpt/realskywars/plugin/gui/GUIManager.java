@@ -41,49 +41,53 @@ public class GUIManager {
     public static void openShopMenu(RSWPlayer p) {
         GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_SHOP_TILE.get(p), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
-        inventory.addItem(e -> {
-            p.closeInventory();
+        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Kit-Shop"))
+            inventory.addItem(e -> {
+                p.closeInventory();
 
-            new BukkitRunnable() {
-                public void run() {
-                    ShopGUI v = new ShopGUI(p, ShopManagerAPI.ShopCategory.CAGE_BLOCKS);
-                    v.openInventory(p);
-                }
-            }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.SPAWNER, 1, TranslatableLine.CAGEBLOCK.get(p)), 10);
+                new BukkitRunnable() {
+                    public void run() {
+                        ShopGUI v = new ShopGUI(p, ShopManagerAPI.ShopCategory.KITS);
+                        v.openInventory(p);
+                    }
+                }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
+            }, Itens.createItem(Material.CHEST, 1, TranslatableLine.KITS.get(p)), 10);
 
-        inventory.addItem(e -> {
-            p.closeInventory();
+        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Cage-Block-Shop"))
+            inventory.addItem(e -> {
+                p.closeInventory();
 
-            new BukkitRunnable() {
-                public void run() {
-                    ShopGUI v = new ShopGUI(p, ShopManagerAPI.ShopCategory.KITS);
-                    v.openInventory(p);
-                }
-            }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.CHEST, 1, TranslatableLine.KITS.get(p)), 12);
+                new BukkitRunnable() {
+                    public void run() {
+                        ShopGUI v = new ShopGUI(p, ShopManagerAPI.ShopCategory.CAGE_BLOCKS);
+                        v.openInventory(p);
+                    }
+                }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
+            }, Itens.createItem(Material.SPAWNER, 1, TranslatableLine.CAGEBLOCK.get(p)), 12);
 
-        inventory.addItem(e -> {
-            p.closeInventory();
+        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Win-Block-Shop"))
+            inventory.addItem(e -> {
+                p.closeInventory();
 
-            new BukkitRunnable() {
-                public void run() {
-                    ShopGUI v = new ShopGUI(p, ShopManagerAPI.ShopCategory.WIN_BLOCKS);
-                    v.openInventory(p);
-                }
-            }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.FIREWORK_ROCKET, 1, TranslatableLine.WINBLOCK.get(p)), 14);
+                new BukkitRunnable() {
+                    public void run() {
+                        ShopGUI v = new ShopGUI(p, ShopManagerAPI.ShopCategory.WIN_BLOCKS);
+                        v.openInventory(p);
+                    }
+                }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
+            }, Itens.createItem(Material.FIREWORK_ROCKET, 1, TranslatableLine.WINBLOCK.get(p)), 14);
 
-        inventory.addItem(e -> {
-            p.closeInventory();
+        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Bow-Particles-Shop"))
+            inventory.addItem(e -> {
+                p.closeInventory();
 
-            new BukkitRunnable() {
-                public void run() {
-                    ShopGUI v = new ShopGUI(p, ShopManagerAPI.ShopCategory.BOW_PARTICLES);
-                    v.openInventory(p);
-                }
-            }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(p)), 16);
+                new BukkitRunnable() {
+                    public void run() {
+                        ShopGUI v = new ShopGUI(p, ShopManagerAPI.ShopCategory.BOW_PARTICLES);
+                        v.openInventory(p);
+                    }
+                }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
+            }, Itens.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(p)), 16);
 
         inventory.openInventory(p.getPlayer());
     }
@@ -159,50 +163,54 @@ public class GUIManager {
 
         GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_PLAYERP_TITLE.get(p), size, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
-        inventory.addItem(e -> {
-            p.closeInventory();
-            new BukkitRunnable() {
-                public void run() {
-                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.KITS);
-                    v.openInventory(p);
-                }
-            }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.CHEST, 1, TranslatableLine.KITS.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 10);
+        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Kit-Shop"))
+            inventory.addItem(e -> {
+                p.closeInventory();
+                new BukkitRunnable() {
+                    public void run() {
+                        PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.KITS);
+                        v.openInventory(p);
+                    }
+                }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
+            }, Itens.createItem(Material.CHEST, 1, TranslatableLine.KITS.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 10);
 
-        inventory.addItem(e -> {
-            p.closeInventory();
+        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Cage-Block-Shop"))
+            inventory.addItem(e -> {
+                p.closeInventory();
 
 
-            new BukkitRunnable() {
-                public void run() {
-                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.CAGE_BLOCKS);
-                    v.openInventory(p);
-                }
-            }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
+                new BukkitRunnable() {
+                    public void run() {
+                        PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.CAGE_BLOCKS);
+                        v.openInventory(p);
+                    }
+                }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
 
-        }, Itens.createItem(Material.SPAWNER, 1, TranslatableLine.CAGEBLOCK.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 12);
+            }, Itens.createItem(Material.SPAWNER, 1, TranslatableLine.CAGEBLOCK.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 12);
 
-        inventory.addItem(e -> {
-            p.closeInventory();
+        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Win-Block-Shop"))
+            inventory.addItem(e -> {
+                p.closeInventory();
 
-            new BukkitRunnable() {
-                public void run() {
-                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.WIN_BLOCKS);
-                    v.openInventory(p);
-                }
-            }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.FIREWORK_ROCKET, 1, TranslatableLine.WINBLOCK.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 14);
+                new BukkitRunnable() {
+                    public void run() {
+                        PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.WIN_BLOCKS);
+                        v.openInventory(p);
+                    }
+                }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
+            }, Itens.createItem(Material.FIREWORK_ROCKET, 1, TranslatableLine.WINBLOCK.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 14);
 
-        inventory.addItem(e -> {
-            p.closeInventory();
+        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Bow-Particles-Shop"))
+            inventory.addItem(e -> {
+                p.closeInventory();
 
-            new BukkitRunnable() {
-                public void run() {
-                    PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.BOW_PARTICLES);
-                    v.openInventory(p);
-                }
-            }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 13);
+                new BukkitRunnable() {
+                    public void run() {
+                        PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.BOW_PARTICLES);
+                        v.openInventory(p);
+                    }
+                }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
+            }, Itens.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 13);
 
         inventory.addItem(e -> {
             p.closeInventory();

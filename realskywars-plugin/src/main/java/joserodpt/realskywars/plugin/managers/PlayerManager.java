@@ -233,27 +233,27 @@ public class PlayerManager extends PlayerManagerAPI {
 
     @Override
     public int getPlayingPlayers(MapManagerAPI.MapGamemodes pt) {
-        return rs.getMapManagerAPI().getMaps(pt).stream().mapToInt(RSWMap::getPlayerCount).sum();
+        return this.rs.getMapManagerAPI().getMaps(pt).stream().mapToInt(RSWMap::getPlayerCount).sum();
     }
 
     @Override
     public void stopScoreboards() {
-        players.values().forEach(gamePlayer -> gamePlayer.getScoreboard().stop());
+        this.players.values().forEach(gamePlayer -> gamePlayer.getScoreboard().stop());
     }
 
     @Override
     public Collection<RSWPlayer> getPlayers() {
-        return players.values();
+        return this.players.values();
     }
 
     @Override
     public void addPlayer(RSWPlayer rswPlayer) {
-        players.put(rswPlayer.getUUID(), rswPlayer);
+        this.players.put(rswPlayer.getUUID(), rswPlayer);
     }
 
     @Override
     public void removePlayer(RSWPlayer rswPlayer) {
-        players.remove(rswPlayer.getUUID());
+        this.players.remove(rswPlayer.getUUID());
     }
 
     @Override
@@ -295,7 +295,7 @@ public class PlayerManager extends PlayerManagerAPI {
 
     @Override
     public List<UUID> getTeleporting() {
-        return teleporting;
+        return this.teleporting;
     }
 
 }

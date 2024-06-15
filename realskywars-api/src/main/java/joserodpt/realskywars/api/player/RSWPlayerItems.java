@@ -31,7 +31,7 @@ public enum RSWPlayerItems {
                 if (p.getState() != RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
                     p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Spectator.Play-Again"), ITEM_PLAYAGAIN.get(p));
                 }
-                if (RSWConfig.file().getBoolean("Config.Spectator-Shop")) {
+                if (RSWConfig.file().getBoolean("Config.Shops.Enable-Spectator-Shop")) {
                     p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Spectator.Shop"), ITEM_SHOP.get(p));
                 }
                 p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Spectator.Leave"), ITEM_LEAVE.get(p));
@@ -73,7 +73,7 @@ public enum RSWPlayerItems {
             case ITEM_SETINGS:
                 return Itens.createItem(Material.COMPARATOR, 1, TranslatableLine.ITEM_SETTINGS_NAME.get(p));
             case ITEM_SAVE:
-                return Itens.createItem(Material.EMERALD, 1, TranslatableLine.ITEM_SAVE_NAME.get(p));
+                return Itens.createItem(Material.CHEST_MINECART, 1, TranslatableLine.ITEM_SAVE_NAME.get(p));
         }
         return new ItemStack(Material.DEAD_BUSH);
     }

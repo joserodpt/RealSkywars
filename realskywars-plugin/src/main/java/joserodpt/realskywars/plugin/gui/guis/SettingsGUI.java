@@ -97,7 +97,10 @@ public class SettingsGUI {
             new SettingEntry("Use Vault As Currency Mode", "Config.Use-Vault-As-Currency", 0),
             new SettingEntry("Auto Teleport To Lobby", "Config.Auto-Teleport-To-Lobby", 0),
             new SettingEntry("Scoreboard In Lobby", "Config.Scoreboard-In-Lobby", 0),
-            new SettingEntry("Spectator Shop", "Config.Spectator-Shop", 0),
+
+            new SettingEntry("Enable Shop", "Config.Shops.Enable-Shop", 0),
+            new SettingEntry("Enable Spectator Shop", "Config.Shops.Enable-Spectator-Shop", 0),
+
             new SettingEntry("Right Click Player Info", "Config.Right-Click-Player-Info", 0),
             new SettingEntry("PlaceholderAPI In Scoreboard", "Config.PlaceholderAPI-In-Scoreboard", 0),
             new SettingEntry("Disable Player Reset", "Config.Disable-Player-Reset", 0),
