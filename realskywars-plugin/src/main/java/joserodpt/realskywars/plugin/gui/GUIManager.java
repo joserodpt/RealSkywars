@@ -156,10 +156,7 @@ public class GUIManager {
     }
 
     public static void openPlayerMenu(RSWPlayer p) {
-        int size = 27;
-        if (!p.isInMatch()) {
-            size = 45;
-        }
+        int size = p.isInMatch() ? 27 : 45;
 
         GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_PLAYERP_TITLE.get(p), size, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
@@ -216,7 +213,6 @@ public class GUIManager {
             p.closeInventory();
             openAchievementGUI(p);
         }, Itens.createItem(Material.BOOKSHELF, 1, TranslatableLine.ACHIEVEMENTS.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 16);
-
 
         //settings
         if (!p.isInMatch()) {

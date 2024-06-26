@@ -369,7 +369,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
             case "1.14.2":
             case "1.14.1":
             case "1.14":
-                getLogger().info("Using the 1.17.1 NMS adapter.");
+                getLogger().info("Using the 1.14-1.16.5 NMS adapter.");
                 realSkywars.setNMS(new NMS114R1tov116R3());
                 break;
             default:

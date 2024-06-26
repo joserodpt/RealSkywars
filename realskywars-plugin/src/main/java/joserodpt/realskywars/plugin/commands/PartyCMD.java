@@ -42,6 +42,7 @@ public class PartyCMD extends CommandBase {
     }
 
     @Default
+    @SuppressWarnings("unused")
     public void defaultCommand(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             Text.sendList(commandSender, Arrays.asList(rs.getLanguageManagerAPI().getPrefix(), " &3/party create", " &3/party disband", " &3/party invite <player>", " &3/party accept <player>", " &3/party kick <player>", " &3/party leave"));
@@ -52,6 +53,7 @@ public class PartyCMD extends CommandBase {
 
     @SubCommand("create")
     @Permission("rsw.party.owner")
+    @SuppressWarnings("unused")
     public void createcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(((Player) commandSender));
@@ -68,6 +70,7 @@ public class PartyCMD extends CommandBase {
 
     @SubCommand("disband")
     @Permission("rsw.party.owner")
+    @SuppressWarnings("unused")
     public void disbandcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(((Player) commandSender));
@@ -87,6 +90,7 @@ public class PartyCMD extends CommandBase {
 
     @SubCommand("invite")
     @Permission("rsw.party.invite")
+    @SuppressWarnings("unused")
     public void invitecmd(final CommandSender commandSender, final Player player) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(((Player) commandSender));
@@ -102,6 +106,7 @@ public class PartyCMD extends CommandBase {
 
     @SubCommand("accept")
     @Permission("rsw.party.accept")
+    @SuppressWarnings("unused")
     public void acceptcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(((Player) commandSender));
@@ -121,6 +126,7 @@ public class PartyCMD extends CommandBase {
 
     @SubCommand("kick")
     @Permission("rsw.party.owner")
+    @SuppressWarnings("unused")
     public void kickcmd(final CommandSender commandSender, final Player player) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(((Player) commandSender));
@@ -144,6 +150,7 @@ public class PartyCMD extends CommandBase {
 
     @SubCommand("leave")
     @Permission("rsw.party.leave")
+    @SuppressWarnings("unused")
     public void leavecmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(((Player) commandSender));

@@ -38,6 +38,7 @@ public class SairCMD extends CommandBase {
 
     @Default
     @Permission("rsw.leave")
+    @SuppressWarnings("unused")
     public void defaultCommand(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
