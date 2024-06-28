@@ -24,26 +24,26 @@ import org.bukkit.entity.TNTPrimed;
 
 public class RSWEvent {
 
-    private final EventType et;
+    private final EventType eventType;
     private final RSWMap room;
     private final int time;
 
-    public RSWEvent(RSWMap room, EventType et, int time) {
+    public RSWEvent(RSWMap room, EventType eventType, int time) {
         this.room = room;
-        this.et = et;
+        this.eventType = eventType;
         this.time = time;
     }
 
     public EventType getEventType() {
-        return this.et;
+        return this.eventType;
     }
 
     public String getName() {
-        return Text.color(RSWLanguagesConfig.file().getString("Strings.Events." + this.et.name()) + " " + Text.formatSeconds(this.getTimeLeft()));
+        return Text.color(RSWLanguagesConfig.file().getString("Strings.Events." + this.eventType.name()) + " " + Text.formatSeconds(this.getTimeLeft()));
     }
 
     public int getTimeLeft() {
-        return (this.room.getMaxTime() - (this.room.getMaxTime() - this.getTime())) - this.room.getTimePassed();
+        return (this.room.getMaxGameTime() - (this.room.getMaxGameTime() - this.getTime())) - this.room.getTimePassed();
     }
 
     public void tick() {
@@ -58,7 +58,7 @@ public class RSWEvent {
     }
 
     public void execute() {
-        switch (this.et) {
+        switch (this.eventType) {
             case REFILL:
                 this.room.getAllPlayers().forEach(rswPlayer -> rswPlayer.sendTitle(TranslatableList.REFILL_EVENT_TITLE.get(rswPlayer).get(0), TranslatableList.REFILL_EVENT_TITLE.get(rswPlayer).get(1), 4, 10, 4));
                 this.room.getAllPlayers().forEach(rswPlayer -> rswPlayer.playSound(Sound.BLOCK_CHEST_LOCKED, 50, 50));
@@ -69,7 +69,7 @@ public class RSWEvent {
                 this.room.getPlayers().forEach(player -> player.spawnAbovePlayer(TNTPrimed.class));
                 break;
             case BORDERSHRINK:
-                this.room.getBossBar().setDeathmatch();
+                this.room.getBossBar().setDeathMatch();
 
                 this.room.getAllPlayers().forEach(rswPlayer -> rswPlayer.sendTitle("", TranslatableLine.TITLE_DEATHMATCH.get(rswPlayer), 10, 20, 5));
                 this.room.getAllPlayers().forEach(rswPlayer -> rswPlayer.playSound(Sound.ENTITY_ENDER_DRAGON_GROWL, 50, 50));
@@ -78,6 +78,10 @@ public class RSWEvent {
                 this.room.getBorder().setCenter(this.room.getMapCuboid().getCenter());
                 break;
         }
+    }
+
+    public String serialize() {
+        return this.eventType.name() + "@" + this.time;
     }
 
     public enum EventType {REFILL, TNTRAIN, BORDERSHRINK}

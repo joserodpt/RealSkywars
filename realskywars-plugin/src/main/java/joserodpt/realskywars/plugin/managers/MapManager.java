@@ -115,7 +115,7 @@ public class MapManager extends MapManagerAPI {
 
                 switch (RSWMap.Mode.valueOf(modeSTR)) {
                     case SOLO:
-                        SoloMode gs = new SoloMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, cgs, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), RSWMapsConfig.file().getBoolean(s + ".Settings.Border"), getPOS1(w, s), getPOS2(w, s), chests, isRanked(s), unregistered, rs);
+                        SoloMode gs = new SoloMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, cgs, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), RSWMapsConfig.file().getBoolean(s + ".Settings.Border"), getPOS1(w, s), getPOS2(w, s), chests, isRanked(s), unregistered);
                         gs.resetArena(RSWMap.OperationReason.LOAD);
                         this.addMap(gs);
                         break;
@@ -128,7 +128,7 @@ public class MapManager extends MapManagerAPI {
                                         RSWCage::getLocation,
                                         c -> new RSWTeam(tc.getAndIncrement(), numberOfPlayers / cgs.size(), c.getLocation())
                                 ));
-                        TeamsMode teas = new TeamsMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, ts, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), RSWMapsConfig.file().getBoolean(s + ".Settings.Border"), getPOS1(w, s), getPOS2(w, s), chests, isRanked(s), unregistered, rs);
+                        TeamsMode teas = new TeamsMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, ts, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), RSWMapsConfig.file().getBoolean(s + ".Settings.Border"), getPOS1(w, s), getPOS2(w, s), chests, isRanked(s), unregistered);
                         teas.resetArena(RSWMap.OperationReason.LOAD);
                         this.addMap(teas);
                         break;
@@ -267,7 +267,7 @@ public class MapManager extends MapManagerAPI {
 
         World w = rs.getWorldManagerAPI().createEmptyWorld(cleanMapName, World.Environment.NORMAL);
         if (w != null) {
-            RSWMap s = new SoloMode(cleanMapName, displayName, w, mapname, wt, maxP, rs);
+            RSWMap s = new SoloMode(cleanMapName, displayName, w, mapname, wt, maxP);
 
             w.getBlockAt(0, 64, 0).setType(Material.BEDROCK);
             Location loc = new Location(w, 0, 66, 0);
@@ -302,7 +302,7 @@ public class MapManager extends MapManagerAPI {
 
         World w = rs.getWorldManagerAPI().createEmptyWorld(cleanMapName, World.Environment.NORMAL);
         if (w != null) {
-            RSWMap s = new TeamsMode(cleanMapName, cleanMapName, w, cleanMapName, wt, teams, pperteam, rs);
+            RSWMap s = new TeamsMode(cleanMapName, cleanMapName, w, cleanMapName, wt, teams, pperteam);
 
             w.getBlockAt(0, 64, 0).setType(Material.BEDROCK);
             Location loc = new Location(w, 0, 66, 0);

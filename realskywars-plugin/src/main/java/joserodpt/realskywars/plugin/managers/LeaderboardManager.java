@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class LeaderboardManager extends LeaderboardManagerAPI {
@@ -34,7 +35,7 @@ public class LeaderboardManager extends LeaderboardManagerAPI {
         this.rs = rs;
     }
 
-    public HashMap<RSWLeaderboard.RSWLeaderboardCategories, RSWLeaderboard> leaderboards = new HashMap<>();
+    public Map<RSWLeaderboard.RSWLeaderboardCategories, RSWLeaderboard> leaderboards = new HashMap<>();
 
     @Override
     public void refreshLeaderboards() {

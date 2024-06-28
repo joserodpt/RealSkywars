@@ -4,9 +4,10 @@ import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public abstract class PartiesManagerAPI {
-    public HashMap<RSWPlayer, RSWPlayer> invites = new HashMap<>();
+    public Map<RSWPlayer, RSWPlayer> invites = new HashMap<>();
 
     public Boolean hasInvite(RSWPlayer p) {
         return invites.containsKey(p);

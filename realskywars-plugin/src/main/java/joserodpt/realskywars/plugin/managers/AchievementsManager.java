@@ -25,6 +25,7 @@ import joserodpt.realskywars.api.player.RSWPlayer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class AchievementsManager extends AchievementsManagerAPI {
         this.rs = rs;
     }
 
-    public HashMap<RSWPlayer.PlayerStatistics, List<RSWAchievement>> achievements = new HashMap<>();
+    public Map<RSWPlayer.PlayerStatistics, List<RSWAchievement>> achievements = new HashMap<>();
 
     @Override
     public void loadAchievements() {

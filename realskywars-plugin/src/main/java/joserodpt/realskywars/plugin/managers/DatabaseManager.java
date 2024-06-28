@@ -36,12 +36,13 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class DatabaseManager extends DatabaseManagerAPI {
 
     private final Dao<PlayerData, UUID> playerDataDao;
-    private final HashMap<UUID, PlayerData> playerDataCache = new HashMap<>();
+    private final Map<UUID, PlayerData> playerDataCache = new HashMap<>();
     private final RealSkywarsAPI rsa;
 
     public DatabaseManager(RealSkywarsAPI rsa) throws SQLException {

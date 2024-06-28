@@ -31,7 +31,7 @@ public class RSWBossbar {
         switch (map.getState()) {
             case PLAYING:
                 this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_RUNTIME.getSingle().replace("%time%", Text.formatSeconds(map.getMapTimer().getSecondsLeft())));
-                double div = (double) map.getMapTimer().getSecondsLeft() / (double) map.getMaxTime();
+                double div = (double) map.getMapTimer().getSecondsLeft() / (double) map.getMaxGameTime();
                 this.bossBar.setProgress(div);
                 break;
             case FINISHING:
@@ -87,7 +87,7 @@ public class RSWBossbar {
         }
     }
 
-    public void setDeathmatch() {
+    public void setDeathMatch() {
         if (this.bossBar == null) {
             return;
         }

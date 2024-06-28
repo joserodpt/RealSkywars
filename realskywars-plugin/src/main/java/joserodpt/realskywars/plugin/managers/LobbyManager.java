@@ -15,7 +15,6 @@ package joserodpt.realskywars.plugin.managers;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.LobbyManagerAPI;
@@ -27,9 +26,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class LobbyManager extends LobbyManagerAPI {
-
-    public LobbyManager(RealSkywarsAPI rs) {
-    }
 
     private Location lobbyLOC;
     private Boolean loginTP = true;
@@ -88,6 +84,9 @@ public class LobbyManager extends LobbyManagerAPI {
 
     @Override
     public boolean isInLobby(World w) {
+        if (w == null || this.lobbyLOC.getWorld() == null) {
+            return false;
+        }
         return this.lobbyLOC != null && this.lobbyLOC.getWorld().equals(w);
     }
 

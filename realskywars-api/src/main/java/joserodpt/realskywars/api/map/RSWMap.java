@@ -64,36 +64,34 @@ import java.util.stream.Collectors;
 
 public abstract class RSWMap {
 
+    private final String name;
+    private String displayName;
+    private Location spectatorLocation;
+    private final String schematicName;
+    private int maxPlayers, borderSize, timePassed, maxGameTime;
+    private boolean specEnabled, instantEnding, ranked, borderEnabled;
+    private boolean unregistered = false;
+
     private final RSWWorld world;
     private MapCuboid mapCuboid;
     private final Map<Location, RSWChest> chests;
     private final Map<Location, RSWSign> signs;
-    private final String name;
-    private String displayName;
-    private int maxPlayers, borderSize;
-    private int timePassed;
     private WorldBorder border;
-    private Location spectatorLocation;
-    private final String schematicName;
-    private final List<RSWPlayer> inRoom = new ArrayList<>();
-    private final HashMap<UUID, Integer> chestVotes = new HashMap<>();
-    private final HashMap<UUID, Integer> projectileVotes = new HashMap<>();
-    private final HashMap<UUID, Integer> timeVotes = new HashMap<>();
+
     private MapState state;
     private RSWBossbar bossbar;
     private RSWChest.Tier chestTier = RSWChest.Tier.NORMAL;
-    private Boolean specEnabled, instantEnding, ranked, borderEnabled;
     private CountdownTimer mapTimer, startMapTimer, finishingTimer;
     private BukkitTask timeCounterTask;
     private ProjectileType projectileType = ProjectileType.NORMAL;
     private TimeType timeType = TimeType.DAY;
     private List<RSWEvent> events;
-    private RealSkywarsAPI rs;
-    private boolean unregistered = false;
+    private final List<RSWPlayer> inMap = new ArrayList<>();
+    private final Map<UUID, Integer> chestVotes = new HashMap<>();
+    private final Map<UUID, Integer> projectileVotes = new HashMap<>();
+    private final Map<UUID, Integer> timeVotes = new HashMap<>();
 
-    public RSWMap(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean borderEnabled, Location pos1, Location pos2, Map<Location, RSWChest> chests, Boolean rankd, Boolean unregistered, RealSkywarsAPI rs) {
-        this.rs = rs;
-
+    public RSWMap(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean borderEnabled, Location pos1, Location pos2, Map<Location, RSWChest> chests, Boolean rankd, Boolean unregistered) {
         this.name = nome;
         this.displayName = displayName;
         this.schematicName = schematicName;
@@ -111,6 +109,13 @@ public abstract class RSWMap {
 
         this.state = estado;
         this.maxPlayers = maxPlayers;
+        this.maxGameTime = RSWMapsConfig.file().getInt(this.getMapName() + ".max-game-time", -1);
+        if (this.maxGameTime == -1) {
+            this.maxGameTime = RSWConfig.file().getInt("Config.Maximum-Game-Time." + this.getGameMode().getSimpleName());
+            RSWMapsConfig.file().set(this.getMapName() + ".max-game-time", this.getMaxGameTime());
+            RSWMapsConfig.save();
+        }
+
         this.spectatorLocation = spectatorLocation;
         this.specEnabled = specEnabled;
         this.instantEnding = instantEnding;
@@ -118,6 +123,8 @@ public abstract class RSWMap {
 
         this.chests = chests;
         this.ranked = rankd;
+
+        this.events = parseEvents();
 
         this.chestVotes.put(UUID.randomUUID(), 2);
         this.projectileVotes.put(UUID.randomUUID(), 1);
@@ -159,7 +166,7 @@ public abstract class RSWMap {
     }
 
     public void startTimers() {
-        this.mapTimer = new CountdownTimer(rs.getPlugin(), this.getMaxTime(), () -> {
+        this.mapTimer = new CountdownTimer(RealSkywarsAPI.getInstance().getPlugin(), this.getMaxGameTime(), () -> {
         }, () -> {
         }, (t) -> {
             this.bossbar.tick();
@@ -178,7 +185,7 @@ public abstract class RSWMap {
                 ++timePassed;
                 tickEvents();
             }
-        }.runTaskTimer(rs.getPlugin(), 0, 20);
+        }.runTaskTimer(RealSkywarsAPI.getInstance().getPlugin(), 0, 20);
     }
 
     private void tickEvents() {
@@ -255,7 +262,7 @@ public abstract class RSWMap {
 
     public List<RSWPlayer> getPlayers() {
         List<RSWPlayer> players = new ArrayList<>();
-        for (RSWPlayer rswPlayer : this.inRoom) {
+        for (RSWPlayer rswPlayer : this.inMap) {
             if (rswPlayer.getState() == RSWPlayer.PlayerState.PLAYING || rswPlayer.getState() == RSWPlayer.PlayerState.CAGE)
                 players.add(rswPlayer);
         }
@@ -264,7 +271,7 @@ public abstract class RSWMap {
     }
 
     public List<RSWPlayer> getAllPlayers() {
-        return this.inRoom;
+        return this.inMap;
     }
 
     public int getSpectatorsCount() {
@@ -273,7 +280,7 @@ public abstract class RSWMap {
 
     public List<RSWPlayer> getSpectators() {
         List<RSWPlayer> players = new ArrayList<>();
-        for (RSWPlayer rswPlayer : this.inRoom) {
+        for (RSWPlayer rswPlayer : this.inMap) {
             if (rswPlayer.getState() == RSWPlayer.PlayerState.SPECTATOR || rswPlayer.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR)
                 players.add(rswPlayer);
         }
@@ -285,7 +292,7 @@ public abstract class RSWMap {
     }
 
     public void kickPlayers(String msg) {
-        for (RSWPlayer p : new ArrayList<>(this.inRoom)) {
+        for (RSWPlayer p : new ArrayList<>(this.inMap)) {
             if (msg != null) {
                 p.sendMessage(Text.color(msg));
             } else {
@@ -386,12 +393,12 @@ public abstract class RSWMap {
                     RSWTeam t = p.getTeam();
                     t.removeMember(p);
                     if (t.isEliminated()) {
-                        new Demolition(this.getSpectatorLocation(), p.getPlayerCage(), 5, 3).start(rs.getPlugin());
+                        new Demolition(this.getSpectatorLocation(), p.getPlayerCage(), 5, 3).start(RealSkywarsAPI.getInstance().getPlugin());
                     }
                 }
                 //update tab
                 if (!p.isBot()) {
-                    for (RSWPlayer rswPlayer : this.inRoom) {
+                    for (RSWPlayer rswPlayer : this.inMap) {
                         if (!rswPlayer.isBot()) {
                             RSWPlayerTab rt = rswPlayer.getTab();
                             rt.remove(p.getPlayer());
@@ -414,7 +421,7 @@ public abstract class RSWMap {
                 this.checkWin();
                 break;
             case EXTERNAL:
-                this.inRoom.add(p);
+                this.inMap.add(p);
                 p.setPlayerMap(this);
                 this.getBossBar().addPlayer(p.getPlayer());
 
@@ -424,7 +431,7 @@ public abstract class RSWMap {
 
                 //update tab
                 if (!p.isBot()) {
-                    for (RSWPlayer rswPlayer : this.inRoom) {
+                    for (RSWPlayer rswPlayer : this.inMap) {
                         if (!rswPlayer.isBot()) {
                             RSWPlayerTab rt = rswPlayer.getTab();
                             List<Player> players = this.getPlayers().stream().map(RSWPlayer::getPlayer).collect(Collectors.toList());
@@ -485,15 +492,15 @@ public abstract class RSWMap {
         }
     }
 
-    public HashMap<UUID, Integer> getChestVotes() {
+    public Map<UUID, Integer> getChestVotes() {
         return this.chestVotes;
     }
 
-    public HashMap<UUID, Integer> getProjectileVotes() {
+    public Map<UUID, Integer> getProjectileVotes() {
         return this.projectileVotes;
     }
 
-    public HashMap<UUID, Integer> getTimeVotes() {
+    public Map<UUID, Integer> getTimeVotes() {
         return this.timeVotes;
     }
 
@@ -517,7 +524,9 @@ public abstract class RSWMap {
         return this.events;
     }
 
-    abstract public int getMaxTime();
+    public int getMaxGameTime() {
+        return this.maxGameTime;
+    }
 
     public RSWChest getChest(Location location) {
         for (RSWChest chest : this.getChests()) {
@@ -666,7 +675,7 @@ public abstract class RSWMap {
             p.getPlayerKit().cancelTasks();
         }
 
-        this.inRoom.remove(p);
+        this.inMap.remove(p);
         p.setPlayerMap(null);
 
         //update tab
@@ -702,7 +711,7 @@ public abstract class RSWMap {
         }
 
         if (!kicked) {
-            rs.getLobbyManagerAPI().tpToLobby(p);
+            RealSkywarsAPI.getInstance().getLobbyManagerAPI().tpToLobby(p);
             RSWPlayerItems.LOBBY.giveSet(p);
         }
 
@@ -711,18 +720,18 @@ public abstract class RSWMap {
         }
 
         //call api
-        rs.getEventsAPI().callRoomStateChange(this);
+        RealSkywarsAPI.getInstance().getEventsAPI().callRoomStateChange(this);
     }
 
     abstract public int minimumPlayersToStartMap();
 
     protected void startRoom() {
-        this.startMapTimer = new CountdownTimer(rs.getPlugin(), RSWConfig.file().getInt("Config.Time-To-Start"), () -> {
+        this.startMapTimer = new CountdownTimer(RealSkywarsAPI.getInstance().getPlugin(), RSWConfig.file().getInt("Config.Time-To-Start"), () -> {
             //
         }, this::forceStartMap, (t) -> {
             if (getPlayerCount() < minimumPlayersToStartMap()) {
                 t.killTask();
-                for (RSWPlayer p : this.inRoom) {
+                for (RSWPlayer p : this.inMap) {
                     if (p.getWorld() != this.getRSWWorld().getWorld() && p.hasCage()) {
                         p.getPlayerCage().tpPlayer(p);
                     }
@@ -734,7 +743,7 @@ public abstract class RSWMap {
                 this.setState(MapState.WAITING);
             } else {
                 this.setState(MapState.STARTING);
-                for (RSWPlayer p : this.inRoom) {
+                for (RSWPlayer p : this.inMap) {
                     if (p.getWorld() != this.getRSWWorld().getWorld() && p.hasCage()) {
                         p.getPlayerCage().tpPlayer(p);
                     }
@@ -774,7 +783,7 @@ public abstract class RSWMap {
         this.getChests().forEach(RSWChest::clear);
         this.world.resetWorld(rr);
 
-        this.inRoom.clear();
+        this.inMap.clear();
 
         this.chestVotes.clear();
         this.projectileVotes.clear();
@@ -798,6 +807,38 @@ public abstract class RSWMap {
         this.setState(MapState.AVAILABLE);
     }
 
+    public List<RSWEvent> parseEvents() {
+        if (this.events != null)
+            this.events.clear();
+        List<RSWEvent> ret = new ArrayList<>();
+
+        List<String> list = RSWMapsConfig.file().isList(this.getMapName() + ".Events") ?
+                RSWMapsConfig.file().getStringList(this.getMapName() + ".Events")
+                : RSWConfig.file().getStringList("Config.Events." + this.getGameMode().getSimpleName());
+
+        for (String s : list) {
+            String[] parse = s.split("@");
+            if (parse.length != 2) {
+                Bukkit.getLogger().warning("Invalid event format: " + s);
+                continue;
+            }
+
+            RSWEvent.EventType et;
+            try {
+                et = RSWEvent.EventType.valueOf(parse[0]);
+            } catch (Exception e) {
+                Bukkit.getLogger().warning("Invalid event type: " + parse[0]);
+                continue;
+            }
+
+            int time = Integer.parseInt(parse[1]);
+            ret.add(new RSWEvent(this, et, time));
+        }
+
+        ret.add(new RSWEvent(this, RSWEvent.EventType.BORDERSHRINK, getMaxGameTime()));
+        return ret;
+    }
+
     public void setFinishingTimer(CountdownTimer finishingTimer) {
         this.finishingTimer = finishingTimer;
     }
@@ -806,41 +847,8 @@ public abstract class RSWMap {
         return this.finishingTimer;
     }
 
-    public List<RSWEvent> parseEvents() {
-        List<RSWEvent> ret = new ArrayList<>();
-        String search = "Teams";
-        switch (this.getGameMode()) {
-            case SOLO:
-                search = "Solo";
-                break;
-            case TEAMS:
-                search = "Teams";
-                break;
-        }
-        for (String s1 : RSWConfig.file().getStringList("Config.Events." + search)) {
-            String[] parse = s1.split("@");
-            if (parse.length != 2) {
-                Bukkit.getLogger().warning("Invalid event format: " + s1 + " in map: " + this.getMapName());
-                continue;
-            }
-
-            RSWEvent.EventType et;
-            try {
-                et = RSWEvent.EventType.valueOf(parse[0]);
-            } catch (Exception e) {
-                Bukkit.getLogger().warning("Invalid event type: " + parse[0] + " in map: " + this.getMapName());
-                continue;
-            }
-
-            int time = Integer.parseInt(parse[1]);
-            ret.add(new RSWEvent(this, et, time));
-        }
-        ret.add(new RSWEvent(this, RSWEvent.EventType.BORDERSHRINK, RSWConfig.file().getInt("Config.Maximum-Game-Time." + search)));
-        return ret;
-    }
-
     protected RealSkywarsAPI getRealSkywarsAPI() {
-        return rs;
+        return RealSkywarsAPI.getInstance();
     }
 
     public void setBorderEnabled(boolean b) {
@@ -899,7 +907,7 @@ public abstract class RSWMap {
     }
 
     public enum Data {
-        ALL, SETTINGS, WORLD, NAME, TYPE, NUM_PLAYERS, CAGES, CHESTS, SPECT_LOC, BORDER
+        ALL, SETTINGS, WORLD, NAME, TYPE, NUM_PLAYERS, CAGES, CHESTS, SPECT_LOC, BORDER, EVENTS
     }
 
     public void save(Data d, boolean save) {
@@ -914,6 +922,7 @@ public abstract class RSWMap {
                 this.save(Data.CHESTS, false);
                 this.save(Data.SPECT_LOC, false);
                 this.save(Data.BORDER, false);
+                this.save(Data.EVENTS, false);
                 break;
             case WORLD:
                 // World
@@ -971,6 +980,9 @@ public abstract class RSWMap {
                     ++chestID;
                 }
                 break;
+            case EVENTS:
+                RSWMapsConfig.file().set(this.getMapName() + ".Events", this.getEvents().stream().filter(rswEvent -> rswEvent.getEventType() != RSWEvent.EventType.BORDERSHRINK).map(RSWEvent::serialize).collect(Collectors.toList()));
+                break;
             case SPECT_LOC:
                 RSWMapsConfig.file().set(this.getMapName() + ".Locations.Spectator.X", this.getSpectatorLocation().getX());
                 RSWMapsConfig.file().set(this.getMapName() + ".Locations.Spectator.Y", this.getSpectatorLocation().getY());
@@ -986,6 +998,7 @@ public abstract class RSWMap {
                 RSWMapsConfig.file().set(this.getMapName() + ".Settings.Instant-End", this.isInstantEndEnabled());
                 RSWMapsConfig.file().set(this.getMapName() + ".Settings.Ranked", this.isRanked());
                 RSWMapsConfig.file().set(this.getMapName() + ".Settings.Border", this.isBorderEnabled());
+                RSWMapsConfig.file().set(this.getMapName() + ".max-game-time", this.getMaxGameTime());
                 break;
             case BORDER:
                 RSWMapsConfig.file().set(this.getMapName() + ".World.Border.POS1-X", this.getPOS1().getX());
@@ -996,9 +1009,8 @@ public abstract class RSWMap {
                 RSWMapsConfig.file().set(this.getMapName() + ".World.Border.POS2-Z", this.getPOS2().getZ());
                 break;
         }
-        if (save) {
+        if (save)
             RSWMapsConfig.save();
-        }
     }
 
     //enums
@@ -1137,6 +1149,17 @@ public abstract class RSWMap {
                     return TranslatableLine.SOLO_MODE.get(p);
                 case TEAMS:
                     return TranslatableLine.TEAMS_MODE.get(p);
+                default:
+                    return "?";
+            }
+        }
+
+        public String getSimpleName() {
+            switch (this) {
+                case SOLO:
+                    return "Solo";
+                case TEAMS:
+                    return "Teams";
                 default:
                     return "?";
             }

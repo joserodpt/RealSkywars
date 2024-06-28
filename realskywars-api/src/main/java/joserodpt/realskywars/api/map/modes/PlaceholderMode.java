@@ -80,7 +80,7 @@ public class PlaceholderMode extends RSWMap {
     }
 
     @Override
-    public int getMaxTime() {
+    public int getMaxGameTime() {
         return 0;
     }
 

@@ -16,7 +16,6 @@ package joserodpt.realskywars.api.map.modes.teams;
  */
 
 
-import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
@@ -44,15 +43,15 @@ public class TeamsMode extends RSWMap {
     private final int maxMembersTeam;
     private final Map<Location, RSWTeam> teams;
 
-    public TeamsMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, int teams, int playersPerTeam, RealSkywarsAPI rs) {
-        super(nome, displayName, w, schematicName, wt, MapState.RESETTING, teams * playersPerTeam, null, true, false, true, null, null, new HashMap<>(), false, true, rs);
+    public TeamsMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, int teams, int playersPerTeam) {
+        super(nome, displayName, w, schematicName, wt, MapState.RESETTING, teams * playersPerTeam, null, true, false, true, null, null, new HashMap<>(), false, true);
 
         this.teams = new HashMap<>();
         this.maxMembersTeam = playersPerTeam;
     }
 
-    public TeamsMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, Map<Location, RSWTeam> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, Map<Location, RSWChest> chests, Boolean rankd, Boolean unregistered, RealSkywarsAPI rs) {
-        super(nome, displayName, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border, pos1, pos2, chests, rankd, unregistered, rs);
+    public TeamsMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, Map<Location, RSWTeam> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, Map<Location, RSWChest> chests, Boolean rankd, Boolean unregistered) {
+        super(nome, displayName, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border, pos1, pos2, chests, rankd, unregistered);
 
         this.teams = teams;
         this.maxMembersTeam = teams.get(0).getMaxMembers();
@@ -282,11 +281,6 @@ public class TeamsMode extends RSWMap {
     @Override
     public int getMaxTeamMembers() {
         return this.maxMembersTeam;
-    }
-
-    @Override
-    public int getMaxTime() {
-        return RSWConfig.file().getInt("Config.Maximum-Game-Time.Teams");
     }
 
     @Override
