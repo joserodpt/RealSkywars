@@ -73,11 +73,12 @@ public class RSWTeamCage extends RSWCage {
     }
 
     @Override
-    public void addPlayer(RSWPlayer pl) {
-        this.players.add(pl);
-        pl.setPlayerCage(this);
+    public void addPlayer(RSWPlayer p) {
+        this.players.add(p);
+        p.setPlayerCage(this);
         this.setCage();
-        tpPlayer(pl);
+        this.tpPlayer(p);
+        p.setInvincible(true);
     }
 
     @Override
@@ -94,7 +95,5 @@ public class RSWTeamCage extends RSWCage {
     @Override
     public void open() {
         this.map.getRSWWorld().getWorld().getBlockAt(x, y - 1, z).setType(Material.AIR);
-
-        this.players.forEach(rswPlayer -> rswPlayer.setInvincible(true));
     }
 }

@@ -170,8 +170,8 @@ public class RealSkywarsPlugin extends JavaPlugin {
         realSkywars.getPlayerManagerAPI().loadPlayers();
 
         if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
-            getLogger().info("Bungeecord mode is enabled.");
             this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+            getLogger().info("BungeeCord mode is enabled.");
         }
 
         //load achievements
@@ -179,7 +179,6 @@ public class RealSkywarsPlugin extends JavaPlugin {
 
         //load leaderboard
         realSkywars.getLeaderboardManagerAPI().refreshLeaderboards();
-
 
         CommandManager commandManager = new CommandManager(this);
         commandManager.hideTabComplete(true);

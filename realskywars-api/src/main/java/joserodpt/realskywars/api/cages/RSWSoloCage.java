@@ -70,11 +70,14 @@ public class RSWSoloCage extends RSWCage {
     }
 
     @Override
-    public void addPlayer(RSWPlayer pl) {
-        this.p = pl;
-        pl.setPlayerCage(this);
+    public void addPlayer(RSWPlayer p) {
+        this.p = p;
+        p.setPlayerCage(this);
         this.setCage();
-        this.tpPlayer(pl);
+        this.tpPlayer(p);
+        if (this.p != null) {
+            this.p.setInvincible(true);
+        }
     }
 
     @Override
@@ -91,10 +94,6 @@ public class RSWSoloCage extends RSWCage {
     @Override
     public void open() {
         map.getRSWWorld().getWorld().getBlockAt(x, y - 1, z).setType(Material.AIR);
-
-        if (this.p != null) {
-            this.p.setInvincible(true);
-        }
     }
 
     // CREDIT open source spigot
