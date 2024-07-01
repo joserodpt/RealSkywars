@@ -941,6 +941,26 @@ public abstract class RSWMap {
         this.save(Data.SPECT_LOC, true);
     }
 
+    public void setMaxGameTime(int seconds) {
+        this.maxGameTime = seconds;
+        this.save(Data.SETTINGS, true);
+    }
+
+    public void setTimeEndGame(int seconds) {
+        this.timeEndGame = seconds;
+        this.save(Data.SETTINGS, true);
+    }
+
+    public void setTimeToStart(int seconds) {
+        this.timeToStart = seconds;
+        this.save(Data.SETTINGS, true);
+    }
+
+    public void setInvincibilitySeconds(int seconds) {
+        this.invincibilitySeconds = seconds;
+        this.save(Data.SETTINGS, true);
+    }
+
     public enum Data {
         ALL, SETTINGS, WORLD, NAME, TYPE, NUM_PLAYERS, CAGES, CHESTS, SPECT_LOC, BORDER, EVENTS
     }

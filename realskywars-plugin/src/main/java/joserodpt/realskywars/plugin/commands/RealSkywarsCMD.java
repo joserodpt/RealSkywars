@@ -220,7 +220,7 @@ public class RealSkywarsCMD extends CommandBase {
                 if (!(p.getState() == RSWPlayer.PlayerState.CAGE)) {
                     rs.getMapManagerAPI().findMap(p, type);
                 } else {
-                    TranslatableLine.CMD_CALREADY_IN_MATCH.send(p, true);
+                    TranslatableLine.CMD_ALREADY_IN_MATCH.send(p, true);
                 }
             } else {
                 TranslatableLine.CMD_NO_MAP_FOUND.send(p, true);
@@ -450,7 +450,7 @@ public class RealSkywarsCMD extends CommandBase {
                 MapsListGUI v = new MapsListGUI(p);
                 v.openInventory(p);
             } else {
-                TranslatableLine.CMD_CALREADY_IN_MATCH.send(p, true);
+                TranslatableLine.CMD_ALREADY_IN_MATCH.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);

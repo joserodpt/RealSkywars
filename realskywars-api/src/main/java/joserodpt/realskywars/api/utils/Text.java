@@ -72,10 +72,19 @@ public class Text {
             if (minutes == 0) {
                 return String.format("%ds", seconds);
             } else {
-                return String.format("%dm %ds", minutes, seconds);
+                if (seconds == 0) {
+                    return String.format("%dm", minutes);
+                }
+                return String.format("%dm%ds", minutes, seconds);
             }
         } else {
-            return String.format("%dh %dm %ds", hours, minutes, seconds);
+            if (minutes == 0) {
+                if (seconds == 0) {
+                    return String.format("%dh", hours);
+                }
+                return String.format("%dh%ds", hours, seconds);
+            }
+            return String.format("%dh%dm%ds", hours, minutes, seconds);
         }
     }
 

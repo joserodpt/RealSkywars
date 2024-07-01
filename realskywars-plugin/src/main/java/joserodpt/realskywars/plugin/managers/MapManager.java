@@ -532,6 +532,10 @@ public class MapManager extends MapManagerAPI {
             return;
         }
 
+        if (p.getLocation().getWorld() == map.getRSWWorld().getWorld()) {
+            return;
+        }
+
         p.setGameMode(GameMode.CREATIVE);
         p.teleport(map.getSpectatorLocation());
         Text.sendList(p.getPlayer(), Text.replaceVarInList(TranslatableList.EDIT_MAP.get(p), "%cages%", map.getGameMode() == RSWMap.Mode.SOLO ? String.valueOf(map.getMaxPlayers()) : map.getTeams().size() + ""));

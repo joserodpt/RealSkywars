@@ -18,6 +18,7 @@ package joserodpt.realskywars.plugin.gui.guis;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
+import joserodpt.realskywars.api.utils.PlayerInput;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -31,6 +32,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,24 +44,24 @@ public class MapSettingsGUI {
     private Inventory inv;
     private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
     private final ItemStack confirm = Itens.createItem(Material.CHEST, 1, "&9Save Settings", Collections.singletonList("&7Click here to confirm your settings."));
-    // settings
-    private final ItemStack specon = Itens.createItem(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &aON &7for dead players."));
-    private final ItemStack specoff = Itens.createItem(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &cOFF &7for dead players."));
-    private final ItemStack ieon = Itens.createItem(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &aON&7."));
-    private final ItemStack ieoff = Itens.createItem(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &cOFF&7."));
-    private final ItemStack rankedon = Itens.createItem(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked Mode is turned &aON&7."));
-    private final ItemStack rankedoff = Itens.createItem(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked Mode is turned &cOFF&7."));
-    private final ItemStack borderon = Itens.createItem(Material.ITEM_FRAME, 1, "&9Border", Collections.singletonList("&7Border is turned &aON&7."));
-    private final ItemStack borderoff = Itens.createItem(Material.ITEM_FRAME, 1, "&9Border", Collections.singletonList("&7Border is turned &cOFF&7."));
 
     private final UUID uuid;
-    private RSWMap map;
+    private final RSWMap map;
+
+    public MapSettingsGUI(Player p, RSWMap map) {
+        this.uuid = p.getUniqueId();
+        this.map = map;
+
+        inv = Bukkit.getServer().createInventory(null, 45, Text.color(map.getMapName() + " settings"));
+
+        loadInv();
+    }
 
     public MapSettingsGUI(RSWPlayer p, RSWMap map) {
         this.uuid = p.getUUID();
         this.map = map;
 
-        inv = Bukkit.getServer().createInventory(null, 27, Text.color(map.getMapName() + " settings"));
+        inv = Bukkit.getServer().createInventory(null, 45, Text.color(map.getMapName() + " settings"));
 
         loadInv();
     }
@@ -67,16 +69,27 @@ public class MapSettingsGUI {
     private void loadInv() {
         inv.clear();
 
-        for (int slot : new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 18, 19, 20, 21, 23, 24, 25, 26, 17}) {
+        for (int slot : new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 18, 27, 36, 17, 26, 35, 44, 37, 38, 39, 41, 42, 43}) {
             inv.setItem(slot, placeholder);
         }
 
-        inv.setItem(10, map.isSpectatorEnabled() ? specon : specoff);
-        inv.setItem(12, map.isRanked() ? rankedon : rankedoff);
-        inv.setItem(14, map.isInstantEndEnabled() ? ieon : ieoff);
-        inv.setItem(16, map.isBorderEnabled() ? borderon : borderoff);
+        inv.setItem(10, Itens.createItem(Material.ENDER_EYE, 1, "&9Spectator " + styleBool(map.isSpectatorEnabled()), Collections.singletonList("&7Spectate when a player dies. Click to toggle.")));
+        inv.setItem(12, Itens.createItem(Material.FEATHER, 1, "&9Instant Ending " + styleBool(map.isInstantEndEnabled()), Arrays.asList("&7When a player wins, the game is instantly resetted", "&7and all players are teleported to the lobby. Click to toggle.")));
+        inv.setItem(14, Itens.createItem(Material.DIAMOND_SWORD, 1, "&9Ranked " + styleBool(map.isRanked()), Collections.singletonList("&7Ranked Mode toggle. Click to toggle.")));
+        inv.setItem(16, Itens.createItem(Material.ITEM_FRAME, 1, "&9Border " + styleBool(map.isBorderEnabled()), Collections.singletonList("&7Border toggle. Click to toggle.")));
 
-        inv.setItem(22, confirm);
+        inv.setItem(22, Itens.createItem(Material.PISTON, 1, "&9Events", Collections.singletonList("&7Click here to edit this map's events.")));
+
+        inv.setItem(28, Itens.createItem(Material.CLOCK, 1, "&9Max Game Time &f" + Text.formatSeconds(map.getMaxGameTime()), Collections.singletonList("&7Click to edit.")));
+        inv.setItem(30, Itens.createItem(Material.CLOCK, 1, "&9End Game Time &f" + Text.formatSeconds(map.getTimeEndGame()), Collections.singletonList("&7Click to edit.")));
+        inv.setItem(32, Itens.createItem(Material.CLOCK, 1, "&9Start Game Time &f" + Text.formatSeconds(map.getTimeToStart()), Collections.singletonList("&7Click to edit.")));
+        inv.setItem(34, Itens.createItem(Material.CLOCK, 1, "&9Invincibility Seconds &f" + Text.formatSeconds(map.getInvincibilitySeconds()), Collections.singletonList("&7Click to edit.")));
+
+        inv.setItem(40, confirm);
+    }
+
+    private String styleBool(boolean b) {
+        return b ? "&7[&a&lON&r&7]" : "&7[&c&lOFF&r&7]";
     }
 
     public static Listener getListener() {
@@ -105,15 +118,79 @@ public class MapSettingsGUI {
                                     current.map.setSpectating(!current.map.isSpectatorEnabled());
                                     break;
                                 case 12:
-                                    current.map.setRanked(!current.map.isRanked());
+                                    current.map.setInstantEnding(!current.map.isInstantEndEnabled());
                                     break;
                                 case 14:
-                                    current.map.setInstantEnding(!current.map.isInstantEndEnabled());
+                                    current.map.setRanked(!current.map.isRanked());
                                     break;
                                 case 16:
                                     current.map.setBorderEnabled(!current.map.isBorderEnabled());
                                     break;
                                 case 22:
+                                    p.closeInventory();
+                                    //TODO
+                                    break;
+                                case 28:
+                                    p.closeInventory();
+                                    new PlayerInput(p, input -> {
+                                        try {
+                                            int seconds = Integer.parseInt(input);
+                                            current.map.setMaxGameTime(seconds);
+                                            MapSettingsGUI gui = new MapSettingsGUI(p, current.map);
+                                            gui.openInventory(p);
+                                        } catch (NumberFormatException e1) {
+                                            p.sendMessage(Text.color("&cInvalid seconds."));
+                                        }
+
+                                    }, input -> {
+                                    });
+                                    break;
+                                case 30:
+                                    p.closeInventory();
+                                    new PlayerInput(p, input -> {
+                                        try {
+                                            int seconds = Integer.parseInt(input);
+                                            current.map.setTimeEndGame(seconds);
+                                            MapSettingsGUI gui = new MapSettingsGUI(p, current.map);
+                                            gui.openInventory(p);
+                                        } catch (NumberFormatException e1) {
+                                            p.sendMessage(Text.color("&cInvalid seconds."));
+                                        }
+
+                                    }, input -> {
+                                    });
+                                    break;
+                                case 32:
+                                    p.closeInventory();
+                                    new PlayerInput(p, input -> {
+                                        try {
+                                            int seconds = Integer.parseInt(input);
+                                            current.map.setTimeToStart(seconds);
+                                            MapSettingsGUI gui = new MapSettingsGUI(p, current.map);
+                                            gui.openInventory(p);
+                                        } catch (NumberFormatException e1) {
+                                            p.sendMessage(Text.color("&cInvalid seconds."));
+                                        }
+
+                                    }, input -> {
+                                    });
+                                    break;
+                                case 34:
+                                    p.closeInventory();
+                                    new PlayerInput(p, input -> {
+                                        try {
+                                            int seconds = Integer.parseInt(input);
+                                            current.map.setInvincibilitySeconds(seconds);
+                                            MapSettingsGUI gui = new MapSettingsGUI(p, current.map);
+                                            gui.openInventory(p);
+                                        } catch (NumberFormatException e1) {
+                                            p.sendMessage(Text.color("&cInvalid seconds."));
+                                        }
+
+                                    }, input -> {
+                                    });
+                                    break;
+                                case 40:
                                     current.map.save(RSWMap.Data.SETTINGS, true);
                                     p.closeInventory();
                                     break;
@@ -141,18 +218,22 @@ public class MapSettingsGUI {
         };
     }
 
-    public void openInventory(RSWPlayer player) {
+    public void openInventory(Player player) {
         Inventory inv = getInventory();
-        InventoryView openInv = player.getPlayer().getOpenInventory();
+        InventoryView openInv = player.getOpenInventory();
         if (openInv != null) {
-            Inventory openTop = player.getPlayer().getOpenInventory().getTopInventory();
+            Inventory openTop = player.getOpenInventory().getTopInventory();
             if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
                 openTop.setContents(inv.getContents());
             } else {
-                player.getPlayer().openInventory(inv);
+                player.openInventory(inv);
             }
             register();
         }
+    }
+
+    public void openInventory(RSWPlayer player) {
+        openInventory(player.getPlayer());
     }
 
     private Inventory getInventory() {

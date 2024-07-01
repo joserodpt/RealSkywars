@@ -36,7 +36,7 @@ public enum TranslatableLine {
 
     CMD_CANT_FORCESTART(".Messages.Commands.Match-Force-Start-Denial"),
     CMD_CONFIG_RELOAD(".Messages.Commands.Config-Reload"),
-    CMD_CALREADY_IN_MATCH(".Messages.Map.Already-In-Match"),
+    CMD_ALREADY_IN_MATCH(".Messages.Map.Already-In-Match"),
     CMD_CNO_MATCH(".Messages.Commands.No-Match"),
     CMD_CLOBBY_SET(".Messages.Commands.Lobby-Set"),
     CMD_MATCH_CANCEL(".Messages.Map.Suggest-Match-Cancel"),
