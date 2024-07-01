@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 
 public class TeamsMode extends RSWMap {
 
-    private final int maxMembersTeam;
+    private int maxMembersTeam = 0;
     private final Map<Location, RSWTeam> teams;
 
     public TeamsMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, int teams, int playersPerTeam) {
@@ -54,7 +54,11 @@ public class TeamsMode extends RSWMap {
         super(nome, displayName, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border, pos1, pos2, chests, rankd, unregistered);
 
         this.teams = teams;
-        this.maxMembersTeam = teams.get(0).getMaxMembers();
+
+        for (Location location : this.teams.keySet()) { // extract first team to get max members
+            this.maxMembersTeam = teams.get(location).getMaxMembers();
+            break;
+        }
 
         this.teams.forEach((loc, team) -> team.getTeamCage().setMap(this));
     }
@@ -227,19 +231,19 @@ public class TeamsMode extends RSWMap {
                 this.kickPlayers(null);
                 this.resetArena(OperationReason.RESET);
             } else {
-                super.setFinishingTimer(new CountdownTimer(super.getRealSkywarsAPI().getPlugin(), RSWConfig.file().getInt("Config.Time-EndGame"), () -> {
+                super.setFinishingTimer(new CountdownTimer(super.getRealSkywarsAPI().getPlugin(), this.getTimeEndGame(), () -> {
                     for (RSWPlayer p : winRSWTeam.getMembers()) {
                         if (p.getPlayer() != null) {
                             p.setInvincible(true);
                             p.addStatistic(RSWPlayer.Statistic.TEAM_WIN, 1, this.isRanked());
-                            p.executeWinBlock(RSWConfig.file().getInt("Config.Time-EndGame") - 2);
+                            p.executeWinBlock(this.getTimeEndGame() - 2);
                         }
                         this.sendLog(p, true);
                     }
 
                     for (RSWPlayer g : super.getAllPlayers()) {
                         if (g.getPlayer() != null) {
-                            g.sendMessage(TranslatableLine.MATCH_END.get(g, true).replace("%time%", Text.formatSeconds(RSWConfig.file().getInt("Config.Time-EndGame"))));
+                            g.sendMessage(TranslatableLine.MATCH_END.get(g, true).replace("%time%", Text.formatSeconds(this.getTimeEndGame())));
                             g.getPlayer().sendTitle("", Text.color(TranslatableLine.TITLE_WIN.get(g).replace("%player%", winRSWTeam.getNames())), 10, 40, 10);
                         }
                     }
@@ -252,7 +256,7 @@ public class TeamsMode extends RSWMap {
                     //     firework(Players.get(0));
                     // }
 
-                    super.getAllPlayers().forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), RSWConfig.file().getInt("Config.Time-EndGame")));
+                    super.getAllPlayers().forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), this.getTimeEndGame()));
                 }));
 
                 super.getFinishingTimer().scheduleTimer();

@@ -215,17 +215,17 @@ public class SoloMode extends RSWMap {
                 this.kickPlayers(null);
                 this.resetArena(OperationReason.RESET);
             } else {
-                super.setFinishingTimer(new CountdownTimer(super.getRealSkywarsAPI().getPlugin(), RSWConfig.file().getInt("Config.Time-EndGame"), () -> {
+                super.setFinishingTimer(new CountdownTimer(super.getRealSkywarsAPI().getPlugin(), this.getTimeEndGame(), () -> {
                     super.getBossBar().tick();
                     if (p.getPlayer() != null) {
                         p.setInvincible(true);
                         p.addStatistic(RSWPlayer.Statistic.SOLO_WIN, 1, this.isRanked());
-                        p.executeWinBlock(RSWConfig.file().getInt("Config.Time-EndGame") - 2);
+                        p.executeWinBlock(this.getTimeEndGame() - 2);
                     }
 
                     for (RSWPlayer g : super.getAllPlayers()) {
                         g.delCage();
-                        g.sendMessage(TranslatableLine.MATCH_END.get(g, true).replace("%time%", Text.formatSeconds(RSWConfig.file().getInt("Config.Time-EndGame"))));
+                        g.sendMessage(TranslatableLine.MATCH_END.get(g, true).replace("%time%", Text.formatSeconds(this.getTimeEndGame())));
                     }
                 }, () -> {
                     super.getBossBar().tick();
@@ -233,7 +233,7 @@ public class SoloMode extends RSWMap {
                     this.kickPlayers(null);
                     this.resetArena(OperationReason.RESET);
                 }, (t) -> {
-                    super.getAllPlayers().forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), RSWConfig.file().getInt("Config.Time-EndGame")));
+                    super.getAllPlayers().forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), this.getTimeEndGame()));
                     super.getBossBar().tick();
                     if (p.getPlayer() != null) {
                         FireworkUtils.spawnRandomFirework(p.getLocation());

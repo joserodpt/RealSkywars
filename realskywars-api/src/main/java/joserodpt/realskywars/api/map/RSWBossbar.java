@@ -1,6 +1,5 @@
 package joserodpt.realskywars.api.map;
 
-import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Bukkit;
@@ -35,7 +34,7 @@ public class RSWBossbar {
                 this.bossBar.setProgress(div);
                 break;
             case FINISHING:
-                double div2 = (double) map.getFinishingTimer().getSecondsLeft() / (double) RSWConfig.file().getInt("Config.Time-EndGame");
+                double div2 = (double) map.getFinishingTimer().getSecondsLeft() / (double) map.getTimeEndGame();
                 this.bossBar.setProgress(div2);
                 break;
         }
@@ -66,7 +65,7 @@ public class RSWBossbar {
             case STARTING:
                 int time = map.getStartMapTimer() == null ? 0 : map.getStartMapTimer().getSecondsLeft();
                 this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_STARTING.getSingle().replace("%time%", Text.formatSeconds(time)));
-                double div = (double) time / (double) RSWConfig.file().getInt("Config.Time-To-Start");
+                double div = (double) time / (double) map.getTimeToStart();
                 if (div <= 1 && div >= 0) {
                     this.bossBar.setProgress(div);
                 }
@@ -76,7 +75,7 @@ public class RSWBossbar {
                 this.bossBar.setColor(BarColor.BLUE);
 
                 int time2 = map.getFinishingTimer() == null ? 0 : map.getFinishingTimer().getSecondsLeft();
-                double div2 = (double) time2 / (double) RSWConfig.file().getInt("Config.Time-EndGame");
+                double div2 = (double) time2 / (double) map.getTimeEndGame();
                 if (div2 <= 1 && div2 >= 0) {
                     this.bossBar.setProgress(div2);
                 }

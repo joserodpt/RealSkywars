@@ -68,7 +68,13 @@ public abstract class RSWMap {
     private String displayName;
     private Location spectatorLocation;
     private final String schematicName;
-    private int maxPlayers, borderSize, timePassed, maxGameTime;
+    private final int maxPlayers;
+    private int borderSize;
+    private int timePassed;
+    private int timeEndGame;
+    private int timeToStart;
+    private int maxGameTime;
+    private int invincibilitySeconds;
     private boolean specEnabled, instantEnding, ranked, borderEnabled;
     private boolean unregistered = false;
 
@@ -109,10 +115,31 @@ public abstract class RSWMap {
 
         this.state = estado;
         this.maxPlayers = maxPlayers;
-        this.maxGameTime = RSWMapsConfig.file().getInt(this.getMapName() + ".max-game-time", -1);
+        this.maxGameTime = RSWMapsConfig.file().getInt(this.getMapName() + ".Settings.Max-Game-Time", -1);
         if (this.maxGameTime == -1) {
             this.maxGameTime = RSWConfig.file().getInt("Config.Maximum-Game-Time." + this.getGameMode().getSimpleName());
-            RSWMapsConfig.file().set(this.getMapName() + ".max-game-time", this.getMaxGameTime());
+            RSWMapsConfig.file().set(this.getMapName() + ".Settings.Max-Game-Time", this.getMaxGameTime());
+            RSWMapsConfig.save();
+        }
+
+        this.invincibilitySeconds = RSWMapsConfig.file().getInt(this.getMapName() + ".Settings.Invincibility-Seconds", -1);
+        if (this.invincibilitySeconds == -1) {
+            this.invincibilitySeconds = RSWConfig.file().getInt("Config.Invincibility-Seconds");
+            RSWMapsConfig.file().set(this.getMapName() + ".Settings.Invincibility-Seconds", this.getInvincibilitySeconds());
+            RSWMapsConfig.save();
+        }
+
+        this.timeEndGame = RSWMapsConfig.file().getInt(this.getMapName() + ".Settings.Time-End-Game", -1);
+        if (this.timeEndGame == -1) {
+            this.timeEndGame = RSWConfig.file().getInt("Config.Time-EndGame");
+            RSWMapsConfig.file().set(this.getMapName() + ".Settings.Time-End-Game", this.getTimeEndGame());
+            RSWMapsConfig.save();
+        }
+
+        this.timeToStart = RSWMapsConfig.file().getInt(this.getMapName() + ".Settings.Time-To-Start", -1);
+        if (this.timeToStart == -1) {
+            this.timeToStart = RSWConfig.file().getInt("Config.Time-To-Start");
+            RSWMapsConfig.file().set(this.getMapName() + ".Settings.Time-To-Start", this.getTimeEndGame());
             RSWMapsConfig.save();
         }
 
@@ -170,7 +197,7 @@ public abstract class RSWMap {
         }, () -> {
         }, (t) -> {
             this.bossbar.tick();
-            if (RSWConfig.file().getInt("Config.Invincibility-Seconds") == t.getPassedSeconds()) {
+            if (this.getInvincibilitySeconds() == t.getPassedSeconds()) {
                 for (RSWPlayer player : this.getPlayers()) {
                     player.setInvincible(false);
                     TranslatableLine.INVINCIBILITY_END.send(player, true);
@@ -528,13 +555,20 @@ public abstract class RSWMap {
         return this.maxGameTime;
     }
 
-    public RSWChest getChest(Location location) {
-        for (RSWChest chest : this.getChests()) {
-            if (location.equals(chest.getLocation())) {
-                return chest;
-            }
-        }
-        return null;
+    public int getInvincibilitySeconds() {
+        return this.invincibilitySeconds;
+    }
+
+    public int getTimeEndGame() {
+        return this.timeEndGame;
+    }
+
+    public int getTimeToStart() {
+        return this.timeToStart;
+    }
+
+    public RSWChest getChest(Location l) {
+        return this.getChests().stream().filter(chest -> chest.getLocation().equals(l)).findFirst().orElse(null);
     }
 
     public String getShematicName() {
@@ -554,6 +588,7 @@ public abstract class RSWMap {
                 int z = Integer.parseInt(signData[3]);
 
                 Location l = new Location(w, x, y, z);
+                assert w != null;
                 list.put(l, new RSWSign(this, w.getBlockAt(l)));
             }
         }
@@ -726,7 +761,7 @@ public abstract class RSWMap {
     abstract public int minimumPlayersToStartMap();
 
     protected void startRoom() {
-        this.startMapTimer = new CountdownTimer(RealSkywarsAPI.getInstance().getPlugin(), RSWConfig.file().getInt("Config.Time-To-Start"), () -> {
+        this.startMapTimer = new CountdownTimer(RealSkywarsAPI.getInstance().getPlugin(), this.getTimeToStart(), () -> {
             //
         }, this::forceStartMap, (t) -> {
             if (getPlayerCount() < minimumPlayersToStartMap()) {
@@ -755,7 +790,7 @@ public abstract class RSWMap {
                         p.sendActionbar(TranslatableLine.ARENA_START_COUNTDOWN.get(p).replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
                     }
 
-                    p.setBarNumber(t.getSecondsLeft(), RSWConfig.file().getInt("Config.Time-To-Start"));
+                    p.setBarNumber(t.getSecondsLeft(), this.getTimeToStart());
                 }
             }
         });
@@ -998,7 +1033,10 @@ public abstract class RSWMap {
                 RSWMapsConfig.file().set(this.getMapName() + ".Settings.Instant-End", this.isInstantEndEnabled());
                 RSWMapsConfig.file().set(this.getMapName() + ".Settings.Ranked", this.isRanked());
                 RSWMapsConfig.file().set(this.getMapName() + ".Settings.Border", this.isBorderEnabled());
-                RSWMapsConfig.file().set(this.getMapName() + ".max-game-time", this.getMaxGameTime());
+                RSWMapsConfig.file().set(this.getMapName() + ".Settings.Invincibility-Seconds", this.getInvincibilitySeconds());
+                RSWMapsConfig.file().set(this.getMapName() + ".Settings.Time-End-Game", this.getTimeEndGame());
+                RSWMapsConfig.file().set(this.getMapName() + ".Settings.Time-To-Start", this.getTimeToStart());
+                RSWMapsConfig.file().set(this.getMapName() + ".Settings.Max-Game-Time", this.getMaxGameTime());
                 break;
             case BORDER:
                 RSWMapsConfig.file().set(this.getMapName() + ".World.Border.POS1-X", this.getPOS1().getX());
