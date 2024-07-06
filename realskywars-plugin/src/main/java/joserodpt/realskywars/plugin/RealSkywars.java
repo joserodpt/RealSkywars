@@ -84,7 +84,7 @@ public class RealSkywars extends RealSkywarsAPI {
         this.plugin = plugin;
         this.logger = plugin.getLogger();
 
-        lobbyManagerAPI = new LobbyManager();
+        lobbyManagerAPI = new LobbyManager(this);
         worldManagerAPI = new WorldManager(this);
         playerManagerAPI = new PlayerManager(this);
         mapManagerAPI = new MapManager(this);
