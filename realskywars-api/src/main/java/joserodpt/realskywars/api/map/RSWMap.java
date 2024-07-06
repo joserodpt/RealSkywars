@@ -341,8 +341,6 @@ public abstract class RSWMap {
             this.bossbar.setState(w);
     }
 
-    abstract public boolean isPlaceHolder();
-
     abstract public boolean canStartMap();
 
     abstract public void removePlayer(RSWPlayer p);
@@ -485,7 +483,9 @@ public abstract class RSWMap {
 
     abstract public Collection<RSWTeam> getTeams();
 
-    abstract public int getMaxTeamMembers();
+    abstract public int getMaxTeamsNumber();
+
+    abstract public int getMaxTeamsMembers();
 
     public void clear() {
         this.world.deleteWorld(OperationReason.RESET);

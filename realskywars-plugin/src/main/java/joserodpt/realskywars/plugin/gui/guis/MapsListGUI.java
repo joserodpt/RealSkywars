@@ -19,6 +19,7 @@ import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.map.RSWMap;
+import joserodpt.realskywars.api.map.modes.PlaceholderMode;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Pagination;
@@ -105,7 +106,7 @@ public class MapsListGUI {
 
                         if (current.display.containsKey(e.getRawSlot())) {
                             RSWMap a = current.display.get(e.getRawSlot());
-                            if (!a.isPlaceHolder()) {
+                            if (!(a instanceof PlaceholderMode)) {
                                 a.addPlayer(p);
                             }
                         }
@@ -258,7 +259,7 @@ public class MapsListGUI {
     }
 
     private ItemStack makeIcon(RSWPlayer p, RSWMap g) {
-        if (g.isPlaceHolder()) {
+        if (g instanceof PlaceholderMode) {
             return Itens.createItem(Material.DEAD_BUSH, 1, TranslatableLine.ITEM_MAP_NOTFOUND_NAME.get(p));
         } else {
             return Itens.createItem(g.getState().getStateMaterial(g.isRanked()), Math.min(64, Math.max(1, g.getPlayerCount())), TranslatableLine.ITEM_MAP_NAME.get(p).replace("%map%", g.getName()).replace("%displayname%", g.getDisplayName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(g.isRanked()), variableList(TranslatableList.ITEMS_MAP_DESCRIPTION.get(p), g));

@@ -333,7 +333,7 @@ public class PlayerListener implements Listener {
                             }
                             break;
                         case TEAMS:
-                            if ((mp.getCages().size() + 1) > mp.getTeams().size()) {
+                            if ((mp.getCages().size() + 1) > mp.getMaxTeamsNumber()) {
                                 pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "&cYou can't place more cages than the max teams.");
                                 return;
                             }

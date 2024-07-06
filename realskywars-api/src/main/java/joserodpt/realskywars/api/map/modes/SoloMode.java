@@ -56,12 +56,7 @@ public class SoloMode extends RSWMap {
         this.cages = cages;
         this.cages.forEach((location, rswCage) -> rswCage.setMap(this));
     }
-
-    @Override
-    public boolean isPlaceHolder() {
-        return false;
-    }
-
+    
     @Override
     public void forceStartMap() {
         if (canStartMap()) {
@@ -264,7 +259,12 @@ public class SoloMode extends RSWMap {
     }
 
     @Override
-    public int getMaxTeamMembers() {
+    public int getMaxTeamsNumber() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxTeamsMembers() {
         return 0;
     }
 

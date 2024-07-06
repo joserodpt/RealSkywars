@@ -29,11 +29,6 @@ public class PlaceholderMode extends RSWMap {
     }
 
     @Override
-    public boolean isPlaceHolder() {
-        return true;
-    }
-
-    @Override
     public String forceStart(RSWPlayer p) {
         return null;
     }
@@ -75,7 +70,12 @@ public class PlaceholderMode extends RSWMap {
     }
 
     @Override
-    public int getMaxTeamMembers() {
+    public int getMaxTeamsNumber() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxTeamsMembers() {
         return 0;
     }
 
@@ -99,6 +99,5 @@ public class PlaceholderMode extends RSWMap {
 
     @Override
     public void addCage(Location location) {
-
     }
 }

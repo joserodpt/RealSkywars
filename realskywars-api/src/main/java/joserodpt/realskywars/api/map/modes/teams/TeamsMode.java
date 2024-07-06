@@ -41,19 +41,22 @@ import java.util.stream.Collectors;
 public class TeamsMode extends RSWMap {
 
     private int maxMembersTeam = 0;
+    private int maxTeamsNumber = 0;
     private final Map<Location, RSWTeam> teams;
 
-    public TeamsMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, int teams, int playersPerTeam) {
-        super(nome, displayName, w, schematicName, wt, MapState.RESETTING, teams * playersPerTeam, null, true, false, true, null, null, new HashMap<>(), false, true);
+    public TeamsMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, int teamsNumber, int playersPerTeam) {
+        super(nome, displayName, w, schematicName, wt, MapState.RESETTING, teamsNumber * playersPerTeam, null, true, false, true, null, null, new HashMap<>(), false, true);
 
         this.teams = new HashMap<>();
         this.maxMembersTeam = playersPerTeam;
+        this.maxTeamsNumber = teamsNumber;
     }
 
     public TeamsMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, Map<Location, RSWTeam> teams, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean border, Location pos1, Location pos2, Map<Location, RSWChest> chests, Boolean rankd, Boolean unregistered) {
         super(nome, displayName, w, schematicName, wt, estado, maxPlayers, spectatorLocation, specEnabled, instantEnding, border, pos1, pos2, chests, rankd, unregistered);
 
         this.teams = teams;
+        this.teams.values().forEach(rswTeam -> rswTeam.getTeamCage().setMap(this));
 
         for (Location location : this.teams.keySet()) { // extract first team to get max members
             this.maxMembersTeam = teams.get(location).getMaxMembers();
@@ -61,11 +64,6 @@ public class TeamsMode extends RSWMap {
         }
 
         this.teams.forEach((loc, team) -> team.getTeamCage().setMap(this));
-    }
-
-    @Override
-    public boolean isPlaceHolder() {
-        return false;
     }
 
     @Override
@@ -103,7 +101,7 @@ public class TeamsMode extends RSWMap {
 
     @Override
     public boolean canStartMap() {
-        return super.getPlayerCount() < (this.getMaxTeamMembers() + 1);
+        return super.getPlayerCount() < (this.getMaxTeamsMembers() + 1);
     }
 
     @Override
@@ -274,7 +272,7 @@ public class TeamsMode extends RSWMap {
 
     @Override
     public Collection<RSWCage> getCages() {
-        return null;
+        return this.getTeams().stream().map(RSWTeam::getTeamCage).collect(Collectors.toList());
     }
 
     @Override
@@ -283,13 +281,18 @@ public class TeamsMode extends RSWMap {
     }
 
     @Override
-    public int getMaxTeamMembers() {
+    public int getMaxTeamsNumber() {
+        return this.maxTeamsNumber;
+    }
+
+    @Override
+    public int getMaxTeamsMembers() {
         return this.maxMembersTeam;
     }
 
     @Override
     public int minimumPlayersToStartMap() {
-        return getMaxTeamMembers() + 1;
+        return getMaxTeamsMembers() + 1;
     }
 
     @Override
@@ -305,7 +308,7 @@ public class TeamsMode extends RSWMap {
 
     @Override
     public void addCage(Location location) {
-        RSWTeam t = new RSWTeam(this.getTeams().size() + 1, this.getMaxTeamMembers(), location);
+        RSWTeam t = new RSWTeam(this.getTeams().size() + 1, this.getMaxTeamsMembers(), location);
         t.getTeamCage().setMap(this);
         this.teams.put(location, t);
         this.save(Data.CAGES, true);

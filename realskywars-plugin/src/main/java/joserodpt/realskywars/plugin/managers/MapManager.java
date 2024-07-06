@@ -122,12 +122,11 @@ public class MapManager extends MapManagerAPI {
                     case TEAMS:
                         int numberOfPlayers = RSWMapsConfig.file().getInt(s + ".number-of-players");
                         AtomicInteger tc = new AtomicInteger(1);
-                        Map<Location, RSWTeam> ts = cgs.values().stream()
-                                .filter(c -> c.getLocation() != null)
-                                .collect(Collectors.toMap(
-                                        RSWCage::getLocation,
-                                        c -> new RSWTeam(tc.getAndIncrement(), numberOfPlayers / cgs.size(), c.getLocation())
-                                ));
+
+                        Map<Location, RSWTeam> ts = new HashMap<>();
+                        int teamSize = numberOfPlayers / cgs.size();
+                        cgs.forEach((location, value) -> ts.put(location, new RSWTeam(tc.getAndIncrement(), teamSize, location)));
+                        
                         TeamsMode teas = new TeamsMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, ts, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), RSWMapsConfig.file().getBoolean(s + ".Settings.Border"), getPOS1(w, s), getPOS2(w, s), chests, isRanked(s), unregistered);
                         teas.resetArena(RSWMap.OperationReason.LOAD);
                         this.addMap(teas);
