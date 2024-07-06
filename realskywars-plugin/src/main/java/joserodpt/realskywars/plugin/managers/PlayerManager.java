@@ -170,23 +170,23 @@ public class PlayerManager extends PlayerManagerAPI {
                     playerData.setCoins(rs.getCurrencyAdapterAPI().getCoins(p));
                     break;
                 case GAME:
-                    playerData.setWinsSolo(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false), false);
-                    playerData.setWinsSolo(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true), true);
+                    playerData.setStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false, p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false));
+                    playerData.setStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true, p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true));
 
-                    playerData.setWinsTeams(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false), false);
-                    playerData.setWinsTeams(p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true), true);
+                    playerData.setStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false, p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false));
+                    playerData.setStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true, p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true));
 
-                    playerData.setKills(p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false), false);
-                    playerData.setKills(p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, true), true);
+                    playerData.setStatistics(RSWPlayer.PlayerStatistics.KILLS, false, p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false));
+                    playerData.setStatistics(RSWPlayer.PlayerStatistics.KILLS, true, p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, true));
 
-                    playerData.setDeaths(p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false), false);
-                    playerData.setDeaths(p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, true), true);
+                    playerData.setStatistics(RSWPlayer.PlayerStatistics.DEATHS, false, p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false));
+                    playerData.setStatistics(RSWPlayer.PlayerStatistics.DEATHS, true, p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, true));
 
-                    playerData.setLoses(p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false), false);
-                    playerData.setLoses(p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, true), true);
+                    playerData.setStatistics(RSWPlayer.PlayerStatistics.LOSES, false, p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false));
+                    playerData.setStatistics(RSWPlayer.PlayerStatistics.LOSES, true, p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, true));
 
-                    playerData.setGamesPlayed(p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false), false);
-                    playerData.setGamesPlayed(p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true), true);
+                    playerData.setStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false, p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false));
+                    playerData.setStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true, p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true));
 
                     playerData.setGames_list(processGamesListSave(p.getGamesList()));
                     break;

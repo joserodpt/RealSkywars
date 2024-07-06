@@ -634,7 +634,7 @@ public abstract class RSWMap {
 
     public void sendLog(RSWPlayer p, boolean winner) {
         if (p.getPlayer() != null) {
-            TranslatableList.MAP_END_LOG.get(p).forEach(s -> p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE) + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + "").replace("%time%", Text.formatSeconds(this.mapTimer.getPassedSeconds()))));
+            TranslatableList.MAP_END_LOG.get(p).forEach(s -> p.sendCenterMessage(s.replace("%recvcoins%", p.getGameBalance() + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + "").replace("%time%", Text.formatSeconds(this.mapTimer.getPassedSeconds()))));
 
             p.addGameLog(new RSWGameLog(this.getName(), this.getGameMode(), this.isRanked(), this.getMaxPlayers(), winner, this.getTimePassed(), Text.getDayAndTime()));
 

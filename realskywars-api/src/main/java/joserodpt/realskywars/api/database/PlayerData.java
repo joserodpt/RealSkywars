@@ -18,6 +18,7 @@ package joserodpt.realskywars.api.database;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -212,51 +213,52 @@ public class PlayerData {
         this.bought_items = String.join("/", boughtItems);
     }
 
-    public void setWinsSolo(Object a, boolean b) {
-        if (b) {
-            this.stats_wins_ranked_solo = (int) a;
-        } else {
-            this.stats_wins_solo = (int) a;
-        }
-    }
-
-    public void setWinsTeams(Object a, boolean b) {
-        if (b) {
-            this.stats_wins_ranked_teams = (int) a;
-        } else {
-            this.stats_wins_teams = (int) a;
-        }
-    }
-
-    public void setKills(Object a, boolean b) {
-        if (b) {
-            this.ranked_kills = (int) a;
-        } else {
-            this.kills = (int) a;
-        }
-    }
-
-    public void setDeaths(Object a, boolean b) {
-        if (b) {
-            this.ranked_deaths = (int) a;
-        } else {
-            this.deaths = (int) a;
-        }
-    }
-
-    public void setLoses(Object a, boolean b) {
-        if (b) {
-            this.ranked_loses = (int) a;
-        } else {
-            this.loses = (int) a;
-        }
-    }
-
-    public void setGamesPlayed(Object a, boolean b) {
-        if (b) {
-            this.ranked_games_played = (int) a;
-        } else {
-            this.games_played = (int) a;
+    public void setStatistics(RSWPlayer.PlayerStatistics pp, Boolean ranked, int value) {
+        switch (pp) {
+            case LOSES:
+                if (ranked) {
+                    this.ranked_loses = value;
+                } else {
+                    this.loses = value;
+                }
+                break;
+            case DEATHS:
+                if (ranked) {
+                    this.ranked_deaths = value;
+                } else {
+                    this.deaths = value;
+                }
+                break;
+            case WINS_SOLO:
+                if (ranked) {
+                    this.stats_wins_ranked_solo = value;
+                } else {
+                    this.stats_wins_solo = value;
+                }
+                break;
+            case WINS_TEAMS:
+                if (ranked) {
+                    this.stats_wins_ranked_teams = value;
+                } else {
+                    this.stats_wins_teams = value;
+                }
+                break;
+            case KILLS:
+                if (ranked) {
+                    this.ranked_kills = value;
+                } else {
+                    this.kills = value;
+                }
+                break;
+            case GAMES_PLAYED:
+                if (ranked) {
+                    this.ranked_games_played = value;
+                } else {
+                    this.games_played = value;
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid PlayerStatistics value");
         }
     }
 

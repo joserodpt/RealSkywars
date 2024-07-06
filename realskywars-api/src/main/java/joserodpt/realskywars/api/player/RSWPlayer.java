@@ -351,7 +351,7 @@ public class RSWPlayer {
         this.saveData(PlayerData.LANG);
     }
 
-    public Object getStatistics(PlayerStatistics pp, Boolean ranked) {
+    public int getStatistics(PlayerStatistics pp, Boolean ranked) {
         switch (pp) {
             case LOSES:
                 return ranked ? this.rankedLoses : this.loses;
@@ -365,15 +365,13 @@ public class RSWPlayer {
                 return ranked ? this.rankedTotalkills : this.kills;
             case GAMES_PLAYED:
                 return ranked ? this.rankedGamesPlayed : this.gamesPlayed;
-            case GAME_BALANCE:
-                return this.balanceGame;
             case GAME_KILLS:
                 return this.gamekills;
         }
         return 1;
     }
 
-    public Object getStatistics(PlayerStatistics pp) {
+    public int getStatistics(PlayerStatistics pp) {
         return getStatistics(pp, this.isInMatch() && this.playerMap.isRanked());
     }
 
@@ -611,7 +609,7 @@ public class RSWPlayer {
     public enum Statistic {KILL, SOLO_WIN, TEAM_WIN, LOSE, DEATH, GAMES_PLAYED}
 
     public enum PlayerStatistics {
-        WINS_SOLO, WINS_TEAMS, KILLS, DEATHS, LOSES, GAMES_PLAYED, GAME_BALANCE, GAME_KILLS;
+        WINS_SOLO, WINS_TEAMS, KILLS, DEATHS, LOSES, GAMES_PLAYED, GAME_KILLS;
 
         public String getDisplayName(RSWPlayer p) {
             switch (this) {
@@ -627,8 +625,6 @@ public class RSWPlayer {
                     return TranslatableLine.STATISTIC_LOSES.get(p);
                 case GAMES_PLAYED:
                     return TranslatableLine.STATISTIC_GAMES_PLAYED.get(p);
-                case GAME_BALANCE:
-                    return TranslatableLine.STATISTIC_GAMES_BALANCE.get(p);
                 case GAME_KILLS:
                     return TranslatableLine.STATISTIC_GAMES_KILLS.get(p);
                 default:
