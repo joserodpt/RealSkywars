@@ -119,7 +119,7 @@ public class RealSkywarsCMD extends CommandBase {
             p.sendMessage(TranslatableLine.CMD_MAPS.get(p).replace("%rooms%", "" + tmp.size()));
             for (RSWMap s : tmp) {
                 TextComponent a = new TextComponent(Text.color("&7- &f" + s.getDisplayName()));
-                a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw map " + s.getMapName()));
+                a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw map " + s.getName()));
                 a.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Text.color("&fClick to open &b" + s.getDisplayName() + "&f settings!")).create()));
                 p.getPlayer().spigot().sendMessage(a);
             }

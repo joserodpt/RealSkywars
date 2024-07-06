@@ -56,6 +56,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +92,7 @@ public abstract class RSWMap {
     private BukkitTask timeCounterTask;
     private ProjectileType projectileType = ProjectileType.NORMAL;
     private TimeType timeType = TimeType.DAY;
-    private List<RSWEvent> events;
+    private List<RSWMapEvent> events;
     private final List<RSWPlayer> inMap = new ArrayList<>();
     private final Map<UUID, Integer> chestVotes = new HashMap<>();
     private final Map<UUID, Integer> projectileVotes = new HashMap<>();
@@ -115,31 +116,31 @@ public abstract class RSWMap {
 
         this.state = estado;
         this.maxPlayers = maxPlayers;
-        this.maxGameTime = RSWMapsConfig.file().getInt(this.getMapName() + ".Settings.Max-Game-Time", -1);
+        this.maxGameTime = RSWMapsConfig.file().getInt(this.getName() + ".Settings.Max-Game-Time", -1);
         if (this.maxGameTime == -1) {
             this.maxGameTime = RSWConfig.file().getInt("Config.Maximum-Game-Time." + this.getGameMode().getSimpleName());
-            RSWMapsConfig.file().set(this.getMapName() + ".Settings.Max-Game-Time", this.getMaxGameTime());
+            RSWMapsConfig.file().set(this.getName() + ".Settings.Max-Game-Time", this.getMaxGameTime());
             RSWMapsConfig.save();
         }
 
-        this.invincibilitySeconds = RSWMapsConfig.file().getInt(this.getMapName() + ".Settings.Invincibility-Seconds", -1);
+        this.invincibilitySeconds = RSWMapsConfig.file().getInt(this.getName() + ".Settings.Invincibility-Seconds", -1);
         if (this.invincibilitySeconds == -1) {
             this.invincibilitySeconds = RSWConfig.file().getInt("Config.Invincibility-Seconds");
-            RSWMapsConfig.file().set(this.getMapName() + ".Settings.Invincibility-Seconds", this.getInvincibilitySeconds());
+            RSWMapsConfig.file().set(this.getName() + ".Settings.Invincibility-Seconds", this.getInvincibilitySeconds());
             RSWMapsConfig.save();
         }
 
-        this.timeEndGame = RSWMapsConfig.file().getInt(this.getMapName() + ".Settings.Time-End-Game", -1);
+        this.timeEndGame = RSWMapsConfig.file().getInt(this.getName() + ".Settings.Time-End-Game", -1);
         if (this.timeEndGame == -1) {
             this.timeEndGame = RSWConfig.file().getInt("Config.Time-EndGame");
-            RSWMapsConfig.file().set(this.getMapName() + ".Settings.Time-End-Game", this.getTimeEndGame());
+            RSWMapsConfig.file().set(this.getName() + ".Settings.Time-End-Game", this.getTimeEndGame());
             RSWMapsConfig.save();
         }
 
-        this.timeToStart = RSWMapsConfig.file().getInt(this.getMapName() + ".Settings.Time-To-Start", -1);
+        this.timeToStart = RSWMapsConfig.file().getInt(this.getName() + ".Settings.Time-To-Start", -1);
         if (this.timeToStart == -1) {
             this.timeToStart = RSWConfig.file().getInt("Config.Time-To-Start");
-            RSWMapsConfig.file().set(this.getMapName() + ".Settings.Time-To-Start", this.getTimeEndGame());
+            RSWMapsConfig.file().set(this.getName() + ".Settings.Time-To-Start", this.getTimeEndGame());
             RSWMapsConfig.save();
         }
 
@@ -216,7 +217,7 @@ public abstract class RSWMap {
     }
 
     private void tickEvents() {
-        new ArrayList<>(this.events).forEach(RSWEvent::tick);
+        new ArrayList<>(this.events).forEach(RSWMapEvent::tick);
     }
 
     public BukkitTask getTimeCounterTask() {
@@ -263,7 +264,7 @@ public abstract class RSWMap {
         return this.getPlayerCount() == this.getMaxPlayers();
     }
 
-    public String getMapName() {
+    public String getName() {
         return this.name;
     }
 
@@ -547,7 +548,8 @@ public abstract class RSWMap {
         return this.chests.values();
     }
 
-    public List<RSWEvent> getEvents() {
+    public List<RSWMapEvent> getEvents() {
+        this.events.sort(Comparator.comparingInt(RSWMapEvent::getTime));
         return this.events;
     }
 
@@ -578,8 +580,8 @@ public abstract class RSWMap {
     private Map<Location, RSWSign> loadSigns() {
         Map<Location, RSWSign> list = new HashMap<>();
 
-        if (RSWMapsConfig.file().isList(this.getMapName() + ".Signs")) {
-            for (String i : RSWMapsConfig.file().getStringList(this.getMapName() + ".Signs")) {
+        if (RSWMapsConfig.file().isList(this.getName() + ".Signs")) {
+            for (String i : RSWMapsConfig.file().getStringList(this.getName() + ".Signs")) {
 
                 String[] signData = i.split("<");
                 World w = Bukkit.getWorld(signData[0]);
@@ -621,7 +623,7 @@ public abstract class RSWMap {
     }
 
     private void saveSigns() {
-        RSWMapsConfig.file().set(this.getMapName() + ".Signs", this.getSigns().stream().map(RSWSign::getLocationSerialized)
+        RSWMapsConfig.file().set(this.getName() + ".Signs", this.getSigns().stream().map(RSWSign::getLocationSerialized)
                 .collect(Collectors.toCollection(ArrayList::new)));
         RSWMapsConfig.save();
     }
@@ -634,7 +636,7 @@ public abstract class RSWMap {
         if (p.getPlayer() != null) {
             TranslatableList.MAP_END_LOG.get(p).forEach(s -> p.sendCenterMessage(s.replace("%recvcoins%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_BALANCE) + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + "").replace("%time%", Text.formatSeconds(this.mapTimer.getPassedSeconds()))));
 
-            p.addGameLog(new RSWGameLog(this.getMapName(), this.getGameMode(), this.isRanked(), this.getMaxPlayers(), winner, this.getTimePassed(), Text.getDayAndTime()));
+            p.addGameLog(new RSWGameLog(this.getName(), this.getGameMode(), this.isRanked(), this.getMaxPlayers(), winner, this.getTimePassed(), Text.getDayAndTime()));
 
             p.saveData(RSWPlayer.PlayerData.GAME);
         }
@@ -842,13 +844,13 @@ public abstract class RSWMap {
         this.setState(MapState.AVAILABLE);
     }
 
-    public List<RSWEvent> parseEvents() {
+    public List<RSWMapEvent> parseEvents() {
         if (this.events != null)
             this.events.clear();
-        List<RSWEvent> ret = new ArrayList<>();
+        List<RSWMapEvent> ret = new ArrayList<>();
 
-        List<String> list = RSWMapsConfig.file().isList(this.getMapName() + ".Events") ?
-                RSWMapsConfig.file().getStringList(this.getMapName() + ".Events")
+        List<String> list = RSWMapsConfig.file().isList(this.getName() + ".Events") ?
+                RSWMapsConfig.file().getStringList(this.getName() + ".Events")
                 : RSWConfig.file().getStringList("Config.Events." + this.getGameMode().getSimpleName());
 
         for (String s : list) {
@@ -858,19 +860,19 @@ public abstract class RSWMap {
                 continue;
             }
 
-            RSWEvent.EventType et;
+            RSWMapEvent.EventType et;
             try {
-                et = RSWEvent.EventType.valueOf(parse[0]);
+                et = RSWMapEvent.EventType.valueOf(parse[0]);
             } catch (Exception e) {
                 Bukkit.getLogger().warning("Invalid event type: " + parse[0]);
                 continue;
             }
 
             int time = Integer.parseInt(parse[1]);
-            ret.add(new RSWEvent(this, et, time));
+            ret.add(new RSWMapEvent(this, et, time));
         }
 
-        ret.add(new RSWEvent(this, RSWEvent.EventType.BORDERSHRINK, getMaxGameTime()));
+        ret.add(new RSWMapEvent(this, RSWMapEvent.EventType.BORDERSHRINK, getMaxGameTime()));
         return ret;
     }
 
@@ -961,6 +963,16 @@ public abstract class RSWMap {
         this.save(Data.SETTINGS, true);
     }
 
+    public void addEvent(RSWMapEvent rswMapEvent) {
+        this.events.add(rswMapEvent);
+        this.save(Data.EVENTS, true);
+    }
+
+    public void removeEvent(RSWMapEvent a) {
+        this.events.remove(a);
+        this.save(Data.EVENTS, true);
+    }
+
     public enum Data {
         ALL, SETTINGS, WORLD, NAME, TYPE, NUM_PLAYERS, CAGES, CHESTS, SPECT_LOC, BORDER, EVENTS
     }
@@ -981,48 +993,48 @@ public abstract class RSWMap {
                 break;
             case WORLD:
                 // World
-                RSWMapsConfig.file().set(this.getMapName() + ".world", this.getRSWWorld().getName());
+                RSWMapsConfig.file().set(this.getName() + ".world", this.getRSWWorld().getName());
                 break;
             case NAME:
-                RSWMapsConfig.file().set(this.getMapName() + ".name", this.name);
+                RSWMapsConfig.file().set(this.getName() + ".name", this.name);
                 break;
             case NUM_PLAYERS:
-                RSWMapsConfig.file().set(this.getMapName() + ".number-of-players", this.getMaxPlayers());
+                RSWMapsConfig.file().set(this.getName() + ".number-of-players", this.getMaxPlayers());
                 break;
             case TYPE:
-                RSWMapsConfig.file().set(this.getMapName() + ".type", this.getRSWWorld().getType().name());
+                RSWMapsConfig.file().set(this.getName() + ".type", this.getRSWWorld().getType().name());
                 if (this.getRSWWorld().getType() == RSWWorld.WorldType.SCHEMATIC) {
-                    RSWMapsConfig.file().set(this.getMapName() + ".schematic", this.getShematicName());
+                    RSWMapsConfig.file().set(this.getName() + ".schematic", this.getShematicName());
                 }
                 break;
             case CAGES:
-                RSWMapsConfig.file().remove(this.getMapName() + ".Locations.Cages");
+                RSWMapsConfig.file().remove(this.getName() + ".Locations.Cages");
                 switch (this.getGameMode()) {
                     case SOLO:
                         for (RSWCage c : this.getCages()) {
                             Location loc = c.getLocation();
-                            RSWMapsConfig.file().set(this.getMapName() + ".Locations.Cages." + c.getID() + ".X", loc.getBlockX());
-                            RSWMapsConfig.file().set(this.getMapName() + ".Locations.Cages." + c.getID() + ".Y", loc.getBlockY());
-                            RSWMapsConfig.file().set(this.getMapName() + ".Locations.Cages." + c.getID() + ".Z", loc.getBlockZ());
+                            RSWMapsConfig.file().set(this.getName() + ".Locations.Cages." + c.getID() + ".X", loc.getBlockX());
+                            RSWMapsConfig.file().set(this.getName() + ".Locations.Cages." + c.getID() + ".Y", loc.getBlockY());
+                            RSWMapsConfig.file().set(this.getName() + ".Locations.Cages." + c.getID() + ".Z", loc.getBlockZ());
                         }
                         break;
                     case TEAMS:
                         for (RSWTeam c : this.getTeams()) {
                             Location loc = c.getTeamCage().getLocation();
-                            RSWMapsConfig.file().set(this.getMapName() + ".Locations.Cages." + c.getTeamCage().getID() + ".X", loc.getBlockX());
-                            RSWMapsConfig.file().set(this.getMapName() + ".Locations.Cages." + c.getTeamCage().getID() + ".Y", loc.getBlockY());
-                            RSWMapsConfig.file().set(this.getMapName() + ".Locations.Cages." + c.getTeamCage().getID() + ".Z", loc.getBlockZ());
+                            RSWMapsConfig.file().set(this.getName() + ".Locations.Cages." + c.getTeamCage().getID() + ".X", loc.getBlockX());
+                            RSWMapsConfig.file().set(this.getName() + ".Locations.Cages." + c.getTeamCage().getID() + ".Y", loc.getBlockY());
+                            RSWMapsConfig.file().set(this.getName() + ".Locations.Cages." + c.getTeamCage().getID() + ".Z", loc.getBlockZ());
                         }
                         break;
                 }
                 break;
             case CHESTS:
                 int chestID = 1;
-                RSWMapsConfig.file().remove(this.getMapName() + ".Chests");
+                RSWMapsConfig.file().remove(this.getName() + ".Chests");
                 for (RSWChest chest : this.getChests()) {
-                    RSWMapsConfig.file().set(this.getMapName() + ".Chests." + chestID + ".LocationX", chest.getLocation().getBlockX());
-                    RSWMapsConfig.file().set(this.getMapName() + ".Chests." + chestID + ".LocationY", chest.getLocation().getBlockY());
-                    RSWMapsConfig.file().set(this.getMapName() + ".Chests." + chestID + ".LocationZ", chest.getLocation().getBlockZ());
+                    RSWMapsConfig.file().set(this.getName() + ".Chests." + chestID + ".LocationX", chest.getLocation().getBlockX());
+                    RSWMapsConfig.file().set(this.getName() + ".Chests." + chestID + ".LocationY", chest.getLocation().getBlockY());
+                    RSWMapsConfig.file().set(this.getName() + ".Chests." + chestID + ".LocationZ", chest.getLocation().getBlockZ());
                     String face;
                     try {
                         BlockFace f = ((Directional) chest.getChestBlock().getBlockData()).getFacing();
@@ -1030,41 +1042,41 @@ public abstract class RSWMap {
                     } catch (Exception ignored) {
                         face = "NORTH";
                     }
-                    RSWMapsConfig.file().set(this.getMapName() + ".Chests." + chestID + ".Face", face);
-                    RSWMapsConfig.file().set(this.getMapName() + ".Chests." + chestID + ".Type", chest.getType().name());
+                    RSWMapsConfig.file().set(this.getName() + ".Chests." + chestID + ".Face", face);
+                    RSWMapsConfig.file().set(this.getName() + ".Chests." + chestID + ".Type", chest.getType().name());
                     ++chestID;
                 }
                 break;
             case EVENTS:
-                RSWMapsConfig.file().set(this.getMapName() + ".Events", this.getEvents().stream().filter(rswEvent -> rswEvent.getEventType() != RSWEvent.EventType.BORDERSHRINK).map(RSWEvent::serialize).collect(Collectors.toList()));
+                RSWMapsConfig.file().set(this.getName() + ".Events", this.getEvents().stream().filter(rswMapEvent -> rswMapEvent.getEventType() != RSWMapEvent.EventType.BORDERSHRINK).map(RSWMapEvent::serialize).collect(Collectors.toList()));
                 break;
             case SPECT_LOC:
-                RSWMapsConfig.file().set(this.getMapName() + ".Locations.Spectator.X", this.getSpectatorLocation().getX());
-                RSWMapsConfig.file().set(this.getMapName() + ".Locations.Spectator.Y", this.getSpectatorLocation().getY());
-                RSWMapsConfig.file().set(this.getMapName() + ".Locations.Spectator.Z", this.getSpectatorLocation().getZ());
-                RSWMapsConfig.file().set(this.getMapName() + ".Locations.Spectator.Yaw", this.getSpectatorLocation().getYaw());
-                RSWMapsConfig.file().set(this.getMapName() + ".Locations.Spectator.Pitch", this.getSpectatorLocation().getPitch());
+                RSWMapsConfig.file().set(this.getName() + ".Locations.Spectator.X", this.getSpectatorLocation().getX());
+                RSWMapsConfig.file().set(this.getName() + ".Locations.Spectator.Y", this.getSpectatorLocation().getY());
+                RSWMapsConfig.file().set(this.getName() + ".Locations.Spectator.Z", this.getSpectatorLocation().getZ());
+                RSWMapsConfig.file().set(this.getName() + ".Locations.Spectator.Yaw", this.getSpectatorLocation().getYaw());
+                RSWMapsConfig.file().set(this.getName() + ".Locations.Spectator.Pitch", this.getSpectatorLocation().getPitch());
                 break;
             case SETTINGS:
-                RSWMapsConfig.file().set(this.getMapName() + ".Settings.Unregistered", this.isUnregistered());
-                RSWMapsConfig.file().set(this.getMapName() + ".Settings.DisplayName", this.getDisplayName());
-                RSWMapsConfig.file().set(this.getMapName() + ".Settings.GameType", this.getGameMode().name());
-                RSWMapsConfig.file().set(this.getMapName() + ".Settings.Spectator", this.isSpectatorEnabled());
-                RSWMapsConfig.file().set(this.getMapName() + ".Settings.Instant-End", this.isInstantEndEnabled());
-                RSWMapsConfig.file().set(this.getMapName() + ".Settings.Ranked", this.isRanked());
-                RSWMapsConfig.file().set(this.getMapName() + ".Settings.Border", this.isBorderEnabled());
-                RSWMapsConfig.file().set(this.getMapName() + ".Settings.Invincibility-Seconds", this.getInvincibilitySeconds());
-                RSWMapsConfig.file().set(this.getMapName() + ".Settings.Time-End-Game", this.getTimeEndGame());
-                RSWMapsConfig.file().set(this.getMapName() + ".Settings.Time-To-Start", this.getTimeToStart());
-                RSWMapsConfig.file().set(this.getMapName() + ".Settings.Max-Game-Time", this.getMaxGameTime());
+                RSWMapsConfig.file().set(this.getName() + ".Settings.Unregistered", this.isUnregistered());
+                RSWMapsConfig.file().set(this.getName() + ".Settings.DisplayName", this.getDisplayName());
+                RSWMapsConfig.file().set(this.getName() + ".Settings.GameType", this.getGameMode().name());
+                RSWMapsConfig.file().set(this.getName() + ".Settings.Spectator", this.isSpectatorEnabled());
+                RSWMapsConfig.file().set(this.getName() + ".Settings.Instant-End", this.isInstantEndEnabled());
+                RSWMapsConfig.file().set(this.getName() + ".Settings.Ranked", this.isRanked());
+                RSWMapsConfig.file().set(this.getName() + ".Settings.Border", this.isBorderEnabled());
+                RSWMapsConfig.file().set(this.getName() + ".Settings.Invincibility-Seconds", this.getInvincibilitySeconds());
+                RSWMapsConfig.file().set(this.getName() + ".Settings.Time-End-Game", this.getTimeEndGame());
+                RSWMapsConfig.file().set(this.getName() + ".Settings.Time-To-Start", this.getTimeToStart());
+                RSWMapsConfig.file().set(this.getName() + ".Settings.Max-Game-Time", this.getMaxGameTime());
                 break;
             case BORDER:
-                RSWMapsConfig.file().set(this.getMapName() + ".World.Border.POS1-X", this.getPOS1().getX());
-                RSWMapsConfig.file().set(this.getMapName() + ".World.Border.POS1-Y", this.getPOS1().getY());
-                RSWMapsConfig.file().set(this.getMapName() + ".World.Border.POS1-Z", this.getPOS1().getZ());
-                RSWMapsConfig.file().set(this.getMapName() + ".World.Border.POS2-X", this.getPOS2().getX());
-                RSWMapsConfig.file().set(this.getMapName() + ".World.Border.POS2-Y", this.getPOS2().getY());
-                RSWMapsConfig.file().set(this.getMapName() + ".World.Border.POS2-Z", this.getPOS2().getZ());
+                RSWMapsConfig.file().set(this.getName() + ".World.Border.POS1-X", this.getPOS1().getX());
+                RSWMapsConfig.file().set(this.getName() + ".World.Border.POS1-Y", this.getPOS1().getY());
+                RSWMapsConfig.file().set(this.getName() + ".World.Border.POS1-Z", this.getPOS1().getZ());
+                RSWMapsConfig.file().set(this.getName() + ".World.Border.POS2-X", this.getPOS2().getX());
+                RSWMapsConfig.file().set(this.getName() + ".World.Border.POS2-Y", this.getPOS2().getY());
+                RSWMapsConfig.file().set(this.getName() + ".World.Border.POS2-Z", this.getPOS2().getZ());
                 break;
         }
         if (save)

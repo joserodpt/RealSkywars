@@ -52,7 +52,7 @@ public class MapSettingsGUI {
         this.uuid = p.getUniqueId();
         this.map = map;
 
-        inv = Bukkit.getServer().createInventory(null, 45, Text.color(map.getMapName() + " settings"));
+        inv = Bukkit.getServer().createInventory(null, 45, Text.color(map.getName() + " settings"));
 
         loadInv();
     }
@@ -61,7 +61,7 @@ public class MapSettingsGUI {
         this.uuid = p.getUUID();
         this.map = map;
 
-        inv = Bukkit.getServer().createInventory(null, 45, Text.color(map.getMapName() + " settings"));
+        inv = Bukkit.getServer().createInventory(null, 45, Text.color(map.getName() + " settings"));
 
         loadInv();
     }
@@ -128,7 +128,9 @@ public class MapSettingsGUI {
                                     break;
                                 case 22:
                                     p.closeInventory();
-                                    //TODO
+
+                                    MapEventEditorGUI gui = new MapEventEditorGUI(p, current.map);
+                                    gui.openInventory(p);
                                     break;
                                 case 28:
                                     p.closeInventory();
@@ -136,8 +138,8 @@ public class MapSettingsGUI {
                                         try {
                                             int seconds = Integer.parseInt(input);
                                             current.map.setMaxGameTime(seconds);
-                                            MapSettingsGUI gui = new MapSettingsGUI(p, current.map);
-                                            gui.openInventory(p);
+                                            MapSettingsGUI gui2 = new MapSettingsGUI(p, current.map);
+                                            gui2.openInventory(p);
                                         } catch (NumberFormatException e1) {
                                             p.sendMessage(Text.color("&cInvalid seconds."));
                                         }
@@ -151,8 +153,8 @@ public class MapSettingsGUI {
                                         try {
                                             int seconds = Integer.parseInt(input);
                                             current.map.setTimeEndGame(seconds);
-                                            MapSettingsGUI gui = new MapSettingsGUI(p, current.map);
-                                            gui.openInventory(p);
+                                            MapSettingsGUI gui3 = new MapSettingsGUI(p, current.map);
+                                            gui3.openInventory(p);
                                         } catch (NumberFormatException e1) {
                                             p.sendMessage(Text.color("&cInvalid seconds."));
                                         }
@@ -166,8 +168,8 @@ public class MapSettingsGUI {
                                         try {
                                             int seconds = Integer.parseInt(input);
                                             current.map.setTimeToStart(seconds);
-                                            MapSettingsGUI gui = new MapSettingsGUI(p, current.map);
-                                            gui.openInventory(p);
+                                            MapSettingsGUI gui4 = new MapSettingsGUI(p, current.map);
+                                            gui4.openInventory(p);
                                         } catch (NumberFormatException e1) {
                                             p.sendMessage(Text.color("&cInvalid seconds."));
                                         }
@@ -181,8 +183,8 @@ public class MapSettingsGUI {
                                         try {
                                             int seconds = Integer.parseInt(input);
                                             current.map.setInvincibilitySeconds(seconds);
-                                            MapSettingsGUI gui = new MapSettingsGUI(p, current.map);
-                                            gui.openInventory(p);
+                                            MapSettingsGUI gui5 = new MapSettingsGUI(p, current.map);
+                                            gui5.openInventory(p);
                                         } catch (NumberFormatException e1) {
                                             p.sendMessage(Text.color("&cInvalid seconds."));
                                         }

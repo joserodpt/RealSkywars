@@ -147,8 +147,8 @@ public class MapManager extends MapManagerAPI {
 
         map.getRSWWorld().getWorld().getPlayers().forEach(player -> rs.getLobbyManagerAPI().tpToLobby(player));
 
-        this.maps.remove(map.getMapName().toLowerCase());
-        RSWMapsConfig.file().remove(map.getMapName());
+        this.maps.remove(map.getName().toLowerCase());
+        RSWMapsConfig.file().remove(map.getName());
         RSWMapsConfig.save();
     }
 
@@ -374,7 +374,7 @@ public class MapManager extends MapManagerAPI {
                 }
             } catch (Exception e) {
                 TranslatableLine.NO_ARENA_BOUNDARIES.send(p, true);
-                rs.getLogger().warning("Error while setting arena boundaries for " + map.getMapName() + " (possibly a bug?)");
+                rs.getLogger().warning("Error while setting arena boundaries for " + map.getName() + " (possibly a bug?)");
                 rs.getLogger().warning(e.getMessage());
                 return;
             }
@@ -517,7 +517,7 @@ public class MapManager extends MapManagerAPI {
 
     @Override
     public void addMap(RSWMap s) {
-        this.maps.put(s.getMapName().toLowerCase(), s);
+        this.maps.put(s.getName().toLowerCase(), s);
     }
 
     @Override

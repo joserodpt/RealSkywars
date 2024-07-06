@@ -62,7 +62,7 @@ public class RSWPlayer {
     private RSWKit playerKit;
     private RSWCage playerCage;
     private RSWParty playerParty;
-    private RSWPlayerSB playerSB;
+    private RSWPlayerScoreboard playerSB;
     private RSWPlayerTab playerTab;
 
     //statistics
@@ -90,7 +90,7 @@ public class RSWPlayer {
         this.boughtList = new ArrayList<>(bgh);
         this.loses = l;
         this.gamesPlayed = gp;
-        this.playerSB = new RSWPlayerSB(this);
+        this.playerSB = new RSWPlayerScoreboard(this);
 
         this.gamesList = new ArrayList<>(gamesList);
 
@@ -397,7 +397,7 @@ public class RSWPlayer {
         return this.getBoughtItems().contains(name + "|" + c.name());
     }
 
-    public RSWPlayerSB getScoreboard() {
+    public RSWPlayerScoreboard getScoreboard() {
         return this.playerSB;
     }
 

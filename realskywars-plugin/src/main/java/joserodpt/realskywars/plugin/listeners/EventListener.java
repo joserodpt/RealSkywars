@@ -91,7 +91,7 @@ public class EventListener implements Listener {
             List<RSWMap> maps = new ArrayList<>(rs.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL));
             RSWMap map = maps.get(0);
             event.setMaxPlayers(maps.size() == 1 ? map.getMaxPlayers() : 1);
-            event.setMotd(Text.color("&f&lReal&B&LSkywars &r&6Version &e" + rs.getPlugin().getDescription().getVersion() + "\n&dBungeecord &r&2Map: &a" + (maps.size() == 1 ? map.getMapName() : "?")));
+            event.setMotd(Text.color("&f&lReal&B&LSkywars &r&6Version &e" + rs.getPlugin().getDescription().getVersion() + "\n&dBungeecord &r&2Map: &a" + (maps.size() == 1 ? map.getName() : "?")));
         }
     }
 }

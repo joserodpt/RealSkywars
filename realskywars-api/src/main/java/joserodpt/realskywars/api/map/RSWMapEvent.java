@@ -18,20 +18,29 @@ package joserodpt.realskywars.api.map;
 import joserodpt.realskywars.api.config.RSWLanguagesConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.config.TranslatableList;
+import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Text;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.TNTPrimed;
+import org.bukkit.inventory.ItemStack;
 
-public class RSWEvent {
+import java.util.Arrays;
+
+public class RSWMapEvent {
 
     private final EventType eventType;
     private final RSWMap room;
-    private final int time;
+    private int time;
 
-    public RSWEvent(RSWMap room, EventType eventType, int time) {
+    public RSWMapEvent(RSWMap room, EventType eventType, int time) {
         this.room = room;
         this.eventType = eventType;
         this.time = time;
+    }
+
+    public RSWMapEvent(RSWMap map, EventType eventType) {
+        this(map, eventType, 30);
     }
 
     public EventType getEventType() {
@@ -39,7 +48,7 @@ public class RSWEvent {
     }
 
     public String getName() {
-        return Text.color(RSWLanguagesConfig.file().getString("Strings.Events." + this.eventType.name()) + " " + Text.formatSeconds(this.getTimeLeft()));
+        return Text.color(this.eventType.getName() + " " + Text.formatSeconds(this.getTimeLeft()));
     }
 
     public int getTimeLeft() {
@@ -84,5 +93,29 @@ public class RSWEvent {
         return this.eventType.name() + "@" + this.time;
     }
 
-    public enum EventType {REFILL, TNTRAIN, BORDERSHRINK}
+    public ItemStack getItem() {
+        return Itens.createItem(this.getEventType().getIcon(), 1, this.getEventType().getName() + " &r&f@ &b" + Text.formatSeconds(this.getTimeLeft()), Text.color(Arrays.asList("&a&nLeft-Click&r&f to edit", "&c&nQ (Drop)&r&f to remove")));
+    }
+
+    public void setTime(int seconds) {
+        this.time = seconds;
+    }
+
+    public enum EventType {
+        REFILL(Material.CHEST), TNTRAIN(Material.TNT), BORDERSHRINK(Material.SPAWNER);
+
+        final Material icon;
+
+        EventType(Material icon) {
+            this.icon = icon;
+        }
+
+        public Material getIcon() {
+            return this.icon;
+        }
+
+        public String getName() {
+            return Text.color(RSWLanguagesConfig.file().getString("Strings.Events." + this.name()));
+        }
+    }
 }

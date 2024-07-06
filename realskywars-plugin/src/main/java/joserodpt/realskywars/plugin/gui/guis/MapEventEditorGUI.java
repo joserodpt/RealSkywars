@@ -17,11 +17,13 @@ package joserodpt.realskywars.plugin.gui.guis;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.map.RSWMap;
+import joserodpt.realskywars.api.map.RSWMapEvent;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Pagination;
+import joserodpt.realskywars.api.utils.PlayerInput;
+import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -29,6 +31,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -42,26 +45,24 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class MapsListGUI {
+public class MapEventEditorGUI {
 
-    private static final Map<UUID, MapsListGUI> inventories = new HashMap<>();
-    int pageNumber = 0;
-    private final Pagination<RSWMap> p;
-    private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
+    final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
+    private static final Map<UUID, MapEventEditorGUI> inventories = new HashMap<>();
     private final Inventory inv;
     private final UUID uuid;
-    private RSWPlayer gp;
-    private final Map<Integer, RSWMap> display = new HashMap<>();
+    private final Map<Integer, RSWMapEvent> display = new HashMap<>();
+    private final RSWMap map;
+    int pageNumber = 0;
+    Pagination<RSWMapEvent> p;
 
-    public MapsListGUI(RSWPlayer p) {
-        this.uuid = p.getUUID();
-        this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MENU_MAPS_TITLE.get(p, false) + ": " + p.getPlayerMapViewerPref().getDisplayName(p));
+    public MapEventEditorGUI(Player p, RSWMap map) {
+        this.uuid = p.getUniqueId();
+        this.map = map;
+        this.inv = Bukkit.getServer().createInventory(null, 54, "Event Editor for " + map.getName());
 
-        this.gp = p;
-        List<RSWMap> items = RealSkywarsAPI.getInstance().getMapManagerAPI().getMapsForPlayer(p);
-
-        this.p = new Pagination<>(28, items);
-        fillChest(this.p.getPage(pageNumber), p);
+        this.p = new Pagination<>(28, map.getEvents().stream().filter(e -> e.getEventType() != RSWMapEvent.EventType.BORDERSHRINK).collect(Collectors.toList()));
+        fillChest(this.p.getPage(this.pageNumber));
     }
 
     public static Listener getListener() {
@@ -75,7 +76,7 @@ public class MapsListGUI {
                     }
                     UUID uuid = clicker.getUniqueId();
                     if (inventories.containsKey(uuid)) {
-                        MapsListGUI current = inventories.get(uuid);
+                        MapEventEditorGUI current = inventories.get(uuid);
                         if (e.getInventory().getHolder() != current.getInventory().getHolder()) {
                             return;
                         }
@@ -84,8 +85,26 @@ public class MapsListGUI {
                         RSWPlayer p = RealSkywarsAPI.getInstance().getPlayerManagerAPI().getPlayer((Player) clicker);
 
                         switch (e.getRawSlot()) {
+                            case 3:
+                                current.map.addEvent(new RSWMapEvent(current.map, RSWMapEvent.EventType.REFILL));
+
+                                current.p = new Pagination<>(28, current.map.getEvents().stream().filter(ev -> ev.getEventType() != RSWMapEvent.EventType.BORDERSHRINK).collect(Collectors.toList()));
+                                current.fillChest(current.p.getPage(current.pageNumber));
+                                break;
+                            case 5:
+                                current.map.addEvent(new RSWMapEvent(current.map, RSWMapEvent.EventType.TNTRAIN));
+
+                                current.p = new Pagination<>(28, current.map.getEvents().stream().filter(ev -> ev.getEventType() != RSWMapEvent.EventType.BORDERSHRINK).collect(Collectors.toList()));
+                                current.fillChest(current.p.getPage(current.pageNumber));
+                                break;
                             case 49:
-                                selectNext(p, current);
+                                clicker.closeInventory();
+                                if (inventories.containsKey(uuid)) {
+                                    inventories.get(uuid).unregister();
+                                }
+
+                                MapSettingsGUI gui = new MapSettingsGUI(p, current.map);
+                                gui.openInventory(p);
                                 break;
                             case 26:
                             case 35:
@@ -104,67 +123,49 @@ public class MapsListGUI {
                         }
 
                         if (current.display.containsKey(e.getRawSlot())) {
-                            RSWMap a = current.display.get(e.getRawSlot());
-                            if (!a.isPlaceHolder()) {
-                                a.addPlayer(p);
+                            RSWMapEvent a = current.display.get(e.getRawSlot());
+                            if (e.getClick() == ClickType.DROP) {
+                                current.map.removeEvent(a);
+
+                                current.p = new Pagination<>(28, current.map.getEvents().stream().filter(ev -> ev.getEventType() != RSWMapEvent.EventType.BORDERSHRINK).collect(Collectors.toList()));
+                                current.fillChest(current.p.getPage(current.pageNumber));
+                            } else {
+                                p.closeInventory();
+                                new PlayerInput((Player) clicker, input -> {
+                                    try {
+                                        int seconds = Integer.parseInt(input);
+                                        a.setTime(seconds);
+                                        current.map.save(RSWMap.Data.EVENTS, true);
+
+                                        MapEventEditorGUI gui2 = new MapEventEditorGUI(p.getPlayer(), current.map);
+                                        gui2.openInventory(p.getPlayer());
+                                    } catch (NumberFormatException e1) {
+                                        p.sendMessage(Text.color("&cInvalid seconds."));
+                                    }
+                                }, input -> {
+                                    MapEventEditorGUI gui2 = new MapEventEditorGUI(p.getPlayer(), current.map);
+                                    gui2.openInventory(p.getPlayer());
+                                });
                             }
                         }
                     }
                 }
             }
 
-            private void selectNext(RSWPlayer gp, MapsListGUI curr) {
-                switch (gp.getPlayerMapViewerPref()) {
-                    case MAPV_ALL:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_AVAILABLE);
-                        break;
-                    case MAPV_AVAILABLE:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_WAITING);
-                        break;
-                    case MAPV_WAITING:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_STARTING);
-                        break;
-                    case MAPV_STARTING:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_SPECTATE);
-                        break;
-                    case MAPV_SPECTATE:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.SOLO);
-                        break;
-                    case SOLO:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.SOLO_RANKED);
-                        break;
-                    case SOLO_RANKED:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.TEAMS);
-                        break;
-                    case TEAMS:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.TEAMS_RANKED);
-                        break;
-                    case TEAMS_RANKED:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_ALL);
-                        break;
-                }
-                curr.gp = gp;
-
-                gp.closeInventory();
-                MapsListGUI v = new MapsListGUI(gp);
-                v.openInventory(gp);
-                gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
-            }
-
-            private void backPage(MapsListGUI asd) {
+            private void backPage(MapEventEditorGUI asd) {
                 if (asd.p.exists(asd.pageNumber - 1)) {
                     --asd.pageNumber;
                 }
 
-                asd.fillChest(asd.p.getPage(asd.pageNumber), asd.gp);
+                asd.fillChest(asd.p.getPage(asd.pageNumber));
             }
 
-            private void nextPage(MapsListGUI asd) {
+            private void nextPage(MapEventEditorGUI asd) {
                 if (asd.p.exists(asd.pageNumber + 1)) {
                     ++asd.pageNumber;
                 }
 
-                asd.fillChest(asd.p.getPage(asd.pageNumber), asd.gp);
+                asd.fillChest(asd.p.getPage(asd.pageNumber));
             }
 
             @EventHandler
@@ -191,27 +192,16 @@ public class MapsListGUI {
         return pageNumber == 0;
     }
 
-    public void openInventory(RSWPlayer player) {
-        Inventory inv = getInventory();
-        InventoryView openInv = player.getPlayer().getOpenInventory();
-        if (openInv != null) {
-            Inventory openTop = player.getPlayer().getOpenInventory().getTopInventory();
-            if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
-                openTop.setContents(inv.getContents());
-            } else {
-                player.getPlayer().openInventory(inv);
-            }
-            register();
-        }
-    }
-
-    public void fillChest(List<RSWMap> items, RSWPlayer p) {
+    public void fillChest(List<RSWMapEvent> items) {
         inv.clear();
         display.clear();
 
-        for (int slot : new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53}) {
+        for (int slot : new int[]{0, 1, 2, 4, 6, 7, 8, 9, 17, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53}) {
             inv.setItem(slot, placeholder);
         }
+
+        inv.setItem(3, Itens.createItem(RSWMapEvent.EventType.REFILL.getIcon(), 1, "&fClick to add " + RSWMapEvent.EventType.REFILL.getName()));
+        inv.setItem(5, Itens.createItem(RSWMapEvent.EventType.TNTRAIN.getIcon(), 1, "&fClick to add " + RSWMapEvent.EventType.TNTRAIN.getName()));
 
         if (firstPage()) {
             inv.setItem(18, placeholder);
@@ -229,20 +219,34 @@ public class MapsListGUI {
             inv.setItem(35, Itens.createItem(Material.GREEN_STAINED_GLASS, 1, TranslatableLine.BUTTONS_NEXT_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_NEXT_DESC.getSingle())));
         }
 
+        inv.setItem(49, Itens.createItem(Material.CHEST, 1, TranslatableLine.BUTTONS_MENU_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_MENU_DESC.getSingle())));
+
         int slot = 0;
         for (ItemStack i : inv.getContents()) {
             if (i == null) {
                 if (!items.isEmpty()) {
-                    RSWMap s = items.get(0);
-                    inv.setItem(slot, makeIcon(p, s));
+                    RSWMapEvent s = items.get(0);
+                    inv.setItem(slot, s.getItem());
                     display.put(slot, s);
                     items.remove(0);
                 }
             }
             ++slot;
         }
+    }
 
-        inv.setItem(49, Itens.createItem(Material.COMPARATOR, 1, TranslatableLine.BUTTONS_FILTER_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_FILTER_DESC.getSingle())));
+    public void openInventory(Player p) {
+        Inventory inv = getInventory();
+        InventoryView openInv = p.getOpenInventory();
+        if (openInv != null) {
+            Inventory openTop = p.getOpenInventory().getTopInventory();
+            if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
+                openTop.setContents(inv.getContents());
+            } else {
+                p.openInventory(inv);
+            }
+            register();
+        }
     }
 
     public Inventory getInventory() {
@@ -255,27 +259,5 @@ public class MapsListGUI {
 
     private void unregister() {
         inventories.remove(this.uuid);
-    }
-
-    private ItemStack makeIcon(RSWPlayer p, RSWMap g) {
-        if (g.isPlaceHolder()) {
-            return Itens.createItem(Material.DEAD_BUSH, 1, TranslatableLine.ITEM_MAP_NOTFOUND_NAME.get(p));
-        } else {
-            return Itens.createItem(g.getState().getStateMaterial(g.isRanked()), Math.min(64, Math.max(1, g.getPlayerCount())), TranslatableLine.ITEM_MAP_NAME.get(p).replace("%map%", g.getName()).replace("%displayname%", g.getDisplayName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(g.isRanked()), variableList(TranslatableList.ITEMS_MAP_DESCRIPTION.get(p), g));
-        }
-    }
-
-    private String rankedFormatting(Boolean ranked) {
-        return ranked ? "&bRANKED" : "";
-    }
-
-    private List<String> variableList(List<String> list, RSWMap g) {
-        if (g.isUnregistered()) {
-            list.add("&c&lUNREGISTERED");
-        }
-        return list.stream()
-                .map(s -> s.replace("%players%", String.valueOf(g.getPlayerCount()))
-                        .replace("%maxplayers%", String.valueOf(g.getMaxPlayers())))
-                .collect(Collectors.toList());
     }
 }

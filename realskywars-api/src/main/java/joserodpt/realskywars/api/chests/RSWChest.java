@@ -24,8 +24,8 @@ import joserodpt.realskywars.api.config.chests.BasicChestConfig;
 import joserodpt.realskywars.api.config.chests.EPICChestConfig;
 import joserodpt.realskywars.api.config.chests.NormalChestConfig;
 import joserodpt.realskywars.api.managers.holograms.RSWHologram;
-import joserodpt.realskywars.api.map.RSWEvent;
 import joserodpt.realskywars.api.map.RSWMap;
+import joserodpt.realskywars.api.map.RSWMapEvent;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.CountdownTimer;
 import joserodpt.realskywars.api.utils.ItemStackSpringer;
@@ -168,7 +168,7 @@ public class RSWChest {
         if (this.chestCTD == null && this.isChest()) {
             int time = RSWConfig.file().getInt("Config.Default-Refill-Time");
 
-            Optional<RSWEvent> e = getRefillTime(sgm);
+            Optional<RSWMapEvent> e = getRefillTime(sgm);
             if (e.isPresent()) {
                 time = e.get().getTimeLeft();
             }
@@ -196,8 +196,8 @@ public class RSWChest {
         }
     }
 
-    private Optional<RSWEvent> getRefillTime(RSWMap sgm) {
-        return sgm.getEvents().stream().filter(c -> c.getEventType().equals(RSWEvent.EventType.REFILL)).findFirst();
+    private Optional<RSWMapEvent> getRefillTime(RSWMap sgm) {
+        return sgm.getEvents().stream().filter(c -> c.getEventType().equals(RSWMapEvent.EventType.REFILL)).findFirst();
     }
 
     public void cancelTasks() {

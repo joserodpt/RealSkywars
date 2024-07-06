@@ -224,7 +224,7 @@ public class TeamsMode extends RSWMap {
             super.getMapTimer().killTask();
             super.getTimeCounterTask().cancel();
 
-            super.getRealSkywarsAPI().getPlayerManagerAPI().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(TranslatableLine.WINNER_BROADCAST.get(gamePlayer, true).replace("%winner%", winRSWTeam.getNames()).replace("%map%", super.getMapName()).replace("%displayname%", super.getDisplayName())));
+            super.getRealSkywarsAPI().getPlayerManagerAPI().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(TranslatableLine.WINNER_BROADCAST.get(gamePlayer, true).replace("%winner%", winRSWTeam.getNames()).replace("%map%", super.getName()).replace("%displayname%", super.getDisplayName())));
 
             if (this.isInstantEndEnabled()) {
                 winRSWTeam.getMembers().forEach(rswPlayer -> this.sendLog(rswPlayer, true));
