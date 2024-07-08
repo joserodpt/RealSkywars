@@ -30,8 +30,6 @@ public abstract class WorldManagerAPI {
 
     public abstract boolean isSymlink(File file);
 
-    public abstract void copyWorld(String name, CopyTo t);
-
     public abstract World createEmptyWorld(String name, World.Environment environment);
 
     public abstract boolean loadWorld(String worldName, World.Environment environment);
@@ -40,7 +38,9 @@ public abstract class WorldManagerAPI {
 
     protected abstract void tpToLobby(Player p);
 
-    public abstract void copyWorld(File source, File target);
+    public abstract void copyWorld(String name, CopyTo t);
+
+    public abstract void copyWorld(String name, File source, File target);
 
     public abstract void deleteWorld(String name, boolean removeFile);
 

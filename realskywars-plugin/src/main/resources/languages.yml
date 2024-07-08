@@ -35,28 +35,31 @@ Strings:
       Description: "&fClick here to go to the main menu."
 Languages:
   ENGLISH:
-    Icon:
-      AMOUNT: 1
-      MATERIAL: BLUE_BANNER
-      BANNER_PATTERNS:
-        - color: RED
-          pattern: minecraft:cross
-        - color: WHITE
-          pattern: minecraft:stripe_downleft
-        - color: WHITE
-          pattern: minecraft:stripe_downright
-        - color: WHITE
-          pattern: minecraft:stripe_downright
-        - color: WHITE
-          pattern: minecraft:stripe_downleft
-        - color: RED
-          pattern: minecraft:cross
-        - color: WHITE
-          pattern: minecraft:stripe_center
-        - color: WHITE
-          pattern: minecraft:stripe_middle
-        - color: RED
-          pattern: minecraft:straight_cross
+    Language-Specific:
+      Displayname: "English"
+      Translation-Key: "en_us"
+      Icon:
+        AMOUNT: 1
+        MATERIAL: BLUE_BANNER
+        BANNER_PATTERNS:
+          - color: RED
+            pattern: minecraft:cross
+          - color: WHITE
+            pattern: minecraft:stripe_downleft
+          - color: WHITE
+            pattern: minecraft:stripe_downright
+          - color: WHITE
+            pattern: minecraft:stripe_downright
+          - color: WHITE
+            pattern: minecraft:stripe_downleft
+          - color: RED
+            pattern: minecraft:cross
+          - color: WHITE
+            pattern: minecraft:stripe_center
+          - color: WHITE
+            pattern: minecraft:stripe_middle
+          - color: RED
+            pattern: minecraft:straight_cross
     Messages:
       Achievements:
         Get: "&fCongratulations! You have achieved &b%achievement% &fand won &a%reward%"
@@ -402,17 +405,20 @@ Languages:
         Played: "&fGames &bPlayed"
         Balance: "&fGame &aBalance"
         Kills: "&fGame &cKills"
-  PORTUGUÊS:
-    Icon:
-      AMOUNT: 1
-      BANNER_PATTERNS:
-        - color: LIME
-          pattern: minecraft:stripe_top
-        - color: YELLOW
-          pattern: minecraft:flower
-        - color: YELLOW
-          pattern: minecraft:circle
-      MATERIAL: RED_BANNER
+  PORTUGUESE:
+    Language-Specific:
+      Displayname: "Português"
+      Translation-Key: "pt_pt"
+      Icon:
+        AMOUNT: 1
+        BANNER_PATTERNS:
+          - color: LIME
+            pattern: minecraft:stripe_top
+          - color: YELLOW
+            pattern: minecraft:flower
+          - color: YELLOW
+            pattern: minecraft:circle
+        MATERIAL: RED_BANNER
     Messages:
       Achievements:
         Get: "&fParabéns! Conquistaste &b%achievement% &e ganhaste &a%reward%"
@@ -788,23 +794,26 @@ Languages:
         Played: "&fJogos &bJogados"
         Balance: "&aBalanço &fJogo"
         Kills: "&cKills &fJogo"
-  ESPAÑOL:
-    Icon:
-      AMOUNT: 1
-      BANNER_PATTERNS:
-        - color: RED
-          pattern: minecraft:stripe_right
-        - color: RED
-          pattern: minecraft:stripe_left
-        - color: BROWN
-          pattern: minecraft:mojang
-        - color: BROWN
-          pattern: minecraft:flower
-        - color: RED
-          pattern: minecraft:stripe_left
-        - color: RED
-          pattern: minecraft:stripe_right
-      MATERIAL: YELLOW_BANNER
+  SPANISH:
+    Language-Specific:
+      Displayname: "Español"
+      Translation-Key: "es_es"
+      Icon:
+        AMOUNT: 1
+        BANNER_PATTERNS:
+          - color: RED
+            pattern: minecraft:stripe_right
+          - color: RED
+            pattern: minecraft:stripe_left
+          - color: BROWN
+            pattern: minecraft:mojang
+          - color: BROWN
+            pattern: minecraft:flower
+          - color: RED
+            pattern: minecraft:stripe_left
+          - color: RED
+            pattern: minecraft:stripe_right
+        MATERIAL: YELLOW_BANNER
     Messages:
       Achievements:
         Get: "&f¡Felicidades! Has logrado &b%achievement% &ey has ganado &a%reward%"

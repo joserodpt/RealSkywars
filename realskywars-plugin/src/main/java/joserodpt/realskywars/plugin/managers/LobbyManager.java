@@ -65,7 +65,7 @@ public class LobbyManager extends LobbyManagerAPI {
             TranslatableLine.LOBBY_TELEPORT.send(p, true);
             RSWPlayerItems.LOBBY.giveSet(p);
         } else {
-            TranslatableLine.LOBBYLOC_NOT_SET.send(p, true);
+            TranslatableLine.LOBBY_NOT_SET.send(p, true);
         }
     }
 

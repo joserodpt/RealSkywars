@@ -19,6 +19,7 @@ import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.chests.TierViewer;
 import joserodpt.realskywars.api.config.RSWConfig;
+import joserodpt.realskywars.api.config.RSWLanguage;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.kits.KitInventory;
@@ -282,23 +283,24 @@ public class RealSkywarsCMD extends CommandBase {
     public void verifylangcmd(final CommandSender commandSender) {
         Text.send(commandSender, "&aLanguage Verification Started.");
 
-        for (String language : rs.getLanguageManagerAPI().getLanguages()) {
-            Text.send(commandSender, "&6Checking language &b" + language + "&6...");
+        for (RSWLanguage langObj : rs.getLanguageManagerAPI().getLanguages()) {
+            String languageName = langObj.getName();
+            Text.send(commandSender, "&6Checking language &b" + languageName + "&6...");
             Text.send(commandSender, "&6Checking for missing translations in strings...");
             for (TranslatableLine value : TranslatableLine.values()) {
                 if (value.getPath().startsWith(".")) {
-                    String val = value.getInLanguage(language);
+                    String val = value.getInLanguage(languageName);
                     if (val.isEmpty()) {
-                        Text.send(commandSender, "&cMissing translation for &9" + value.name() + " &cin language &b" + language);
+                        Text.send(commandSender, "&cMissing translation for &9" + value.name() + " &cin language &b" + languageName);
                     }
                 }
             }
 
             Text.send(commandSender, "&6Checking for missing translations in lists...");
             for (TranslatableList value : TranslatableList.values()) {
-                List<String> tmp = value.getInLanguage(language);
+                List<String> tmp = value.getInLanguage(languageName);
                 if (tmp == null || tmp.isEmpty()) {
-                    Text.send(commandSender, "&cMissing translation for &9" + value.name() + " &cin language &b" + language);
+                    Text.send(commandSender, "&cMissing translation for &9" + value.name() + " &cin language &b" + languageName);
                 }
             }
         }
@@ -595,7 +597,7 @@ public class RealSkywarsCMD extends CommandBase {
                     TranslatableLine.MAP_EXISTS.send(p, true);
                 }
             } else {
-                TranslatableLine.LOBBYLOC_NOT_SET.send(p, true);
+                TranslatableLine.LOBBY_NOT_SET.send(p, true);
             }
         } else {
             commandSender.sendMessage(onlyPlayer);

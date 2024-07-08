@@ -17,12 +17,12 @@ package joserodpt.realskywars.plugin.gui;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
+import joserodpt.realskywars.api.config.RSWLanguage;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.GUIBuilder;
-import joserodpt.realskywars.api.utils.ItemStackSpringer;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.plugin.gui.guis.AchievementViewerGUI;
 import joserodpt.realskywars.plugin.gui.guis.GameHistoryGUI;
@@ -113,11 +113,11 @@ public class GUIManager {
 
         int i = 0;
 
-        for (String language : RealSkywarsAPI.getInstance().getLanguageManagerAPI().getLanguages()) {
+        for (RSWLanguage language : RealSkywarsAPI.getInstance().getLanguageManagerAPI().getLanguages()) {
             if (i == 17) {
                 break;
             } else {
-                inventory.addItem(e -> RealSkywarsAPI.getInstance().getPlayerManagerAPI().setLanguage(p, language), Itens.renameItem(ItemStackSpringer.getItemDeSerialized(Itens.sectionToMap("Languages." + language + ".Icon")), "&e&l" + language, language), i);
+                inventory.addItem(e -> RealSkywarsAPI.getInstance().getPlayerManagerAPI().setLanguage(p, language), language.getIcon(), i);
             }
             ++i;
         }

@@ -66,7 +66,7 @@ public class RealSkywars extends RealSkywarsAPI {
     private final RealSkywarsPlugin plugin;
     private RSWnms rswNMS;
     private final WorldManagerAPI worldManagerAPI;
-    private final LanguageManagerAPI languageManagerAPI = new LanguageManager();
+    private final LanguageManagerAPI languageManagerAPI;
     private final PlayerManagerAPI playerManagerAPI;
     private final MapManagerAPI mapManagerAPI;
     private final LobbyManagerAPI lobbyManagerAPI;
@@ -87,6 +87,7 @@ public class RealSkywars extends RealSkywarsAPI {
         lobbyManagerAPI = new LobbyManager(this);
         worldManagerAPI = new WorldManager(this);
         playerManagerAPI = new PlayerManager(this);
+        languageManagerAPI = new LanguageManager(this);
         mapManagerAPI = new MapManager(this);
         shopManagerAPI = new ShopManager(this);
         partiesManagerAPI = new PartiesManager(this);
@@ -193,6 +194,11 @@ public class RealSkywars extends RealSkywarsAPI {
     @Override
     public String getServerVersion() {
         return Bukkit.getServer().getClass().getPackage().getName().substring(23);
+    }
+
+    @Override
+    public String getSimpleServerVersion() {
+        return Bukkit.getServer().getBukkitVersion().split("-")[0];
     }
 
     @Override

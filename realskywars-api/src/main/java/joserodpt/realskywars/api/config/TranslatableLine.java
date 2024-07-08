@@ -63,7 +63,7 @@ public enum TranslatableLine {
     MAP_ALREADY_UNREGISTERED(".Messages.Commands.Map-Already-Unregistered"),
     MAP_RENAMED(".Messages.Commands.Map-Renamed"),
     MAP_EXISTS(".Messages.Commands.Map-Exists"),
-    LOBBYLOC_NOT_SET(".Messages.Commands.Lobby-Loc-Not-Set"),
+    LOBBY_NOT_SET(".Messages.Commands.Lobby-Loc-Not-Set"),
     INSUFICIENT_COINS(".Messages.Commands.Insuficient-Coins"),
     CMD_NOT_FOUND(".Messages.Commands.Command-Not-Found"),
     MAP_RESET_DONE(".Messages.Commands.Reset-Done"),

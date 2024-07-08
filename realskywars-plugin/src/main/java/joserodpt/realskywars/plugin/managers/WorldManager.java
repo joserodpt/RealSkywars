@@ -77,10 +77,10 @@ public class WorldManager extends WorldManagerAPI {
         File target = new File(maps, name);
         switch (t) {
             case ROOT:
-                this.copyWorld(target, source);
+                this.copyWorld(name, target, source);
                 break;
             case RSW_FOLDER:
-                this.copyWorld(source, target);
+                this.copyWorld(name, source, target);
                 break;
         }
     }
@@ -138,12 +138,12 @@ public class WorldManager extends WorldManagerAPI {
             p.teleport(rs.getLobbyManagerAPI().getLobbyLocation());
             TranslatableLine.LOBBY_TELEPORT.sendDefault(p, true);
         } else {
-            TranslatableLine.LOBBYLOC_NOT_SET.sendDefault(p, true);
+            TranslatableLine.LOBBY_NOT_SET.sendDefault(p, true);
         }
     }
 
     @Override
-    public void copyWorld(File source, File target) {
+    public void copyWorld(String name, File source, File target) {
         try {
             List<String> ignore = Lists.newArrayList("uid.dat", "session.dat", "session.lock");
             if (!ignore.contains(source.getName())) {
@@ -154,7 +154,7 @@ public class WorldManager extends WorldManagerAPI {
                             for (String file : files) {
                                 File srcFile = new File(source, file);
                                 File destFile = new File(target, file);
-                                copyWorld(srcFile, destFile);
+                                copyWorld(name, srcFile, destFile);
                             }
                         }
                     }
@@ -169,10 +169,10 @@ public class WorldManager extends WorldManagerAPI {
                 }
             }
         } catch (FileNotFoundException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe("Failed to copy world: world not found");
+            RealSkywarsAPI.getInstance().getLogger().severe("Failed to copy world: + " + name + " not found");
             RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());
         } catch (IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe("Failed to copy world.");
+            RealSkywarsAPI.getInstance().getLogger().severe("Failed to copy world: + " + name);
             RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());
         }
     }

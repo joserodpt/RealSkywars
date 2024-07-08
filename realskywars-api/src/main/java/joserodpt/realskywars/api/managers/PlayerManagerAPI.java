@@ -15,6 +15,7 @@ package joserodpt.realskywars.api.managers;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realskywars.api.config.RSWLanguage;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.shop.RSWShopDisplayItem;
@@ -32,7 +33,7 @@ public abstract class PlayerManagerAPI {
 
     public abstract void savePlayer(RSWPlayer p, RSWPlayer.PlayerData pd);
 
-    public abstract void setLanguage(RSWPlayer player, String s);
+    public abstract void setLanguage(RSWPlayer player, RSWLanguage lang);
 
     public abstract void loadPlayers();
 

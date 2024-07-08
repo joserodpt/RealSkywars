@@ -15,7 +15,14 @@ package joserodpt.realskywars.api.managers;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import java.util.List;
+import joserodpt.realskywars.api.config.RSWLanguage;
+import joserodpt.realskywars.api.player.RSWPlayer;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
+
+import java.util.Collection;
+import java.util.Map;
 
 public abstract class LanguageManagerAPI {
     public abstract void loadLanguages();
@@ -24,7 +31,15 @@ public abstract class LanguageManagerAPI {
 
     public abstract boolean areLanguagesEmpty();
 
-    public abstract List<String> getLanguages();
+    public abstract Collection<RSWLanguage> getLanguages();
+
+    public abstract Map<String, RSWLanguage> getLanguagesMap();
 
     public abstract String getPrefix();
+
+    public abstract String getMaterialName(RSWPlayer p, Material mat);
+
+    public abstract String getEnchantmentName(RSWPlayer p, Enchantment ench);
+
+    public abstract String getEntityName(RSWPlayer p, EntityType type);
 }

@@ -70,15 +70,6 @@ public class RSWShopDisplayItem {
         info.put(a, b);
     }
 
-    private String formatName(String name) {
-        try {
-            Material m = Material.getMaterial(Text.strip(name));
-            return "&b" + RealSkywarsAPI.getInstance().getNMS().getItemName(new ItemStack(m));
-        } catch (Exception e) {
-            return "&r&f" + name;
-        }
-    }
-
     public Object getInfo(String s) {
         return info.get(s);
     }
@@ -137,14 +128,23 @@ public class RSWShopDisplayItem {
                 RSWKit k = RealSkywarsAPI.getInstance().getKitManagerAPI().getKit(name);
 
                 if (this.isBought()) {
-                    return Itens.createItemLoreEnchanted(m, this.getAmount(), "&r&f" + k.getDisplayName(), k.getDescription(p, this.boughtPair));
+                    return Itens.createItemLoreEnchanted(this.m, this.getAmount(), "&r&f" + k.getDisplayName(), k.getDescription(p, this.boughtPair));
                 } else {
-                    return Itens.createItem(m, this.getAmount(), "&r&f" + k.getDisplayName(), k.getDescription(p, this.boughtPair));
+                    return Itens.createItem(this.m, this.getAmount(), "&r&f" + k.getDisplayName(), k.getDescription(p, this.boughtPair));
                 }
             case SPEC_SHOP:
                 return Itens.createItem(this.getMaterial(), this.getAmount(), "&f" + this.amount + "x " + this.getDisplayName(), Arrays.asList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%price%", this.getPrice().toString()), "", "&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount."));
             default:
-                return this.isBought() ? Itens.createItemLoreEnchanted(m, this.getAmount(), formatName(name), Arrays.asList(TranslatableLine.SHOP_BOUGHT_ON.get(p) + this.boughtPair.getValue(), TranslatableLine.SHOP_CLICK_2_SELECT.get(p))) : Itens.createItem(m, 1, formatName(this.getDisplayName()), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%coins%", this.getPrice().toString())));
+                return this.isBought() ? Itens.createItemLoreEnchanted(this.m, this.getAmount(), formatName(p, this.name), Arrays.asList("&f" + TranslatableLine.SHOP_BOUGHT_ON.get(p) + this.boughtPair.getValue(), TranslatableLine.SHOP_CLICK_2_SELECT.get(p))) : Itens.createItem(m, 1, formatName(p, this.getDisplayName()), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%coins%", this.getPrice().toString())));
+        }
+    }
+
+    private String formatName(RSWPlayer p, String name) {
+        try {
+            Material m = Material.getMaterial(Text.strip(name));
+            return "&b" + RealSkywarsAPI.getInstance().getLanguageManagerAPI().getMaterialName(p, m);
+        } catch (Exception e) {
+            return "&r&f" + name;
         }
     }
 

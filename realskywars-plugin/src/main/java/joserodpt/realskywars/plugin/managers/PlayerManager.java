@@ -16,6 +16,7 @@ package joserodpt.realskywars.plugin.managers;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.config.RSWLanguage;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.database.PlayerBoughtItemsRow;
 import joserodpt.realskywars.api.database.PlayerDataRow;
@@ -59,6 +60,12 @@ public class PlayerManager extends PlayerManagerAPI {
             PlayerDataRow playerDataRow = rs.getDatabaseManagerAPI().getPlayerData(player);
 
             RSWPlayer p = new RSWPlayer(player, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, playerDataRow.getKills(), playerDataRow.getDeaths(), playerDataRow.getStats_wins_solo(), playerDataRow.getStats_wins_teams(), playerDataRow.getCoins(), playerDataRow.getLanguage(), playerDataRow.getLoses(), playerDataRow.getGames_played(), playerDataRow.getRanked_kills(), playerDataRow.getRanked_deaths(), playerDataRow.getStats_wins_ranked_solo(), playerDataRow.getStats_wins_ranked_teams(), playerDataRow.getLoses_ranked(), playerDataRow.getRanked_games_played());
+
+            String lang = playerDataRow.getLanguage();
+            if (lang == null || lang.isEmpty() || !rs.getLanguageManagerAPI().getLanguagesMap().containsKey(lang)) {
+                rs.getLogger().info("Player " + player.getName() + " has an invalid language set. Setting default language.");
+                p.setLanguage(rs.getLanguageManagerAPI().getDefaultLanguage());
+            }
 
             String firstJoin = playerDataRow.getFirstJoin();
             if (firstJoin == null || firstJoin.isEmpty()) {
@@ -151,7 +158,6 @@ public class PlayerManager extends PlayerManagerAPI {
             }
 
             p.saveData(RSWPlayer.PlayerData.LAST_JOIN);
-
             return;
         } catch (Exception e) {
             RealSkywarsAPI.getInstance().getLogger().severe("Error while loading player data for " + player.getName() + "!");
@@ -224,9 +230,9 @@ public class PlayerManager extends PlayerManagerAPI {
     }
 
     @Override
-    public void setLanguage(RSWPlayer player, String s) {
-        player.setLanguage(s);
-        player.sendMessage(TranslatableLine.LANGUAGE_SET.get(player, true).replace("%language%", s));
+    public void setLanguage(RSWPlayer player, RSWLanguage l) {
+        player.setLanguage(l.getName());
+        player.sendMessage(TranslatableLine.LANGUAGE_SET.get(player, true).replace("%language%", l.getDisplayName()));
         player.closeInventory();
     }
 

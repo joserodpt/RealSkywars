@@ -27,7 +27,7 @@ public class NMS114R1tov116R3 implements RSWnms {
     private final Class<?> world = ReflectionHelper.getNMSClass("World");
     private final Class<?> craft_world = ReflectionHelper.getCraftBukkitClass("CraftWorld");
     private final Class<?> block_pos = ReflectionHelper.getNMSClass("BlockPosition");
-    private final Class<?> i_block_data  = ReflectionHelper.getNMSClass("IBlockData");
+    private final Class<?> i_block_data = ReflectionHelper.getNMSClass("IBlockData");
     private final Class<?> block_class = ReflectionHelper.getNMSClass("Block");
 
     @Override
@@ -40,8 +40,8 @@ public class NMS114R1tov116R3 implements RSWnms {
             assert world != null;
             assert i_block_data != null;
             world.getMethod("playBlockAction", block_pos, block_class, Integer.TYPE, Integer.TYPE).invoke(invoke, instance, i_block_data.getMethod("getBlock").invoke(world.getMethod("getType", block_pos).invoke(invoke, instance)), 1, open ? 1 : 0);
-        }
-        catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException ex) {
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException |
+                 InstantiationException ex) {
             RealSkywarsAPI.getInstance().getLogger().severe("Error while executing chest animation nms.");
             RealSkywarsAPI.getInstance().getLogger().severe(ex.toString());
         }

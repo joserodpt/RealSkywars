@@ -81,7 +81,7 @@ public class RSWKit {
             desc.add(TranslatableLine.KIT_CONTAINS.get(p));
 
             for (ItemStack s : this.getKitInventory().getListInventory()) {
-                desc.add(TranslatableLine.KIT_ITEM.get(p).replace("%amount%", s.getAmount() + "").replace("%item%", RealSkywarsAPI.getInstance().getNMS().getItemName(s)));
+                desc.add(TranslatableLine.KIT_ITEM.get(p).replace("%amount%", s.getAmount() + "").replace("%item%", RealSkywarsAPI.getInstance().getLanguageManagerAPI().getMaterialName(p, s.getType())));
             }
         }
 

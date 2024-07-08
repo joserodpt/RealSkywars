@@ -86,6 +86,8 @@ public abstract class RealSkywarsAPI {
 
     public abstract String getServerVersion();
 
+    public abstract String getSimpleServerVersion();
+
     public abstract boolean hasNewUpdate();
 
     public abstract void reload();
