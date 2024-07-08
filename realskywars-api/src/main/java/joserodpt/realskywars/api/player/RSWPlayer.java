@@ -42,6 +42,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -368,6 +369,25 @@ public class RSWPlayer {
 
     public int getStatistics(PlayerStatistics pp) {
         return getStatistics(pp, this.isInMatch() && this.playerMap.isRanked());
+    }
+
+    public List<String> getStats() { //TODO TRANSLATE
+        return Arrays.asList(
+                "&fLanguage: &b" + this.getLanguage(),
+                "&fSelected Kit: &b" + this.getPlayerKit().getDisplayName(),
+                "&fSelected Cage: &b" + this.getCageBlock().name(),
+                "&fCoins: &b" + RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoins(this),
+                "&7",
+                "&fStats:",
+                "&f> Kills: &b" + this.getStatistics(PlayerStatistics.KILLS),
+                "&f> Deaths: &b" + this.getStatistics(PlayerStatistics.DEATHS),
+                "&f> Wins Solo: &b" + ": &e" + this.getStatistics(PlayerStatistics.WINS_SOLO),
+                "&f> Wins Teams: &b" + this.getStatistics(PlayerStatistics.WINS_TEAMS),
+                "&f> Loses: &b" + this.getStatistics(PlayerStatistics.LOSES),
+                "&f> Games Played: &b" + this.getStatistics(PlayerStatistics.GAMES_PLAYED),
+                "&6",
+                "&fFirst Join: &b" + RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerData(this.getPlayer()).getFirstJoin(),
+                "&fLast Join: &b" + RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerData(this.getPlayer()).getLastJoin());
     }
 
     public RSWPlayer.PlayerState getState() {

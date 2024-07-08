@@ -247,7 +247,7 @@ public class PlayerListener implements Listener {
                         switch (e.getPlayer().getInventory().getItemInMainHand().getType()) {
                             case BOOK:
                                 e.setCancelled(true);
-                                GUIManager.openPlayerMenu(p);
+                                GUIManager.openPlayerProfile(p);
                                 e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 break;
                             case NETHER_STAR:

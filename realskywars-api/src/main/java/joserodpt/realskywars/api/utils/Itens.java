@@ -35,12 +35,11 @@ import java.util.Map;
 
 public class Itens {
 
-    public static ItemStack getHead(Player player, int quantidade, String name) {
+    public static ItemStack createHead(Player player, int quantidade, String name, List<String> lore) {
         ItemStack item = new ItemStack(Material.PLAYER_HEAD, quantidade);
         SkullMeta skull = (SkullMeta) item.getItemMeta();
         skull.setDisplayName(Text.color(name));
-        List<String> lore = new ArrayList<>();
-        skull.setLore(lore);
+        skull.setLore(Text.color(lore));
         skull.setOwningPlayer(Bukkit.getServer().getPlayer(player.getName()));
         item.setItemMeta(skull);
         return item;

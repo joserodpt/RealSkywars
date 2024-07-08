@@ -49,7 +49,7 @@ public class RSWGameLog {
         this.dummy = true;
     }
 
-    public ItemStack getItem(RSWPlayer p) {
+    public ItemStack getItem(RSWPlayer p) { //TODO TRANSLATE
         return this.dummy ? Itens.createItem(Material.BUCKET, 1, TranslatableLine.SEARCH_NOTFOUND_NAME.getSingle()) :
                 Itens.createItem(Material.FILLED_MAP, 1, "&f&l" + this.dayandtime, Arrays.asList("&fMap: &b" + this.map + " &7[&f" + this.gameMode.getDisplayName(p) + "&7]",
                         "&fPlayers: &b" + this.players,

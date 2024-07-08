@@ -101,7 +101,7 @@ public class GUIManager {
                 inventory.addItem(e -> {
                     p.teleport(s.getPlayer().getLocation());
                     p.sendMessage(TranslatableLine.COMPASS_TELEPORT.get(p, true).replace("%name%", s.getDisplayName()));
-                }, Itens.addLore(Itens.getHead(s.getPlayer(), 1, "&b" + s.getDisplayName()), Collections.singletonList("&c" + String.format("%.2f", s.getPlayer().getHealth()))), i);
+                }, Itens.createHead(s.getPlayer(), 1, "&b" + s.getDisplayName(), Collections.singletonList("&c" + String.format("%.2f", s.getPlayer().getHealth()))), i);
                 ++i;
             }
         }
@@ -155,7 +155,7 @@ public class GUIManager {
         inventory.openInventory(p.getPlayer());
     }
 
-    public static void openPlayerMenu(RSWPlayer p) {
+    public static void openPlayerProfile(RSWPlayer p) {
         int size = p.isInMatch() ? 27 : 45;
 
         GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_PLAYERP_TITLE.get(p), size, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
@@ -214,6 +214,10 @@ public class GUIManager {
             openAchievementGUI(p);
         }, Itens.createItem(Material.BOOKSHELF, 1, TranslatableLine.ACHIEVEMENTS.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 16);
 
+        inventory.addItem(e -> {
+        }, Itens.createHead(p.getPlayer(), 1, p.getDisplayName(), p.getStats()), 22);
+
+
         //settings
         if (!p.isInMatch()) {
             if (RSWConfig.file().getBoolean("Config.Disable-Language-Selection")) {
@@ -271,7 +275,7 @@ public class GUIManager {
 
         inventory.addItem(e -> {
             p.closeInventory();
-            GUIManager.openPlayerMenu(p);
+            GUIManager.openPlayerProfile(p);
         }, Itens.createItem(Material.BIRCH_DOOR, 1, TranslatableLine.BUTTONS_MENU_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_MENU_DESC.getSingle())), 26);
 
         inventory.openInventory(p.getPlayer());

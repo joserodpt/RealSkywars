@@ -89,7 +89,7 @@ public class PlayerProfileContentsGUI {
                                 if (inventories.containsKey(uuid)) {
                                     inventories.get(uuid).unregister();
                                 }
-                                GUIManager.openPlayerMenu(p);
+                                GUIManager.openPlayerProfile(p);
                                 break;
                             case 26:
                             case 35:

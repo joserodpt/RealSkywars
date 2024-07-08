@@ -30,6 +30,7 @@ import joserodpt.realskywars.api.database.PlayerDataRow;
 import joserodpt.realskywars.api.database.PlayerGameHistoryRow;
 import joserodpt.realskywars.api.managers.DatabaseManagerAPI;
 import joserodpt.realskywars.api.managers.ShopManagerAPI;
+import joserodpt.realskywars.api.player.RSWGameHistoryStats;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Pair;
 import org.bukkit.Bukkit;
@@ -143,13 +144,14 @@ public class DatabaseManager extends DatabaseManagerAPI {
     }
 
     @Override
-    public Collection<PlayerGameHistoryRow> getPlayerGameHistory(Player p) {
+    public Pair<Collection<PlayerGameHistoryRow>, RSWGameHistoryStats> getPlayerGameHistory(Player p) {
         try {
-            return playerGameHistoryDao.queryForEq("player_uuid", p.getUniqueId()).stream().sorted((o1, o2) -> o2.getFormattedDateObject().compareTo(o1.getFormattedDateObject())).collect(Collectors.toList());
+            var res = playerGameHistoryDao.queryForEq("player_uuid", p.getUniqueId()).stream().sorted((o1, o2) -> o2.getFormattedDateObject().compareTo(o1.getFormattedDateObject())).collect(Collectors.toList());
+            return new Pair<>(res, new RSWGameHistoryStats(res));
         } catch (SQLException exception) {
             rsa.getLogger().severe("Error while getting the player data:" + exception.getMessage());
         }
-        return Collections.emptyList();
+        return new Pair<>(Collections.emptyList(), new RSWGameHistoryStats());
     }
 
     @Override

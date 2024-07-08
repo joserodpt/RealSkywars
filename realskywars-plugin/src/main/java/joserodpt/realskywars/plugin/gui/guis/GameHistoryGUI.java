@@ -17,6 +17,7 @@ package joserodpt.realskywars.plugin.gui.guis;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
+import joserodpt.realskywars.api.player.RSWGameHistoryStats;
 import joserodpt.realskywars.api.player.RSWGameLog;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
@@ -35,6 +36,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +52,7 @@ public class GameHistoryGUI {
     private final UUID uuid;
     private final RSWPlayer rswp;
     private final Map<Integer, RSWGameLog> display = new HashMap<>();
+    private final RSWGameHistoryStats stats;
     int pageNumber = 0;
     Pagination<RSWGameLog> p;
 
@@ -58,10 +61,14 @@ public class GameHistoryGUI {
         this.rswp = rswp;
         this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(rswp));
 
-        List<RSWGameLog> items = RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerGameHistory(rswp.getPlayer()).stream().map(s -> new RSWGameLog(s.getMap(), s.getMode(), s.isRanked(), s.getPlayerCount(), s.getKills(), s.wasWin(), s.getTime(), s.getDate())).collect(Collectors.toList());
+        List<RSWGameLog> items = new ArrayList<>();
+        var response = RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerGameHistory(rswp.getPlayer());
+        this.stats = response.getValue();
 
-        if (items.isEmpty()) {
+        if (response.getKey().isEmpty()) {
             items.add(new RSWGameLog());
+        } else {
+            items = response.getKey().stream().map(s -> new RSWGameLog(s.getMap(), s.getMode(), s.isRanked(), s.getPlayerCount(), s.getKills(), s.wasWin(), s.getTime(), s.getDate())).collect(Collectors.toList());
         }
 
         this.p = new Pagination<>(28, items);
@@ -93,7 +100,7 @@ public class GameHistoryGUI {
                                 if (inventories.containsKey(uuid)) {
                                     inventories.get(uuid).unregister();
                                 }
-                                GUIManager.openPlayerMenu(p);
+                                GUIManager.openPlayerProfile(p);
                                 break;
                             case 26:
                             case 35:
@@ -168,6 +175,8 @@ public class GameHistoryGUI {
         for (int slot : new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53}) {
             inv.setItem(slot, placeholder);
         }
+
+        inv.setItem(4, stats.getItem(rswp));
 
         if (firstPage()) {
             inv.setItem(18, placeholder);

@@ -19,6 +19,7 @@ import com.j256.ormlite.dao.Dao;
 import joserodpt.realskywars.api.database.PlayerBoughtItemsRow;
 import joserodpt.realskywars.api.database.PlayerDataRow;
 import joserodpt.realskywars.api.database.PlayerGameHistoryRow;
+import joserodpt.realskywars.api.player.RSWGameHistoryStats;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Pair;
 import org.bukkit.entity.Player;
@@ -34,7 +35,7 @@ public abstract class DatabaseManagerAPI {
 
     protected abstract void getPlayerData();
 
-    public abstract Collection<PlayerGameHistoryRow> getPlayerGameHistory(Player p);
+    public abstract Pair<Collection<PlayerGameHistoryRow>, RSWGameHistoryStats> getPlayerGameHistory(Player p);
 
     public abstract List<PlayerBoughtItemsRow> getPlayerBoughtItems(Player p);
 
