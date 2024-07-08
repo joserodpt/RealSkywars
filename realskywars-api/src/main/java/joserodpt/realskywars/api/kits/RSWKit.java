@@ -19,6 +19,7 @@ import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.utils.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -65,7 +66,7 @@ public class RSWKit {
         this.buyable = false;
     }
 
-    public List<String> getDescription(RSWPlayer p, boolean shop) {
+    public List<String> getDescription(RSWPlayer p, Pair<Boolean, String> boughtPair) {
         if (!this.buyable) {
             return Collections.emptyList();
         }
@@ -89,7 +90,10 @@ public class RSWKit {
         }
 
         desc.add("");
-        desc.add(shop ? TranslatableLine.KIT_BUY.get(p) : TranslatableLine.KIT_SELECT.get(p));
+        if (boughtPair.getKey()) {
+            desc.add(TranslatableLine.SHOP_BOUGHT_ON.get(p) + boughtPair.getValue());
+        }
+        desc.add(boughtPair.getKey() ? TranslatableLine.KIT_SELECT.get(p) : TranslatableLine.KIT_BUY.get(p));
 
         return desc;
     }

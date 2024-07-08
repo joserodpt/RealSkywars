@@ -17,7 +17,7 @@ package joserodpt.realskywars.plugin.managers;
 
 import com.j256.ormlite.stmt.QueryBuilder;
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.database.PlayerData;
+import joserodpt.realskywars.api.database.PlayerDataRow;
 import joserodpt.realskywars.api.leaderboards.RSWLeaderboard;
 import joserodpt.realskywars.api.managers.LeaderboardManagerAPI;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +50,7 @@ public class LeaderboardManager extends LeaderboardManagerAPI {
 
     @Override
     public void refreshLeaderboard(RSWLeaderboard.RSWLeaderboardCategories l) throws SQLException {
-        QueryBuilder<PlayerData, UUID> qb = rs.getDatabaseManagerAPI().getQueryDao().queryBuilder();
+        QueryBuilder<PlayerDataRow, UUID> qb = rs.getDatabaseManagerAPI().getQueryDao().queryBuilder();
         qb.orderBy(l.getDBName(), false);
         RSWLeaderboard lb = getLeaderboard(l, rs.getDatabaseManagerAPI().getQueryDao().query(qb.prepare()));
         this.leaderboards.put(l, lb);
@@ -58,10 +58,10 @@ public class LeaderboardManager extends LeaderboardManagerAPI {
 
     @Override
     @NotNull
-    protected RSWLeaderboard getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories l, List<PlayerData> expansions) {
+    protected RSWLeaderboard getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories l, List<PlayerDataRow> expansions) {
         RSWLeaderboard lb = new RSWLeaderboard();
         for (int i = 1; i < 11; ++i) {
-            PlayerData p;
+            PlayerDataRow p;
             try {
                 p = expansions.get(i - 1);
 

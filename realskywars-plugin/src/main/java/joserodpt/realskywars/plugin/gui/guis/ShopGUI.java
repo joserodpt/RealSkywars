@@ -17,6 +17,7 @@ package joserodpt.realskywars.plugin.gui.guis;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
+import joserodpt.realskywars.api.database.PlayerBoughtItemsRow;
 import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.managers.TransactionManager;
 import joserodpt.realskywars.api.player.RSWPlayer;
@@ -208,7 +209,7 @@ public class ShopGUI {
                                     } else {
                                         TransactionManager cm = new TransactionManager(p, a.getPrice(), TransactionManager.Operations.REMOVE, false);
                                         if (cm.removeCoins()) {
-                                            p.buyItem(a.getName() + "|" + current.cat.name());
+                                            RealSkywarsAPI.getInstance().getDatabaseManagerAPI().saveNewBoughtItem(new PlayerBoughtItemsRow(p, a.getName(), current.cat.name()), true);
 
                                             a.setBought(true);
                                             current.inv.setItem(e.getRawSlot(), Itens.createItemLoreEnchanted(e.getCurrentItem().getType(), 1, e.getCurrentItem().getItemMeta().getDisplayName(), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_SELECT.get(p))));

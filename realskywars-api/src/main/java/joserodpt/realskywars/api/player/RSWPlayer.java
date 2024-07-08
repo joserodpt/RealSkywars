@@ -23,7 +23,6 @@ import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.effects.RSWBlockWinTrail;
 import joserodpt.realskywars.api.effects.RSWTrail;
 import joserodpt.realskywars.api.kits.RSWKit;
-import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.map.modes.teams.RSWTeam;
 import joserodpt.realskywars.api.party.RSWParty;
@@ -43,7 +42,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,7 +52,6 @@ public class RSWPlayer {
     private String language = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getDefaultLanguage();
 
     private final List<RSWTrail> RSWTrails = new ArrayList<>();
-    private List<RSWGameLog> gamesList = new ArrayList<>();
     private PlayerState state = PlayerState.LOBBY_OR_NOGAME;
     private MapViewerPref playerMapViewerPref;
     private RSWTeam playerTeam;
@@ -71,12 +68,11 @@ public class RSWPlayer {
 
     private Double coins = 0D, balanceGame = 0D;
     private Material cageBlock = Material.GLASS;
-    private List<String> boughtList = new ArrayList<>();
     private Particle bowParticle;
     private Material winblockMaterial;
     private Boolean invincible = false, bot = false, winblockRandom = false;
 
-    public RSWPlayer(Player jog, RSWPlayer.PlayerState estado, int kills, int d, int solowin, int teamwin, Double coi, String lang, Collection<String> bgh, int l, int gp, int rankedTotalkills, int rankedDeaths, int rankedWinsSolo, int rankedWinsTEAMS, int rankedLoses, int rankedGamesPlayed, Collection<RSWGameLog> gamesList) {
+    public RSWPlayer(Player jog, RSWPlayer.PlayerState estado, int kills, int d, int solowin, int teamwin, Double coi, String lang, int l, int gp, int rankedTotalkills, int rankedDeaths, int rankedWinsSolo, int rankedWinsTEAMS, int rankedLoses, int rankedGamesPlayed) {
         this.anonName = Text.anonName();
 
         this.player = jog;
@@ -87,12 +83,9 @@ public class RSWPlayer {
         this.deaths = d;
         this.coins = coi;
         this.language = lang;
-        this.boughtList = new ArrayList<>(bgh);
         this.loses = l;
         this.gamesPlayed = gp;
         this.playerSB = new RSWPlayerScoreboard(this);
-
-        this.gamesList = new ArrayList<>(gamesList);
 
         this.rankedTotalkills = rankedTotalkills;
         this.rankedDeaths = rankedDeaths;
@@ -226,9 +219,11 @@ public class RSWPlayer {
     }
 
     public void resetData() {
-        RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerData(RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerData(this.getPlayer()), true);
+        RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerData(getUUID(), true);
+        RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerGameHistory(getUUID(), true);
+        RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerBoughtItems(getUUID(), true);
         RealSkywarsAPI.getInstance().getPlayerManagerAPI().removePlayer(this);
-        this.player.kickPlayer(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + "§4Your data was cleared with success. \n §cPlease join the server again to complete the reset.");
+        this.player.kickPlayer(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + "§4Your data was cleared with success.\n§cPlease join the server again to complete the reset.");
     }
 
     public String getName() {
@@ -387,14 +382,6 @@ public class RSWPlayer {
         this.playerMap = o;
     }
 
-    public List<String> getBoughtItems() {
-        return this.boughtList != null ? this.boughtList : new ArrayList<>();
-    }
-
-    public Boolean boughtItem(String name, ShopManagerAPI.ShopCategory c) {
-        return this.getBoughtItems().contains(name + "|" + c.name());
-    }
-
     public RSWPlayerScoreboard getScoreboard() {
         return this.playerSB;
     }
@@ -519,12 +506,7 @@ public class RSWPlayer {
         return this.playerTab;
     }
 
-    public enum PlayerData {CAGE_BLOCK, GAME, COINS, LANG, MAPVIEWER_PREF, BOUGHT_ITEMS, KIT}
-
-    public void buyItem(String s) {
-        this.boughtList.add(Text.strip(s));
-        RealSkywarsAPI.getInstance().getPlayerManagerAPI().savePlayer(this, PlayerData.BOUGHT_ITEMS);
-    }
+    public enum PlayerData {CAGE_BLOCK, GAME, COINS, LANG, MAPVIEWER_PREF, KIT, FIRST_JOIN, LEGACY_GAME_HISTORY_CLEAR, LEGACY_BOUGHT_ITEMS_CLEAR, LAST_JOIN}
 
     public void sendActionbar(String s) {
         if (this.player != null)
@@ -586,14 +568,6 @@ public class RSWPlayer {
         }
     }
 
-    public List<RSWGameLog> getGamesList() {
-        return this.gamesList;
-    }
-
-    public void addGameLog(RSWGameLog rswGameLog) {
-        this.gamesList.add(0, rswGameLog);
-    }
-
     public void setGameMode(GameMode gameMode) {
         if (!this.isBot()) {
             this.getPlayer().setGameMode(gameMode);
@@ -649,13 +623,13 @@ public class RSWPlayer {
                 case MAPV_AVAILABLE:
                     return TranslatableLine.MAP_STATE_AVAILABLE.get(p);
                 case SOLO:
-                    return RSWMap.Mode.SOLO.getDisplayName(p);
+                    return RSWMap.GameMode.SOLO.getDisplayName(p);
                 case SOLO_RANKED:
                     return TranslatableLine.SOLO_RANKED_MODE.get(p);
                 case TEAMS_RANKED:
                     return TranslatableLine.TEAMS_RANKED_MODE.get(p);
                 case TEAMS:
-                    return RSWMap.Mode.TEAMS.getDisplayName(p);
+                    return RSWMap.GameMode.TEAMS.getDisplayName(p);
                 default:
                     return "?";
             }

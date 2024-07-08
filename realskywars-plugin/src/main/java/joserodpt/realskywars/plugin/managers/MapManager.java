@@ -38,7 +38,6 @@ import joserodpt.realskywars.api.player.RSWPlayerItems;
 import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.api.utils.WorldEditUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -78,7 +77,7 @@ public class MapManager extends MapManagerAPI {
             }
 
             try {
-                RSWMap.Mode.valueOf(modeSTR);
+                RSWMap.GameMode.valueOf(modeSTR);
             } catch (IllegalArgumentException e) {
                 rs.getLogger().severe("Mode: " + s + " isn't supported by this version of RealSkywars! Skipping map: " + s);
                 continue;
@@ -113,7 +112,7 @@ public class MapManager extends MapManagerAPI {
 
                 World w = Bukkit.getWorld(worldName);
 
-                switch (RSWMap.Mode.valueOf(modeSTR)) {
+                switch (RSWMap.GameMode.valueOf(modeSTR)) {
                     case SOLO:
                         SoloMode gs = new SoloMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, cgs, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), RSWMapsConfig.file().getBoolean(s + ".Settings.Border"), getPOS1(w, s), getPOS2(w, s), chests, isRanked(s), unregistered);
                         gs.resetArena(RSWMap.OperationReason.LOAD);
@@ -126,7 +125,7 @@ public class MapManager extends MapManagerAPI {
                         Map<Location, RSWTeam> ts = new HashMap<>();
                         int teamSize = numberOfPlayers / cgs.size();
                         cgs.forEach((location, value) -> ts.put(location, new RSWTeam(tc.getAndIncrement(), teamSize, location)));
-                        
+
                         TeamsMode teas = new TeamsMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, ts, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), RSWMapsConfig.file().getBoolean(s + ".Settings.Border"), getPOS1(w, s), getPOS2(w, s), chests, isRanked(s), unregistered);
                         teas.resetArena(RSWMap.OperationReason.LOAD);
                         this.addMap(teas);
@@ -205,15 +204,15 @@ public class MapManager extends MapManagerAPI {
             case ALL:
                 return this.maps.values();
             case SOLO:
-                return this.maps.values().stream().filter(r -> r.getGameMode().equals(RSWMap.Mode.SOLO) && !r.isUnregistered()).collect(Collectors.toList());
+                return this.maps.values().stream().filter(r -> r.getGameMode().equals(RSWMap.GameMode.SOLO) && !r.isUnregistered()).collect(Collectors.toList());
             case TEAMS:
-                return this.maps.values().stream().filter(r -> r.getGameMode().equals(RSWMap.Mode.TEAMS) && !r.isUnregistered()).collect(Collectors.toList());
+                return this.maps.values().stream().filter(r -> r.getGameMode().equals(RSWMap.GameMode.TEAMS) && !r.isUnregistered()).collect(Collectors.toList());
             case RANKED:
                 return this.maps.values().stream().filter(rswGame -> rswGame.isRanked() && !rswGame.isUnregistered()).collect(Collectors.toList());
             case SOLO_RANKED:
-                return this.maps.values().stream().filter(r -> r.isRanked() && !r.isUnregistered() && r.getGameMode().equals(RSWMap.Mode.SOLO)).collect(Collectors.toList());
+                return this.maps.values().stream().filter(r -> r.isRanked() && !r.isUnregistered() && r.getGameMode().equals(RSWMap.GameMode.SOLO)).collect(Collectors.toList());
             case TEAMS_RANKED:
-                return this.maps.values().stream().filter(r -> r.isRanked() && !r.isUnregistered() && r.getGameMode().equals(RSWMap.Mode.TEAMS)).collect(Collectors.toList());
+                return this.maps.values().stream().filter(r -> r.isRanked() && !r.isUnregistered() && r.getGameMode().equals(RSWMap.GameMode.TEAMS)).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
@@ -274,7 +273,7 @@ public class MapManager extends MapManagerAPI {
             Text.sendList(p.getPlayer(), Text.replaceVarInList(TranslatableList.EDIT_MAP.get(p), "%cages%", maxP + ""));
 
             RSWPlayerItems.SETUP.giveSet(p);
-            p.getPlayer().setGameMode(GameMode.CREATIVE);
+            p.getPlayer().setGameMode(org.bukkit.GameMode.CREATIVE);
 
             if (wt == RSWWorld.WorldType.SCHEMATIC) {
                 w.setAutoSave(false);
@@ -309,7 +308,7 @@ public class MapManager extends MapManagerAPI {
             Text.sendList(p.getPlayer(), Text.replaceVarInList(TranslatableList.EDIT_MAP.get(p), "%cages%", teams + ""));
 
             RSWPlayerItems.SETUP.giveSet(p);
-            p.getPlayer().setGameMode(GameMode.CREATIVE);
+            p.getPlayer().setGameMode(org.bukkit.GameMode.CREATIVE);
 
             if (wt == RSWWorld.WorldType.SCHEMATIC) {
                 w.setAutoSave(false);
@@ -346,12 +345,12 @@ public class MapManager extends MapManagerAPI {
             return;
         }
 
-        if (map.getGameMode() == RSWMap.Mode.SOLO && map.getCages().size() != map.getMaxPlayers()) {
+        if (map.getGameMode() == RSWMap.GameMode.SOLO && map.getCages().size() != map.getMaxPlayers()) {
             TranslatableLine.CMD_INCORRECT_NUMBER_OF_CAGES_SOLO.send(p, true);
             return;
         }
 
-        if (map.getGameMode() == RSWMap.Mode.TEAMS && map.getCages().size() != map.getTeams().size()) {
+        if (map.getGameMode() == RSWMap.GameMode.TEAMS && map.getCages().size() != map.getTeams().size()) {
             TranslatableLine.CMD_INCORRECT_NUMBER_OF_CAGES_TEAMS.send(p, true);
             return;
         }
@@ -467,7 +466,7 @@ public class MapManager extends MapManagerAPI {
     }
 
     @Override
-    public void findMap(RSWPlayer player, RSWMap.Mode type) {
+    public void findMap(RSWPlayer player, RSWMap.GameMode type) {
         UUID playerUUID = player.getUUID();
         if (!rs.getPlayerManagerAPI().getTeleporting().contains(playerUUID)) {
             rs.getPlayerManagerAPI().getTeleporting().add(playerUUID);
@@ -500,7 +499,7 @@ public class MapManager extends MapManagerAPI {
     }
 
     @Override
-    public Optional<RSWMap> findSuitableGame(RSWMap.Mode type) {
+    public Optional<RSWMap> findSuitableGame(RSWMap.GameMode type) {
         return type == null ? this.maps.values().stream().findFirst() : this.maps.values().stream()
                 .filter(game -> game.getGameMode().equals(type) &&
                         (game.getState().equals(RSWMap.MapState.AVAILABLE) ||
@@ -535,9 +534,9 @@ public class MapManager extends MapManagerAPI {
             return;
         }
 
-        p.setGameMode(GameMode.CREATIVE);
+        p.setGameMode(org.bukkit.GameMode.CREATIVE);
         p.teleport(map.getSpectatorLocation());
-        Text.sendList(p.getPlayer(), Text.replaceVarInList(TranslatableList.EDIT_MAP.get(p), "%cages%", map.getGameMode() == RSWMap.Mode.SOLO ? String.valueOf(map.getMaxPlayers()) : map.getTeams().size() + ""));
+        Text.sendList(p.getPlayer(), Text.replaceVarInList(TranslatableList.EDIT_MAP.get(p), "%cages%", map.getGameMode() == RSWMap.GameMode.SOLO ? String.valueOf(map.getMaxPlayers()) : map.getTeams().size() + ""));
         RSWPlayerItems.SETUP.giveSet(p);
 
         map.getCages().forEach(rswCage -> map.getRSWWorld().getWorld().getBlockAt(rswCage.getLocation()).setType(Material.BEACON));

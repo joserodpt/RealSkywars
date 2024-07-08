@@ -1,6 +1,21 @@
 package joserodpt.realskywars.api.managers;
 
-import joserodpt.realskywars.api.database.PlayerData;
+/*
+ *   _____            _  _____ _
+ *  |  __ \          | |/ ____| |
+ *  | |__) |___  __ _| | (___ | | ___   ___      ____ _ _ __ ___
+ *  |  _  // _ \/ _` | |\___ \| |/ / | | \ \ /\ / / _` | '__/ __|
+ *  | | \ \  __/ (_| | |____) |   <| |_| |\ V  V / (_| | |  \__ \
+ *  |_|  \_\___|\__,_|_|_____/|_|\_\\__, | \_/\_/ \__,_|_|  |___/
+ *                                   __/ |
+ *                                  |___/
+ *
+ * Licensed under the MIT License
+ * @author José Rodrigues
+ * @link https://github.com/joserodpt/RealSkywars
+ */
+
+import joserodpt.realskywars.api.database.PlayerDataRow;
 import joserodpt.realskywars.api.leaderboards.RSWLeaderboard;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +28,7 @@ public abstract class LeaderboardManagerAPI {
     public abstract void refreshLeaderboard(RSWLeaderboard.RSWLeaderboardCategories l) throws SQLException;
 
     @NotNull
-    protected abstract RSWLeaderboard getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories l, List<PlayerData> expansions);
+    protected abstract RSWLeaderboard getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories l, List<PlayerDataRow> expansions);
 
     public abstract RSWLeaderboard getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories l);
 }

@@ -53,7 +53,6 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -207,7 +206,7 @@ public class RealSkywarsCMD extends CommandBase {
     @SubCommand("play")
     @Completion("#enum")
     @SuppressWarnings("unused")
-    public void playcmd(final CommandSender commandSender, RSWMap.Mode type) {
+    public void playcmd(final CommandSender commandSender, RSWMap.GameMode type) {
         if (commandSender instanceof Player) {
             Player pobj = (Player) commandSender;
             if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
@@ -504,7 +503,7 @@ public class RealSkywarsCMD extends CommandBase {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
             if (p != null) {
-                p.getPlayer().setGameMode(GameMode.CREATIVE);
+                p.getPlayer().setGameMode(org.bukkit.GameMode.CREATIVE);
                 p.teleport(rs.getMapManagerAPI().getMap(name).getRSWWorld().getWorld().getSpawnLocation());
             }
         } else {

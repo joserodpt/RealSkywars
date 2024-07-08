@@ -37,7 +37,7 @@ public class Text {
         return nicks.get(RealSkywarsAPI.getInstance().getRandom().nextInt(nicks.size())) + " #" + RealSkywarsAPI.getInstance().getRandom().nextInt(99);
     }
 
-    public static String getDayAndTime() {
+    public static String getDateAndTime() {
         DateFormat dateFormat = new SimpleDateFormat(RSWConfig.file().getString("Config.Time.Formatting"));
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());

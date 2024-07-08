@@ -21,6 +21,7 @@ import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
+import joserodpt.realskywars.api.utils.Pair;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -37,16 +38,16 @@ public class RSWShopDisplayItem {
     private Material m;
     private int amount = 1;
     private Double price;
-    private Boolean bought = false;
+    private Pair<Boolean, String> boughtPair = new Pair<>(false, "");
     private String permission;
     private Boolean interactive = true;
     private ShopManagerAPI.ShopCategory it;
 
-    public RSWShopDisplayItem(String name, String displayName, Material ma, Double per, Boolean b, String perm, ShopManagerAPI.ShopCategory t) {
+    public RSWShopDisplayItem(String name, String displayName, Material ma, Double per, Pair<Boolean, String> boughtPair, String perm, ShopManagerAPI.ShopCategory t) {
         this.name = name;
         this.displayName = displayName;
         this.price = per;
-        this.bought = b;
+        this.boughtPair = boughtPair;
         this.permission = perm;
         this.it = t;
         this.m = ma;
@@ -87,11 +88,11 @@ public class RSWShopDisplayItem {
     }
 
     public boolean isBought() {
-        return this.bought;
+        return this.boughtPair.getKey();
     }
 
     public void setBought(boolean b) {
-        this.bought = b;
+        this.boughtPair.setKey(b);
     }
 
     public boolean isInteractive() {
@@ -123,7 +124,7 @@ public class RSWShopDisplayItem {
     }
 
     public int getAmount() {
-        return this.amount;
+        return Math.max(1, Math.min(this.amount, 64));
     }
 
     public ItemStack getItemStack(RSWPlayer p) {
@@ -134,11 +135,16 @@ public class RSWShopDisplayItem {
         switch (this.it) {
             case KITS:
                 RSWKit k = RealSkywarsAPI.getInstance().getKitManagerAPI().getKit(name);
-                return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), "&r&f" + k.getDisplayName(), k.getDescription(p, false)) : Itens.createItem(m, 1, "&r&f" + k.getDisplayName(), k.getDescription(p, true));
+
+                if (this.isBought()) {
+                    return Itens.createItemLoreEnchanted(m, this.getAmount(), "&r&f" + k.getDisplayName(), k.getDescription(p, this.boughtPair));
+                } else {
+                    return Itens.createItem(m, this.getAmount(), "&r&f" + k.getDisplayName(), k.getDescription(p, this.boughtPair));
+                }
             case SPEC_SHOP:
-                return Itens.createItem(this.getMaterial(), 1, "&f" + this.amount + "x " + this.getDisplayName(), Arrays.asList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%price%", this.getPrice().toString()), "", "&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount."));
+                return Itens.createItem(this.getMaterial(), this.getAmount(), "&f" + this.amount + "x " + this.getDisplayName(), Arrays.asList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%price%", this.getPrice().toString()), "", "&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount."));
             default:
-                return this.bought ? Itens.createItemLoreEnchanted(m, this.getAmount(), formatName(name), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_SELECT.get(p))) : Itens.createItem(m, 1, formatName(this.getDisplayName()), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%coins%", this.getPrice().toString())));
+                return this.isBought() ? Itens.createItemLoreEnchanted(m, this.getAmount(), formatName(name), Arrays.asList(TranslatableLine.SHOP_BOUGHT_ON.get(p) + this.boughtPair.getValue(), TranslatableLine.SHOP_CLICK_2_SELECT.get(p))) : Itens.createItem(m, 1, formatName(this.getDisplayName()), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%coins%", this.getPrice().toString())));
         }
     }
 

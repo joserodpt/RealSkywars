@@ -26,20 +26,21 @@ import java.util.Arrays;
 
 public class RSWGameLog {
 
-    public String map;
-    public int players, seconds;
-    public boolean ranked, win;
-    public RSWMap.Mode mode;
-    public String dayandtime;
+    private String map;
+    private int players, seconds, kills;
+    private boolean ranked, win;
+    private RSWMap.GameMode gameMode;
+    private String dayandtime;
 
     private boolean dummy = false;
 
-    public RSWGameLog(String map, RSWMap.Mode mode, boolean ranked, int players, boolean win, int seconds, String dayandtime) {
+    public RSWGameLog(String map, String gameMode, boolean ranked, int players, int kills, boolean win, int seconds, String dayandtime) {
         this.map = map;
-        this.mode = mode;
+        this.gameMode = RSWMap.GameMode.valueOf(gameMode);
         this.ranked = ranked;
         this.players = players;
         this.win = win;
+        this.kills = kills;
         this.seconds = seconds;
         this.dayandtime = dayandtime;
     }
@@ -48,19 +49,13 @@ public class RSWGameLog {
         this.dummy = true;
     }
 
-    public ItemStack getItem() {
+    public ItemStack getItem(RSWPlayer p) {
         return this.dummy ? Itens.createItem(Material.BUCKET, 1, TranslatableLine.SEARCH_NOTFOUND_NAME.getSingle()) :
-                Itens.createItem(Material.FILLED_MAP, 1, "&f&l" + this.dayandtime, Arrays.asList("&fMap: &b" + this.map + " &f| Win: " + getWin(),
+                Itens.createItem(Material.FILLED_MAP, 1, "&f&l" + this.dayandtime, Arrays.asList("&fMap: &b" + this.map + " &7[&f" + this.gameMode.getDisplayName(p) + "&7]",
                         "&fPlayers: &b" + this.players,
+                        "&fRanked: " + (this.ranked ? "&a&l✔" : "&c&l❌"),
+                        "&fWin: " + (this.win ? "&a&l✔" : "&c&l❌"),
+                        "&fKills: &b" + this.kills,
                         "&fTime: &b" + Text.formatSeconds(this.seconds)));
-    }
-
-    private String getWin() {
-        return this.win ? "&a&l✔" : "&c&l❌";
-    }
-
-    public String getSerializedData() {
-        //mapa-modo-ranked-jogadores-ganhou-tempo-dia
-        return this.map + ";" + (this.mode == null ? "Unknown" : this.mode.name()) + ";" + this.ranked + ";" + this.players + ";" + this.win + ";" + this.seconds + ";" + this.dayandtime;
     }
 }

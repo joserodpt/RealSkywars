@@ -55,7 +55,7 @@ public class PlaceholderMode extends RSWMap {
     }
 
     @Override
-    public Mode getGameMode() {
+    public GameMode getGameMode() {
         return null;
     }
 

@@ -15,7 +15,7 @@ package joserodpt.realskywars.api.leaderboards;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.database.PlayerData;
+import joserodpt.realskywars.api.database.PlayerDataRow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +69,7 @@ public class RSWLeaderboard {
             }
         }
 
-        public int getValue(PlayerData p) {
+        public int getValue(PlayerDataRow p) {
             switch (this) {
                 case SOLO_WINS:
                     return p.getStats_wins_solo();

@@ -56,13 +56,14 @@ public class SoloMode extends RSWMap {
         this.cages = cages;
         this.cages.forEach((location, rswCage) -> rswCage.setMap(this));
     }
-    
+
     @Override
     public void forceStartMap() {
         if (canStartMap()) {
             super.cancelMapStart();
         } else {
             this.setState(MapState.PLAYING);
+            super.setStartingPlayers(super.getPlayerCount());
 
             super.getStartMapTimer().killTask();
 
@@ -244,8 +245,8 @@ public class SoloMode extends RSWMap {
     }
 
     @Override
-    public Mode getGameMode() {
-        return Mode.SOLO;
+    public GameMode getGameMode() {
+        return GameMode.SOLO;
     }
 
     @Override

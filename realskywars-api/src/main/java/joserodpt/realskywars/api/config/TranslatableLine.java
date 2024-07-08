@@ -180,6 +180,7 @@ public enum TranslatableLine {
     SHOP_CLICK_2_BUY(".Messages.Shop.Click-To-Buy"),
     SHOP_CLICK_2_SELECT(".Messages.Shop.Click-To-Select"),
     SHOP_NO_PERM(".Messages.Shop.No-Permission"),
+    SHOP_BOUGHT_ON(".Messages.Shop.Bought-On"),
     NOT_BUYABLE(".Messages.Shop.Not-Buyable"),
     PROFILE_SELECTED(".Messages.Selection-Made"),
     DEL_PURCHASES(".Messages.Shop.No-Permission"),

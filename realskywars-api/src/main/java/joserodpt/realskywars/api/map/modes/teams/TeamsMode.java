@@ -72,6 +72,7 @@ public class TeamsMode extends RSWMap {
             super.cancelMapStart();
         } else {
             this.setState(MapState.PLAYING);
+            super.setStartingPlayers(super.getPlayerCount());
 
             super.getStartMapTimer().killTask();
 
@@ -266,8 +267,8 @@ public class TeamsMode extends RSWMap {
     }
 
     @Override
-    public Mode getGameMode() {
-        return Mode.TEAMS;
+    public GameMode getGameMode() {
+        return GameMode.TEAMS;
     }
 
     @Override

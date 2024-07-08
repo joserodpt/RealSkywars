@@ -22,10 +22,10 @@ import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.RSWMapsConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.config.TranslatableList;
+import joserodpt.realskywars.api.database.PlayerGameHistoryRow;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.modes.RSWSign;
 import joserodpt.realskywars.api.map.modes.teams.RSWTeam;
-import joserodpt.realskywars.api.player.RSWGameLog;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.player.RSWPlayerItems;
 import joserodpt.realskywars.api.player.RSWPlayerTab;
@@ -39,7 +39,6 @@ import joserodpt.realskywars.api.utils.Text;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -76,6 +75,7 @@ public abstract class RSWMap {
     private int timeToStart;
     private int maxGameTime;
     private int invincibilitySeconds;
+    private int startingPlayers;
     private boolean specEnabled, instantEnding, ranked, borderEnabled;
     private boolean unregistered = false;
 
@@ -276,6 +276,14 @@ public abstract class RSWMap {
         return this.maxPlayers;
     }
 
+    public void setStartingPlayers(int startingPlayers) {
+        this.startingPlayers = startingPlayers;
+    }
+
+    public int getStartingPlayers() {
+        return this.startingPlayers;
+    }
+
     public RSWBossbar getBossBar() {
         return this.bossbar;
     }
@@ -407,7 +415,7 @@ public abstract class RSWMap {
     public void spectate(RSWPlayer p, SpectateType st, Location killLoc) {
         p.setInvincible(true);
         p.setFlying(true);
-        p.setGameMode(GameMode.CREATIVE);
+        p.setGameMode(org.bukkit.GameMode.CREATIVE);
 
         switch (st) {
             case INSIDE_GAME:
@@ -477,7 +485,7 @@ public abstract class RSWMap {
 
     abstract public void checkWin();
 
-    abstract public Mode getGameMode();
+    abstract public GameMode getGameMode();
 
     abstract public Collection<RSWCage> getCages();
 
@@ -636,7 +644,7 @@ public abstract class RSWMap {
         if (p.getPlayer() != null) {
             TranslatableList.MAP_END_LOG.get(p).forEach(s -> p.sendCenterMessage(s.replace("%recvcoins%", p.getGameBalance() + "").replace("%totalcoins%", p.getGameBalance() + "").replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + "").replace("%time%", Text.formatSeconds(this.mapTimer.getPassedSeconds()))));
 
-            p.addGameLog(new RSWGameLog(this.getName(), this.getGameMode(), this.isRanked(), this.getMaxPlayers(), winner, this.getTimePassed(), Text.getDayAndTime()));
+            RealSkywarsAPI.getInstance().getDatabaseManagerAPI().saveNewGameHistory(new PlayerGameHistoryRow(p.getPlayer(), this.getName(), this.getGameMode().name(), this.isRanked(), this.getStartingPlayers(), p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS), winner, this.getTimePassed()), true);
 
             p.saveData(RSWPlayer.PlayerData.GAME);
         }
@@ -705,7 +713,7 @@ public abstract class RSWMap {
 
         p.setState(RSWPlayer.PlayerState.LOBBY_OR_NOGAME);
         p.setFlying(false);
-        p.setGameMode(GameMode.SURVIVAL);
+        p.setGameMode(org.bukkit.GameMode.SURVIVAL);
         p.heal();
 
         if (p.hasKit()) {
@@ -1210,7 +1218,7 @@ public abstract class RSWMap {
 
     public enum OperationReason {SHUTDOWN, RESET, LOAD}
 
-    public enum Mode {
+    public enum GameMode {
         SOLO, TEAMS;
 
         public String getDisplayName(RSWPlayer p) {

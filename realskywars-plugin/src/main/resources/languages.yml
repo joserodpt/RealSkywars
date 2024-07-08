@@ -108,6 +108,7 @@ Languages:
         No-Permission: "&fYou &cdon't have permission &fto buy this item."
         Not-Buyable: "&fThis item &cisn't &abuyable&f."
         Click-To-Select: "&fClick here to select this item."
+        Bought-On: "&fBought on: &b"
       Commands:
         No-Permission: "&cYou don't have permission to execute this command."
         Config-Reload: "&aConfiguration reloaded."
@@ -463,6 +464,7 @@ Languages:
         No-Permission: "&fTu &cnão tens permissão &fpara comprar este item."
         Not-Buyable: "&fEste item &cnão é &acomprável&f."
         Click-To-Select: "&fClica aqui para selecionar este item."
+        Bought-On: "&fComprado em: &b"
       Commands:
         No-Permission: "&cTu não tens permissão para executar este comando."
         Config-Reload: "&aConfiguração recarregada."
@@ -854,6 +856,7 @@ Languages:
         No-Permission: "&fNo tienes &cpermiso &fpara comprar este artículo."
         Not-Buyable: "&fEste artículo &cno es &acomprable&f."
         Click-To-Select: "&fHaz clic aquí para seleccionar este artículo."
+        Bought-On: "&fComprado en: &b"
       Commands:
         No-Permission: "&cNo tienes permiso para ejecutar este comando."
         Config-Reload: "&aConfiguración recargada."

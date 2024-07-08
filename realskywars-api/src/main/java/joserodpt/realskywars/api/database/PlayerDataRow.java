@@ -19,16 +19,16 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 @DatabaseTable(tableName = "realscoreboard_playerdata")
-public class PlayerData {
+public class PlayerDataRow {
     @DatabaseField(columnName = "uuid", canBeNull = false, id = true)
     private @NotNull UUID uuid;
 
@@ -86,22 +86,49 @@ public class PlayerData {
     @DatabaseField(columnName = "ranked_games_played")
     private int ranked_games_played;
 
-    @DatabaseField(columnName = "bought_items")
-    private String bought_items;
+    @DatabaseField(columnName = "first_join")
+    private String first_join;
+
+    @DatabaseField(columnName = "last_join")
+    private String last_join;
+
+    @DatabaseField(columnName = "bought_items") //legacy
+    private String bought_items_legacy;
 
     @DatabaseField(columnName = "games_list")
-    private String games_list;
+    private String games_list_legacy;
 
-    public String getGames_list() {
-        return this.games_list;
+    public PlayerDataRow(Player p) {
+        this.uuid = p.getUniqueId();
+        this.name = p.getName();
+        this.coins = 0D;
+        this.lang = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getDefaultLanguage();
+        this.prefs_mapviewer = "MAPV_ALL";
+        this.prefs_cage_material = "GLASS";
+        this.first_join = Text.getDateAndTime();
+        this.last_join = this.first_join;
+    }
+
+    public PlayerDataRow() {
+        //for ORMLite
+    }
+
+    public String getLastJoin() {
+        return last_join;
+    }
+
+    public String getGamesListLegacy() {
+        return this.games_list_legacy;
+    } //legacy
+
+    public Collection<String> getBoughtItemsLegacy() { //legacy
+        if (this.bought_items_legacy == null || this.bought_items_legacy.isEmpty()) return null;
+
+        return Arrays.asList(this.bought_items_legacy.split("/"));
     }
 
     public String getChoosen_kit() {
         return choosen_kit;
-    }
-
-    public void setGames_list(String games_list) {
-        this.games_list = games_list;
     }
 
     public String getName() {
@@ -164,29 +191,12 @@ public class PlayerData {
         return this.ranked_games_played;
     }
 
-    public Collection<String> getBought_items() {
-        return Arrays.asList(this.bought_items.split("/"));
-    }
-
     public Double getCoins() {
         return this.coins;
     }
 
     public String getLanguage() {
         return this.lang;
-    }
-
-    public PlayerData(Player p) {
-        this.uuid = p.getUniqueId();
-        this.name = p.getName();
-        this.coins = 0D;
-        this.lang = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getDefaultLanguage();
-        this.bought_items = "";
-        this.prefs_mapviewer = "MAPV_ALL";
-        this.prefs_cage_material = "GLASS";
-    }
-
-    public PlayerData() {
     }
 
     public void setName(String name) {
@@ -209,8 +219,8 @@ public class PlayerData {
         this.prefs_mapviewer = name;
     }
 
-    public void setBoughtItems(List<String> boughtItems) {
-        this.bought_items = String.join("/", boughtItems);
+    public String getFirstJoin() {
+        return first_join;
     }
 
     public void setStatistics(RSWPlayer.PlayerStatistics pp, Boolean ranked, int value) {
@@ -268,5 +278,21 @@ public class PlayerData {
 
     public void setChoosenKit(String name) {
         this.choosen_kit = name;
+    }
+
+    public void setFirstJoin() {
+        this.first_join = Text.getDateAndTime();
+    }
+
+    public void setGamesListLegacy(String s) {
+        this.games_list_legacy = s;
+    }
+
+    public void setBoughtItemsLegacy(String s) {
+        this.bought_items_legacy = s;
+    }
+
+    public void setLastJoin() {
+        this.last_join = Text.getDateAndTime();
     }
 }

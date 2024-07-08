@@ -17,12 +17,13 @@ package joserodpt.realskywars.plugin.managers;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.database.PlayerData;
+import joserodpt.realskywars.api.database.PlayerBoughtItemsRow;
+import joserodpt.realskywars.api.database.PlayerDataRow;
+import joserodpt.realskywars.api.database.PlayerGameHistoryRow;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.managers.PlayerManagerAPI;
 import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
-import joserodpt.realskywars.api.player.RSWGameLog;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.player.RSWPlayerTab;
 import joserodpt.realskywars.api.shop.RSWShopDisplayItem;
@@ -53,13 +54,56 @@ public class PlayerManager extends PlayerManagerAPI {
     private final Map<UUID, RSWPlayer> players = new HashMap<>();
 
     @Override
-    public RSWPlayer loadPlayer(Player player) {
+    public void loadPlayer(Player player) {
         try {
-            PlayerData playerData = rs.getDatabaseManagerAPI().getPlayerData(player);
+            PlayerDataRow playerDataRow = rs.getDatabaseManagerAPI().getPlayerData(player);
 
-            RSWPlayer p = new RSWPlayer(player, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, playerData.getKills(), playerData.getDeaths(), playerData.getStats_wins_solo(), playerData.getStats_wins_teams(), playerData.getCoins(), playerData.getLanguage(), playerData.getBought_items(), playerData.getLoses(), playerData.getGames_played(), playerData.getRanked_kills(), playerData.getRanked_deaths(), playerData.getStats_wins_ranked_solo(), playerData.getStats_wins_ranked_teams(), playerData.getLoses_ranked(), playerData.getRanked_games_played(), this.processGamesList(playerData.getGames_list()));
+            RSWPlayer p = new RSWPlayer(player, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, playerDataRow.getKills(), playerDataRow.getDeaths(), playerDataRow.getStats_wins_solo(), playerDataRow.getStats_wins_teams(), playerDataRow.getCoins(), playerDataRow.getLanguage(), playerDataRow.getLoses(), playerDataRow.getGames_played(), playerDataRow.getRanked_kills(), playerDataRow.getRanked_deaths(), playerDataRow.getStats_wins_ranked_solo(), playerDataRow.getStats_wins_ranked_teams(), playerDataRow.getLoses_ranked(), playerDataRow.getRanked_games_played());
 
-            String mapv = playerData.getMapViewerPref();
+            String firstJoin = playerDataRow.getFirstJoin();
+            if (firstJoin == null || firstJoin.isEmpty()) {
+                p.saveData(RSWPlayer.PlayerData.FIRST_JOIN);
+            }
+
+            //convert legacy data to new format
+
+            String oldGamesHistory = playerDataRow.getGamesListLegacy();
+            if (oldGamesHistory != null && !oldGamesHistory.isEmpty()) {
+                rs.getLogger().info("Converting legacy game history for " + player.getName());
+                String[] split = oldGamesHistory.split("/");
+                for (String s : split) {
+                    String[] data = s.split(";");
+                    if (data.length == 7) {
+                        Boolean ranked = Boolean.parseBoolean(data[2]);
+                        int jogadores = Integer.parseInt(data[3]);
+                        boolean win = Boolean.parseBoolean(data[4]);
+                        int seconds = Integer.parseInt(data[5]);
+
+                        rs.getDatabaseManagerAPI().saveNewGameHistory(new PlayerGameHistoryRow(player, data[0], data[1], ranked, jogadores, win, seconds, data[6]), true);
+                    }
+                }
+
+                p.saveData(RSWPlayer.PlayerData.LEGACY_GAME_HISTORY_CLEAR);
+                rs.getLogger().info("Legacy game history converted for " + player.getName() + "!");
+            }
+
+            Collection<String> boughtItemsLegacy = playerDataRow.getBoughtItemsLegacy();
+            if (boughtItemsLegacy != null && !boughtItemsLegacy.isEmpty()) {
+                rs.getLogger().info("Converting legacy bought items for " + player.getName());
+                for (String s : boughtItemsLegacy) {
+                    String[] data = s.split("\\|");
+                    if (data.length == 2) {
+                        rs.getDatabaseManagerAPI().saveNewBoughtItem(new PlayerBoughtItemsRow(p, data[0], data[1]), true);
+                    }
+                }
+
+                p.saveData(RSWPlayer.PlayerData.LEGACY_BOUGHT_ITEMS_CLEAR);
+                rs.getLogger().info("Legacy bought items converted for " + player.getName() + "!");
+            }
+
+            //end legacy data conversion
+
+            String mapv = playerDataRow.getMapViewerPref();
             if (mapv != null) {
                 try {
                     p.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.valueOf(mapv));
@@ -68,7 +112,7 @@ public class PlayerManager extends PlayerManagerAPI {
                 }
             }
 
-            String cageBlock = playerData.getCageMaterial();
+            String cageBlock = playerDataRow.getCageMaterial();
             if (cageBlock != null) {
                 try {
                     p.setCageBlock(Material.getMaterial(cageBlock));
@@ -77,7 +121,7 @@ public class PlayerManager extends PlayerManagerAPI {
                 }
             }
 
-            String choosenKit = playerData.getChoosen_kit();
+            String choosenKit = playerDataRow.getChoosen_kit();
             if (choosenKit != null && !choosenKit.isEmpty()) {
                 p.setKit(rs.getKitManagerAPI().getKit(choosenKit));
             }
@@ -106,44 +150,14 @@ public class PlayerManager extends PlayerManagerAPI {
                 }
             }
 
-            return p;
+            p.saveData(RSWPlayer.PlayerData.LAST_JOIN);
+
+            return;
         } catch (Exception e) {
-            RealSkywarsAPI.getInstance().getLogger().severe("Error while loading player data for " + player.getName() + " ->" + e.getMessage());
+            RealSkywarsAPI.getInstance().getLogger().severe("Error while loading player data for " + player.getName() + "!");
+            e.printStackTrace();
         }
-        return null;
-    }
-
-    @Override
-    protected List<RSWGameLog> processGamesList(String s) {
-        List<RSWGameLog> tmp = new ArrayList<>();
-        if (s != null) {
-            String[] split = s.split("/");
-            //max size is 140 (5 pages)
-            int max = Math.min(split.length, 140);
-            for (int i = 0; i < max; ++i) {
-                String obj = split[i];
-                //mapa-modo-ranked-jogadores-ganhou-tempo-dia
-                String[] data = obj.split(";");
-                if (data.length == 7) {
-                    String mapa = data[0];
-                    RSWMap.Mode mode = RSWMap.Mode.valueOf(data[1]);
-                    boolean ranked = Boolean.parseBoolean(data[2]);
-                    int jogadores = Integer.parseInt(data[3]);
-                    boolean win = Boolean.parseBoolean(data[4]);
-                    int seconds = Integer.parseInt(data[5]);
-                    String dayandtime = data[6];
-                    tmp.add(0, new RSWGameLog(mapa, mode, ranked, jogadores, win, seconds, dayandtime));
-                }
-            }
-        }
-        return tmp;
-    }
-
-    @Override
-    protected String processGamesListSave(List<RSWGameLog> gamesList) {
-        return gamesList.stream()
-                .map(RSWGameLog::getSerializedData)
-                .collect(Collectors.joining("/"));
+        player.kickPlayer("§cAn error occurred while loading your RealSkywars player data.\nPlease try again later and contact an admin.");
     }
 
     @Override
@@ -154,51 +168,58 @@ public class PlayerManager extends PlayerManagerAPI {
     @Override
     public void savePlayer(RSWPlayer p, RSWPlayer.PlayerData pd) {
         if (p.getPlayer() != null) {
-            PlayerData playerData = rs.getDatabaseManagerAPI().getPlayerData(p.getPlayer());
+            PlayerDataRow playerDataRow = rs.getDatabaseManagerAPI().getPlayerData(p.getPlayer());
 
             switch (pd) {
                 case KIT:
-                    playerData.setChoosenKit(p.getPlayerKit().getName());
-                    break;
-                case BOUGHT_ITEMS:
-                    playerData.setBoughtItems(p.getBoughtItems());
+                    playerDataRow.setChoosenKit(p.getPlayerKit().getName());
                     break;
                 case CAGE_BLOCK:
-                    playerData.setCageBlock(p.getCageBlock().name());
+                    playerDataRow.setCageBlock(p.getCageBlock().name());
                     break;
                 case COINS:
-                    playerData.setCoins(rs.getCurrencyAdapterAPI().getCoins(p));
+                    playerDataRow.setCoins(rs.getCurrencyAdapterAPI().getCoins(p));
                     break;
                 case GAME:
-                    playerData.setStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false, p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false));
-                    playerData.setStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true, p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true));
+                    playerDataRow.setStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false, p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, false));
+                    playerDataRow.setStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true, p.getStatistics(RSWPlayer.PlayerStatistics.WINS_SOLO, true));
 
-                    playerData.setStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false, p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false));
-                    playerData.setStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true, p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true));
+                    playerDataRow.setStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false, p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, false));
+                    playerDataRow.setStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true, p.getStatistics(RSWPlayer.PlayerStatistics.WINS_TEAMS, true));
 
-                    playerData.setStatistics(RSWPlayer.PlayerStatistics.KILLS, false, p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false));
-                    playerData.setStatistics(RSWPlayer.PlayerStatistics.KILLS, true, p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, true));
+                    playerDataRow.setStatistics(RSWPlayer.PlayerStatistics.KILLS, false, p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, false));
+                    playerDataRow.setStatistics(RSWPlayer.PlayerStatistics.KILLS, true, p.getStatistics(RSWPlayer.PlayerStatistics.KILLS, true));
 
-                    playerData.setStatistics(RSWPlayer.PlayerStatistics.DEATHS, false, p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false));
-                    playerData.setStatistics(RSWPlayer.PlayerStatistics.DEATHS, true, p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, true));
+                    playerDataRow.setStatistics(RSWPlayer.PlayerStatistics.DEATHS, false, p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, false));
+                    playerDataRow.setStatistics(RSWPlayer.PlayerStatistics.DEATHS, true, p.getStatistics(RSWPlayer.PlayerStatistics.DEATHS, true));
 
-                    playerData.setStatistics(RSWPlayer.PlayerStatistics.LOSES, false, p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false));
-                    playerData.setStatistics(RSWPlayer.PlayerStatistics.LOSES, true, p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, true));
+                    playerDataRow.setStatistics(RSWPlayer.PlayerStatistics.LOSES, false, p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, false));
+                    playerDataRow.setStatistics(RSWPlayer.PlayerStatistics.LOSES, true, p.getStatistics(RSWPlayer.PlayerStatistics.LOSES, true));
 
-                    playerData.setStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false, p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false));
-                    playerData.setStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true, p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true));
-
-                    playerData.setGames_list(processGamesListSave(p.getGamesList()));
+                    playerDataRow.setStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false, p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, false));
+                    playerDataRow.setStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true, p.getStatistics(RSWPlayer.PlayerStatistics.GAMES_PLAYED, true));
                     break;
                 case LANG:
-                    playerData.setLanguage(p.getLanguage());
+                    playerDataRow.setLanguage(p.getLanguage());
                     break;
                 case MAPVIEWER_PREF:
-                    playerData.setMapViewerPref(p.getPlayerMapViewerPref().name());
+                    playerDataRow.setMapViewerPref(p.getPlayerMapViewerPref().name());
+                    break;
+                case FIRST_JOIN:
+                    playerDataRow.setFirstJoin();
+                    break;
+                case LEGACY_GAME_HISTORY_CLEAR:
+                    playerDataRow.setGamesListLegacy("");
+                    break;
+                case LEGACY_BOUGHT_ITEMS_CLEAR:
+                    playerDataRow.setBoughtItemsLegacy("");
+                    break;
+                case LAST_JOIN:
+                    playerDataRow.setLastJoin();
                     break;
             }
 
-            rs.getDatabaseManagerAPI().savePlayerData(playerData, true);
+            rs.getDatabaseManagerAPI().savePlayerData(playerDataRow, true);
         }
     }
 

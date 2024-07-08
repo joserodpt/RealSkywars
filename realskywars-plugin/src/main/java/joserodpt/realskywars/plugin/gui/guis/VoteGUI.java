@@ -235,7 +235,7 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rs.rain")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 4);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_TIME_NIGHT.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_TIME_RAIN.get(p)));
                                     } else {
                                         TranslatableLine.CMD_NO_PERM.send(p, true);
                                         p.closeInventory();

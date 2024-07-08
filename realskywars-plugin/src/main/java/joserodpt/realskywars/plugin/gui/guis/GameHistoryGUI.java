@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class GameHistoryGUI {
 
@@ -47,15 +48,17 @@ public class GameHistoryGUI {
     private static final Map<UUID, GameHistoryGUI> inventories = new HashMap<>();
     private final Inventory inv;
     private final UUID uuid;
+    private final RSWPlayer rswp;
     private final Map<Integer, RSWGameLog> display = new HashMap<>();
     int pageNumber = 0;
     Pagination<RSWGameLog> p;
 
-    public GameHistoryGUI(RSWPlayer p) {
-        this.uuid = p.getUUID();
-        this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(p));
+    public GameHistoryGUI(RSWPlayer rswp) {
+        this.uuid = rswp.getUUID();
+        this.rswp = rswp;
+        this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(rswp));
 
-        List<RSWGameLog> items = p.getGamesList();
+        List<RSWGameLog> items = RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerGameHistory(rswp.getPlayer()).stream().map(s -> new RSWGameLog(s.getMap(), s.getMode(), s.isRanked(), s.getPlayerCount(), s.getKills(), s.wasWin(), s.getTime(), s.getDate())).collect(Collectors.toList());
 
         if (items.isEmpty()) {
             items.add(new RSWGameLog());
@@ -189,7 +192,7 @@ public class GameHistoryGUI {
             if (i == null) {
                 if (!items.isEmpty()) {
                     RSWGameLog s = items.get(0);
-                    inv.setItem(slot, s.getItem());
+                    inv.setItem(slot, s.getItem(rswp));
                     display.put(slot, s);
                     items.remove(0);
                 }

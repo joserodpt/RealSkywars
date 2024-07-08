@@ -212,9 +212,9 @@ public class RealSkywarsPlugin extends JavaPlugin {
                 return new TypeResult(null, argument);
             }
         });
-        commandManager.getParameterHandler().register(RSWMap.Mode.class, argument -> {
+        commandManager.getParameterHandler().register(RSWMap.GameMode.class, argument -> {
             try {
-                RSWMap.Mode tt = RSWMap.Mode.valueOf(argument.toString().toUpperCase());
+                RSWMap.GameMode tt = RSWMap.GameMode.valueOf(argument.toString().toUpperCase());
                 return new TypeResult(tt, argument);
             } catch (Exception e) {
                 return new TypeResult(null, argument);

@@ -25,9 +25,15 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWSQLConfig;
-import joserodpt.realskywars.api.database.PlayerData;
+import joserodpt.realskywars.api.database.PlayerBoughtItemsRow;
+import joserodpt.realskywars.api.database.PlayerDataRow;
+import joserodpt.realskywars.api.database.PlayerGameHistoryRow;
 import joserodpt.realskywars.api.managers.DatabaseManagerAPI;
+import joserodpt.realskywars.api.managers.ShopManagerAPI;
+import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.utils.Pair;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,14 +41,22 @@ import java.io.File;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class DatabaseManager extends DatabaseManagerAPI {
 
-    private final Dao<PlayerData, UUID> playerDataDao;
-    private final Map<UUID, PlayerData> playerDataCache = new HashMap<>();
+    private final Dao<PlayerDataRow, UUID> playerDataDao;
+    private final Dao<PlayerGameHistoryRow, UUID> playerGameHistoryDao;
+    private final Dao<PlayerBoughtItemsRow, UUID> playerBoughtItemsDao;
+
+    private final Map<UUID, PlayerDataRow> playerDataCache = new HashMap<>();
+
     private final RealSkywarsAPI rsa;
 
     public DatabaseManager(RealSkywarsAPI rsa) throws SQLException {
@@ -58,20 +72,26 @@ public class DatabaseManager extends DatabaseManagerAPI {
                 DatabaseTypeUtils.createDatabaseType(databaseURL)
         );
 
-        TableUtils.createTableIfNotExists(connectionSource, PlayerData.class);
+        TableUtils.createTableIfNotExists(connectionSource, PlayerDataRow.class);
+        this.playerDataDao = DaoManager.createDao(connectionSource, PlayerDataRow.class);
 
-        this.playerDataDao = DaoManager.createDao(connectionSource, PlayerData.class);
-
-        // add new choosen_kit (v0.8)
-        createColumnIfNotExists(connectionSource, "choosen_kit", "VARCHAR");
+        createColumnIfNotExists(connectionSource, "choosen_kit", "VARCHAR"); // add new choosen_kit (v0.8)
+        createColumnIfNotExists(connectionSource, "first_join", "VARCHAR"); //add first_join (v1)
+        createColumnIfNotExists(connectionSource, "last_join", "VARCHAR"); //add last_join (v1)
 
         getPlayerData();
+
+        TableUtils.createTableIfNotExists(connectionSource, PlayerGameHistoryRow.class);
+        this.playerGameHistoryDao = DaoManager.createDao(connectionSource, PlayerGameHistoryRow.class);
+
+        TableUtils.createTableIfNotExists(connectionSource, PlayerBoughtItemsRow.class);
+        this.playerBoughtItemsDao = DaoManager.createDao(connectionSource, PlayerBoughtItemsRow.class);
     }
 
     public void createColumnIfNotExists(ConnectionSource cs, String columnName, String columnType) {
         try {
             if (!doesColumnExist(cs, columnName)) {
-                Bukkit.getLogger().warning("[RealSkywars] RealSkywars.db: Upgrading SQL table to add choosen_kit to realscoreboard_playerdata...");
+                Bukkit.getLogger().warning("[RealSkywars] RealSkywars.db: Upgrading SQL table to add " + columnName + " to realscoreboard_playerdata...");
                 playerDataDao.executeRaw("ALTER TABLE realscoreboard_playerdata ADD COLUMN " + columnName + " " + columnType);
                 Bukkit.getLogger().warning("[RealSkywars] RealSkywars.db: Upgrade complete!");
             }
@@ -84,7 +104,6 @@ public class DatabaseManager extends DatabaseManagerAPI {
         try {
             DatabaseMetaData metaData = cs.getReadOnlyConnection(null).getUnderlyingConnection().getMetaData();
             ResultSet columns = metaData.getColumns(null, null, "realscoreboard_playerdata", columnName);
-
             return columns.next(); // Return true if the column exists
         } catch (SQLException e) {
             e.printStackTrace();
@@ -124,18 +143,38 @@ public class DatabaseManager extends DatabaseManagerAPI {
     }
 
     @Override
-    public PlayerData getPlayerData(Player p) {
-        return playerDataCache.getOrDefault(p.getUniqueId(), new PlayerData(p));
+    public Collection<PlayerGameHistoryRow> getPlayerGameHistory(Player p) {
+        try {
+            return playerGameHistoryDao.queryForEq("player_uuid", p.getUniqueId()).stream().sorted((o1, o2) -> o2.getFormattedDateObject().compareTo(o1.getFormattedDateObject())).collect(Collectors.toList());
+        } catch (SQLException exception) {
+            rsa.getLogger().severe("Error while getting the player data:" + exception.getMessage());
+        }
+        return Collections.emptyList();
     }
 
     @Override
-    public void savePlayerData(PlayerData playerData, boolean async) {
-        playerDataCache.put(playerData.getUUID(), playerData);
+    public List<PlayerBoughtItemsRow> getPlayerBoughtItems(Player p) {
+        try {
+            return playerBoughtItemsDao.queryForEq("player_uuid", p.getUniqueId()).stream().sorted((o1, o2) -> o2.getFormattedDateObject().compareTo(o1.getFormattedDateObject())).collect(Collectors.toList());
+        } catch (SQLException exception) {
+            rsa.getLogger().severe("Error while getting the player data:" + exception.getMessage());
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public PlayerDataRow getPlayerData(Player p) {
+        return playerDataCache.getOrDefault(p.getUniqueId(), new PlayerDataRow(p));
+    }
+
+    @Override
+    public void savePlayerData(PlayerDataRow playerDataRow, boolean async) {
+        playerDataCache.put(playerDataRow.getUUID(), playerDataRow);
         if (async) {
-            Bukkit.getScheduler().runTaskAsynchronously(rsa.getPlugin(), () -> savePlayerData(playerData, false));
+            Bukkit.getScheduler().runTaskAsynchronously(rsa.getPlugin(), () -> savePlayerData(playerDataRow, false));
         } else {
             try {
-                playerDataDao.createOrUpdate(playerData);
+                playerDataDao.createOrUpdate(playerDataRow);
             } catch (SQLException throwables) {
                 rsa.getLogger().severe("Error while saving the player data:" + throwables.getMessage());
             }
@@ -143,12 +182,54 @@ public class DatabaseManager extends DatabaseManagerAPI {
     }
 
     @Override
-    public void deletePlayerData(PlayerData playerData, boolean async) {
+    public void saveNewGameHistory(PlayerGameHistoryRow playerGameHistoryRow, boolean async) {
         if (async) {
-            Bukkit.getScheduler().runTaskAsynchronously(rsa.getPlugin(), () -> deletePlayerData(playerData, false));
+            Bukkit.getScheduler().runTaskAsynchronously(rsa.getPlugin(), () -> saveNewGameHistory(playerGameHistoryRow, false));
         } else {
             try {
-                playerDataDao.delete(playerData);
+                playerGameHistoryDao.createOrUpdate(playerGameHistoryRow);
+            } catch (SQLException throwables) {
+                rsa.getLogger().severe("Error while saving the player data:" + throwables.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void saveNewBoughtItem(PlayerBoughtItemsRow playerBoughtItemsRow, boolean async) {
+        if (async) {
+            Bukkit.getScheduler().runTaskAsynchronously(rsa.getPlugin(), () -> saveNewBoughtItem(playerBoughtItemsRow, false));
+        } else {
+            try {
+                playerBoughtItemsDao.createOrUpdate(playerBoughtItemsRow);
+            } catch (SQLException throwables) {
+                rsa.getLogger().severe("Error while saving the player data:" + throwables.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void deletePlayerData(UUID playerUUID, boolean async) {
+        if (async) {
+            Bukkit.getScheduler().runTaskAsynchronously(rsa.getPlugin(), () -> deletePlayerData(playerUUID, false));
+        } else {
+            try {
+                playerDataDao.deleteById(playerUUID);
+                playerDataCache.remove(playerUUID);
+            } catch (SQLException throwables) {
+                rsa.getLogger().severe("Error while deleting the player data:" + throwables.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void deletePlayerGameHistory(UUID playerUUID, boolean async) {
+        if (async) {
+            Bukkit.getScheduler().runTaskAsynchronously(rsa.getPlugin(), () -> deletePlayerGameHistory(playerUUID, false));
+        } else {
+            try {
+                var deleteBuilder = playerGameHistoryDao.deleteBuilder();
+                deleteBuilder.where().eq("player_uuid", playerUUID);
+                deleteBuilder.delete();
             } catch (SQLException throwables) {
                 rsa.getLogger().severe("Error while deleting the player data:" + throwables.getMessage());
 
@@ -157,7 +238,43 @@ public class DatabaseManager extends DatabaseManagerAPI {
     }
 
     @Override
-    public Dao<PlayerData, UUID> getQueryDao() {
+    public void deletePlayerBoughtItems(UUID playerUUID, boolean async) {
+        if (async) {
+            Bukkit.getScheduler().runTaskAsynchronously(rsa.getPlugin(), () -> deletePlayerBoughtItems(playerUUID, false));
+        } else {
+            try {
+                var deleteBuilder = playerBoughtItemsDao.deleteBuilder();
+                deleteBuilder.where().eq("player_uuid", playerUUID);
+                deleteBuilder.delete();
+            } catch (SQLException throwables) {
+                rsa.getLogger().severe("Error while deleting the player data:" + throwables.getMessage());
+
+            }
+        }
+    }
+
+    @Override
+    public Dao<PlayerDataRow, UUID> getQueryDao() {
         return this.playerDataDao;
+    }
+
+    @Override
+    public Pair<Boolean, String> didPlayerBoughtItem(RSWPlayer p, String name, ShopManagerAPI.ShopCategory shopCategory) {
+        try {
+            PlayerBoughtItemsRow search = playerBoughtItemsDao.queryBuilder().where()
+                    .eq("player_uuid", p.getUUID())
+                    .and()
+                    .eq("item_id", ChatColor.stripColor(name))
+                    .and()
+                    .eq("category", shopCategory.name())
+                    .queryForFirst();
+
+            if (search != null) {
+                return new Pair<>(true, search.getDate());
+            }
+        } catch (SQLException exception) {
+            rsa.getLogger().severe("Error while getting the player data:" + exception.getMessage());
+        }
+        return new Pair<>(false, null);
     }
 }

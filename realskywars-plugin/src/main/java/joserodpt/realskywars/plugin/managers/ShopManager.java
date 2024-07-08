@@ -45,7 +45,7 @@ public class ShopManager extends ShopManagerAPI {
                             a.getDisplayName(),
                             a.getIcon(),
                             a.getPrice(),
-                            p.boughtItem(a.getName(), ShopCategory.KITS),
+                            rs.getDatabaseManagerAPI().didPlayerBoughtItem(p, a.getName(), ShopCategory.KITS),
                             a.getPermission(),
                             ShopCategory.KITS))
                     .collect(Collectors.toList());
@@ -116,7 +116,7 @@ public class ShopManager extends ShopManagerAPI {
                     }
                 }
 
-                RSWShopDisplayItem s = new RSWShopDisplayItem(name, displayName, m, price, p.boughtItem(name, cat), perm, ShopCategory.CAGE_BLOCKS);
+                RSWShopDisplayItem s = new RSWShopDisplayItem(name, displayName, m, price, rs.getDatabaseManagerAPI().didPlayerBoughtItem(p, name, cat), perm, ShopCategory.CAGE_BLOCKS);
                 if (material.equalsIgnoreCase("randomblock")) {
                     s.addInfo("RandomBlock", "RandomBlock");
                 }
