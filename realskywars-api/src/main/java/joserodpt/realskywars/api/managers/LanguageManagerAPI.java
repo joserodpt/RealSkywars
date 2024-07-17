@@ -22,9 +22,12 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class LanguageManagerAPI {
+    protected final Map<String, RSWLanguage> langList = new HashMap<>();
+
     public abstract void loadLanguages();
 
     public abstract String getDefaultLanguage();
@@ -39,7 +42,11 @@ public abstract class LanguageManagerAPI {
 
     public abstract String getMaterialName(RSWPlayer p, Material mat);
 
+    public abstract String getMaterialName(Material mat);
+
     public abstract String getEnchantmentName(RSWPlayer p, Enchantment ench);
 
     public abstract String getEntityName(RSWPlayer p, EntityType type);
+
+    public abstract RSWLanguage getLanguage(String language);
 }

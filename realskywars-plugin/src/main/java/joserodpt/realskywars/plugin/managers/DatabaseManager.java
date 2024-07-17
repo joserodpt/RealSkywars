@@ -29,9 +29,9 @@ import joserodpt.realskywars.api.database.PlayerBoughtItemsRow;
 import joserodpt.realskywars.api.database.PlayerDataRow;
 import joserodpt.realskywars.api.database.PlayerGameHistoryRow;
 import joserodpt.realskywars.api.managers.DatabaseManagerAPI;
-import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.player.RSWGameHistoryStats;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.shop.RSWBuyableItem;
 import joserodpt.realskywars.api.utils.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -165,6 +165,16 @@ public class DatabaseManager extends DatabaseManagerAPI {
     }
 
     @Override
+    public List<PlayerBoughtItemsRow> getPlayerBoughtItemsCategory(Player p, RSWBuyableItem.ItemCategory cat) {
+        try {
+            return playerBoughtItemsDao.queryForEq("player_uuid", p.getUniqueId()).stream().filter(a -> a.getCategory().equals(cat.name())).sorted((o1, o2) -> o2.getFormattedDateObject().compareTo(o1.getFormattedDateObject())).collect(Collectors.toList());
+        } catch (SQLException exception) {
+            rsa.getLogger().severe("Error while getting the player data:" + exception.getMessage());
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
     public PlayerDataRow getPlayerData(Player p) {
         return playerDataCache.getOrDefault(p.getUniqueId(), new PlayerDataRow(p));
     }
@@ -261,14 +271,14 @@ public class DatabaseManager extends DatabaseManagerAPI {
     }
 
     @Override
-    public Pair<Boolean, String> didPlayerBoughtItem(RSWPlayer p, String name, ShopManagerAPI.ShopCategory shopCategory) {
+    public Pair<Boolean, String> didPlayerBoughtItem(RSWPlayer p, RSWBuyableItem item) {
         try {
             PlayerBoughtItemsRow search = playerBoughtItemsDao.queryBuilder().where()
                     .eq("player_uuid", p.getUUID())
                     .and()
-                    .eq("item_id", ChatColor.stripColor(name))
+                    .eq("item_id", ChatColor.stripColor(item.getConfigKey()))
                     .and()
-                    .eq("category", shopCategory.name())
+                    .eq("category", item.getCategory().name())
                     .queryForFirst();
 
             if (search != null) {

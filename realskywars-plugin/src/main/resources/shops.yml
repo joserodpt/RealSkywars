@@ -1,127 +1,614 @@
-Version: 2
-Main-Shop:
-  #Data Structure:
-  #MATERIAL>PRICE>NAME>PERMISSION
+Version: 3
+Shops:
   Cage-Blocks:
-    - SPAWNER>50>&5Spawner>RealSkywars.Spawner
-    - DIAMOND_BLOCK>20>&bDiamond Cage>RealSkywars.Cage
-    - COAL_BLOCK>30>&bCoal Cage>RealSkywars.Cage
-    - STONE>20>&bSTONE>RealSkywars.Cage
-    - PODZOL>20>&bPODZOL>RealSkywars.Cage
-    - GLASS>20>&bGLASS>RealSkywars.Cage
-    - WHITE_STAINED_GLASS>20>&bWHITE_STAINED_GLASS>RealSkywars.Cage
-    - ORANGE_STAINED_GLASS>20>&bORANGE_STAINED_GLASS>RealSkywars.Cage
-    - MAGENTA_STAINED_GLASS>20>&bMAGENTA_STAINED_GLASS>RealSkywars.Cage
-    - LIGHT_BLUE_STAINED_GLASS>20>&bLIGHT_BLUE_STAINED_GLASS>RealSkywars.Cage
-    - YELLOW_STAINED_GLASS>20>&bYELLOW_STAINED_GLASS>RealSkywars.Cage
-    - LIME_STAINED_GLASS>20>&bLIME_STAINED_GLASS>RealSkywars.Cage
-    - PINK_STAINED_GLASS>20>&bPINK_STAINED_GLASS>RealSkywars.Cage
-    - GRAY_STAINED_GLASS>20>&bGRAY_STAINED_GLASS>RealSkywars.Cage
-    - LIGHT_GRAY_STAINED_GLASS>20>&bLIGHT_GRAY_STAINED_GLASS>RealSkywars.Cage
-    - CYAN_STAINED_GLASS>20>&bCYAN_STAINED_GLASS>RealSkywars.Cage
-    - PURPLE_STAINED_GLASS>20>&bPURPLE_STAINED_GLASS>RealSkywars.Cage
-    - BLUE_STAINED_GLASS>20>&bBLUE_STAINED_GLASS>RealSkywars.Cage
-    - BROWN_STAINED_GLASS>20>&bBROWN_STAINED_GLASS>RealSkywars.Cage
-    - GREEN_STAINED_GLASS>20>&bGREEN_STAINED_GLASS>RealSkywars.Cage
-    - RED_STAINED_GLASS>20>&bRED_STAINED_GLASS>RealSkywars.Cage
-    - BLACK_STAINED_GLASS>20>&bBLACK_STAINED_GLASS>RealSkywars.Cage
-    - OAK_LOG>20>&bOAK_LOG>RealSkywars.Cage
-    - SPRUCE_LOG>20>&bSPRUCE_LOG>RealSkywars.Cage
-    - BIRCH_LOG>20>&bBIRCH_LOG>RealSkywars.Cage
-    - JUNGLE_LOG>20>&bJUNGLE_LOG>RealSkywars.Cage
-    - ACACIA_LOG>20>&bACACIA_LOG>RealSkywars.Cage
-    - DARK_OAK_LOG>20>&bDARK_OAK_LOG>RealSkywars.Cage
-    - STRIPPED_OAK_WOOD>20>&bSTRIPPED_OAK_WOOD>RealSkywars.Cage
-    - STRIPPED_OAK_LOG>20>&bSTRIPPED_OAK_LOG>RealSkywars.Cage
-    - ACACIA_WOOD>20>&bACACIA_WOOD>RealSkywars.Cage
-    - BIRCH_WOOD>20>&bBIRCH_WOOD>RealSkywars.Cage
-    - GLASS>20>&bGLASS>RealSkywars.Cage
-    - LAPIS_BLOCK>20>&bLAPIS_BLOCK>RealSkywars.Cage
-    - CHISELED_SANDSTONE>20>&bCHISELED_SANDSTONE>RealSkywars.Cage
-    - IRON_BLOCK>20>&bIRON_BLOCK>RealSkywars.Cage
-    - SMOOTH_STONE>20>&bSMOOTH_STONE>RealSkywars.Cage
-    - BOOKSHELF>20>&bBOOKSHELF>RealSkywars.Cage
-    - DIAMOND_BLOCK>20>&bDIAMOND_BLOCK>RealSkywars.Cage
-    - DIAMOND_ORE>20>&bDIAMOND_ORE>RealSkywars.Cage
-    - REDSTONE_ORE>20>&bREDSTONE_ORE>RealSkywars.Cage
-    - PURPUR_BLOCK>20>&bPURPUR_BLOCK>RealSkywars.Cage
-    - OBSIDIAN>20>&bOBSIDIAN>RealSkywars.Cage
-    - GLOWSTONE>20>&bGLOWSTONE>RealSkywars.Cage
-    - JACK_O_LANTERN>20>&bJACK_O_LANTERN>RealSkywars.Cage
-    - PUMPKIN>20>&bPUMPKIN>RealSkywars.Cage
-    - EMERALD_BLOCK>20>&bEMERALD_BLOCK>RealSkywars.Cage
-    - EMERALD_ORE>20>&bEMERALD_ORE>RealSkywars.Cage
-    - SEA_LANTERN>20>&bSEA_LANTERN>RealSkywars.Cage
-    - PRISMARINE_BRICKS>20>&bPRISMARINE_BRICKS>RealSkywars.Cage
-    - BLUE_ICE>20>&bBLUE_ICE>RealSkywars.Cage
-    - RED_MUSHROOM_BLOCK>20>&bRED_MUSHROOM_BLOCK>RealSkywars.Cage
-    - INFESTED_STONE_BRICKS>20>&bINFESTED_STONE_BRICKS>RealSkywars.Cage
-    - INFESTED_MOSSY_STONE_BRICKS>20>&bINFESTED_MOSSY_STONE_BRICKS>RealSkywars.Cage
-    - INFESTED_CRACKED_STONE_BRICKS>20>&bINFESTED_CRACKED_STONE_BRICKS>RealSkywars.Cage
-    - REDSTONE_BLOCK>20>&bREDSTONE_BLOCK>RealSkywars.Cage
-    - TNT>20>&bTNT Block>RealSkywars.Cage
-  #Data Structure:
-  #MATERIAL>PRICE>NAME>PERMISSION>PARTICLE
+    item1:
+      Displayname: '&5Spawner'
+      Material: SPAWNER
+      Price: 50.0
+      Permission: RealSkywars.Spawner
+    item2:
+      Displayname: '&bDiamond Cage'
+      Material: DIAMOND_BLOCK
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item3:
+      Displayname: '&bCoal Cage'
+      Material: COAL_BLOCK
+      Price: 30.0
+      Permission: RealSkywars.Cage
+    item4:
+      Displayname: '&bSTONE'
+      Material: STONE
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item5:
+      Displayname: '&bPODZOL'
+      Material: PODZOL
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item6:
+      Displayname: '&bGLASS'
+      Material: GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item7:
+      Displayname: '&bWHITE_STAINED_GLASS'
+      Material: WHITE_STAINED_GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item8:
+      Displayname: '&bORANGE_STAINED_GLASS'
+      Material: ORANGE_STAINED_GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item9:
+      Displayname: '&bMAGENTA_STAINED_GLASS'
+      Material: MAGENTA_STAINED_GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item10:
+      Displayname: '&bLIGHT_BLUE_STAINED_GLASS'
+      Material: LIGHT_BLUE_STAINED_GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item11:
+      Displayname: '&bYELLOW_STAINED_GLASS'
+      Material: YELLOW_STAINED_GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item12:
+      Displayname: '&bLIME_STAINED_GLASS'
+      Material: LIME_STAINED_GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item13:
+      Displayname: '&bPINK_STAINED_GLASS'
+      Material: PINK_STAINED_GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item14:
+      Displayname: '&bGRAY_STAINED_GLASS'
+      Material: GRAY_STAINED_GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item15:
+      Displayname: '&bLIGHT_GRAY_STAINED_GLASS'
+      Material: LIGHT_GRAY_STAINED_GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item16:
+      Displayname: '&bCYAN_STAINED_GLASS'
+      Material: CYAN_STAINED_GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item17:
+      Displayname: '&bPURPLE_STAINED_GLASS'
+      Material: PURPLE_STAINED_GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item18:
+      Displayname: '&bBLUE_STAINED_GLASS'
+      Material: BLUE_STAINED_GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item19:
+      Displayname: '&bBROWN_STAINED_GLASS'
+      Material: BROWN_STAINED_GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item20:
+      Displayname: '&bGREEN_STAINED_GLASS'
+      Material: GREEN_STAINED_GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item21:
+      Displayname: '&bRED_STAINED_GLASS'
+      Material: RED_STAINED_GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item22:
+      Displayname: '&bBLACK_STAINED_GLASS'
+      Material: BLACK_STAINED_GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item23:
+      Displayname: '&bOAK_LOG'
+      Material: OAK_LOG
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item24:
+      Displayname: '&bSPRUCE_LOG'
+      Material: SPRUCE_LOG
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item25:
+      Displayname: '&bBIRCH_LOG'
+      Material: BIRCH_LOG
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item26:
+      Displayname: '&bJUNGLE_LOG'
+      Material: JUNGLE_LOG
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item27:
+      Displayname: '&bACACIA_LOG'
+      Material: ACACIA_LOG
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item28:
+      Displayname: '&bDARK_OAK_LOG'
+      Material: DARK_OAK_LOG
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item29:
+      Displayname: '&bSTRIPPED_OAK_WOOD'
+      Material: STRIPPED_OAK_WOOD
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item30:
+      Displayname: '&bSTRIPPED_OAK_LOG'
+      Material: STRIPPED_OAK_LOG
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item31:
+      Displayname: '&bACACIA_WOOD'
+      Material: ACACIA_WOOD
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item32:
+      Displayname: '&bBIRCH_WOOD'
+      Material: BIRCH_WOOD
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item33:
+      Displayname: '&bGLASS'
+      Material: GLASS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item34:
+      Displayname: '&bLAPIS_BLOCK'
+      Material: LAPIS_BLOCK
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item35:
+      Displayname: '&bCHISELED_SANDSTONE'
+      Material: CHISELED_SANDSTONE
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item36:
+      Displayname: '&bIRON_BLOCK'
+      Material: IRON_BLOCK
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item37:
+      Displayname: '&bSMOOTH_STONE'
+      Material: SMOOTH_STONE
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item38:
+      Displayname: '&bBOOKSHELF'
+      Material: BOOKSHELF
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item39:
+      Displayname: '&bDIAMOND_BLOCK'
+      Material: DIAMOND_BLOCK
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item40:
+      Displayname: '&bDIAMOND_ORE'
+      Material: DIAMOND_ORE
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item41:
+      Displayname: '&bREDSTONE_ORE'
+      Material: REDSTONE_ORE
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item42:
+      Displayname: '&bPURPUR_BLOCK'
+      Material: PURPUR_BLOCK
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item43:
+      Displayname: '&bOBSIDIAN'
+      Material: OBSIDIAN
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item44:
+      Displayname: '&bGLOWSTONE'
+      Material: GLOWSTONE
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item45:
+      Displayname: '&bJACK_O_LANTERN'
+      Material: JACK_O_LANTERN
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item46:
+      Displayname: '&bPUMPKIN'
+      Material: PUMPKIN
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item47:
+      Displayname: '&bEMERALD_BLOCK'
+      Material: EMERALD_BLOCK
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item48:
+      Displayname: '&bEMERALD_ORE'
+      Material: EMERALD_ORE
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item49:
+      Displayname: '&bSEA_LANTERN'
+      Material: SEA_LANTERN
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item50:
+      Displayname: '&bPRISMARINE_BRICKS'
+      Material: PRISMARINE_BRICKS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item51:
+      Displayname: '&bBLUE_ICE'
+      Material: BLUE_ICE
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item52:
+      Displayname: '&bRED_MUSHROOM_BLOCK'
+      Material: RED_MUSHROOM_BLOCK
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item53:
+      Displayname: '&bINFESTED_STONE_BRICKS'
+      Material: INFESTED_STONE_BRICKS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item54:
+      Displayname: '&bINFESTED_MOSSY_STONE_BRICKS'
+      Material: INFESTED_MOSSY_STONE_BRICKS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item55:
+      Displayname: '&bINFESTED_CRACKED_STONE_BRICKS'
+      Material: INFESTED_CRACKED_STONE_BRICKS
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item56:
+      Displayname: '&bREDSTONE_BLOCK'
+      Material: REDSTONE_BLOCK
+      Price: 20.0
+      Permission: RealSkywars.Cage
+    item57:
+      Displayname: '&bTNT Block'
+      Material: TNT
+      Price: 20.0
+      Permission: RealSkywars.Cage
   Bow-Particles:
-    - GUNPOWDER>10>&cExplosion (Normal)>RealSkywars.Particle>EXPLOSION_NORMAL
-    - TNT>10>&cExplosion &4(Large)>RealSkywars.Particle>EXPLOSION_LARGE
-    - CREEPER_HEAD>10>&cExplosion &4(&cHuge&4)>RealSkywars.Particle>EXPLOSION_HUGE
-    - FIREWORK_ROCKET>10>&aFirework Spark>RealSkywars.Particle>FIREWORKS_SPARK
-    - WATER_BUCKET>10>&9Water &bBubble>RealSkywars.Particle>WATER_BUBBLE
-    - WATER_BUCKET>10>&9Water &bSplash>RealSkywars.Particle>WATER_SPLASH
-    - WATER_BUCKET>10>&9Water &bWake>RealSkywars.Particle>WATER_WAKE
-    - WOODEN_SWORD>10>&aCrit>RealSkywars.Particle>CRIT
-    - DRAGON_BREATH>10>&aCrit &5Magic>RealSkywars.Particle>CRIT_MAGIC
-    - CAMPFIRE>10>&7Smoke &fNormal>RealSkywars.Particle>SMOKE_NORMAL
-    - CAMPFIRE>10>&7Smoke &8Large>RealSkywars.Particle>SMOKE_LARGE
-    - POTION>10>&aSpell>RealSkywars.Particle>SPELL
-    - SPLASH_POTION>10>&aSpell &2Instant>RealSkywars.Particle>SPELL_INSTANT
-    - ENCHANTED_BOOK>10>&aSpell &3Mob>RealSkywars.Particle>SPELL_MOB
-    - END_CRYSTAL>10>&aSpell &5Witch>RealSkywars.Particle>SPELL_WITCH
-    - WATER_BUCKET>10>&9Drip &bWater>RealSkywars.Particle>DRIP_WATER
-    - LAVA_BUCKET>10>&9Drip &cLava>RealSkywars.Particle>DRIP_LAVA
-    - VILLAGER_SPAWN_EGG>10>&aVillager &4Angry>RealSkywars.Particle>VILLAGER_ANGRY
-    - EMERALD>10>&aVillager &2Happy>RealSkywars.Particle>VILLAGER_HAPPY
-    - NOTE_BLOCK>10>&3Note>RealSkywars.Particle>NOTE
-    - OBSIDIAN>10>&5Portal>RealSkywars.Particle>PORTAL
-    - ENCHANTING_TABLE>10>&aEnchantment Table>RealSkywars.Particle>ENCHANTMENT_TABLE
-    - FLINT_AND_STEEL>10>&cFlame>RealSkywars.Particle>FLAME
-    - LAVA_BUCKET>10>&4Lava>RealSkywars.Particle>LAVA
-    - WHITE_DYE>10>&fCloud>RealSkywars.Particle>CLOUD
-    - SNOWBALL>10>&9Snowball>RealSkywars.Particle>SNOWBALL
-    - SLIME_BALL>10>&aSlime>RealSkywars.Particle>SLIME
-    - RED_DYE>10>&cHeart>RealSkywars.Particle>HEART
-    - BARRIER>10>&4Barrier>RealSkywars.Particle>BARRIER
-    - DRAGON_HEAD>10>&5Dragon &dBreath>RealSkywars.Particle>DRAGON_BREATH
-    - END_ROD>10>&dEnd &bRod>RealSkywars.Particle>END_ROD
-    - IRON_SWORD>10>&4Damage &cIndicator>RealSkywars.Particle>DAMAGE_INDICATOR
-    - DIAMOND_SWORD>10>&7Sweep &cAttack>RealSkywars.Particle>SWEEP_ATTACK
-    - TOTEM_OF_UNDYING>10>&eTotem>RealSkywars.Particle>TOTEM
-    - BONE_MEAL>10>&fSpit>RealSkywars.Particle>SPIT
-    - INK_SAC>10>&7Squid &8Ink>RealSkywars.Particle>SQUID_INK
-    - ENDER_PEARL>10>&1Nautilus>RealSkywars.Particle>NAUTILUS
-    - BAMBOO>10>&aSneeze>RealSkywars.Particle>SNEEZE
-    - CAMPFIRE>10>&6Campfire &7Smoke>RealSkywars.Particle>CAMPFIRE_COSY_SMOKE
-    - COMPOSTER>10>&9Composter &a(Green Particle)>RealSkywars.Particle>COMPOSTER
-    - NETHER_STAR>30>&f&lFLASH>RealSkywars.Particle>FLASH
-    - WATER_BUCKET>10>&9Falling &bWater>RealSkywars.Particle>FALLING_WATER
-  #Data Structure:
-  #MATERIAL>PRICE>NAME>PERMISSION
+    item58:
+      Displayname: '&cExplosion (Normal)'
+      Material: GUNPOWDER
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: EXPLOSION_NORMAL
+    item59:
+      Displayname: '&cExplosion &4(Large)'
+      Material: TNT
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: EXPLOSION_LARGE
+    item60:
+      Displayname: '&cExplosion &4(&cHuge&4)'
+      Material: CREEPER_HEAD
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: EXPLOSION_HUGE
+    item61:
+      Displayname: '&aFirework Spark'
+      Material: FIREWORK_ROCKET
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: FIREWORKS_SPARK
+    item62:
+      Displayname: '&9Water &bBubble'
+      Material: WATER_BUCKET
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: WATER_BUBBLE
+    item63:
+      Displayname: '&9Water &bSplash'
+      Material: WATER_BUCKET
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: WATER_SPLASH
+    item64:
+      Displayname: '&9Water &bWake'
+      Material: WATER_BUCKET
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: WATER_WAKE
+    item65:
+      Displayname: '&aCrit'
+      Material: WOODEN_SWORD
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: CRIT
+    item66:
+      Displayname: '&aCrit &5Magic'
+      Material: DRAGON_BREATH
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: CRIT_MAGIC
+    item67:
+      Displayname: '&7Smoke &fNormal'
+      Material: CAMPFIRE
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: SMOKE_NORMAL
+    item68:
+      Displayname: '&7Smoke &8Large'
+      Material: CAMPFIRE
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: SMOKE_LARGE
+    item69:
+      Displayname: '&aSpell'
+      Material: POTION
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: SPELL
+    item70:
+      Displayname: '&aSpell &2Instant'
+      Material: SPLASH_POTION
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: SPELL_INSTANT
+    item71:
+      Displayname: '&aSpell &3Mob'
+      Material: ENCHANTED_BOOK
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: SPELL_MOB
+    item72:
+      Displayname: '&aSpell &5Witch'
+      Material: END_CRYSTAL
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: SPELL_WITCH
+    item73:
+      Displayname: '&9Drip &bWater'
+      Material: WATER_BUCKET
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: DRIP_WATER
+    item74:
+      Displayname: '&9Drip &cLava'
+      Material: LAVA_BUCKET
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: DRIP_LAVA
+    item75:
+      Displayname: '&aVillager &4Angry'
+      Material: VILLAGER_SPAWN_EGG
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: VILLAGER_ANGRY
+    item76:
+      Displayname: '&aVillager &2Happy'
+      Material: EMERALD
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: VILLAGER_HAPPY
+    item77:
+      Displayname: '&3Note'
+      Material: NOTE_BLOCK
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: NOTE
+    item78:
+      Displayname: '&5Portal'
+      Material: OBSIDIAN
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: PORTAL
+    item79:
+      Displayname: '&aEnchantment Table'
+      Material: ENCHANTING_TABLE
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: ENCHANTMENT_TABLE
+    item80:
+      Displayname: '&cFlame'
+      Material: FLINT_AND_STEEL
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: FLAME
+    item81:
+      Displayname: '&4Lava'
+      Material: LAVA_BUCKET
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: LAVA
+    item82:
+      Displayname: '&fCloud'
+      Material: WHITE_DYE
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: CLOUD
+    item83:
+      Displayname: '&9Snowball'
+      Material: SNOWBALL
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: SNOWBALL
+    item84:
+      Displayname: '&aSlime'
+      Material: SLIME_BALL
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: SLIME
+    item85:
+      Displayname: '&cHeart'
+      Material: RED_DYE
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: HEART
+    item86:
+      Displayname: '&5Dragon &dBreath'
+      Material: DRAGON_HEAD
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: DRAGON_BREATH
+    item87:
+      Displayname: '&dEnd &bRod'
+      Material: END_ROD
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: END_ROD
+    item88:
+      Displayname: '&4Damage &cIndicator'
+      Material: IRON_SWORD
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: DAMAGE_INDICATOR
+    item89:
+      Displayname: '&7Sweep &cAttack'
+      Material: DIAMOND_SWORD
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: SWEEP_ATTACK
+    item90:
+      Displayname: '&eTotem'
+      Material: TOTEM_OF_UNDYING
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: TOTEM
+    item91:
+      Displayname: '&fSpit'
+      Material: BONE_MEAL
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: SPIT
+    item92:
+      Displayname: '&7Squid &8Ink'
+      Material: INK_SAC
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: SQUID_INK
+    item93:
+      Displayname: '&1Nautilus'
+      Material: ENDER_PEARL
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: NAUTILUS
+    item94:
+      Displayname: '&aSneeze'
+      Material: BAMBOO
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: SNEEZE
+    item95:
+      Displayname: '&6Campfire &7Smoke'
+      Material: CAMPFIRE
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: CAMPFIRE_COSY_SMOKE
+    item96:
+      Displayname: '&9Composter &a(Green Particle)'
+      Material: COMPOSTER
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: COMPOSTER
+    item97:
+      Displayname: '&f&lFLASH'
+      Material: NETHER_STAR
+      Price: 30.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: FLASH
+    item98:
+      Displayname: '&9Falling &bWater'
+      Material: WATER_BUCKET
+      Price: 10.0
+      Permission: RealSkywars.Particle
+      Extras:
+        Particle: FALLING_WATER
   Win-Blocks:
-    - RANDOMBLOCK>10>&5Random &aBlocks>RealSkywars.Win-Block
-    - DIAMOND_BLOCK>10>&9Diamond &7Blocks>RealSkywars.Win-Block
-    - EMERALD_BLOCK>10>&aEmerald &7Blocks>RealSkywars.Win-Block
-    - OAK_LEAVES>10>&2Oak &7Leaves>RealSkywars.Win-Block
-    - BEACON>10>&bBeacon &7Blocks>RealSkywars.Win-Block
-    - BEDROCK>10>&8Bedrock &7Blocks>RealSkywars.Win-Block
-    - IRON_BARS>10>&7Iron Bar &7Blocks>RealSkywars.Win-Block
-
-#Data Structure:
-#MATERIAL>AMOUNT>PRICE>NAME>PERMISSION
-Spectator-Shop:
-  - ENDER_PEARL>20>&dEnder Pearl>RealSkywars.Spec-Shop.Item
-  - GOLDEN_APPLE>100>&eGolden Apple>RealSkywars.Spec-Shop.Item
-  - DIAMOND_SWORD>50>&bSword>RealSkywars.Spec-Shop.Item
-  - STONE>10>&7Stone>RealSkywars.Spec-Shop.Item
-  - OAK_WOOD>12>&6Wood>RealSkywars.Spec-Shop.Item
-  - ARROW>15>&fArrow>RealSkywars.Spec-Shop.Item
+    item99:
+      Displayname: '&5Random &aBlocks'
+      Material: COMMAND_BLOCK
+      Price: 10.0
+      Permission: RealSkywars.Win-Block
+      Extras:
+        Random-Blocks: true
+    item100:
+      Displayname: '&9Diamond &7Blocks'
+      Material: DIAMOND_BLOCK
+      Price: 10.0
+      Permission: RealSkywars.Win-Block
+    item101:
+      Displayname: '&aEmerald &7Blocks'
+      Material: EMERALD_BLOCK
+      Price: 10.0
+      Permission: RealSkywars.Win-Block
+    item102:
+      Displayname: '&2Oak &7Leaves'
+      Material: OAK_LEAVES
+      Price: 10.0
+      Permission: RealSkywars.Win-Block
+    item103:
+      Displayname: '&bBeacon &7Blocks'
+      Material: BEACON
+      Price: 10.0
+      Permission: RealSkywars.Win-Block
+    item104:
+      Displayname: '&8Bedrock &7Blocks'
+      Material: BEDROCK
+      Price: 10.0
+      Permission: RealSkywars.Win-Block
+    item105:
+      Displayname: '&7Iron Bar &7Blocks'
+      Material: IRON_BARS
+      Price: 10.0
+      Permission: RealSkywars.Win-Block

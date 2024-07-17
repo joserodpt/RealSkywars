@@ -16,11 +16,6 @@ package joserodpt.realskywars.api.config;
  */
 
 import dev.dejvokep.boostedyaml.YamlDocument;
-import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
-import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
-import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
-import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
-import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -34,13 +29,9 @@ public class RSWShopsConfig {
 
     public static void setup(final JavaPlugin rm) {
         try {
-            document = YamlDocument.create(new File(rm.getDataFolder(), name), rm.getResource(name),
-                    GeneralSettings.DEFAULT,
-                    LoaderSettings.builder().setAutoUpdate(true).build(),
-                    DumperSettings.DEFAULT,
-                    UpdaterSettings.builder().setVersioning(new BasicVersioning("Version")).build());
+            document = YamlDocument.create(new File(rm.getDataFolder(), name), rm.getResource(name));
         } catch (final IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe( "Couldn't setup " + name + "!");
+            RealSkywarsAPI.getInstance().getLogger().severe("Couldn't setup " + name + "!");
             RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());
         }
     }
@@ -53,7 +44,7 @@ public class RSWShopsConfig {
         try {
             document.save();
         } catch (final IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe( "Couldn't save " + name + "!");
+            RealSkywarsAPI.getInstance().getLogger().severe("Couldn't save " + name + "!");
         }
     }
 
@@ -61,7 +52,7 @@ public class RSWShopsConfig {
         try {
             document.reload();
         } catch (final IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe( "Couldn't reload " + name + "!");
+            RealSkywarsAPI.getInstance().getLogger().severe("Couldn't reload " + name + "!");
         }
     }
 

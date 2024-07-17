@@ -23,11 +23,9 @@ import joserodpt.realskywars.api.database.PlayerDataRow;
 import joserodpt.realskywars.api.database.PlayerGameHistoryRow;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.managers.PlayerManagerAPI;
-import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.player.RSWPlayerTab;
-import joserodpt.realskywars.api.shop.RSWShopDisplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -40,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class PlayerManager extends PlayerManagerAPI {
     private final RealSkywarsAPI rs;
@@ -242,8 +239,9 @@ public class PlayerManager extends PlayerManagerAPI {
         Bukkit.getOnlinePlayers().forEach(this::loadPlayer);
     }
 
+    /*
     @Override
-    public List<RSWShopDisplayItem> getBoughtItems(RSWPlayer player, ShopManagerAPI.ShopCategory t) {
+    public List<RSWShopDisplayItem> getBoughtItems(RSWPlayer player, RSWShopItem.ShopCategory t) {
         List<RSWShopDisplayItem> bought = rs.getShopManagerAPI().getCategoryContents(player, t).stream()
                 .filter(a -> a != null && a.isBought())
                 .collect(Collectors.toList());
@@ -253,6 +251,8 @@ public class PlayerManager extends PlayerManagerAPI {
         }
         return bought;
     }
+
+     */
 
     public Map<UUID, RSWMap> getFastJoin() {
         return this.fastJoin;

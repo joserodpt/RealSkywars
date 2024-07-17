@@ -18,7 +18,6 @@ package joserodpt.realskywars.api.managers;
 import joserodpt.realskywars.api.config.RSWLanguage;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.shop.RSWShopDisplayItem;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -36,8 +35,6 @@ public abstract class PlayerManagerAPI {
     public abstract void setLanguage(RSWPlayer player, RSWLanguage lang);
 
     public abstract void loadPlayers();
-
-    public abstract List<RSWShopDisplayItem> getBoughtItems(RSWPlayer player, ShopManagerAPI.ShopCategory t);
 
     public abstract int getPlayingPlayers(MapManagerAPI.MapGamemodes pt);
 

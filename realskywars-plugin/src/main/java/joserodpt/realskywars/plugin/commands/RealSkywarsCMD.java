@@ -25,11 +25,11 @@ import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.kits.KitInventory;
 import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
-import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.managers.TransactionManager;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.shop.RSWBuyableItem;
 import joserodpt.realskywars.api.utils.ItemStackSpringer;
 import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.api.utils.WorldEditUtils;
@@ -38,8 +38,9 @@ import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapDashboardGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerGUI;
-import joserodpt.realskywars.plugin.gui.guis.PlayerProfileContentsGUI;
+import joserodpt.realskywars.plugin.gui.guis.PlayerItemsGUI;
 import joserodpt.realskywars.plugin.gui.guis.SettingsGUI;
+import joserodpt.realskywars.plugin.gui.guis.ShopGUI;
 import me.mattstudios.mf.annotations.Alias;
 import me.mattstudios.mf.annotations.Command;
 import me.mattstudios.mf.annotations.Completion;
@@ -134,7 +135,7 @@ public class RealSkywarsCMD extends CommandBase {
     public void kitscmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            PlayerProfileContentsGUI ds = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.KITS);
+            PlayerItemsGUI ds = new PlayerItemsGUI(p, RSWBuyableItem.ItemCategory.KIT);
             ds.openInventory(p);
         } else {
             commandSender.sendMessage(onlyPlayer);
@@ -197,8 +198,31 @@ public class RealSkywarsCMD extends CommandBase {
     @SuppressWarnings("unused")
     public void shopcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
-            if (RSWConfig.file().getBoolean("Config.Shops.Enable-Shop"))
-                GUIManager.openShopMenu(rs.getPlayerManagerAPI().getPlayer((Player) commandSender));
+            if (!RSWConfig.file().getBoolean("Config.Shops.Enable-Shop")) {
+                return;
+            }
+            RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
+            ShopGUI ss = new ShopGUI(p, RSWBuyableItem.ItemCategory.CAGE_BLOCK);
+            ss.openInventory(p);
+        } else {
+            commandSender.sendMessage(onlyPlayer);
+        }
+    }
+
+    @SubCommand("spectatorshop")
+    @Alias("specshop")
+    @Permission("rsw.spectatorshop")
+    @SuppressWarnings("unused")
+    public void spectatorshopcmd(final CommandSender commandSender) {
+        if (commandSender instanceof Player) {
+            if (!RSWConfig.file().getBoolean("Config.Shops.Enable-Spectator-Shop")) {
+                return;
+            }
+
+            RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
+            ShopGUI ss = new ShopGUI(p, RSWBuyableItem.ItemCategory.SPEC_SHOP);
+            ss.openInventory(p);
+            p.getPlayer().playSound(p.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
         } else {
             commandSender.sendMessage(onlyPlayer);
         }

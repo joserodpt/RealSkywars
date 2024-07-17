@@ -20,14 +20,14 @@ import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.RSWLanguage;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.kits.RSWKit;
-import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.shop.RSWBuyableItem;
 import joserodpt.realskywars.api.utils.GUIBuilder;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.plugin.gui.guis.AchievementViewerGUI;
 import joserodpt.realskywars.plugin.gui.guis.GameHistoryGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
-import joserodpt.realskywars.plugin.gui.guis.PlayerProfileContentsGUI;
+import joserodpt.realskywars.plugin.gui.guis.PlayerItemsGUI;
 import joserodpt.realskywars.plugin.gui.guis.SettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.ShopGUI;
 import org.bukkit.Material;
@@ -37,60 +37,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.Collections;
 
 public class GUIManager {
-
-    public static void openShopMenu(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_SHOP_TILE.get(p), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
-
-        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Kit-Shop"))
-            inventory.addItem(e -> {
-                p.closeInventory();
-
-                new BukkitRunnable() {
-                    public void run() {
-                        ShopGUI v = new ShopGUI(p, ShopManagerAPI.ShopCategory.KITS);
-                        v.openInventory(p);
-                    }
-                }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-            }, Itens.createItem(Material.CHEST, 1, TranslatableLine.KITS.get(p)), 10);
-
-        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Cage-Block-Shop"))
-            inventory.addItem(e -> {
-                p.closeInventory();
-
-                new BukkitRunnable() {
-                    public void run() {
-                        ShopGUI v = new ShopGUI(p, ShopManagerAPI.ShopCategory.CAGE_BLOCKS);
-                        v.openInventory(p);
-                    }
-                }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-            }, Itens.createItem(Material.SPAWNER, 1, TranslatableLine.CAGEBLOCK.get(p)), 12);
-
-        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Win-Block-Shop"))
-            inventory.addItem(e -> {
-                p.closeInventory();
-
-                new BukkitRunnable() {
-                    public void run() {
-                        ShopGUI v = new ShopGUI(p, ShopManagerAPI.ShopCategory.WIN_BLOCKS);
-                        v.openInventory(p);
-                    }
-                }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-            }, Itens.createItem(Material.FIREWORK_ROCKET, 1, TranslatableLine.WINBLOCK.get(p)), 14);
-
-        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Bow-Particles-Shop"))
-            inventory.addItem(e -> {
-                p.closeInventory();
-
-                new BukkitRunnable() {
-                    public void run() {
-                        ShopGUI v = new ShopGUI(p, ShopManagerAPI.ShopCategory.BOW_PARTICLES);
-                        v.openInventory(p);
-                    }
-                }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-            }, Itens.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(p)), 16);
-
-        inventory.openInventory(p.getPlayer());
-    }
 
     public static void openSpectate(RSWPlayer p) {
         GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_SPECTATE_TITLE.get(p), 54, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
@@ -156,90 +102,43 @@ public class GUIManager {
     }
 
     public static void openPlayerProfile(RSWPlayer p) {
-        int size = p.isInMatch() ? 27 : 45;
+        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_PLAYERP_TITLE.get(p), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
-        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_PLAYERP_TITLE.get(p), size, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
-
-        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Kit-Shop"))
-            inventory.addItem(e -> {
-                p.closeInventory();
-                new BukkitRunnable() {
-                    public void run() {
-                        PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.KITS);
-                        v.openInventory(p);
-                    }
-                }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-            }, Itens.createItem(Material.CHEST, 1, TranslatableLine.KITS.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 10);
-
-        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Cage-Block-Shop"))
-            inventory.addItem(e -> {
-                p.closeInventory();
-
-
-                new BukkitRunnable() {
-                    public void run() {
-                        PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.CAGE_BLOCKS);
-                        v.openInventory(p);
-                    }
-                }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-
-            }, Itens.createItem(Material.SPAWNER, 1, TranslatableLine.CAGEBLOCK.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 12);
-
-        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Win-Block-Shop"))
-            inventory.addItem(e -> {
-                p.closeInventory();
-
-                new BukkitRunnable() {
-                    public void run() {
-                        PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.WIN_BLOCKS);
-                        v.openInventory(p);
-                    }
-                }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-            }, Itens.createItem(Material.FIREWORK_ROCKET, 1, TranslatableLine.WINBLOCK.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 14);
-
-        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Bow-Particles-Shop"))
-            inventory.addItem(e -> {
-                p.closeInventory();
-
-                new BukkitRunnable() {
-                    public void run() {
-                        PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.BOW_PARTICLES);
-                        v.openInventory(p);
-                    }
-                }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-            }, Itens.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 13);
+        inventory.addItem(e -> {
+            p.closeInventory();
+            new BukkitRunnable() {
+                public void run() {
+                    PlayerItemsGUI v = new PlayerItemsGUI(p, RSWBuyableItem.ItemCategory.KIT);
+                    v.openInventory(p);
+                }
+            }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
+        }, Itens.createItem(Material.CHEST, 1, "&6Items", Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 10);
 
         inventory.addItem(e -> {
             p.closeInventory();
             openAchievementGUI(p);
-        }, Itens.createItem(Material.BOOKSHELF, 1, TranslatableLine.ACHIEVEMENTS.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 16);
+        }, Itens.createItem(Material.BOOKSHELF, 1, TranslatableLine.ACHIEVEMENTS.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 12);
 
         inventory.addItem(e -> {
-        }, Itens.createHead(p.getPlayer(), 1, p.getDisplayName(), p.getStats()), 22);
-
+        }, Itens.createHead(p.getPlayer(), 1, "&9" + p.getName(), p.getStats()), 14);
 
         //settings
         if (!p.isInMatch()) {
-            if (RSWConfig.file().getBoolean("Config.Disable-Language-Selection")) {
-                inventory.addItem(e -> {
-                    p.closeInventory();
-                    GameHistoryGUI v = new GameHistoryGUI(p);
-                    v.openInventory(p);
-                }, Itens.createItem(Material.FILLED_MAP, 1, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 31);
-            } else {
-                inventory.addItem(e -> {
-                    p.closeInventory();
-                    GameHistoryGUI v = new GameHistoryGUI(p);
-                    v.openInventory(p);
-                }, Itens.createItem(Material.FILLED_MAP, 1, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 32);
+            inventory.addItem(e -> {
+                p.closeInventory();
+                GameHistoryGUI v = new GameHistoryGUI(p);
+                v.openInventory(p);
+            }, Itens.createItem(Material.FILLED_MAP, 1, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 16);
+
+            if (!RSWConfig.file().getBoolean("Config.Disable-Language-Selection")) {
                 inventory.addItem(e -> {
                     p.closeInventory();
                     GUIManager.openLanguage(p);
-                }, Itens.createItem(Material.BOOK, 1, TranslatableLine.MENU_LANG_TITLE.get(p), Collections.singletonList("&f> " + p.getLanguage())), 30);
+                }, Itens.createItem(Material.BOOK, 1, TranslatableLine.MENU_LANG_TITLE.get(p), Collections.singletonList("&f> " + RealSkywarsAPI.getInstance().getLanguageManagerAPI().getLanguage(p.getLanguage()).getDisplayName())), 18);
             }
 
             if (!RSWConfig.file().getBoolean("Config.Disable-Player-Reset")) {
-                inventory.addItem(e -> p.resetData(), Itens.createItem(Material.BARRIER, 1, TranslatableLine.MENU_PLAYER_RESET_TITLE.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYER_RESET_ALERT.get(p))), 44);
+                inventory.addItem(e -> p.resetData(), Itens.createItem(Material.BARRIER, 1, TranslatableLine.MENU_PLAYER_RESET_TITLE.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYER_RESET_ALERT.get(p))), 26);
             }
         }
 
@@ -302,14 +201,14 @@ public class GUIManager {
         inventory.setItem(event -> {
             if (id == 0) {
                 p.closeInventory();
-                PlayerProfileContentsGUI pc = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.KITS);
+                PlayerItemsGUI pc = new PlayerItemsGUI(p, RSWBuyableItem.ItemCategory.KIT);
                 pc.openInventory(p);
             } else {
                 p.closeInventory();
-                ShopGUI s = new ShopGUI(p, ShopManagerAPI.ShopCategory.KITS);
+                ShopGUI s = new ShopGUI(p, RSWBuyableItem.ItemCategory.KIT);
                 s.openInventory(p);
             }
-        }, Itens.createItem(Material.BIRCH_DOOR, 1, ""), 53);
+        }, Itens.createItem(Material.BIRCH_DOOR, 1, "Exit Preview"), 53);
 
         inventory.openInventory(p.getPlayer());
     }

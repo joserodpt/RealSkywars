@@ -21,6 +21,7 @@ import joserodpt.realskywars.api.database.PlayerDataRow;
 import joserodpt.realskywars.api.database.PlayerGameHistoryRow;
 import joserodpt.realskywars.api.player.RSWGameHistoryStats;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.shop.RSWBuyableItem;
 import joserodpt.realskywars.api.utils.Pair;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +40,8 @@ public abstract class DatabaseManagerAPI {
 
     public abstract List<PlayerBoughtItemsRow> getPlayerBoughtItems(Player p);
 
+    public abstract List<PlayerBoughtItemsRow> getPlayerBoughtItemsCategory(Player p, RSWBuyableItem.ItemCategory cat);
+
     public abstract PlayerDataRow getPlayerData(Player p);
 
     public abstract void savePlayerData(PlayerDataRow playerDataRow, boolean async);
@@ -55,5 +58,5 @@ public abstract class DatabaseManagerAPI {
 
     public abstract Dao<PlayerDataRow, UUID> getQueryDao();
 
-    public abstract Pair<Boolean, String> didPlayerBoughtItem(RSWPlayer p, String id, ShopManagerAPI.ShopCategory shopCategory);
+    public abstract Pair<Boolean, String> didPlayerBoughtItem(RSWPlayer p, RSWBuyableItem item);
 }

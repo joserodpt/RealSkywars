@@ -56,7 +56,7 @@ import joserodpt.realskywars.plugin.gui.guis.MapEventEditorGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapSettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerGUI;
-import joserodpt.realskywars.plugin.gui.guis.PlayerProfileContentsGUI;
+import joserodpt.realskywars.plugin.gui.guis.PlayerItemsGUI;
 import joserodpt.realskywars.plugin.gui.guis.SettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.ShopGUI;
 import joserodpt.realskywars.plugin.gui.guis.VoteGUI;
@@ -155,7 +155,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
         pm.registerEvents(MapEventEditorGUI.getListener(), this);
         pm.registerEvents(PlayerGUI.getListener(), this);
         pm.registerEvents(ShopGUI.getListener(), this);
-        pm.registerEvents(PlayerProfileContentsGUI.getListener(), this);
+        pm.registerEvents(PlayerItemsGUI.getListener(), this);
         pm.registerEvents(KitSettingsGUI.getListener(), this);
         pm.registerEvents(MapsListGUI.getListener(), this);
         pm.registerEvents(TierViewer.getListener(), this);
@@ -164,6 +164,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
         pm.registerEvents(VoteGUI.getListener(), this);
         pm.registerEvents(SettingsGUI.getListener(), this);
 
+        realSkywars.getShopManagerAPI().loadShopItems();
         realSkywars.getKitManagerAPI().loadKits();
         getLogger().info("Loaded " + realSkywars.getKitManagerAPI().getKits().size() + " kits.");
 

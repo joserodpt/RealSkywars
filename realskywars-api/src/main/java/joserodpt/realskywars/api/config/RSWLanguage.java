@@ -41,13 +41,6 @@ public class RSWLanguage {
         if (folder.exists() && !file.exists()) {
             downloadLanguageFile();
         }
-
-        try {
-            parseJsonFile(file);
-            RealSkywarsAPI.getInstance().getLogger().info("Loaded minecraft language file for " + getTranslationKey() + " (" + version + ")!");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public ItemStack getIcon() {
@@ -104,6 +97,19 @@ public class RSWLanguage {
         }
     }
 
+    private void loadJsonFile() {
+        if (json != null) {
+            return;
+        }
+
+        try {
+            parseJsonFile(file);
+            RealSkywarsAPI.getInstance().getLogger().info("Loaded minecraft language file for " + getTranslationKey() + " (" + version + ")!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void parseJsonFile(File file) throws IOException {
         try (InputStreamReader streamReader = new InputStreamReader(Files.newInputStream(file.toPath()));
              BufferedReader reader = new BufferedReader(streamReader)) {
@@ -113,6 +119,7 @@ public class RSWLanguage {
     }
 
     public String getMaterialName(Material mat) {
+        loadJsonFile();
         String name = mat.getKey().getKey();
         if (name.contains("wall_")) name = name.replace("wall_", "");
 
@@ -120,16 +127,22 @@ public class RSWLanguage {
     }
 
     public String getEnchantmentName(Enchantment ench) {
+        loadJsonFile();
+
         return getString("enchantment.minecraft." + ench.getKey().getKey());
     }
 
     public String getEntityName(EntityType type) {
+        loadJsonFile();
+
         String name = type.getName();
         if (name == null) return getString("entity.notFound");
         return getString("entity.minecraft." + name.toLowerCase());
     }
 
     private String getString(String key) {
+        loadJsonFile();
+
         if (json == null) return "Language file " + getTranslationKey() + " not loaded!";
         return json.get(key).getAsString();
     }

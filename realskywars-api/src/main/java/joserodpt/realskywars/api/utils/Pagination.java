@@ -65,4 +65,13 @@ public class Pagination<T> extends ArrayList<T> {
 
         return objects;
     }
+
+    @Override
+    public String toString() {
+        return "Pagination{" +
+                "pageSize=" + pageSize +
+                ", modCount=" + modCount +
+                ", size=" + size() +
+                '}';
+    }
 }

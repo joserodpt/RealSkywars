@@ -21,15 +21,15 @@ import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.effects.RSWBowTrail;
-import joserodpt.realskywars.api.managers.ShopManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.shop.RSWBuyableItem;
 import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.plugin.gui.GUIManager;
 import joserodpt.realskywars.plugin.gui.guis.MapSettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerGUI;
-import joserodpt.realskywars.plugin.gui.guis.PlayerProfileContentsGUI;
+import joserodpt.realskywars.plugin.gui.guis.PlayerItemsGUI;
 import joserodpt.realskywars.plugin.gui.guis.ShopGUI;
 import joserodpt.realskywars.plugin.gui.guis.VoteGUI;
 import org.bukkit.Bukkit;
@@ -159,7 +159,7 @@ public class PlayerListener implements Listener {
                                 switch (e.getPlayer().getInventory().getItemInMainHand().getType()) {
                                     case BOW:
                                         e.setCancelled(true);
-                                        PlayerProfileContentsGUI v = new PlayerProfileContentsGUI(p, ShopManagerAPI.ShopCategory.KITS);
+                                        PlayerItemsGUI v = new PlayerItemsGUI(p, RSWBuyableItem.ItemCategory.KIT);
                                         v.openInventory(p);
                                         e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                         break;
@@ -204,11 +204,10 @@ public class PlayerListener implements Listener {
                                     case EMERALD:
                                         e.setCancelled(true);
                                         if (RSWConfig.file().getBoolean("Config.Shops.Enable-Spectator-Shop")) {
-                                            ShopGUI ss = new ShopGUI(p, ShopManagerAPI.ShopCategory.SPEC_SHOP);
+                                            ShopGUI ss = new ShopGUI(p, RSWBuyableItem.ItemCategory.SPEC_SHOP);
                                             ss.openInventory(p);
                                             e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                         }
-
                                         break;
                                     default:
                                         e.setCancelled(true);
@@ -259,7 +258,8 @@ public class PlayerListener implements Listener {
                             case EMERALD:
                                 e.setCancelled(true);
                                 if (RSWConfig.file().getBoolean("Config.Shops.Enable-Shop")) {
-                                    GUIManager.openShopMenu(p);
+                                    ShopGUI ss = new ShopGUI(p, RSWBuyableItem.ItemCategory.CAGE_BLOCK);
+                                    ss.openInventory(p);
                                     e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 }
 

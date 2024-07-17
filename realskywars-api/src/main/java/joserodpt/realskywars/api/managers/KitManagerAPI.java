@@ -15,7 +15,9 @@ package joserodpt.realskywars.api.managers;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realskywars.api.database.PlayerBoughtItemsRow;
 import joserodpt.realskywars.api.kits.RSWKit;
+import joserodpt.realskywars.api.shop.RSWBuyableItem;
 
 import java.util.Collection;
 
@@ -28,5 +30,9 @@ public abstract class KitManagerAPI {
 
     public abstract Collection<RSWKit> getKits();
 
+    public abstract Collection<RSWBuyableItem> getKitsAsBuyables();
+
     public abstract RSWKit getKit(String string);
+
+    public abstract RSWKit getKit(PlayerBoughtItemsRow playerBoughtItemsRow);
 }

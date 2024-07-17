@@ -19,61 +19,51 @@ import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.shop.RSWBuyableItem;
+import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class RSWKit {
+public class RSWKit extends RSWBuyableItem {
     public enum Perks {ENDER}
 
-    private final String name, displayname;
-    private Double price;
-    private KitInventory kitInventory;
-    private Material icon;
-    private String permission;
+    private final KitInventory kitInventory;
     private final List<Perks> kitPerks = new ArrayList<>();
-    private boolean buyable = true;
-    private boolean none = false;
-    private int enderTask = -2;
+    private int enderTask = -1;
 
     public RSWKit(String name, String displayname, Double cost, Material ic, KitInventory kitInventory, String perm) {
-        this.name = name;
-        this.displayname = displayname;
-        this.price = cost;
-        this.icon = ic;
+        super(name, displayname, ic, cost, perm, ItemCategory.KIT);
+
         this.kitInventory = kitInventory;
-        this.permission = perm;
     }
 
     public RSWKit(String name, String displayname, Double cost, KitInventory kitInventory) {
-        this.name = name;
-        this.displayname = displayname;
-        this.price = cost;
-        this.icon = Material.LEATHER_CHESTPLATE;
-        this.kitInventory = kitInventory;
-        this.permission = "rsw.kit";
+        this(name, displayname, cost, Material.LEATHER_CHESTPLATE, kitInventory, "rsw.kit");
     }
 
     public RSWKit() {
-        this.name = "None";
-        this.none = true;
-        this.displayname = this.name;
-        this.buyable = false;
+        this("None", "None", 0.0, Material.BARRIER, null, "rsw.kit");
+        super.setDummy();
     }
 
-    public List<String> getDescription(RSWPlayer p, Pair<Boolean, String> boughtPair) {
-        if (!this.buyable) {
-            return Collections.emptyList();
-        }
+    @Override
+    public ItemStack getIcon(RSWPlayer p) {
+        Pair<Boolean, String> res = this.isBought(p);
 
+        return res.getKey() ? Itens.createItemLoreEnchanted(super.getMaterial(), this.getAmount(), "&r&f" + this.getDisplayName(), this.getDescription(p, res)) :
+                Itens.createItem(super.getMaterial(), this.getAmount(), "&r&f" + this.getDisplayName(), this.getDescription(p, res));
+    }
+
+    private List<String> getDescription(RSWPlayer p, Pair<Boolean, String> boughtPair) {
         List<String> desc = new ArrayList<>();
 
-        desc.add(TranslatableLine.KIT_PRICE.get(p).replace("%price%", this.price.toString()));
+        if (!boughtPair.getKey())
+            desc.add(TranslatableLine.KIT_PRICE.get(p).replace("%price%", super.getPrice().toString()));
 
         //contents
         if (this.hasItems()) {
@@ -110,27 +100,6 @@ public class RSWKit {
         return this.getKitInventory() != null && this.getKitInventory().hasItems();
     }
 
-    public String getDisplayName() {
-        return this.displayname;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public Double getPrice() {
-        return this.price;
-    }
-
-    public Material getIcon() {
-        return this.icon;
-    }
-
-    public String getPermission() {
-        return this.permission;
-    }
-
-
     public void addPerk(Perks perk) {
         if (!this.hasPerk(perk)) {
             this.getKitPerks().add(perk);
@@ -154,7 +123,7 @@ public class RSWKit {
     }
 
     public void give(RSWPlayer p) {
-        if (this.none) {
+        if (super.isDummy()) {
             return;
         }
 
@@ -191,23 +160,8 @@ public class RSWKit {
     }
 
     public void cancelTasks() {
-        if (this.enderTask != -2) {
+        if (this.enderTask != -1) {
             Bukkit.getScheduler().cancelTask(this.enderTask);
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Kit{" +
-                "name='" + name + '\'' +
-                ", displayname='" + displayname + '\'' +
-                ", price=" + price +
-                ", kitInventory=" + kitInventory +
-                ", icon=" + icon +
-                ", permission='" + permission + '\'' +
-                ", kit_perks=" + kitPerks +
-                ", buyable=" + buyable +
-                ", enderTask=" + enderTask +
-                '}';
     }
 }

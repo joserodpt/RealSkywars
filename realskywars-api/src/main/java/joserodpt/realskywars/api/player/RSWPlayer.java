@@ -26,6 +26,7 @@ import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.map.modes.teams.RSWTeam;
 import joserodpt.realskywars.api.party.RSWParty;
+import joserodpt.realskywars.api.utils.PlayerInput;
 import joserodpt.realskywars.api.utils.Text;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -220,11 +221,19 @@ public class RSWPlayer {
     }
 
     public void resetData() {
-        RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerData(getUUID(), true);
-        RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerGameHistory(getUUID(), true);
-        RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerBoughtItems(getUUID(), true);
-        RealSkywarsAPI.getInstance().getPlayerManagerAPI().removePlayer(this);
-        this.player.kickPlayer(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + "§4Your data was cleared with success.\n§cPlease join the server again to complete the reset.");
+        RSWPlayer p = this;
+        sendMessage("&cAre you sure you want to erase your data? This action is irreversible.");
+        sendMessage("&fTo erase your data, type &cyes &fin the chat.");
+        new PlayerInput(this.getPlayer(), input -> {
+            if (input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("y")) {
+                RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerData(getUUID(), true);
+                RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerGameHistory(getUUID(), true);
+                RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerBoughtItems(getUUID(), true);
+                RealSkywarsAPI.getInstance().getPlayerManagerAPI().removePlayer(p);
+                getPlayer().kickPlayer(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + "§4Your data was cleared with success.\n§cPlease join the server again to complete the reset.");
+            }
+        }, input -> {
+        });
     }
 
     public String getName() {
@@ -305,7 +314,9 @@ public class RSWPlayer {
     }
 
     public void setBowParticle(Particle bowParticle) {
-        this.bowParticle = bowParticle;
+        if (this.bowParticle != null) {
+            this.bowParticle = bowParticle;
+        }
     }
 
     public void setCageBlock(Material m) {
@@ -330,7 +341,7 @@ public class RSWPlayer {
     }
 
     public void setWinBlock(String mat) {
-        if (mat.equals("RandomBlock")) {
+        if (mat.equals("Random-Blocks")) {
             this.winblockRandom = true;
         } else {
             this.winblockRandom = false;
@@ -373,19 +384,11 @@ public class RSWPlayer {
 
     public List<String> getStats() { //TODO TRANSLATE
         return Arrays.asList(
-                "&fLanguage: &b" + this.getLanguage(),
+                "&fLanguage: &b" + RealSkywarsAPI.getInstance().getLanguageManagerAPI().getLanguage(this.getLanguage()).getDisplayName(),
                 "&fSelected Kit: &b" + this.getPlayerKit().getDisplayName(),
-                "&fSelected Cage: &b" + this.getCageBlock().name(),
+                "&fSelected Cage: &b" + RealSkywarsAPI.getInstance().getLanguageManagerAPI().getMaterialName(this.getCageBlock()),
                 "&fCoins: &b" + RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoins(this),
                 "&7",
-                "&fStats:",
-                "&f> Kills: &b" + this.getStatistics(PlayerStatistics.KILLS),
-                "&f> Deaths: &b" + this.getStatistics(PlayerStatistics.DEATHS),
-                "&f> Wins Solo: &b" + ": &e" + this.getStatistics(PlayerStatistics.WINS_SOLO),
-                "&f> Wins Teams: &b" + this.getStatistics(PlayerStatistics.WINS_TEAMS),
-                "&f> Loses: &b" + this.getStatistics(PlayerStatistics.LOSES),
-                "&f> Games Played: &b" + this.getStatistics(PlayerStatistics.GAMES_PLAYED),
-                "&6",
                 "&fFirst Join: &b" + RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerData(this.getPlayer()).getFirstJoin(),
                 "&fLast Join: &b" + RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerData(this.getPlayer()).getLastJoin());
     }

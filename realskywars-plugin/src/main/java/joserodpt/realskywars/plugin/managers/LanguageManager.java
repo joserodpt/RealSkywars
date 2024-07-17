@@ -43,8 +43,6 @@ public class LanguageManager extends LanguageManagerAPI {
         this.rsa = rsa;
     }
 
-    private final Map<String, RSWLanguage> langList = new HashMap<>();
-
     @Override
     public void loadLanguages() {
         this.getLanguages().clear();
@@ -125,6 +123,11 @@ public class LanguageManager extends LanguageManagerAPI {
     }
 
     @Override
+    public String getMaterialName(Material mat) {
+        return getDefaultLanguageObject().getMaterialName(mat);
+    }
+
+    @Override
     public String getEnchantmentName(RSWPlayer p, Enchantment ench) {
         return this.langList.containsKey(p.getLanguage()) ? this.langList.get(p.getLanguage()).getEnchantmentName(ench) : getDefaultLanguageObject().getEnchantmentName(ench);
     }
@@ -132,6 +135,11 @@ public class LanguageManager extends LanguageManagerAPI {
     @Override
     public String getEntityName(RSWPlayer p, EntityType type) {
         return this.langList.containsKey(p.getLanguage()) ? this.langList.get(p.getLanguage()).getEntityName(type) : getDefaultLanguageObject().getEntityName(type);
+    }
+
+    @Override
+    public RSWLanguage getLanguage(String language) {
+        return this.langList.get(language);
     }
 
 }
