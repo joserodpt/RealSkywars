@@ -11,7 +11,7 @@ package joserodpt.realskywars.api.achievements;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues
+ * @author José Rodrigues © 2019-2024
  * @link https://github.com/joserodpt/RealSkywars
  */
 

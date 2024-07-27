@@ -11,13 +11,16 @@ package joserodpt.realskywars.api.effects;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues
+ * @author José Rodrigues © 2019-2024
  * @link https://github.com/joserodpt/RealSkywars
  */
 
 public interface RSWTrail {
     void startTask();
+
     void cancelTask();
+
     TrailType getType();
+
     enum TrailType {BOW, WINBLOCK}
 }

@@ -11,7 +11,7 @@ package joserodpt.realskywars.api.chests;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues
+ * @author José Rodrigues © 2019-2024
  * @link https://github.com/joserodpt/RealSkywars
  */
 
@@ -24,6 +24,7 @@ public class RSWChestItem {
 
     private final ItemStack itemstack;
     private int chance;
+
     public RSWChestItem(ItemStack i, int chance) {
         this.itemstack = i;
         this.chance = chance;

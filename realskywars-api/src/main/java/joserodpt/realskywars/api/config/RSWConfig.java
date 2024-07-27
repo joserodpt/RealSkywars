@@ -11,7 +11,7 @@ package joserodpt.realskywars.api.config;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues
+ * @author José Rodrigues © 2019-2024
  * @link https://github.com/joserodpt/RealSkywars
  */
 
@@ -40,7 +40,7 @@ public class RSWConfig {
                     DumperSettings.DEFAULT,
                     UpdaterSettings.builder().setVersioning(new BasicVersioning("Version")).build());
         } catch (final IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe( "Couldn't setup " + name + "!");
+            RealSkywarsAPI.getInstance().getLogger().severe("Couldn't setup " + name + "!");
             RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());
         }
     }
@@ -53,7 +53,7 @@ public class RSWConfig {
         try {
             document.save();
         } catch (final IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe( "Couldn't save " + name + "!");
+            RealSkywarsAPI.getInstance().getLogger().severe("Couldn't save " + name + "!");
         }
     }
 
@@ -61,7 +61,7 @@ public class RSWConfig {
         try {
             document.reload();
         } catch (final IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe( "Couldn't reload " + name + "!");
+            RealSkywarsAPI.getInstance().getLogger().severe("Couldn't reload " + name + "!");
         }
     }
 }

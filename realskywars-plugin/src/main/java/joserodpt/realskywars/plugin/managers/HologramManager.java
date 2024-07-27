@@ -11,7 +11,7 @@ package joserodpt.realskywars.plugin.managers;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues
+ * @author José Rodrigues © 2019-2024
  * @link https://github.com/joserodpt/RealSkywars
  */
 
@@ -21,7 +21,7 @@ import joserodpt.realskywars.api.managers.holograms.RSWHologram;
 import org.bukkit.Bukkit;
 
 public class HologramManager extends HologramManagerAPI {
-    
+
     private RSWHologram.HType selected = RSWHologram.HType.NONE;
 
     public HologramManager(RealSkywarsAPI rsa) {

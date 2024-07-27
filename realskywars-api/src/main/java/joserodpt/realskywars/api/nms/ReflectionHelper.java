@@ -11,10 +11,9 @@ package joserodpt.realskywars.api.nms;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues
+ * @author José Rodrigues © 2019-2024
  * @link https://github.com/joserodpt/RealSkywars
  */
-
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import org.bukkit.Bukkit;

@@ -11,7 +11,7 @@ package joserodpt.realskywars.api.utils;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues
+ * @author José Rodrigues © 2019-2024
  * @link https://github.com/joserodpt/RealSkywars
  * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
  */
@@ -144,7 +144,7 @@ public class ItemStackSpringer {
             if (fireworkMeta != null) {
                 Map<String, Object> firework_data = new HashMap<>();
 
-                firework_data.put("power",fireworkMeta.getPower());
+                firework_data.put("power", fireworkMeta.getPower());
 
                 // Get the list of firework effects
                 if (fireworkMeta.hasEffects()) {
@@ -155,7 +155,7 @@ public class ItemStackSpringer {
                     firework_data.put("effects", effects_serialized);
                 }
 
-                singleItem.put(ItemCategories.FIREWORK_DATA.name(),firework_data);
+                singleItem.put(ItemCategories.FIREWORK_DATA.name(), firework_data);
             }
         }
 
@@ -448,8 +448,10 @@ public class ItemStackSpringer {
         }
     }
 
-    public enum ItemCategories { SLOT, NAME, MATERIAL, AMOUNT, DAMAGE, LORE, ENCHANTMENTS, EMPTY,
-        LEATHER_ARMOR_COLOR, BANNER_PATTERNS, BOOK_DATA, BOOK_ENCHANTMENTS, FIREWORK_DATA, POTION_DATA }
+    public enum ItemCategories {
+        SLOT, NAME, MATERIAL, AMOUNT, DAMAGE, LORE, ENCHANTMENTS, EMPTY,
+        LEATHER_ARMOR_COLOR, BANNER_PATTERNS, BOOK_DATA, BOOK_ENCHANTMENTS, FIREWORK_DATA, POTION_DATA
+    }
 
     public static ItemStack[] getItemsDeSerialized(List<Map<String, Object>> l) {
         Optional<Map<String, Object>> maxSlotItem = l.stream()

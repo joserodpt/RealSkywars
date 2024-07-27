@@ -11,13 +11,15 @@ package joserodpt.realskywars.api.nms;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues
+ * @author José Rodrigues © 2019-2024
  * @link https://github.com/joserodpt/RealSkywars
  */
 
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+
 public interface RSWnms {
     void playChestAnimation(Block block, boolean open);
+
     String getItemName(ItemStack itemStack);
 }

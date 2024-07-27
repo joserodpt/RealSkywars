@@ -1,5 +1,13 @@
 package joserodpt.realskywars.api.utils;
 
+/*
+ * Modified and optimized version of AdvInventory Original author:
+ * http://spigotmc.org/members/25376/ - Homer04 Original utility version:
+ * http://www.spigotmc.org/threads/133942/ Modified by AnyOD Compatible
+ * https://www.spigotmc.org/threads/gui-creator-v2-making-inventories-was-never-easier.296898/
+ * versions: 1.8 and up
+ */
+
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -21,15 +29,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class GUIBuilder {
-
-    /*
-     * Modified and optimized version of AdvInventory Original author:
-     * http://spigotmc.org/members/25376/ - Homer04 Original utility version:
-     * http://www.spigotmc.org/threads/133942/ Modified by AnyOD Compatible
-     * https://www.spigotmc.org/threads/gui-creator-v2-making-inventories-was-never-easier.296898/
-     * versions: 1.8 and up
-     */
-
     private static Map<UUID, GUIBuilder> inventories = new HashMap<>();
     private Inventory inv;
     private Map<Integer, ClickRunnable> runnables = new HashMap<>();

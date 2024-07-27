@@ -11,7 +11,7 @@ package joserodpt.realskywars.api.managers.holograms.support;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues
+ * @author José Rodrigues © 2019-2024
  * @link https://github.com/joserodpt/RealSkywars
  */
 
@@ -20,11 +20,17 @@ import org.bukkit.Location;
 
 public class NoHologram implements RSWHologram {
     @Override
-    public void spawnHologram(Location loc) {}
+    public void spawnHologram(Location loc) {
+    }
+
     @Override
-    public void setTime(int seconds) {}
+    public void setTime(int seconds) {
+    }
+
     @Override
-    public void deleteHologram() {}
+    public void deleteHologram() {
+    }
+
     @Override
     public HType getType() {
         return HType.NONE;

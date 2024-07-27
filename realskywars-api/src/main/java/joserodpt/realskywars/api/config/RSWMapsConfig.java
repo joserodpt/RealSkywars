@@ -11,7 +11,7 @@ package joserodpt.realskywars.api.config;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues
+ * @author José Rodrigues © 2019-2024
  * @link https://github.com/joserodpt/RealSkywars
  */
 
@@ -44,7 +44,7 @@ public class RSWMapsConfig {
         try {
             document.save();
         } catch (final IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe( "Couldn't save " + name + "!");
+            RealSkywarsAPI.getInstance().getLogger().severe("Couldn't save " + name + "!");
         }
     }
 
@@ -52,7 +52,7 @@ public class RSWMapsConfig {
         try {
             document.reload();
         } catch (final IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe( "Couldn't reload " + name + "!");
+            RealSkywarsAPI.getInstance().getLogger().severe("Couldn't reload " + name + "!");
         }
     }
 }
