@@ -113,6 +113,11 @@ public class RSWLanguage {
     }
 
     private void loadJsonFile() {
+        // download the language file from https://assets.mcasset.cloud/1.21/assets/minecraft/lang/{getTranslationKey()}.json to the translations folder
+        if (folder.exists() && !file.exists()) {
+            downloadLanguageFile();
+        }
+
         if (json != null) {
             return;
         }

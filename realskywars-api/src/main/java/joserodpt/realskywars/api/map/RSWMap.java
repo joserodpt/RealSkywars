@@ -864,8 +864,12 @@ public abstract class RSWMap {
         for (String s : list) {
             String[] parse = s.split("@");
             if (parse.length != 2) {
-                Bukkit.getLogger().warning("Invalid event format: " + s);
-                continue;
+                //try to parse with old separation char
+                parse = s.split("&");
+                if (parse.length != 2) {
+                    Bukkit.getLogger().warning("Invalid event format: " + s);
+                    continue;
+                }
             }
 
             RSWMapEvent.EventType et;

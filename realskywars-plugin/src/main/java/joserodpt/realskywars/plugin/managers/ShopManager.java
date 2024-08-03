@@ -48,7 +48,7 @@ public class ShopManager extends ShopManagerAPI {
         if (RSWShopsConfig.file().contains("Main-Shop")
                 || RSWShopsConfig.file().getInt("Version") == 1
                 || RSWShopsConfig.file().getInt("Version") == 2) {
-            rs.getLogger().info("Starting upgrade of Shop Items to new config format...");
+            rs.getLogger().warning("Starting upgrade of Shop Items to new config format...");
             upgradeV2toV3();
             RSWShopsConfig.file().remove("Main-Shop");
             RSWShopsConfig.file().remove("Spectator-Shop");
@@ -209,7 +209,7 @@ public class ShopManager extends ShopManagerAPI {
             item.saveToConfig(false);
         }
 
-        rs.getLogger().info("Upgrade of Legacy Shop Items to new config format finished!");
+        rs.getLogger().warning("Upgrade of Legacy Shop Items to new config format finished!");
     }
 
     @Override

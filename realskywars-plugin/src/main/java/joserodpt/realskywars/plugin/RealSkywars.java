@@ -221,7 +221,6 @@ public class RealSkywars extends RealSkywarsAPI {
         NormalChestConfig.reload();
         EPICChestConfig.reload();
 
-
         languageManagerAPI.loadLanguages();
         playerManagerAPI.stopScoreboards();
         playerManagerAPI.loadPlayers();
