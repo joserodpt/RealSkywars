@@ -224,9 +224,9 @@ public class PlayerItemsGUI {
                                             if (cm.removeCoins()) {
                                                 p.getWorld().dropItem(p.getLocation(), new ItemStack(clicked.getMaterial(), clicked.getAmount()));
 
-                                                p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.get(p, true).replace("%name%", clicked.getDisplayName()).replace("%coins%", clicked.getPrice() + ""));
+                                                p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.get(p, true).replace("%name%", clicked.getDisplayName()).replace("%coins%", clicked.getPriceFormatted()));
                                             } else {
-                                                p.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(p, true).replace("%coins%", RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoins(p) + ""));
+                                                p.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(p, true).replace("%coins%", RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoinsFormatted(p)));
                                             }
                                         } else {
                                             TranslatableLine.SHOP_NO_PERM.send(p, true);

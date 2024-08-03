@@ -32,7 +32,7 @@ public class RSWSpectatorShopItem extends RSWBuyableItem {
 
     @Override
     public ItemStack getIcon(RSWPlayer p) {
-        return Itens.createItem(this.getMaterial(), this.getAmount(), "&f" + this.getAmount() + "x " + this.getDisplayName(), Arrays.asList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%price%", this.getPrice().toString()), "", "&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount."));
+        return Itens.createItem(this.getMaterial(), this.getAmount(), "&f" + this.getAmount() + "x " + this.getDisplayName(), Arrays.asList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%price%", this.getPriceFormatted()), "", "&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount."));
     }
 
 }

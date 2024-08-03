@@ -19,6 +19,7 @@ package joserodpt.realskywars.plugin.currency;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.currency.CurrencyAdapterAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.utils.Text;
 
 public class LocalCurrencyAdapter implements CurrencyAdapterAPI {
     @Override
@@ -53,5 +54,10 @@ public class LocalCurrencyAdapter implements CurrencyAdapterAPI {
     @Override
     public double getCoins(RSWPlayer p) {
         return p.getLocalCoins();
+    }
+
+    @Override
+    public String getCoinsFormatted(RSWPlayer p) {
+        return Text.formatDouble(this.getCoins(p));
     }
 }

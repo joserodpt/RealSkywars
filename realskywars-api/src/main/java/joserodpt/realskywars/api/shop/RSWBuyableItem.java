@@ -21,6 +21,7 @@ import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Pair;
+import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -111,6 +112,10 @@ public class RSWBuyableItem {
         return this.getCategory() == RSWBuyableItem.ItemCategory.SPEC_SHOP ? this.price * this.amount : this.price;
     }
 
+    public String getPriceFormatted() {
+        return Text.formatDouble(this.getPrice());
+    }
+
     public int getAmount() {
         return Math.max(1, Math.min(this.amount, 64));
     }
@@ -129,12 +134,12 @@ public class RSWBuyableItem {
         }
 
         if (this.getCategory() == ItemCategory.SPEC_SHOP) {
-            return Itens.createItemLoreEnchanted(this.getMaterial(), this.getAmount(), "&b" + this.getDisplayName() + " &fx" + this.getAmount(), Arrays.asList("&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount.", TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%coins%", this.getPrice().toString())));
+            return Itens.createItemLoreEnchanted(this.getMaterial(), this.getAmount(), "&b" + this.getDisplayName() + " &fx" + this.getAmount(), Arrays.asList("&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount.", TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%coins%", this.getPriceFormatted())));
         }
 
         Pair<Boolean, String> res = this.isBought(p);
         return res.getKey() ? Itens.createItemLoreEnchanted(this.getMaterial(), this.getAmount(), "&b" + this.getDisplayName(), Collections.singletonList("&f" + TranslatableLine.SHOP_BOUGHT_ON.get(p) + res.getValue())) :
-                Itens.createItem(this.getMaterial(), 1, "&b" + this.getDisplayName(), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%coins%", this.getPrice().toString())));
+                Itens.createItem(this.getMaterial(), 1, "&b" + this.getDisplayName(), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%coins%", this.getPriceFormatted())));
     }
 
     public void setDummy() {

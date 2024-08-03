@@ -99,7 +99,7 @@ public class LobbyManager extends LobbyManagerAPI {
 
     @Override
     public boolean isInLobby(World w) {
-        if (w == null || this.lobbyLOC.getWorld() == null) {
+        if (w == null || this.lobbyLOC == null || this.lobbyLOC.getWorld() == null) {
             return false;
         }
         return this.lobbyLOC != null && this.lobbyLOC.getWorld().equals(w);

@@ -64,14 +64,14 @@ public class TransactionManager {
             switch (o) {
                 case SEND:
                     if (this.operationQuantity == null) {
-                        this.fromPlayer.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(this.fromPlayer).replace("%coins%", ca.getCoins(this.fromPlayer) + ""));
+                        this.fromPlayer.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(this.fromPlayer).replace("%coins%", ca.getCoinsFormatted(this.fromPlayer)));
                         return;
                     }
 
                     if (ca.getCoins(this.fromPlayer) >= operationQuantity) {
                         this.transferCoins();
                     } else {
-                        this.fromPlayer.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(this.fromPlayer).replace("%coins%", ca.getCoins(this.fromPlayer) + ""));
+                        this.fromPlayer.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(this.fromPlayer).replace("%coins%", ca.getCoinsFormatted(this.fromPlayer)));
                     }
                     break;
                 case SET:
@@ -131,14 +131,14 @@ public class TransactionManager {
 
     public void transferCoins() {
         ca.transferCoins(this.toPlayer, this.fromPlayer, this.operationQuantity);
-        this.fromPlayer.sendMessage(TranslatableLine.SENDER_COINS.get(this.fromPlayer, true).replace("%coins%", "" + this.operationQuantity).replace("%player%", this.toPlayer.getDisplayName()));
-        this.toPlayer.sendMessage(TranslatableLine.RECIEVER_COINS.get(this.fromPlayer, true).replace("%coins%", "" + this.operationQuantity).replace("%player%", this.fromPlayer.getDisplayName()));
+        this.fromPlayer.sendMessage(TranslatableLine.SENDER_COINS.get(this.fromPlayer, true).replace("%coins%", Text.formatDouble(this.operationQuantity)).replace("%player%", this.toPlayer.getDisplayName()));
+        this.toPlayer.sendMessage(TranslatableLine.RECIEVER_COINS.get(this.fromPlayer, true).replace("%coins%", Text.formatDouble(this.operationQuantity)).replace("%player%", this.fromPlayer.getDisplayName()));
     }
 
     public void addCoins() {
         ca.addCoins(this.toPlayer, this.operationQuantity);
 
-        this.toPlayer.sendMessage(TranslatableLine.ADDED_COINS.get(this.toPlayer, true).replace("%coins%", "" + this.operationQuantity));
+        this.toPlayer.sendMessage(TranslatableLine.ADDED_COINS.get(this.toPlayer, true).replace("%coins%", Text.formatDouble(this.operationQuantity)));
         if (!this.console) {
             this.fromPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + "Coins added to Player " + this.toPlayer.getName());
         } else {
@@ -153,7 +153,7 @@ public class TransactionManager {
     public void setCoins() {
         ca.setCoins(this.toPlayer, this.operationQuantity);
 
-        this.toPlayer.sendMessage(TranslatableLine.SET_COINS.get(this.fromPlayer, true).replace("%coins%", "" + this.operationQuantity));
+        this.toPlayer.sendMessage(TranslatableLine.SET_COINS.get(this.fromPlayer, true).replace("%coins%", Text.formatDouble(this.operationQuantity)));
         if (!this.console) {
             this.fromPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + "Coins have been set Player " + this.toPlayer.getName());
         } else {

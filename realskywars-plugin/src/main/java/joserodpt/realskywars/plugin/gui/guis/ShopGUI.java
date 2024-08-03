@@ -222,10 +222,10 @@ public class ShopGUI {
                                             if (cm.removeCoins()) {
                                                 p.getWorld().dropItem(p.getLocation(), new ItemStack(a.getMaterial(), a.getAmount()));
                                                 a.setAmount(1);
-                                                p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.get(p, true).replace("%name%", a.getDisplayName()).replace("%coins%", a.getPrice() + ""));
+                                                p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.get(p, true).replace("%name%", a.getDisplayName()).replace("%coins%", a.getPriceFormatted()));
                                             } else {
                                                 a.setAmount(1);
-                                                p.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(p, true).replace("%coins%", RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoins(p) + ""));
+                                                p.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(p, true).replace("%coins%", RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoinsFormatted(p)));
                                             }
                                         } else {
                                             a.setAmount(1);
@@ -261,9 +261,9 @@ public class ShopGUI {
                                         TransactionManager cm = new TransactionManager(p, a.getPrice(), TransactionManager.Operations.REMOVE, false);
                                         if (cm.removeCoins()) {
                                             RealSkywarsAPI.getInstance().getDatabaseManagerAPI().saveNewBoughtItem(new PlayerBoughtItemsRow(p, a.getName(), current.cat.name()), true);
-                                            p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.get(p, true).replace("%name%", a.getDisplayName()).replace("%coins%", a.getPrice() + ""));
+                                            p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.get(p, true).replace("%name%", a.getDisplayName()).replace("%coins%", a.getPriceFormatted()));
                                         } else {
-                                            p.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(p, true).replace("%coins%", RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoins(p) + ""));
+                                            p.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(p, true).replace("%coins%", RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoinsFormatted(p)));
                                         }
                                     }
                                 } else {

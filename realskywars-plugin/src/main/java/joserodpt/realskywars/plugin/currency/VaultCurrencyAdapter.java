@@ -48,4 +48,9 @@ public class VaultCurrencyAdapter implements CurrencyAdapterAPI {
     public double getCoins(RSWPlayer p) {
         return RealSkywarsAPI.getInstance().getVaultEconomy().getBalance(p.getPlayer());
     }
+
+    @Override
+    public String getCoinsFormatted(RSWPlayer p) {
+        return RealSkywarsAPI.getInstance().getVaultEconomy().format(getCoins(p));
+    }
 }

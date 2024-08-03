@@ -211,7 +211,7 @@ public class RSWPlayer {
     }
 
     public double getGameBalance() {
-        return RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoins(this) + this.balanceGame;
+        return this.balanceGame;
     }
 
     public void sendMessage(String string) {

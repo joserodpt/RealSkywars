@@ -27,4 +27,6 @@ public interface CurrencyAdapterAPI {
     void setCoins(RSWPlayer p, double amount);
 
     double getCoins(RSWPlayer p);
+
+    String getCoinsFormatted(RSWPlayer p);
 }

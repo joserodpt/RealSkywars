@@ -63,7 +63,7 @@ public class RSWKit extends RSWBuyableItem {
         List<String> desc = new ArrayList<>();
 
         if (!boughtPair.getKey())
-            desc.add(TranslatableLine.KIT_PRICE.get(p).replace("%price%", super.getPrice().toString()));
+            desc.add(TranslatableLine.KIT_PRICE.get(p).replace("%price%", super.getPriceFormatted()));
 
         //contents
         if (this.hasItems()) {
