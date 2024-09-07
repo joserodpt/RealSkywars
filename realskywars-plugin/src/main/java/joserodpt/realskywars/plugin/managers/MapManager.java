@@ -504,7 +504,7 @@ public class MapManager extends MapManagerAPI {
                 .filter(game -> game.getGameMode().equals(type) &&
                         (game.getState().equals(RSWMap.MapState.AVAILABLE) ||
                                 game.getState().equals(RSWMap.MapState.STARTING) ||
-                                game.getState().equals(RSWMap.MapState.WAITING)))
+                                game.getState().equals(RSWMap.MapState.WAITING)) && game.isBestArena())
                 .findFirst();
     }
 
