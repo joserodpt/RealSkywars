@@ -504,8 +504,12 @@ public class MapManager extends MapManagerAPI {
                 .filter(game -> game.getGameMode().equals(type) &&
                         (game.getState().equals(RSWMap.MapState.AVAILABLE) ||
                                 game.getState().equals(RSWMap.MapState.STARTING) ||
-                                game.getState().equals(RSWMap.MapState.WAITING)) && game.isBestArena())
-                .findFirst();
+                                game.getState().equals(RSWMap.MapState.WAITING))).min((o1, o2) -> {
+                    if (o1.getPlayers().size() == o2.getPlayers().size()) {
+                        return 0;
+                    }
+                    return o1.getPlayers().size() > o2.getPlayers().size() ? 1 : -1;
+                });
     }
 
     @Override

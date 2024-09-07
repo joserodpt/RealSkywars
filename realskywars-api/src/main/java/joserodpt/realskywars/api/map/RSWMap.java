@@ -192,27 +192,7 @@ public abstract class RSWMap {
             }
         }
     }
-public RSWMap BestArena() {
-        int mostPlayers = 0;
-        RSWMap mostPopular = null;
-        for (RSWMap r : RealSkywarsAPI.getInstance().getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL)) {
-            int pCount = 0;
-            for (RSWPlayer p : r.getAllPlayers()) {
-                if (p.isInMatch()) {
-                    pCount++;
-                }
-            }
-            if (pCount > mostPlayers) {
-                mostPopular = r;
-                mostPlayers = pCount;
-            }
 
-        }
-            return mostPopular;
-        }
-public boolean isBestArena() {
-        return this.name == GetBestArena().name;
-}
     public void startTimers() {
         this.mapTimer = new CountdownTimer(RealSkywarsAPI.getInstance().getPlugin(), this.getMaxGameTime(), () -> {
         }, () -> {
