@@ -108,7 +108,6 @@ public class AchievementViewerGUI {
                         /*
                         if (current.display.containsKey(e.getRawSlot())) {
                             Achievement a = current.display.get(e.getRawSlot());
-
                         }
                          */
                     }

@@ -20,6 +20,7 @@ import joserodpt.realskywars.api.achievements.RSWAchievement;
 import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
+import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.effects.RSWBlockWinTrail;
 import joserodpt.realskywars.api.effects.RSWTrail;
 import joserodpt.realskywars.api.kits.RSWKit;
@@ -43,7 +44,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -382,15 +382,19 @@ public class RSWPlayer {
         return getStatistics(pp, this.isInMatch() && this.playerMap.isRanked());
     }
 
-    public List<String> getStats() { //TODO TRANSLATE
-        return Arrays.asList(
-                "&fLanguage: &b" + RealSkywarsAPI.getInstance().getLanguageManagerAPI().getLanguage(this.getLanguage()).getDisplayName(),
-                "&fSelected Kit: &b" + this.getPlayerKit().getDisplayName(),
-                "&fSelected Cage: &b" + RealSkywarsAPI.getInstance().getLanguageManagerAPI().getMaterialName(this.getCageBlock()),
-                "&fCoins: &b" + RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoins(this),
-                "&7",
-                "&fFirst Join: &b" + RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerData(this.getPlayer()).getFirstJoin(),
-                "&fLast Join: &b" + RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerData(this.getPlayer()).getLastJoin());
+    public List<String> getStats() {
+        List<String> list = TranslatableList.STATISTIC_PLAYER_LIST.get(this);
+
+        for (String s : list) {
+            list.set(list.indexOf(s), s.replace("%lang%", RealSkywarsAPI.getInstance().getLanguageManagerAPI().getLanguage(this.getLanguage()).getDisplayName())
+                    .replace("%kit%", this.getPlayerKit().getDisplayName())
+                    .replace("%cage%", RealSkywarsAPI.getInstance().getLanguageManagerAPI().getMaterialName(this.getCageBlock()))
+                    .replace("%coins%", Text.formatDouble(RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoins(this)))
+                    .replace("%firstjoin%", RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerData(this.getPlayer()).getFirstJoin())
+                    .replace("%lastjoin%", RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerData(this.getPlayer()).getLastJoin()));
+        }
+
+        return list;
     }
 
     public RSWPlayer.PlayerState getState() {

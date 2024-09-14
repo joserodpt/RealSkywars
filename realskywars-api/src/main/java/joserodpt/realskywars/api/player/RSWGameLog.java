@@ -16,13 +16,14 @@ package joserodpt.realskywars.api.player;
  */
 
 import joserodpt.realskywars.api.config.TranslatableLine;
+import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class RSWGameLog {
 
@@ -49,13 +50,22 @@ public class RSWGameLog {
         this.dummy = true;
     }
 
-    public ItemStack getItem(RSWPlayer p) { //TODO TRANSLATE
-        return this.dummy ? Itens.createItem(Material.BUCKET, 1, TranslatableLine.SEARCH_NOTFOUND_NAME.getSingle()) :
-                Itens.createItem(Material.FILLED_MAP, 1, "&f&l" + this.dayandtime, Arrays.asList("&fMap: &b" + this.map + " &7[&f" + this.gameMode.getDisplayName(p) + "&7]",
-                        "&fPlayers: &b" + this.players,
-                        "&fRanked: " + (this.ranked ? "&a&l✔" : "&c&l❌"),
-                        "&fWin: " + (this.win ? "&a&l✔" : "&c&l❌"),
-                        "&fKills: &b" + this.kills,
-                        "&fTime: &b" + Text.formatSeconds(this.seconds)));
+    public ItemStack getItem(RSWPlayer p) {
+        if (this.dummy) {
+            return Itens.createItem(Material.BUCKET, 1, TranslatableLine.SEARCH_NOTFOUND_NAME.getSingle());
+        }
+
+        List<String> list = TranslatableList.GAME_LOG_LIST.get(p);
+
+        for (String s : list) {
+            list.set(list.indexOf(s), s.replace("%players%", String.valueOf(this.players))
+                    .replace("%map%", this.map + " &7[&f" + this.gameMode.getDisplayName(p) + "&7]")
+                    .replace("%ranked%", this.ranked ? "&a&l✔" : "&c&l❌")
+                    .replace("%win%", this.win ? "&a&l✔" : "&c&l❌")
+                    .replace("%kills%", String.valueOf(this.kills))
+                    .replace("%time%", Text.formatSeconds(this.seconds)));
+        }
+
+        return Itens.createItem(Material.FILLED_MAP, 1, "&f&l" + this.dayandtime, list);
     }
 }

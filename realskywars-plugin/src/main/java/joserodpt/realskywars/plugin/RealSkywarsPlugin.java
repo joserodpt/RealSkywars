@@ -272,7 +272,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
             }
         } else {
             realSkywars.setCurrencyAdapter(new LocalCurrencyAdapter());
-            getLogger().warning("Vault not found. Local currency will be used.");
+            getLogger().info("Vault not found. Local currency will be used.");
         }
 
         //refresh leaderboards

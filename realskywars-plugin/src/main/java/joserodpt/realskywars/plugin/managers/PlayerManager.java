@@ -239,21 +239,6 @@ public class PlayerManager extends PlayerManagerAPI {
         Bukkit.getOnlinePlayers().forEach(this::loadPlayer);
     }
 
-    /*
-    @Override
-    public List<RSWShopDisplayItem> getBoughtItems(RSWPlayer player, RSWShopItem.ShopCategory t) {
-        List<RSWShopDisplayItem> bought = rs.getShopManagerAPI().getCategoryContents(player, t).stream()
-                .filter(a -> a != null && a.isBought())
-                .collect(Collectors.toList());
-
-        if (bought.isEmpty()) {
-            bought.add(new RSWShopDisplayItem());
-        }
-        return bought;
-    }
-
-     */
-
     public Map<UUID, RSWMap> getFastJoin() {
         return this.fastJoin;
     }

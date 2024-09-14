@@ -34,10 +34,12 @@ public enum TranslatableList {
     STATS_ITEM_LORE(".Itens.Statistics.Lore"),
     REFILL_EVENT_TITLE(".Messages.Map.Events.Refill"),
     TNTRAIN_EVENT_TITLE(".Messages.Map.Events.TNTRain"),
+    STATISTIC_PLAYER_LIST(".Statistics.Player-List"),
+    STATISTIC_GAMES_LIST(".Statistics.Games-List"),
     TAB_HEADER_MATCH(".Tab.In-Game.Header"),
     TAB_FOOTER_MATCH(".Tab.In-Game.Footer"),
     TAB_HEADER_OTHER(".Tab.Other.Header"),
-    TAB_FOOTER_OTHER(".Tab.Other.Footer");
+    TAB_FOOTER_OTHER(".Tab.Other.Footer"), GAME_LOG_LIST(".Statistics.Game-Log-List");
 
     private final String configPath;
 

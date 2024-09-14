@@ -121,7 +121,6 @@ public class GameHistoryGUI {
                         /*
                         if (current.display.containsKey(e.getRawSlot())) {
                             RSWGameLog a = current.display.get(e.getRawSlot());
-
                         }
                          */
                     }

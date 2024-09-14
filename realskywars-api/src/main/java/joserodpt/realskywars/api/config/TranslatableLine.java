@@ -210,6 +210,7 @@ public enum TranslatableLine {
     NO_TRACKER(".Messages.Map.No-Tracker-Found"),
     TRACK_FOUND(".Messages.Map.Tracker-Found"),
 
+    STATISTIC_NAME(".Statistics.Name"),
     STATISTIC_WINS_SOLO(".Statistics.Wins.Solo"),
     STATISTIC_WINS_TEAMS(".Statistics.Wins.Teams"),
     STATISTIC_KILLS(".Statistics.Kills"),
