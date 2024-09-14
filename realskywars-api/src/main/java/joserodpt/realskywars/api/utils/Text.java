@@ -23,6 +23,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -173,7 +174,26 @@ public class Text {
     }
 
     public static String formatDouble(Double gameBalance) {
-        return gameBalance % 1 == 0 ? String.valueOf(gameBalance.intValue()) : String.valueOf(gameBalance);
+        String formattedBalance = gameBalance % 1 == 0 ? String.valueOf(gameBalance.intValue()) : String.valueOf(gameBalance);
+
+        if (gameBalance >= 1000) {
+            formattedBalance = formatLargeNumber(gameBalance);
+        }
+
+        return formattedBalance;
+    }
+
+    private static String formatLargeNumber(Double number) {
+        String[] suffixes = {"", "k", "M", "B", "T", "Q"};
+        int index = 0;
+
+        while (number >= 1000 && index < suffixes.length - 1) {
+            number /= 1000;
+            index++;
+        }
+
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+        return decimalFormat.format(number) + suffixes[index];
     }
 
     public enum DefaultFontInfo {

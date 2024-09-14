@@ -146,7 +146,7 @@ public class DatabaseManager extends DatabaseManagerAPI {
     @Override
     public Pair<Collection<PlayerGameHistoryRow>, RSWGameHistoryStats> getPlayerGameHistory(Player p) {
         try {
-            var res = playerGameHistoryDao.queryForEq("player_uuid", p.getUniqueId()).stream().sorted((o1, o2) -> o2.getFormattedDateObject().compareTo(o1.getFormattedDateObject())).collect(Collectors.toList());
+            Collection<PlayerGameHistoryRow> res = playerGameHistoryDao.queryForEq("player_uuid", p.getUniqueId()).stream().sorted((o1, o2) -> o2.getFormattedDateObject().compareTo(o1.getFormattedDateObject())).collect(Collectors.toList());
             return new Pair<>(res, new RSWGameHistoryStats(res));
         } catch (SQLException exception) {
             rsa.getLogger().severe("Error while getting the player data:" + exception.getMessage());
