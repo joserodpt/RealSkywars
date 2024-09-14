@@ -29,7 +29,7 @@ public class RSWKitsConfig {
 
     public static void setup(final JavaPlugin rm) {
         try {
-            document = YamlDocument.create(new File(rm.getDataFolder(), name));
+            document = YamlDocument.create(new File(rm.getDataFolder(), name), rm.getResource(name));
         } catch (final IOException e) {
             RealSkywarsAPI.getInstance().getLogger().severe("Couldn't setup " + name + "!");
             RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());
