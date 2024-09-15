@@ -24,7 +24,7 @@ import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.player.RSWPlayerItems;
-import joserodpt.realskywars.api.player.RSWPlayerTab;
+import joserodpt.realskywars.api.player.tab.RSWPlayerTabInterface;
 import joserodpt.realskywars.api.utils.CountdownTimer;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Location;
@@ -177,10 +177,10 @@ public class TeamsMode extends RSWMap {
                     if (!p.isBot()) {
                         for (RSWPlayer player : this.getPlayers()) {
                             if (!player.isBot()) {
-                                RSWPlayerTab rt = player.getTab();
+                                RSWPlayerTabInterface rt = player.getTab();
                                 List<Player> players = this.getPlayers().stream().map(RSWPlayer::getPlayer).collect(Collectors.toList());
                                 rt.clear();
-                                rt.add(players);
+                                rt.addPlayers(players);
                                 rt.updateRoomTAB();
                             }
                         }

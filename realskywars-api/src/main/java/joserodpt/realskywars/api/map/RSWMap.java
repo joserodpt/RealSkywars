@@ -28,7 +28,7 @@ import joserodpt.realskywars.api.map.modes.RSWSign;
 import joserodpt.realskywars.api.map.modes.teams.RSWTeam;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.player.RSWPlayerItems;
-import joserodpt.realskywars.api.player.RSWPlayerTab;
+import joserodpt.realskywars.api.player.tab.RSWPlayerTabInterface;
 import joserodpt.realskywars.api.utils.BungeecordUtils;
 import joserodpt.realskywars.api.utils.CountdownTimer;
 import joserodpt.realskywars.api.utils.Demolition;
@@ -434,8 +434,8 @@ public abstract class RSWMap {
                 if (!p.isBot()) {
                     for (RSWPlayer rswPlayer : this.inMap) {
                         if (!rswPlayer.isBot()) {
-                            RSWPlayerTab rt = rswPlayer.getTab();
-                            rt.remove(p.getPlayer());
+                            RSWPlayerTabInterface rt = rswPlayer.getTab();
+                            rt.removePlayers(p.getPlayer());
                             rt.updateRoomTAB();
                         }
                     }
@@ -467,10 +467,10 @@ public abstract class RSWMap {
                 if (!p.isBot()) {
                     for (RSWPlayer rswPlayer : this.inMap) {
                         if (!rswPlayer.isBot()) {
-                            RSWPlayerTab rt = rswPlayer.getTab();
+                            RSWPlayerTabInterface rt = rswPlayer.getTab();
                             List<Player> players = this.getPlayers().stream().map(RSWPlayer::getPlayer).collect(Collectors.toList());
                             rt.clear();
-                            rt.add(players);
+                            rt.addPlayers(players);
                             rt.updateRoomTAB();
                         }
                     }
@@ -725,16 +725,16 @@ public abstract class RSWMap {
 
         //update tab
         if (!p.isBot()) {
-            RSWPlayerTab rt = p.getTab();
+            RSWPlayerTabInterface rt = p.getTab();
             rt.reset();
             rt.updateRoomTAB();
         }
         for (RSWPlayer player : this.getPlayers()) {
             if (!player.isBot()) {
-                RSWPlayerTab rt = player.getTab();
+                RSWPlayerTabInterface rt = player.getTab();
                 rt.clear();
                 List<Player> players = this.getPlayers().stream().map(RSWPlayer::getPlayer).collect(Collectors.toList());
-                rt.add(players);
+                rt.addPlayers(players);
                 rt.updateRoomTAB();
             }
         }

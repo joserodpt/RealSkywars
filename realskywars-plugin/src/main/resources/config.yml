@@ -1,4 +1,4 @@
-Version: 6
+Version: 7
 Debug-Mode: false
 Config:
   Bungeecord:
@@ -9,6 +9,7 @@ Config:
   Invincibility-Seconds: 3
   Auto-Teleport-To-Lobby: true
   Scoreboard-In-Lobby: true
+  Enable-Tab-Formatting: true
   Shops:
     Enable-Shop: true
     Enable-Spectator-Shop: true

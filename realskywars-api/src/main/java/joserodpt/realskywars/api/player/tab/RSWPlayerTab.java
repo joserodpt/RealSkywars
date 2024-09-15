@@ -1,4 +1,4 @@
-package joserodpt.realskywars.api.player;
+package joserodpt.realskywars.api.player.tab;
 
 /*
  *   _____            _  _____ _
@@ -18,6 +18,7 @@ package joserodpt.realskywars.api.player;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
+import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -25,7 +26,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RSWPlayerTab {
+public class RSWPlayerTab implements RSWPlayerTabInterface {
 
     private final RSWPlayer player;
     private final List<Player> show = new ArrayList<>();
@@ -36,28 +37,34 @@ public class RSWPlayerTab {
         updateRoomTAB();
     }
 
-    public void add(Player p) {
+    @Override
+    public void addPlayers(Player p) {
         if (p.getUniqueId() != this.player.getUUID() && !this.show.contains(p)) {
             this.show.add(p);
         }
     }
 
-    public void add(List<Player> p) {
+    @Override
+    public void addPlayers(List<Player> p) {
         this.show.addAll(p);
     }
 
-    public void remove(Player p) {
+    @Override
+    public void removePlayers(Player p) {
         this.show.remove(p);
     }
 
+    @Override
     public void reset() {
         this.show.addAll(Bukkit.getOnlinePlayers());
     }
 
+    @Override
     public void clear() {
         this.show.clear();
     }
 
+    @Override
     public void setHeaderFooter(String h, String f) {
         if (!this.player.isBot()) {
             this.player.getPlayer().setPlayerListHeaderFooter(Text.color(h), Text.color(f));
@@ -65,6 +72,7 @@ public class RSWPlayerTab {
     }
 
 
+    @Override
     public void updateRoomTAB() {
         if (!this.player.isBot()) {
             Bukkit.getOnlinePlayers().forEach(pl -> this.player.hidePlayer(RealSkywarsAPI.getInstance().getPlugin(), pl));

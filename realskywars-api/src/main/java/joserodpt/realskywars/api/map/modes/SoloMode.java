@@ -26,7 +26,7 @@ import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.map.modes.teams.RSWTeam;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.player.RSWPlayerItems;
-import joserodpt.realskywars.api.player.RSWPlayerTab;
+import joserodpt.realskywars.api.player.tab.RSWPlayerTabInterface;
 import joserodpt.realskywars.api.utils.CountdownTimer;
 import joserodpt.realskywars.api.utils.FireworkUtils;
 import joserodpt.realskywars.api.utils.Text;
@@ -165,10 +165,10 @@ public class SoloMode extends RSWMap {
                     if (!p.isBot()) {
                         for (RSWPlayer player : this.getPlayers()) {
                             if (!player.isBot()) {
-                                RSWPlayerTab rt = player.getTab();
+                                RSWPlayerTabInterface rt = player.getTab();
                                 List<Player> players = this.getPlayers().stream().map(RSWPlayer::getPlayer).collect(Collectors.toList());
                                 rt.clear();
-                                rt.add(players);
+                                rt.addPlayers(players);
                                 rt.updateRoomTAB();
                             }
                         }

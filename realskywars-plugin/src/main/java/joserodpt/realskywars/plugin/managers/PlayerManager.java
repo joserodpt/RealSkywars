@@ -25,7 +25,7 @@ import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.managers.PlayerManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.player.RSWPlayerTab;
+import joserodpt.realskywars.api.player.tab.RSWPlayerTabInterface;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -135,12 +135,12 @@ public class PlayerManager extends PlayerManagerAPI {
             rs.getPlayerManagerAPI().getPlayers().stream()
                     .filter(RSWPlayer::isInMatch)
                     .forEach(plr -> {
-                        RSWPlayerTab rt = plr.getTab();
-                        rt.remove(plr.getPlayer());
+                        RSWPlayerTabInterface rt = plr.getTab();
+                        rt.removePlayers(plr.getPlayer());
                         rt.updateRoomTAB();
                     });
 
-            Bukkit.getOnlinePlayers().forEach(plr -> p.getTab().add(plr));
+            Bukkit.getOnlinePlayers().forEach(plr -> p.getTab().addPlayers(plr));
             p.getTab().updateRoomTAB();
 
             rs.getPlayerManagerAPI().addPlayer(p);
