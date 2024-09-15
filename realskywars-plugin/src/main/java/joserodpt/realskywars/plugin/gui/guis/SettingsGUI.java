@@ -52,7 +52,8 @@ public class SettingsGUI {
         //0 - bool, 1 - int
         public int entryType;
 
-        private String configPath, name;
+        private final String configPath;
+        private final String name;
 
         public SettingEntry(final String name, final String configPath, final int entryType) {
             this.name = "&f" + name;
@@ -86,7 +87,7 @@ public class SettingsGUI {
     int pageNumber = 0;
     private Pagination<SettingEntry> p;
     private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
-    private ItemStack close = Itens.createItem(Material.OAK_DOOR, 1, "&cClose", Collections.singletonList("&fClick here to close this menu."));
+    private final ItemStack close = Itens.createItem(Material.OAK_DOOR, 1, "&cClose", Collections.singletonList("&fClick here to close this menu."));
     private final Inventory inv;
     private final UUID uuid;
     private final RealSkywarsAPI rsa;
@@ -100,6 +101,10 @@ public class SettingsGUI {
 
             new SettingEntry("Enable Shop", "Config.Shops.Enable-Shop", 0),
             new SettingEntry("Enable Spectator Shop", "Config.Shops.Enable-Spectator-Shop", 0),
+            new SettingEntry("Enable Kit Shop", "Config.Shops.Enable-Kit-Shop", 0),
+            new SettingEntry("Enable Cage Shop", "Config.Shops.Enable-Cage-Block-Shop", 0),
+            new SettingEntry("Enable Win Block Shop", "Config.Shops.Enable-Win-Block-Shop", 0),
+            new SettingEntry("Enable Bow Particles Shop", "Config.Shops.Enable-Bow-Particles-Shop", 0),
 
             new SettingEntry("Right Click Player Info", "Config.Right-Click-Player-Info", 0),
             new SettingEntry("PlaceholderAPI In Scoreboard", "Config.PlaceholderAPI-In-Scoreboard", 0),
@@ -108,6 +113,10 @@ public class SettingsGUI {
             new SettingEntry("Shuffle Items In Chests", "Config.Shuffle-Items-In-Chest", 0),
             new SettingEntry("Enable Server as Bungeecord", "Config.Bungeecord.Enabled", 0),
             new SettingEntry("Bungeecord: Kick Player instead of Moving Player to Lobby", "Config.Bungeecord.Kick-Player", 0),
+
+            new SettingEntry("Toggle Tab Formatting", "Config.Enable-Tab-Formatting", 0),
+            new SettingEntry("Disable Map Starting Messages", "Config.Disable-Map-Starting-Countdown.Message", 0),
+            new SettingEntry("Disable Map Starting Actionbar", "Config.Disable-Map-Starting-Countdown.Actionbar", 0),
 
             new SettingEntry("Profile Item Slot in the Lobby", "Config.Item-Slots.Lobby.Profile", 1),
             new SettingEntry("Maps Item Slot in the Lobby", "Config.Item-Slots.Lobby.Maps", 1),
