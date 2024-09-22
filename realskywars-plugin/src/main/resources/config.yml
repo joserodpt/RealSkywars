@@ -1,4 +1,4 @@
-Version: 7
+Version: 8
 Debug-Mode: false
 Config:
   Bungeecord:
@@ -21,6 +21,7 @@ Config:
   PlaceholderAPI-In-Scoreboard: false
   Disable-Player-Reset: false
   Disable-Language-Selection: false
+  Disable-Lobby-Items: false
   Disable-Map-Starting-Countdown:
     Message: false
     Actionbar: false

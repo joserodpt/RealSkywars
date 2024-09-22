@@ -117,6 +117,7 @@ public class SettingsGUI {
             new SettingEntry("Toggle Tab Formatting", "Config.Enable-Tab-Formatting", 0),
             new SettingEntry("Disable Map Starting Messages", "Config.Disable-Map-Starting-Countdown.Message", 0),
             new SettingEntry("Disable Map Starting Actionbar", "Config.Disable-Map-Starting-Countdown.Actionbar", 0),
+            new SettingEntry("Disable Lobby Items", "Config.Disable-Lobby-Items", 0),
 
             new SettingEntry("Profile Item Slot in the Lobby", "Config.Item-Slots.Lobby.Profile", 1),
             new SettingEntry("Maps Item Slot in the Lobby", "Config.Item-Slots.Lobby.Maps", 1),
