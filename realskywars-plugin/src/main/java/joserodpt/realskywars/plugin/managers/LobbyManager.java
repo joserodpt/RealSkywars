@@ -57,7 +57,7 @@ public class LobbyManager extends LobbyManagerAPI {
             try {
                 player.teleport(this.lobbyLOC);
             } catch (Exception e) {
-                Bukkit.getLogger().warning("Error while teleporting player to lobby: " + e.getMessage());
+                rsa.getLogger().warning("Error while teleporting player to lobby: " + e.getMessage());
             }
         }
     }
