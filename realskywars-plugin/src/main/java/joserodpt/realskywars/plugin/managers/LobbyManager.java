@@ -54,13 +54,17 @@ public class LobbyManager extends LobbyManagerAPI {
     @Override
     public void tpToLobby(Player player) {
         if (this.lobbyLOC != null && player != null) {
-            player.teleport(this.lobbyLOC);
+            try {
+                player.teleport(this.lobbyLOC);
+            } catch (Exception e) {
+                Bukkit.getLogger().warning("Error while teleporting player to lobby: " + e.getMessage());
+            }
         }
     }
 
     @Override
     public void tpToLobby(RSWPlayer p) {
-        if (this.lobbyLOC != null) {
+        if (this.lobbyLOC != null && p != null) {
             tpToLobby(p.getPlayer());
             TranslatableLine.LOBBY_TELEPORT.send(p, true);
             RSWPlayerItems.LOBBY.giveSet(p);
@@ -94,7 +98,7 @@ public class LobbyManager extends LobbyManagerAPI {
 
     @Override
     public boolean tpLobbyOnJoin() {
-        return loginTP;
+        return loginTP && this.lobbyLOC != null;
     }
 
     @Override
