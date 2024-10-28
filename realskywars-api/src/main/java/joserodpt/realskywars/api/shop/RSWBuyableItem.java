@@ -204,4 +204,19 @@ public class RSWBuyableItem {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "RSWBuyableItem{" +
+                "configKey='" + configKey + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", amount=" + amount +
+                ", material=" + material +
+                ", price=" + price +
+                ", permission='" + permission + '\'' +
+                ", category=" + category +
+                ", extras=" + extras +
+                ", dummy=" + dummy +
+                '}';
+    }
 }

@@ -164,4 +164,15 @@ public class RSWKit extends RSWBuyableItem {
             Bukkit.getScheduler().cancelTask(this.enderTask);
         }
     }
+
+    @Override
+    public String toString() {
+        return "RSWKit{" +
+                "name=" + super.getName() +
+                ", displayName=" + super.getDisplayName() +
+                ", kitInventory=" + kitInventory +
+                ", kitPerks=" + kitPerks +
+                ", enderTask=" + enderTask +
+                '}';
+    }
 }

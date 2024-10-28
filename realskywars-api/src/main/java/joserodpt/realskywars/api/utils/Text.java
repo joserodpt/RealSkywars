@@ -18,7 +18,6 @@ package joserodpt.realskywars.api.utils;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -116,12 +115,12 @@ public class Text {
                 .collect(Collectors.toList());
     }
 
-    public static String beautifyMaterialName(Material m) {
-        if (m == null) {
+    public static String beautifyEnumName(String name) {
+        if (name == null || name.isEmpty()) {
             return "Unknown";
         }
 
-        String[] parts = m.name().split("_");
+        String[] parts = name.split("_");
         StringBuilder formattedString = new StringBuilder();
 
         for (String part : parts) {

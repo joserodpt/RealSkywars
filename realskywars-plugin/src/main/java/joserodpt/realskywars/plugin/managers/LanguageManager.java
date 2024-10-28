@@ -15,6 +15,7 @@ package joserodpt.realskywars.plugin.managers;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.RSWLanguage;
@@ -63,11 +64,20 @@ public class LanguageManager extends LanguageManagerAPI {
                 String version = new String(Files.readAllBytes(translationVersionFile.toPath()));
                 if (!version.equals(simpleVersion)) {
                     rsa.getLogger().info("Updating language files from " + version + " to " + simpleVersion + ". Downloading new versions...");
-                    getLanguages().forEach(RSWLanguage::downloadLanguageFile);
+                    for (RSWLanguage language : getLanguages()) {
+                        try {
+                            language.downloadLanguageFile();
+                        } catch (Exception e) {
+                            rsa.getLogger().severe("Could not update language file " + language.getName() + " -> " + e.getMessage());
+                            Debugger.print(LanguageManager.class, e.getMessage());
+                        }
+                    }
+
                     Files.write(translationVersionFile.toPath(), simpleVersion.getBytes());
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                rsa.getLogger().severe("Could not update language files -> " + e.getMessage());
+                Debugger.print(LanguageManager.class, e.getMessage());
             }
         } else {
             try {

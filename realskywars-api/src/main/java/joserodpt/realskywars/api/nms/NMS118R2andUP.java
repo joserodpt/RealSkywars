@@ -35,6 +35,6 @@ public class NMS118R2andUP implements RSWnms {
 
     @Override
     public String getItemName(ItemStack itemStack) {
-        return Text.beautifyMaterialName(itemStack.getType());
+        return Text.beautifyEnumName(itemStack.getType().name());
     }
 }
