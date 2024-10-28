@@ -116,7 +116,7 @@ public class WorldEditUtils {
 
                             for (Player p : location.getWorld().getPlayers()) {
                                 Text.send(p, "&aThe boundaries have been set automatically using the schematic boundaries!");
-                                Text.send(p, "&fIf you want to change them, use WorldEdit to select the area and type /rsw setbounds");
+                                Text.send(p, "&fIf you want to change them, use WorldEdit to select the area and type /rsw finish");
                             }
                         }
                     } catch (final WorldEditException e) {
