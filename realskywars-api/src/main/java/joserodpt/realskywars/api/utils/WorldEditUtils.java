@@ -112,7 +112,7 @@ public class WorldEditUtils {
                             Vector3 min = to.toVector3().add(holder.getTransform().apply(clipboardOffset.toVector3()));
                             Vector3 max = min.add(holder.getTransform().apply(region.getMaximumPoint().subtract(region.getMinimumPoint()).toVector3()));
 
-                            map.setBoundaries(toLocation(min, location.getWorld()), WorldEditUtils.toLocation(max, location.getWorld()));
+                            map.setBoundaries(toLocation(min, location.getWorld()), toLocation(max, location.getWorld()));
 
                             for (Player p : location.getWorld().getPlayers()) {
                                 Text.send(p, "&aThe boundaries have been set automatically using the schematic boundaries!");

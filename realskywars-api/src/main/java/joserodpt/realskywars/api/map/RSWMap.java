@@ -108,7 +108,7 @@ public abstract class RSWMap {
 
         if (pos1 != null && pos2 != null) {
             this.mapCuboid = new MapCuboid(pos1, pos2);
-            this.borderSize = this.mapCuboid.getSizeX();
+            this.borderSize = Math.max(this.mapCuboid.getSizeX(), this.mapCuboid.getSizeZ()); //set bigger size from x or z
             this.border = w.getWorldBorder();
             this.border.setCenter(this.mapCuboid.getCenter());
             this.border.setSize(this.borderSize);
@@ -945,7 +945,7 @@ public abstract class RSWMap {
 
     public void setBoundaries(Location pos1, Location pos2) {
         this.mapCuboid = new MapCuboid(pos1, pos2);
-        this.borderSize = this.mapCuboid.getSizeX();
+        this.borderSize = Math.max(this.mapCuboid.getSizeX(), this.mapCuboid.getSizeZ()); //set bigger size from x or z
         this.border = this.getRSWWorld().getWorld().getWorldBorder();
         this.border.setCenter(this.mapCuboid.getCenter());
         this.border.setSize(this.borderSize);
