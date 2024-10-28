@@ -105,6 +105,7 @@ public class WorldEditUtils {
                                 .copyEntities(false)
                                 .build();
                         Operations.completeLegacy(operation);
+                        editSession.flushSession();
 
                         if (map != null) {
                             BlockVector3 clipboardOffset = clipboard.getRegion().getMinimumPoint().subtract(clipboard.getOrigin());
@@ -114,8 +115,8 @@ public class WorldEditUtils {
                             map.setBoundaries(toLocation(min, location.getWorld()), WorldEditUtils.toLocation(max, location.getWorld()));
 
                             for (Player p : location.getWorld().getPlayers()) {
-                                p.sendMessage("&aThe boundaries have been set automatically using the schematic boundaries!");
-                                p.sendMessage("&fIf you want to change them, use WorldEdit to select the area and type /rsw setbounds");
+                                Text.send(p, "&aThe boundaries have been set automatically using the schematic boundaries!");
+                                Text.send(p, "&fIf you want to change them, use WorldEdit to select the area and type /rsw setbounds");
                             }
                         }
                     } catch (final WorldEditException e) {

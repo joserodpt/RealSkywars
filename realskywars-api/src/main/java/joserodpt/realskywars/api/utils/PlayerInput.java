@@ -17,6 +17,7 @@ package joserodpt.realskywars.api.utils;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -75,7 +76,7 @@ public class PlayerInput {
             @EventHandler
             public void onPlayerChat(AsyncPlayerChatEvent event) {
                 Player p = event.getPlayer();
-                String input = event.getMessage();
+                String input = ChatColor.stripColor(Text.color(event.getMessage()));
                 UUID uuid = p.getUniqueId();
                 if (inputs.containsKey(uuid)) {
                     PlayerInput current = inputs.get(uuid);

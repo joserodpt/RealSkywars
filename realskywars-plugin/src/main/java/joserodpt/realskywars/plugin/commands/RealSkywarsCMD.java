@@ -600,12 +600,12 @@ public class RealSkywarsCMD extends CommandBase {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
 
             if (wt == null) {
-                p.sendMessage("&cInvalid game generation type.");
+                Text.send(commandSender, rs.getLanguageManagerAPI().getPrefix() + "&cInvalid game generation type.");
                 return;
             }
 
             if (wt.equals(RSWWorld.WorldType.SCHEMATIC) && !WorldEditUtils.schemFileExists(mapname)) {
-                p.sendMessage("&cNo " + mapname + "&c found in RealSkywars/maps. Did you forget to add .schem?");
+                Text.send(commandSender, rs.getLanguageManagerAPI().getPrefix() + "&cNo " + mapname + "&c found in RealSkywars/maps. Did you forget to add .schem?");
                 return;
             }
 

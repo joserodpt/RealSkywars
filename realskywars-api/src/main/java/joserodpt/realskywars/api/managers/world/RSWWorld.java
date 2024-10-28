@@ -38,7 +38,9 @@ public class RSWWorld {
     }
 
     public void resetWorld(RSWMap.OperationReason rr) {
-        this.engine.getWorld().getEntities().stream().filter(entity -> entity.getType() != EntityType.PLAYER).forEach(Entity::remove);
+        if (rr != RSWMap.OperationReason.SHUTDOWN) {
+            this.engine.getWorld().getEntities().stream().filter(entity -> entity.getType() != EntityType.PLAYER).forEach(Entity::remove);
+        }
         this.engine.resetWorld(rr);
     }
 

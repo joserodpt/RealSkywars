@@ -173,7 +173,7 @@ Languages:
         Leave: "&eYou left the match."
         Already-Started: "&fThis match has &calready &fstarted."
         Edit-Map:
-          - "&fIf found, a schematic will be placed. You can also paste your schematics or make a new map."
+          - "&eIf found, a schematic will be placed. You can also paste your schematics or make a new map."
           - "&b> &c&lIMPORTANT &r&fSet the boundaries with //pos1 and //pos2 or an WorldEdit axe, and then do //expand vert to cover the entire height of the map!"
           - "&b> &aUse the beacon to place %cages% cages. "
           - "&b> &aChange the map settings in the hotbar."
@@ -561,11 +561,11 @@ Languages:
         Already-Started: "&fEsta partida já &ccomeçou&f."
         Player-Spectate: "&fEstás agora em modo &aespectador."
         Edit-Map:
-          - "&fIf found, a schematic will be placed. You can also paste your schematics or make a new map."
-          - "&b> &c&lIMPORTANT &r&fSet the boundaries with //pos1 and //pos2 or an WorldEdit axe, and then do //expand vert to cover the entire height of the map!"
-          - "&b> &aUse the beacon to place %cages% cages. "
-          - "&b> &aChange the map settings in the hotbar."
-          - "&b> &aWhen done, save the map."
+          - "&eSe encontrada, uma esquemática será colocada no mapa. Podes também colar uma esquemática ou fazer um novo mata."
+          - "&b> &c&lIMPORTANTE &r&fDefine os limites com //pos1 e //pos2 ou um machado de madeira do WorldEdit, e depois faz //expand vert para cobrir toda a altura do mapa!"
+          - "&b> &aUsa o beacon para meter %cages% jaulas. "
+          - "&b> &aMuda as definições do mapa na tua hotbat."
+          - "&b> &aQuando feito, salva o mapa."
         Events:
           Refill:
             - "&9&LREPOSIÇÃO DE BAÚS"

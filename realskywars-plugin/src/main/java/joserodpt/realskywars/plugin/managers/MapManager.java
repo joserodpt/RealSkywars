@@ -444,11 +444,11 @@ public class MapManager extends MapManagerAPI {
     public void endMaps() {
         this.endMaps = true;
 
-        this.maps.values().parallelStream().forEach(g -> {
+        for (RSWMap g : this.maps.values()) {
             g.kickPlayers(TranslatableLine.ADMIN_SHUTDOWN.getSingle());
             g.resetArena(RSWMap.OperationReason.SHUTDOWN);
             g.clear();
-        });
+        }
     }
 
     @Override

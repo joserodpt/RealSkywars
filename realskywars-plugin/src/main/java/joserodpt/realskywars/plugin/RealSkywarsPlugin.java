@@ -192,7 +192,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
 
         commandManager.getCompletionHandler().register("#maps", input -> new ArrayList<>(realSkywars.getMapManagerAPI().getMapNames()));
         commandManager.getCompletionHandler().register("#boolean", input -> Arrays.asList("false", "true"));
-        commandManager.getCompletionHandler().register("#worldtype", input -> Arrays.asList("DEFAULT", "SCHEMATIC"));
+        commandManager.getCompletionHandler().register("#worldtype", input -> Arrays.asList("default", "schematic"));
         commandManager.getCompletionHandler().register("#kits", input -> realSkywars.getKitManagerAPI().getKits().stream()
                 .map(kit -> Text.strip(kit.getName()))
                 .collect(Collectors.toList()));
@@ -345,7 +345,6 @@ public class RealSkywarsPlugin extends JavaPlugin {
 
         HandlerList.unregisterAll(this);
         Bukkit.getPluginManager().disablePlugin(this);
-
     }
 
     private boolean setupNMS() {
