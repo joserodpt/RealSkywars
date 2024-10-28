@@ -31,6 +31,9 @@ public class RSWWorld {
         this.engine = (wt == WorldType.DEFAULT ? new SWWorldDefaultEngine(w, gameRoom) : new SWWorldSchematicEngine(w, gameRoom.getShematicName(), gameRoom));
         this.getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         this.getWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        this.getWorld().setGameRule(GameRule.DO_MOB_SPAWNING, false);
+        this.getWorld().setGameRule(GameRule.DO_INSOMNIA, false);
+        this.getWorld().setGameRule(GameRule.DO_PATROL_SPAWNING, false);
     }
 
     public World getWorld() {

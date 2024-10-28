@@ -38,6 +38,7 @@ import joserodpt.realskywars.api.player.RSWPlayerItems;
 import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.api.utils.WorldEditUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -292,6 +293,10 @@ public class MapManager extends MapManagerAPI {
 
     private void commonSetup(RSWPlayer p, String mapname, RSWWorld.WorldType wt, int teams, World w, RSWMap s) {
         w.getBlockAt(0, 64, 0).setType(Material.BEDROCK);
+        w.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+        w.setGameRule(GameRule.DO_INSOMNIA, false);
+        w.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
+
         Location loc = new Location(w, 0, 66, 0);
 
         Text.sendList(p.getPlayer(), Text.replaceVarInList(TranslatableList.EDIT_MAP.get(p), "%cages%", teams + ""));
