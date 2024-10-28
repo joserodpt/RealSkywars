@@ -825,7 +825,9 @@ public abstract class RSWMap {
             this.startMapTimer = null;
         }
 
-        this.getChests().forEach(RSWChest::clear);
+        if (rr != OperationReason.SHUTDOWN) {
+            this.getChests().forEach(RSWChest::clear);
+        }
         this.world.resetWorld(rr);
 
         this.inMap.clear();

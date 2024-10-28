@@ -46,6 +46,7 @@ import org.bukkit.block.BlockFace;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -267,26 +268,7 @@ public class MapManager extends MapManagerAPI {
         if (w != null) {
             RSWMap s = new SoloMode(cleanMapName, displayName, w, mapname, wt, maxP);
 
-            w.getBlockAt(0, 64, 0).setType(Material.BEDROCK);
-            Location loc = new Location(w, 0, 66, 0);
-
-            Text.sendList(p.getPlayer(), Text.replaceVarInList(TranslatableList.EDIT_MAP.get(p), "%cages%", maxP + ""));
-
-            RSWPlayerItems.SETUP.giveSet(p);
-            p.getPlayer().setGameMode(org.bukkit.GameMode.CREATIVE);
-
-            if (wt == RSWWorld.WorldType.SCHEMATIC) {
-                w.setAutoSave(false);
-
-                p.teleport(loc);
-
-                Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> WorldEditUtils.pasteSchematic(mapname, new Location(p.getWorld(), 0, 64, 0), s), 3 * 20);
-            } else {
-                w.setAutoSave(true);
-                p.teleport(loc);
-            }
-
-            this.addMap(s);
+            commonSetup(p, mapname, wt, maxP, w, s);
         } else {
             rs.getLogger().warning("Could not create setup world for " + mapname);
         }
@@ -302,29 +284,33 @@ public class MapManager extends MapManagerAPI {
         if (w != null) {
             RSWMap s = new TeamsMode(cleanMapName, cleanMapName, w, cleanMapName, wt, teams, pperteam);
 
-            w.getBlockAt(0, 64, 0).setType(Material.BEDROCK);
-            Location loc = new Location(w, 0, 66, 0);
-
-            Text.sendList(p.getPlayer(), Text.replaceVarInList(TranslatableList.EDIT_MAP.get(p), "%cages%", teams + ""));
-
-            RSWPlayerItems.SETUP.giveSet(p);
-            p.getPlayer().setGameMode(org.bukkit.GameMode.CREATIVE);
-
-            if (wt == RSWWorld.WorldType.SCHEMATIC) {
-                w.setAutoSave(false);
-
-                p.teleport(loc);
-
-                Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> WorldEditUtils.pasteSchematic(mapname, new Location(p.getWorld(), 0, 64, 0), s), 3 * 20);
-            } else {
-                w.setAutoSave(true);
-                p.teleport(loc);
-            }
-
-            this.addMap(s);
+            commonSetup(p, mapname, wt, teams, w, s);
         } else {
             rs.getLogger().warning("Could not create setup world for " + mapname);
         }
+    }
+
+    private void commonSetup(RSWPlayer p, String mapname, RSWWorld.WorldType wt, int teams, World w, RSWMap s) {
+        w.getBlockAt(0, 64, 0).setType(Material.BEDROCK);
+        Location loc = new Location(w, 0, 66, 0);
+
+        Text.sendList(p.getPlayer(), Text.replaceVarInList(TranslatableList.EDIT_MAP.get(p), "%cages%", teams + ""));
+
+        RSWPlayerItems.SETUP.giveSet(p);
+        p.getPlayer().setGameMode(org.bukkit.GameMode.CREATIVE);
+
+        if (wt == RSWWorld.WorldType.SCHEMATIC) {
+            w.setAutoSave(false);
+
+            p.teleport(loc);
+
+            Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> WorldEditUtils.pasteSchematic(mapname, new Location(p.getWorld(), 0, 64, 0), s), 3 * 20);
+        } else {
+            w.setAutoSave(true);
+            p.teleport(loc);
+        }
+
+        this.addMap(s);
     }
 
     @Override
@@ -466,7 +452,7 @@ public class MapManager extends MapManagerAPI {
     }
 
     @Override
-    public void findMap(RSWPlayer player, RSWMap.GameMode type) {
+    public void findNextMap(RSWPlayer player, RSWMap.GameMode type) {
         UUID playerUUID = player.getUUID();
         if (!rs.getPlayerManagerAPI().getTeleporting().contains(playerUUID)) {
             rs.getPlayerManagerAPI().getTeleporting().add(playerUUID);
@@ -500,16 +486,59 @@ public class MapManager extends MapManagerAPI {
 
     @Override
     public Optional<RSWMap> findSuitableGame(RSWMap.GameMode type) {
-        return type == null ? this.maps.values().stream().findFirst() : this.maps.values().stream()
-                .filter(game -> game.getGameMode().equals(type) &&
-                        (game.getState().equals(RSWMap.MapState.AVAILABLE) ||
-                                game.getState().equals(RSWMap.MapState.STARTING) ||
-                                game.getState().equals(RSWMap.MapState.WAITING))).min((o1, o2) -> {
-                    if (o1.getPlayers().size() == o2.getPlayers().size()) {
-                        return 0;
-                    }
-                    return o1.getPlayers().size() > o2.getPlayers().size() ? 1 : -1;
-                });
+        Optional<RSWMap> rswMap;
+        if (type == null) {
+            //first, find all games of the type required that are starting
+            rswMap = this.maps.values().stream()
+                    .filter(map -> map.getState() == RSWMap.MapState.STARTING)
+                    .max(Comparator.comparingInt(RSWMap::getPlayerCount));
+            if (rswMap.isPresent())
+                return rswMap;
+
+            //then, games waiting sorting by max players
+            rswMap = this.maps.values().stream()
+                    .filter(map -> map.getState() == RSWMap.MapState.WAITING)
+                    .max(Comparator.comparingInt(RSWMap::getPlayerCount));
+            if (rswMap.isPresent())
+                return rswMap;
+
+            //then, games available sorting by max players
+            rswMap = this.maps.values().stream()
+                    .filter(map -> map.getState() == RSWMap.MapState.AVAILABLE)
+                    .max(Comparator.comparingInt(RSWMap::getPlayerCount));
+            if (rswMap.isPresent())
+                return rswMap;
+
+            //then, games sorting by max players
+            return this.maps.values().stream()
+                    .max(Comparator.comparingInt(RSWMap::getPlayerCount));
+        } else {
+            //first, find all games of the type required that are starting
+            rswMap = this.maps.values().stream()
+                    .filter(map -> map.getGameMode() == type && map.getState() == RSWMap.MapState.STARTING)
+                    .max(Comparator.comparingInt(RSWMap::getPlayerCount));
+            if (rswMap.isPresent())
+                return rswMap;
+
+            //then, games waiting sorting by max players
+            rswMap = this.maps.values().stream()
+                    .filter(map -> map.getGameMode() == type && map.getState() == RSWMap.MapState.WAITING)
+                    .max(Comparator.comparingInt(RSWMap::getPlayerCount));
+            if (rswMap.isPresent())
+                return rswMap;
+
+            //then, games available sorting by max players
+            rswMap = this.maps.values().stream()
+                    .filter(map -> map.getGameMode() == type && map.getState() == RSWMap.MapState.AVAILABLE)
+                    .max(Comparator.comparingInt(RSWMap::getPlayerCount));
+            if (rswMap.isPresent())
+                return rswMap;
+
+            //then, games sorting by max players
+            return this.maps.values().stream()
+                    .filter(map -> map.getGameMode() == type)
+                    .max(Comparator.comparingInt(RSWMap::getPlayerCount));
+        }
     }
 
     @Override

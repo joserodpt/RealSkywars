@@ -242,7 +242,7 @@ public class RealSkywarsCMD extends CommandBase {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(pobj);
             if (type != null && p != null && p.getPlayer() != null) {
                 if (!(p.getState() == RSWPlayer.PlayerState.CAGE)) {
-                    rs.getMapManagerAPI().findMap(p, type);
+                    rs.getMapManagerAPI().findNextMap(p, type);
                 } else {
                     TranslatableLine.CMD_ALREADY_IN_MATCH.send(p, true);
                 }

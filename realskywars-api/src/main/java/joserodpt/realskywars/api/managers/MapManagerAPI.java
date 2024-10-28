@@ -69,7 +69,7 @@ public abstract class MapManagerAPI {
 
     protected abstract Boolean isRanked(String s);
 
-    public abstract void findMap(RSWPlayer player, RSWMap.GameMode type);
+    public abstract void findNextMap(RSWPlayer player, RSWMap.GameMode type);
 
     public abstract Optional<RSWMap> findSuitableGame(RSWMap.GameMode type);
 
