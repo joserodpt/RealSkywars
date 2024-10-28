@@ -171,7 +171,7 @@ public class RSWLanguage {
             return type.name();
         }
 
-        String name = type.getName();
+        String name = type.name();
         if (name == null) return getString("entity.notFound");
         return getString("entity.minecraft." + name.toLowerCase());
     }
