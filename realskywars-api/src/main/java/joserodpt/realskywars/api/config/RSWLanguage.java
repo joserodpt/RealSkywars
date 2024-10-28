@@ -17,6 +17,7 @@ package joserodpt.realskywars.api.config;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -112,7 +113,7 @@ public class RSWLanguage {
         }
     }
 
-    private void loadJsonFile() {
+    private void loadJsonFile() throws Exception {
         // download the language file from https://assets.mcasset.cloud/1.21/assets/minecraft/lang/{getTranslationKey()}.json to the translations folder
         if (folder.exists() && !file.exists()) {
             downloadLanguageFile();
@@ -122,24 +123,29 @@ public class RSWLanguage {
             return;
         }
 
-        try {
-            parseJsonFile(file);
-            RealSkywarsAPI.getInstance().getLogger().info("Loaded minecraft language file for " + getTranslationKey() + " (" + version + ")!");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        parseJsonFile(file);
     }
 
     private void parseJsonFile(File file) throws IOException {
-        try (InputStreamReader streamReader = new InputStreamReader(Files.newInputStream(file.toPath()));
-             BufferedReader reader = new BufferedReader(streamReader)) {
-            Gson gson = new Gson();
-            this.json = gson.fromJson(reader, JsonObject.class);
+        if (file.exists()) {
+            try (InputStreamReader streamReader = new InputStreamReader(Files.newInputStream(file.toPath()));
+                 BufferedReader reader = new BufferedReader(streamReader)) {
+                Gson gson = new Gson();
+                this.json = gson.fromJson(reader, JsonObject.class);
+            }
         }
     }
 
+    //available data from minecraft language files
+
     public String getMaterialName(Material mat) {
-        loadJsonFile();
+        try {
+            loadJsonFile();
+        } catch (Exception e) {
+            Debugger.print(RSWLanguage.class, "Could not load language " + this.name + " - " + this.displayName + " -> Exception: " + e.getMessage());
+            return mat.name();
+        }
+
         String name = mat.getKey().getKey();
         if (name.contains("wall_")) name = name.replace("wall_", "");
 
@@ -147,13 +153,23 @@ public class RSWLanguage {
     }
 
     public String getEnchantmentName(Enchantment ench) {
-        loadJsonFile();
+        try {
+            loadJsonFile();
+        } catch (Exception e) {
+            Debugger.print(RSWLanguage.class, "Could not load language " + this.name + " - " + this.displayName + " -> Exception: " + e.getMessage());
+            return ench.getKey().getKey();
+        }
 
         return getString("enchantment.minecraft." + ench.getKey().getKey());
     }
 
     public String getEntityName(EntityType type) {
-        loadJsonFile();
+        try {
+            loadJsonFile();
+        } catch (Exception e) {
+            Debugger.print(RSWLanguage.class, "Could not load language " + this.name + " - " + this.displayName + " -> Exception: " + e.getMessage());
+            return type.name();
+        }
 
         String name = type.getName();
         if (name == null) return getString("entity.notFound");
@@ -161,7 +177,12 @@ public class RSWLanguage {
     }
 
     private String getString(String key) {
-        loadJsonFile();
+        try {
+            loadJsonFile();
+        } catch (Exception e) {
+            Debugger.print(RSWLanguage.class, "Could not load language " + this.name + " - " + this.displayName + " -> Exception: " + e.getMessage());
+            return key;
+        }
 
         if (json == null) return "Language file " + getTranslationKey() + " not loaded!";
         return json.get(key).getAsString();
