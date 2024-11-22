@@ -1,4 +1,4 @@
-Version: 8
+Version: 9
 Debug-Mode: false
 Config:
   Bungeecord:
@@ -14,6 +14,7 @@ Config:
     Enable-Shop: true
     Enable-Spectator-Shop: true
     Enable-Kit-Shop: true
+    Only-Buy-Kits-Per-Match: false
     Enable-Cage-Block-Shop: true
     Enable-Win-Block-Shop: true
     Enable-Bow-Particles-Shop: true

@@ -711,6 +711,10 @@ public abstract class RSWMap {
         p.setInvincible(false);
         TranslatableLine.MATCH_LEAVE.send(p, true);
 
+        if (!RSWConfig.file().getBoolean("Config.Shops.Only-Buy-Kits-Per-Match")) {
+            p.setKit(null);
+        }
+
         p.setState(RSWPlayer.PlayerState.LOBBY_OR_NOGAME);
         p.setFlying(false);
         p.setGameMode(org.bukkit.GameMode.SURVIVAL);

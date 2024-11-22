@@ -58,7 +58,20 @@ public class PlayerItemsGUI {
     private final Map<Integer, RSWBuyableItem> display = new HashMap<>();
     private RSWBuyableItem.ItemCategory cat;
 
+    private boolean cancelOpen = false;
+
     public PlayerItemsGUI(RSWPlayer rswp, RSWBuyableItem.ItemCategory t) {
+
+        if (RSWConfig.file().getBoolean("Config.Shops.Only-Buy-Kits-Per-Match") && t == RSWBuyableItem.ItemCategory.KIT) {
+            inv = null;
+            this.rswp = null;
+            this.cancelOpen = true;
+            ShopGUI kitShop = new ShopGUI(rswp, RSWBuyableItem.ItemCategory.KIT);
+            kitShop.openInventory(rswp);
+            return;
+        }
+
+
         this.rswp = rswp;
         this.cat = t;
         this.inv = Bukkit.getServer().createInventory(null, 54, this.cat.getCategoryTitle(rswp));
@@ -100,11 +113,7 @@ public class PlayerItemsGUI {
             inv.setItem(47, placeholder);
         }
 
-        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Kit-Shop")) {
-            inv.setItem(48, Itens.createItem(Material.LEATHER_CHESTPLATE, 1, TranslatableLine.KITS.get(rswp)));
-        } else {
-            inv.setItem(48, placeholder);
-        }
+        inv.setItem(48, Itens.createItem(Material.LEATHER_CHESTPLATE, 1, TranslatableLine.KITS.get(rswp)));
 
         if (RSWConfig.file().getBoolean("Config.Shops.Enable-Bow-Particles-Shop")) {
             inv.setItem(50, Itens.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(rswp)));
@@ -162,10 +171,12 @@ public class PlayerItemsGUI {
                                 break;
                             case 48:
                                 p.closeInventory();
-                                if (RSWConfig.file().getBoolean("Config.Shops.Enable-Kit-Shop")) {
+                                if (RSWConfig.file().getBoolean("Config.Shops.Only-Buy-Kits-Per-Match")) {
+                                    ShopGUI kitShop = new ShopGUI(p, RSWBuyableItem.ItemCategory.KIT);
+                                    kitShop.openInventory(p);
+                                } else {
                                     PlayerItemsGUI kitShop = new PlayerItemsGUI(p, RSWBuyableItem.ItemCategory.KIT);
                                     kitShop.openInventory(p);
-                                    return;
                                 }
                                 break;
                             case 50:
@@ -308,6 +319,10 @@ public class PlayerItemsGUI {
     }
 
     public void openInventory(RSWPlayer player) {
+        if (cancelOpen) {
+            return;
+        }
+
         Inventory inv = getInventory();
         InventoryView openInv = player.getPlayer().getOpenInventory();
         if (openInv != null) {

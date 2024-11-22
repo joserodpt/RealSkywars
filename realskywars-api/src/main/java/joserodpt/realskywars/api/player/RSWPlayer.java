@@ -313,7 +313,8 @@ public class RSWPlayer {
 
     public void setKit(RSWKit playerKit) {
         this.playerKit = playerKit;
-        this.saveData(PlayerData.KIT);
+        if (!RSWConfig.file().getBoolean("Config.Shops.Only-Buy-Kits-Per-Match"))
+            this.saveData(PlayerData.KIT);
     }
 
     public void setBowParticle(Particle bowParticle) {

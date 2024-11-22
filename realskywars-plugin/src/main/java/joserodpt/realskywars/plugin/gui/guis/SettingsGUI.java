@@ -102,6 +102,7 @@ public class SettingsGUI {
             new SettingEntry("Enable Shop", "Config.Shops.Enable-Shop", 0),
             new SettingEntry("Enable Spectator Shop", "Config.Shops.Enable-Spectator-Shop", 0),
             new SettingEntry("Enable Kit Shop", "Config.Shops.Enable-Kit-Shop", 0),
+            new SettingEntry("Only Buy Kits per Match", "Config.Shops.Only-Buy-Kits-Per-Match", 0),
             new SettingEntry("Enable Cage Shop", "Config.Shops.Enable-Cage-Block-Shop", 0),
             new SettingEntry("Enable Win Block Shop", "Config.Shops.Enable-Win-Block-Shop", 0),
             new SettingEntry("Enable Bow Particles Shop", "Config.Shops.Enable-Bow-Particles-Shop", 0),

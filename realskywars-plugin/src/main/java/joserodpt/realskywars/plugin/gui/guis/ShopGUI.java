@@ -100,11 +100,7 @@ public class ShopGUI {
             inv.setItem(47, placeholder);
         }
 
-        if (RSWConfig.file().getBoolean("Config.Shops.Enable-Kit-Shop") && cat != RSWBuyableItem.ItemCategory.SPEC_SHOP) {
-            inv.setItem(48, Itens.createItem(Material.LEATHER_CHESTPLATE, 1, TranslatableLine.KITS.get(rswp)));
-        } else {
-            inv.setItem(48, placeholder);
-        }
+        inv.setItem(48, Itens.createItem(Material.LEATHER_CHESTPLATE, 1, TranslatableLine.KITS.get(rswp)));
 
         if (RSWConfig.file().getBoolean("Config.Shops.Enable-Bow-Particles-Shop") && cat != RSWBuyableItem.ItemCategory.SPEC_SHOP) {
             inv.setItem(50, Itens.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(rswp)));
@@ -153,8 +149,15 @@ public class ShopGUI {
                             case 47:
                                 p.closeInventory();
                                 if (RSWConfig.file().getBoolean("Config.Shops.Enable-Cage-Block-Shop") && current.cat != RSWBuyableItem.ItemCategory.SPEC_SHOP) {
-                                    ShopGUI kitShop = new ShopGUI(p, RSWBuyableItem.ItemCategory.CAGE_BLOCK);
-                                    kitShop.openInventory(p);
+
+                                    if (RSWConfig.file().getBoolean("Config.Shops.Only-Buy-Kits-Per-Match")) {
+                                        PlayerItemsGUI kitShop = new PlayerItemsGUI(p, RSWBuyableItem.ItemCategory.CAGE_BLOCK);
+                                        kitShop.openInventory(p);
+                                    } else {
+                                        ShopGUI kitShop = new ShopGUI(p, RSWBuyableItem.ItemCategory.CAGE_BLOCK);
+                                        kitShop.openInventory(p);
+                                    }
+
                                     return;
                                 }
                                 break;
@@ -169,16 +172,30 @@ public class ShopGUI {
                             case 50:
                                 p.closeInventory();
                                 if (RSWConfig.file().getBoolean("Config.Shops.Enable-Bow-Particles-Shop") && current.cat != RSWBuyableItem.ItemCategory.SPEC_SHOP) {
-                                    ShopGUI kitShop = new ShopGUI(p, RSWBuyableItem.ItemCategory.BOW_PARTICLE);
-                                    kitShop.openInventory(p);
+
+                                    if (RSWConfig.file().getBoolean("Config.Shops.Only-Buy-Kits-Per-Match")) {
+                                        PlayerItemsGUI kitShop = new PlayerItemsGUI(p, RSWBuyableItem.ItemCategory.BOW_PARTICLE);
+                                        kitShop.openInventory(p);
+                                    } else {
+                                        ShopGUI kitShop = new ShopGUI(p, RSWBuyableItem.ItemCategory.BOW_PARTICLE);
+                                        kitShop.openInventory(p);
+                                    }
+
                                     return;
                                 }
                                 break;
                             case 51:
                                 p.closeInventory();
                                 if (RSWConfig.file().getBoolean("Config.Shops.Enable-Win-Block-Shop") && current.cat != RSWBuyableItem.ItemCategory.SPEC_SHOP) {
-                                    ShopGUI kitShop = new ShopGUI(p, RSWBuyableItem.ItemCategory.WIN_BLOCK);
-                                    kitShop.openInventory(p);
+
+                                    if (RSWConfig.file().getBoolean("Config.Shops.Only-Buy-Kits-Per-Match")) {
+                                        PlayerItemsGUI kitShop = new PlayerItemsGUI(p, RSWBuyableItem.ItemCategory.WIN_BLOCK);
+                                        kitShop.openInventory(p);
+                                    } else {
+                                        ShopGUI kitShop = new ShopGUI(p, RSWBuyableItem.ItemCategory.WIN_BLOCK);
+                                        kitShop.openInventory(p);
+                                    }
+
                                     return;
                                 }
                                 break;
@@ -254,6 +271,18 @@ public class ShopGUI {
 
                                 if (p.getPlayer().hasPermission(a.getPermission())) {
                                     p.closeInventory();
+
+                                    //if the item is a kit and buy kit per match is enabled
+                                    if (a instanceof RSWKit && RSWConfig.file().getBoolean("Config.Shops.Only-Buy-Kits-Per-Match")) {
+                                        TransactionManager cm = new TransactionManager(p, a.getPrice(), TransactionManager.Operations.REMOVE, false);
+                                        if (cm.removeCoins()) {
+                                            p.setKit((RSWKit) a);
+                                            p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.get(p, true).replace("%name%", a.getDisplayName()).replace("%coins%", a.getPriceFormatted()));
+                                        } else {
+                                            p.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(p, true).replace("%coins%", RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoinsFormatted(p)));
+                                        }
+                                        return;
+                                    }
 
                                     if (a.isBought(p).getKey()) {
                                         p.sendMessage(TranslatableLine.SHOP_ALREADY_BOUGHT.get(p, true).replace("%name%", a.getDisplayName()));
