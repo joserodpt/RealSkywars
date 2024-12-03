@@ -17,6 +17,7 @@ package joserodpt.realskywars.api.nms;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
@@ -54,9 +55,9 @@ public class NMS114R1tov116R3 implements RSWnms {
     private final Class<?> chat_serializer = ReflectionHelper.getNMSClass("IChatBaseComponent$ChatSerializer");
 
     @Override
-    public String getItemName(ItemStack itemStack) {
+    public String getItemName(Material mat) {
         try {
-            Object nmsStack = craft_item_stack.getMethod("asNMSCopy", ItemStack.class).invoke(null, itemStack);
+            Object nmsStack = craft_item_stack.getMethod("asNMSCopy", ItemStack.class).invoke(null, new ItemStack(mat));
             Object itemName = nms_item_stack.getMethod("getItem").invoke(nmsStack);
 
             Method getNameMethod = locale_language.getMethod("a", i_chat_base_component);
@@ -69,7 +70,7 @@ public class NMS114R1tov116R3 implements RSWnms {
         } catch (Exception ex) {
             RealSkywarsAPI.getInstance().getLogger().severe("Error while executing getItemName nms.");
             RealSkywarsAPI.getInstance().getLogger().severe(ex.toString());
-            return null;
+            return "-";
         }
     }
 }

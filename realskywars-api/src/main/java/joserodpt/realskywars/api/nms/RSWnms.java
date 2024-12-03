@@ -15,11 +15,11 @@ package joserodpt.realskywars.api.nms;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
 
 public interface RSWnms {
     void playChestAnimation(Block block, boolean open);
 
-    String getItemName(ItemStack itemStack);
+    String getItemName(Material material);
 }

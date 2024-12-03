@@ -142,13 +142,12 @@ public class RSWLanguage {
     }
 
     //available data from minecraft language files
-
     public String getMaterialName(Material mat) {
         try {
             loadJsonFile();
         } catch (Exception e) {
             Debugger.print(RSWLanguage.class, "Could not load language " + this.name + " - " + this.displayName + " -> Exception: " + e.getMessage());
-            return Text.beautifyEnumName(mat.name());
+            return RealSkywarsAPI.getInstance().getNMS().getItemName(mat);
         }
 
         String name = mat.getKey().getKey();

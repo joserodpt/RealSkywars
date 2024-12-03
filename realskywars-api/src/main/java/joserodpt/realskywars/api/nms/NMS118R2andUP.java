@@ -16,9 +16,9 @@ package joserodpt.realskywars.api.nms;
  */
 
 import joserodpt.realskywars.api.utils.Text;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.inventory.ItemStack;
 
 public class NMS118R2andUP implements RSWnms {
 
@@ -34,7 +34,7 @@ public class NMS118R2andUP implements RSWnms {
     }
 
     @Override
-    public String getItemName(ItemStack itemStack) {
-        return Text.beautifyEnumName(itemStack.getType().name());
+    public String getItemName(Material m) {
+        return Text.beautifyEnumName(m.name());
     }
 }
