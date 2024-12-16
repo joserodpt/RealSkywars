@@ -11,7 +11,7 @@ package joserodpt.realskywars.plugin.managers;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues © 2019-2024
+ * @author José Rodrigues © 2019-2025
  * @link https://github.com/joserodpt/RealSkywars
  */
 
@@ -19,11 +19,8 @@ import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.RSWLanguage;
-import joserodpt.realskywars.api.config.RSWLanguagesConfig;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.ItemStackSpringer;
-import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -33,8 +30,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class LanguageManager extends LanguageManagerAPI {
 
@@ -48,14 +45,39 @@ public class LanguageManager extends LanguageManagerAPI {
     public void loadLanguages() {
         this.getLanguages().clear();
 
-        for (String language : RSWLanguagesConfig.file().getSection("Languages").getRoutesAsStrings(false)) {
-            String displayName = RSWLanguagesConfig.file().getString("Languages." + language + ".Language-Specific.Displayname");
-            String translationKey = RSWLanguagesConfig.file().getString("Languages." + language + ".Language-Specific.Translation-Key");
-            this.langList.put(language, new RSWLanguage(language, displayName, translationKey, Itens.renameItem(ItemStackSpringer.getItemDeSerialized(sectionToMap("Languages." + language + ".Language-Specific.Icon")), "&e&l" + displayName, language)));
+        //check if "languages" folder exists
+        File languagesFolder = new File(rsa.getPlugin().getDataFolder(), "languages");
+        if (!languagesFolder.exists()) {
+            languagesFolder.mkdirs();
+        }
+
+        for (String langFile : new String[]{"en_us", "pt_pt", "es_es"}) {
+            //check if the language file exists
+            File file = new File(languagesFolder, langFile + ".yml");
+            if (!file.exists()) {
+                try {
+                    Files.copy(Objects.requireNonNull(rsa.getPlugin().getResource("languages/" + langFile + ".yml")), file.toPath());
+                } catch (IOException e) {
+                    rsa.getLogger().severe("Could not copy language file " + langFile + " -> " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        //loop through files in the languages folder
+        for (File file : Objects.requireNonNull(languagesFolder.listFiles())) {
+            if (file.getName().endsWith(".yml")) {
+                try {
+                    RSWLanguage l = new RSWLanguage(file);
+                    this.langList.put(l.getKey(), l);
+                } catch (Exception e) {
+                    rsa.getLogger().severe("Could not load language file " + file.getName() + " -> " + e.getMessage());
+                }
+            }
         }
 
         String simpleVersion = rsa.getSimpleServerVersion();
-        File folder = new File(rsa.getPlugin().getDataFolder(), "translations");
+        File folder = new File(rsa.getPlugin().getDataFolder(), "languages");
         File translationVersionFile = new File(folder, "version.yml");
 
         // Check if the language file exists
@@ -68,7 +90,7 @@ public class LanguageManager extends LanguageManagerAPI {
                         try {
                             language.downloadLanguageFile();
                         } catch (Exception e) {
-                            rsa.getLogger().severe("Could not update language file " + language.getName() + " -> " + e.getMessage());
+                            rsa.getLogger().severe("Could not update language file " + language.getKey() + " -> " + e.getMessage());
                             Debugger.print(LanguageManager.class, e.getMessage());
                         }
                     }
@@ -87,15 +109,7 @@ public class LanguageManager extends LanguageManagerAPI {
                 e.printStackTrace();
             }
         }
-    }
 
-    public static Map<String, Object> sectionToMap(String section) {
-        Map<String, Object> newMap = new HashMap<>();
-        RSWLanguagesConfig.file().getSection(section).getRoutesAsStrings(false).forEach(route -> {
-            newMap.put(route, RSWLanguagesConfig.file().get(section + "." + route));
-        });
-
-        return newMap;
     }
 
     @Override
@@ -124,7 +138,7 @@ public class LanguageManager extends LanguageManagerAPI {
 
     @Override
     public String getPrefix() {
-        return Text.color(RSWLanguagesConfig.file().getString("Strings.Prefix"));
+        return Text.color(RSWConfig.file().getString("Config.Prefix"));
     }
 
     @Override

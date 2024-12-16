@@ -11,7 +11,7 @@ package joserodpt.realskywars.plugin;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues © 2019-2024
+ * @author José Rodrigues © 2019-2025
  * @link https://github.com/joserodpt/RealSkywars
  */
 
@@ -25,7 +25,7 @@ import joserodpt.realskywars.api.chests.TierViewer;
 import joserodpt.realskywars.api.config.RSWAchievementsConfig;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.RSWKitsConfig;
-import joserodpt.realskywars.api.config.RSWLanguagesConfig;
+import joserodpt.realskywars.api.config.RSWLanguagesOldConfig;
 import joserodpt.realskywars.api.config.RSWMapsConfig;
 import joserodpt.realskywars.api.config.RSWSQLConfig;
 import joserodpt.realskywars.api.config.RSWShopsConfig;
@@ -110,17 +110,16 @@ public class RealSkywarsPlugin extends JavaPlugin {
             return;
         }
 
-        RSWLanguagesConfig.setup(this);
+        RSWConfig.setup(this);
+        RSWLanguagesOldConfig.setup(this);
 
         realSkywars.getLanguageManagerAPI().loadLanguages();
         if (realSkywars.getLanguageManagerAPI().areLanguagesEmpty()) {
-            getLogger().severe("[ERROR] No Languages have been Detected. Stopped loading.");
+            getLogger().severe("[ERROR] No Languages have been detected. Stopped loading.");
             HandlerList.unregisterAll(this);
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-
-        RSWConfig.setup(this);
 
         Debugger.debug = RSWConfig.file().getBoolean("Debug-Mode");
         Debugger.print(RealSkywars.class, "DEBUG MODE ENABLED");

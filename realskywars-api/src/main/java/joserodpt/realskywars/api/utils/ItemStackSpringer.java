@@ -11,7 +11,7 @@ package joserodpt.realskywars.api.utils;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues © 2019-2024
+ * @author José Rodrigues © 2019-2025
  * @link https://github.com/joserodpt/RealSkywars
  * Wiki Reference: https://www.spigotmc.org/wiki/itemstack-serialization/
  */

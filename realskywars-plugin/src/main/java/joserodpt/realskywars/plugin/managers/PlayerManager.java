@@ -11,7 +11,7 @@ package joserodpt.realskywars.plugin.managers;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues © 2019-2024
+ * @author José Rodrigues © 2019-2025
  * @link https://github.com/joserodpt/RealSkywars
  */
 
@@ -228,7 +228,7 @@ public class PlayerManager extends PlayerManagerAPI {
 
     @Override
     public void setLanguage(RSWPlayer player, RSWLanguage l) {
-        player.setLanguage(l.getName());
+        player.setLanguage(l.getKey());
         player.sendMessage(TranslatableLine.LANGUAGE_SET.get(player, true).replace("%language%", l.getDisplayName()));
         player.closeInventory();
     }

@@ -11,11 +11,11 @@ package joserodpt.realskywars.api.map;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues © 2019-2024
+ * @author José Rodrigues © 2019-2025
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.config.RSWLanguagesConfig;
+import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.utils.Itens;
@@ -115,7 +115,7 @@ public class RSWMapEvent {
         }
 
         public String getName() {
-            return Text.color(RSWLanguagesConfig.file().getString("Strings.Events." + this.name()));
+            return Text.color(RSWConfig.file().getString("Config.Languages.Strings.Events." + this.name()));
         }
     }
 }

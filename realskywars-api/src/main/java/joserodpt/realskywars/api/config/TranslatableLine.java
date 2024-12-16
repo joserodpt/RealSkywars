@@ -11,7 +11,7 @@ package joserodpt.realskywars.api.config;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues © 2019-2024
+ * @author José Rodrigues © 2019-2025
  * @link https://github.com/joserodpt/RealSkywars
  */
 
@@ -250,11 +250,11 @@ public enum TranslatableLine {
     }
 
     public String getSingle() {
-        return Text.color(RSWLanguagesConfig.file().getString(this.configPath));
+        return Text.color(RSWConfig.file().getString("Config.Languages." + this.configPath));
     }
 
     public String getInLanguage(String l) {
-        return Text.color(RSWLanguagesConfig.file().getString("Languages." + l + this.configPath));
+        return Text.color(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getLanguage(l).getString(this.configPath));
     }
 
     public String get(RSWPlayer player) {
@@ -266,7 +266,7 @@ public enum TranslatableLine {
     }
 
     public String getDefault() {
-        return getInLanguage(RSWLanguagesConfig.file().getString("Default-Language"));
+        return getInLanguage(RSWConfig.file().getString("Config.Languages.Default-Language"));
     }
 
     public void sendDefault(CommandSender p, boolean prefix) {

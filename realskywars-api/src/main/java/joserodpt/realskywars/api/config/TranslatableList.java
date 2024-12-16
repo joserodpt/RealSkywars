@@ -11,10 +11,11 @@ package joserodpt.realskywars.api.config;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues © 2019-2024
+ * @author José Rodrigues © 2019-2025
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
 
@@ -48,7 +49,7 @@ public enum TranslatableList {
     }
 
     public List<String> getInLanguage(String lang) {
-        return Text.color(RSWLanguagesConfig.file().getStringList("Languages." + lang + this.configPath));
+        return Text.color(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getLanguage(lang).getStringList("Languages." + lang + this.configPath));
     }
 
     public List<String> get(RSWPlayer player) {

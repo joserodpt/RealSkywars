@@ -11,7 +11,7 @@ package joserodpt.realskywars.plugin;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues © 2019-2024
+ * @author José Rodrigues © 2019-2025
  * @link https://github.com/joserodpt/RealSkywars
  */
 
@@ -20,7 +20,7 @@ import joserodpt.realskywars.api.RSWEventsAPI;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.RSWKitsConfig;
-import joserodpt.realskywars.api.config.RSWLanguagesConfig;
+import joserodpt.realskywars.api.config.RSWLanguagesOldConfig;
 import joserodpt.realskywars.api.config.RSWMapsConfig;
 import joserodpt.realskywars.api.config.RSWShopsConfig;
 import joserodpt.realskywars.api.config.chests.BasicChestConfig;
@@ -212,7 +212,7 @@ public class RealSkywars extends RealSkywarsAPI {
 
         RSWConfig.reload();
         RSWMapsConfig.reload();
-        RSWLanguagesConfig.reload();
+        RSWLanguagesOldConfig.reload();
 
         Debugger.debug = RSWConfig.file().getBoolean("Debug-Mode");
 

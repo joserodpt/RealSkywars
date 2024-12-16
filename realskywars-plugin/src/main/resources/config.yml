@@ -1,6 +1,41 @@
-Version: 9
+Version: 10
 Debug-Mode: false
 Config:
+  Prefix: "&fReal&bSkywars &7> &r"
+  Languages:
+    Default-Language: en_us
+    Strings:
+      Events:
+        REFILL: "&aRefill"
+        TNTRAIN: "&cTNT &fRain"
+        BORDERSHRINK: "&5End"
+      Boss-Bar:
+        Wait: "&fWaiting players."
+        End: "&fThe match ended."
+        DeathMatch: "&5Deathmatch"
+        Run-Time: "&fTime left : &b%time%"
+        Starting: "&fStarting in &b%time% &fsecond(s)"
+      Admin-Shutdown: "&cAn admin shutdown all games."
+      BungeeCord:
+        Full: "&cThis map is full. &7Please try another one."
+        No-Available-Maps: "&cThere are currently no available maps. &7Please try again later."
+        Kick-Message: "&7Connecting to the lobby..."
+        Resetting: "&cThis map is resetting. &7Please try again later."
+      Search:
+        Not-Found: "&aEmpty"
+      Menus:
+        Filter-Button:
+          Title: "&bFilter"
+          Description: "&fClick here to filter itens on this page."
+        Next-Button:
+          Title: "&aNext"
+          Description: "&fClick here to go next."
+        Back-Button:
+          Title: "&ePrevious"
+          Description: "&fClick here to go back."
+        Main-Menu-Button:
+          Title: "&9Menu"
+          Description: "&fClick here to go to the main menu."
   Bungeecord:
     Enabled: false
     Kick-Player: true

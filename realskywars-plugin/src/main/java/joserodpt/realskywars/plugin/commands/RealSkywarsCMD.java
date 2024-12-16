@@ -11,7 +11,7 @@ package joserodpt.realskywars.plugin.commands;
  *                                  |___/
  *
  * Licensed under the MIT License
- * @author José Rodrigues © 2019-2024
+ * @author José Rodrigues © 2019-2025
  * @link https://github.com/joserodpt/RealSkywars
  */
 
@@ -308,7 +308,7 @@ public class RealSkywarsCMD extends CommandBase {
         Text.send(commandSender, "&aLanguage Verification Started.");
 
         for (RSWLanguage langObj : rs.getLanguageManagerAPI().getLanguages()) {
-            String languageName = langObj.getName();
+            String languageName = langObj.getKey();
             Text.send(commandSender, "&6Checking language &b" + languageName + "&6...");
             Text.send(commandSender, "&6Checking for missing translations in strings...");
             for (TranslatableLine value : TranslatableLine.values()) {
