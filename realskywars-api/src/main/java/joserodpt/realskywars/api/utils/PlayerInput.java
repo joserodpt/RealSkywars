@@ -37,12 +37,12 @@ public class PlayerInput {
     private static Map<UUID, PlayerInput> inputs = new HashMap<>();
     private UUID uuid;
 
-    private List<String> texts = Text
+    private final List<String> texts = Text
             .color(Arrays.asList("&l&9Type in chat your input", "&fType &4cancel &fto cancel"));
 
-    private InputRunnable runGo;
-    private InputRunnable runCancel;
-    private BukkitTask taskId;
+    private final InputRunnable runGo;
+    private final InputRunnable runCancel;
+    private final BukkitTask taskId;
 
     public PlayerInput(Player p, InputRunnable correct, InputRunnable cancel) {
         this.uuid = p.getUniqueId();

@@ -23,7 +23,7 @@ import java.util.UUID;
 
 public class RSWLeaderboard {
 
-    private List<RSWLeaderboardRow> lbr = new ArrayList<>();
+    private final List<RSWLeaderboardRow> lbr = new ArrayList<>();
 
     public RSWLeaderboard() {
     }

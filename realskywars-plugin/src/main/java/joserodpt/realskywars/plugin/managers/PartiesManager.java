@@ -75,7 +75,7 @@ public class PartiesManager extends PartiesManagerAPI {
                     p.getParty().getMembers().forEach(swgm::addPlayer);
                     result = true;
 
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywarsAPI.getInstance().getPlugin(), () -> p.getParty().setAllowJoin(false), 20L);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> p.getParty().setAllowJoin(false), 20L);
                 }
             } else {
                 if (p.getParty().allowJoin()) {
