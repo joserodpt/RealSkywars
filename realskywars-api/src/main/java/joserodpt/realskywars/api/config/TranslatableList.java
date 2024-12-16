@@ -49,7 +49,7 @@ public enum TranslatableList {
     }
 
     public List<String> getInLanguage(String lang) {
-        return Text.color(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getLanguage(lang).getStringList("Languages." + lang + this.configPath));
+        return Text.color(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getLanguage(lang).getStringList(this.configPath));
     }
 
     public List<String> get(RSWPlayer player) {

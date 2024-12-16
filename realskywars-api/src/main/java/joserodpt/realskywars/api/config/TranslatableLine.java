@@ -123,7 +123,6 @@ public enum TranslatableLine {
     MENU_CHESTS_TITLE(".Menus.Chests-Vote-Title"),
     MENU_PROJECTILES_TITLE(".Menus.Projectiles-Vote-Title"),
     MENU_TIME_TITLE(".Menus.Time-Vote-Title"),
-    MENU_LANG_SELECT(".Menus.Language.Select"),
     MENU_LANG_TITLE(".Menus.Language.Title"),
     MENU_PLAYERP_TITLE(".Menus.Player-Profile.Title"),
     MENU_SPECTATE_TITLE(".Menus.Spectate-Title"),

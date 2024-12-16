@@ -15,7 +15,6 @@ package joserodpt.realskywars.api.utils;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.config.TranslatableLine;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -27,7 +26,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Itens {
@@ -68,10 +66,10 @@ public class Itens {
         }
     }
 
-    public static ItemStack renameItem(ItemStack item, String name, String lang) {
+    public static ItemStack renameItem(ItemStack item, String name, List<String> lore) {
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
-        meta.setLore(Collections.singletonList(TranslatableLine.MENU_LANG_SELECT.getInLanguage(lang)));
+        meta.setLore(Text.color(lore));
         meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
         item.setItemMeta(meta);
         return item;

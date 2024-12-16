@@ -36,6 +36,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,21 +49,21 @@ public class RSWLanguage {
     private final ItemStack icon;
 
     private final File folder = new File(RealSkywarsAPI.getInstance().getPlugin().getDataFolder(), "languages");
-    private final File translationFile, configFile;
+    private final File translationFile;
     private final YamlConfiguration config;
     private JsonObject json = null;
+
 
     private final String version = RealSkywarsAPI.getInstance().getSimpleServerVersion();
 
     public RSWLanguage(File configFile) {
-        this.configFile = configFile;
-        this.key = this.configFile.getName().replace(".yml", "");
+        this.key = configFile.getName().replace(".yml", "");
 
         // load language config file
-        this.config = YamlConfiguration.loadConfiguration(this.configFile);
+        this.config = YamlConfiguration.loadConfiguration(configFile);
 
         this.displayName = this.getConfig().getString(this.getKey() + ".Language-Specific.Displayname");
-        this.icon = Itens.renameItem(Objects.requireNonNull(ItemStackSpringer.getItemDeSerialized(sectionToMap(this.getKey() + ".Language-Specific.Icon"))), this.getDisplayName(), this.getKey());
+        this.icon = Itens.renameItem(Objects.requireNonNull(ItemStackSpringer.getItemDeSerialized(sectionToMap(this.getKey() + ".Language-Specific.Icon"))), "&e&l" + this.getDisplayName(), Collections.singletonList(this.getString(".Menus.Language.Select")));
         translationFile = new File(folder, this.getKey() + ".json");
 
         // download the language file from https://assets.mcasset.cloud/1.21/assets/minecraft/lang/{getTranslationKey()}.json to the translations folder
@@ -166,7 +167,7 @@ public class RSWLanguage {
         try {
             loadJsonFile();
         } catch (Exception e) {
-            Debugger.print(RSWLanguage.class, "Could not load language " + this.key + " - " + this.displayName + " -> Exception: " + e.getMessage());
+            Debugger.print(RSWLanguage.class, "Could not load language " + this.getKey() + " - " + this.getDisplayName() + " -> Exception: " + e.getMessage());
             return RealSkywarsAPI.getInstance().getNMS().getItemName(mat);
         }
 
@@ -180,7 +181,7 @@ public class RSWLanguage {
         try {
             loadJsonFile();
         } catch (Exception e) {
-            Debugger.print(RSWLanguage.class, "Could not load language " + this.key + " - " + this.displayName + " -> Exception: " + e.getMessage());
+            Debugger.print(RSWLanguage.class, "Could not load language " + this.getKey() + " - " + this.getDisplayName() + " -> Exception: " + e.getMessage());
             return Text.beautifyEnumName(ench.getKey().getKey());
         }
 
@@ -191,7 +192,7 @@ public class RSWLanguage {
         try {
             loadJsonFile();
         } catch (Exception e) {
-            Debugger.print(RSWLanguage.class, "Could not load language " + this.key + " - " + this.displayName + " -> Exception: " + e.getMessage());
+            Debugger.print(RSWLanguage.class, "Could not load language " + this.getKey() + " - " + this.getDisplayName() + " -> Exception: " + e.getMessage());
             return Text.beautifyEnumName(type.name());
         }
 
@@ -204,7 +205,7 @@ public class RSWLanguage {
         try {
             loadJsonFile();
         } catch (Exception e) {
-            Debugger.print(RSWLanguage.class, "Could not load language " + this.key + " - " + this.displayName + " -> Exception: " + e.getMessage());
+            Debugger.print(RSWLanguage.class, "Could not load language " + this.getKey() + " - " + this.getDisplayName() + " -> Exception: " + e.getMessage());
             return key;
         }
 
@@ -212,11 +213,11 @@ public class RSWLanguage {
         return json.get(key).getAsString();
     }
 
-    public List<?> getStringList(String s) {
-        return this.getConfig().getStringList(s);
+    public List<String> getStringList(String s) {
+        return this.getConfig().getStringList(this.getKey() + s);
     }
 
-    public String getString(String configPath) {
-        return this.getConfig().getString(configPath);
+    public String getString(String s) {
+        return this.getConfig().getString(this.getKey() + s);
     }
 }

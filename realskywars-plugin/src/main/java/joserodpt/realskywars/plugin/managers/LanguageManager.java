@@ -66,12 +66,13 @@ public class LanguageManager extends LanguageManagerAPI {
 
         //loop through files in the languages folder
         for (File file : Objects.requireNonNull(languagesFolder.listFiles())) {
-            if (file.getName().endsWith(".yml")) {
+            if (file.getName().endsWith(".yml") && !file.getName().equals("version.yml")) {
                 try {
                     RSWLanguage l = new RSWLanguage(file);
                     this.langList.put(l.getKey(), l);
                 } catch (Exception e) {
                     rsa.getLogger().severe("Could not load language file " + file.getName() + " -> " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }
