@@ -24,6 +24,14 @@ import org.bukkit.inventory.ItemStack;
 public enum RSWPlayerItems {
     LOBBY, CAGE, SETUP, SPECTATOR, ITEM_PROFILE, ITEM_SETCAGE, ITEM_MAPS, ITEM_SHOP, ITEM_LEAVE, ITEM_VOTE, ITEM_SPECTATE, ITEM_KITS, ITEM_PLAYAGAIN, ITEM_CHEST1, ITEM_CHEST2, ITEM_SETINGS, ITEM_SAVE;
 
+    private void setItem(RSWPlayer p, int slot, ItemStack i) {
+        if (slot < 0 || slot > 40) {
+            return;
+        }
+
+        p.getInventory().setItem(slot, i);
+    }
+
     public void giveSet(RSWPlayer p) {
         if (p.isBot() || p.getPlayer() == null) {
             return;
@@ -32,37 +40,37 @@ public enum RSWPlayerItems {
         switch (this) {
             case CAGE:
                 p.getInventory().clear();
-                p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Cage.Kit"), ITEM_KITS.get(p));
-                p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Cage.Vote"), ITEM_VOTE.get(p));
-                p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Cage.Leave"), ITEM_LEAVE.get(p));
+                setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Cage.Kit"), ITEM_KITS.get(p));
+                setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Cage.Vote"), ITEM_VOTE.get(p));
+                setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Cage.Leave"), ITEM_LEAVE.get(p));
                 break;
             case LOBBY:
                 if (RSWConfig.file().getBoolean("Config.Disable-Lobby-Items", false)) {
                     return;
                 }
                 p.getInventory().clear();
-                p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Lobby.Profile"), ITEM_PROFILE.get(p));
-                p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Lobby.Maps"), ITEM_MAPS.get(p));
-                p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Lobby.Shop"), ITEM_SHOP.get(p));
+                setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Lobby.Profile"), ITEM_PROFILE.get(p));
+                setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Lobby.Maps"), ITEM_MAPS.get(p));
+                setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Lobby.Shop"), ITEM_SHOP.get(p));
                 break;
             case SPECTATOR:
                 p.getInventory().clear();
-                p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Spectator.Spectate"), ITEM_SPECTATE.get(p));
+                setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Spectator.Spectate"), ITEM_SPECTATE.get(p));
                 if (p.getState() != RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
-                    p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Spectator.Play-Again"), ITEM_PLAYAGAIN.get(p));
+                    setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Spectator.Play-Again"), ITEM_PLAYAGAIN.get(p));
                 }
                 if (RSWConfig.file().getBoolean("Config.Shops.Enable-Spectator-Shop")) {
-                    p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Spectator.Shop"), ITEM_SHOP.get(p));
+                    setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Spectator.Shop"), ITEM_SHOP.get(p));
                 }
-                p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Spectator.Leave"), ITEM_LEAVE.get(p));
+                setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Spectator.Leave"), ITEM_LEAVE.get(p));
                 break;
             case SETUP:
                 p.getInventory().clear();
-                p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Setup.Cage"), ITEM_SETCAGE.get(p));
-                p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest1"), ITEM_CHEST1.get(p));
-                p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest2"), ITEM_CHEST2.get(p));
-                p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Setup.Settings"), ITEM_SETINGS.get(p));
-                p.getInventory().setItem(RSWConfig.file().getInt("Config.Item-Slots.Setup.Save"), ITEM_SAVE.get(p));
+                setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Setup.Cage"), ITEM_SETCAGE.get(p));
+                setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest1"), ITEM_CHEST1.get(p));
+                setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest2"), ITEM_CHEST2.get(p));
+                setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Setup.Settings"), ITEM_SETINGS.get(p));
+                setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Setup.Save"), ITEM_SAVE.get(p));
                 break;
         }
     }
