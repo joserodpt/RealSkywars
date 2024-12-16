@@ -15,10 +15,13 @@ package joserodpt.realskywars.plugin.managers;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import dev.dejvokep.boostedyaml.YamlDocument;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.RSWLanguage;
+import joserodpt.realskywars.api.config.RSWLanguagesOldConfig;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
@@ -49,17 +52,39 @@ public class LanguageManager extends LanguageManagerAPI {
         File languagesFolder = new File(rsa.getPlugin().getDataFolder(), "languages");
         if (!languagesFolder.exists()) {
             languagesFolder.mkdirs();
-        }
 
-        for (String langFile : new String[]{"en_us", "pt_pt", "es_es"}) {
-            //check if the language file exists
-            File file = new File(languagesFolder, langFile + ".yml");
-            if (!file.exists()) {
-                try {
-                    Files.copy(Objects.requireNonNull(rsa.getPlugin().getResource("languages/" + langFile + ".yml")), file.toPath());
-                } catch (IOException e) {
-                    rsa.getLogger().severe("Could not copy language file " + langFile + " -> " + e.getMessage());
-                    e.printStackTrace();
+            //if folder doesn't exist, the old pre 1.1 language.yml file still exists
+            if (RSWLanguagesOldConfig.file() != null && RSWLanguagesOldConfig.file().contains("Languages")) {
+                RSWLanguagesOldConfig.file().getSection("Languages").getRoutesAsStrings(false).forEach(lang -> {
+                    rsa.getLogger().info("Converting language file " + lang + " to the new format...");
+                    Section section = RSWLanguagesOldConfig.file().getSection("Languages." + lang);
+
+                    String name = section.getString("Language-Specific.Translation-Key");
+                    try {
+                        YamlDocument doc = YamlDocument.create(new File(languagesFolder, name + ".yml"));
+                        doc.set(name, section);
+                        doc.save();
+                        rsa.getLogger().warning("Language file " + lang + " converted successfully!");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                RSWLanguagesOldConfig.file().remove("Languages");
+                RSWLanguagesOldConfig.save();
+            }
+
+            //copy default language files
+            for (String langFile : new String[]{"en_us", "pt_pt", "es_es"}) {
+                //check if the language file exists
+                File file = new File(languagesFolder, langFile + ".yml");
+                if (!file.exists()) {
+                    try {
+                        Files.copy(Objects.requireNonNull(rsa.getPlugin().getResource("languages/" + langFile + ".yml")), file.toPath());
+                    } catch (IOException e) {
+                        rsa.getLogger().severe("Could not copy language file " + langFile + " -> " + e.getMessage());
+                        e.printStackTrace();
+                    }
                 }
             }
         }
