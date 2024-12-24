@@ -17,7 +17,9 @@ es_es:
         - color: RED
           pattern: minecraft:stripe_right
       MATERIAL: YELLOW_BANNER
-      Version: 1
+    Authors:
+      - "JoseGamer_PT/Plugin Author"
+    Version: 2
   Messages:
     Achievements:
       Get: "&f¡Felicidades! Has logrado &b%achievement% &ey has ganado &a%reward%"

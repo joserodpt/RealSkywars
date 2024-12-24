@@ -17,7 +17,6 @@ package joserodpt.realskywars.plugin.gui.guis;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.map.modes.PlaceholderMode;
 import joserodpt.realskywars.api.player.RSWPlayer;
@@ -41,7 +40,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class MapsListGUI {
 
@@ -235,7 +233,7 @@ public class MapsListGUI {
             if (i == null) {
                 if (!items.isEmpty()) {
                     RSWMap s = items.get(0);
-                    inv.setItem(slot, makeIcon(p, s));
+                    inv.setItem(slot, s.getIconForPlayer(p));
                     display.put(slot, s);
                     items.remove(0);
                 }
@@ -256,27 +254,5 @@ public class MapsListGUI {
 
     private void unregister() {
         inventories.remove(this.uuid);
-    }
-
-    private ItemStack makeIcon(RSWPlayer p, RSWMap g) {
-        if (g instanceof PlaceholderMode) {
-            return Itens.createItem(Material.DEAD_BUSH, 1, TranslatableLine.ITEM_MAP_NOTFOUND_NAME.get(p));
-        } else {
-            return Itens.createItem(g.getState().getStateMaterial(g.isRanked()), Math.min(64, Math.max(1, g.getPlayerCount())), TranslatableLine.ITEM_MAP_NAME.get(p).replace("%map%", g.getName()).replace("%displayname%", g.getDisplayName()).replace("%mode%", g.getGameMode().name()) + " " + this.rankedFormatting(g.isRanked()), variableList(TranslatableList.ITEMS_MAP_DESCRIPTION.get(p), g));
-        }
-    }
-
-    private String rankedFormatting(Boolean ranked) {
-        return ranked ? "&bRANKED" : "";
-    }
-
-    private List<String> variableList(List<String> list, RSWMap g) {
-        if (g.isUnregistered()) {
-            list.add("&c&lUNREGISTERED");
-        }
-        return list.stream()
-                .map(s -> s.replace("%players%", String.valueOf(g.getPlayerCount()))
-                        .replace("%maxplayers%", String.valueOf(g.getMaxPlayers())))
-                .collect(Collectors.toList());
     }
 }

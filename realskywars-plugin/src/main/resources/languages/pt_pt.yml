@@ -11,7 +11,9 @@ pt_pt:
         - color: YELLOW
           pattern: minecraft:circle
       MATERIAL: RED_BANNER
-    Version: 1
+    Authors:
+      - "JoseGamer_PT/Plugin Author"
+    Version: 2
   Messages:
     Achievements:
       Get: "&fParabéns! Conquistaste &b%achievement% &e ganhaste &a%reward%"

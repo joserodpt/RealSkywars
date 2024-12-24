@@ -1,0 +1,376 @@
+zh_cn:
+  Language-Specific:
+    Displayname: "Simplified Chinese"
+    Icon:
+      AMOUNT: 1
+      BANNER_PATTERNS:
+        - color: YELLOW
+          pattern: minecraft:flower
+      MATERIAL: RED_BANNER
+    Authors:
+      - "WaterFall (QQ:3654156242)"
+      - "JoseGamer_PT/Plugin Author"
+    Version: 2
+  Messages:
+    Achievements:
+      Get: "&f祝贺! 你已经完成了&b%achievement% &f并且获得了 &a%reward%的奖励"
+      Reward: "&a奖励: &e%reward%"
+      Goal: "&fGoal: &e%goal%"
+      Names:
+        Coins: 硬币
+    Party:
+      Already-In: "&f你已经在一个派对里了."
+      Kick: "&f%player% &c被踢出了派对."
+      Join: "&f%player% &a加入了派对."
+      Leave: "&f%player% &a离开了派对."
+      Not-In-Party: "&c你不在一个派对中."
+      Already-Created: "&c你已经创建了一个派对."
+      Created: "&a你创建了一个派对 邀请别人请使用/party invite <name>"
+      Insufficient-Room-Space: "&c你无法将队伍传送到该房间，因为没有足够的可用位置。"
+      Disband: "&c你关闭了派对."
+      Invite:
+        Not-Found: "&c未找到该玩家的邀请。"
+        Sent: "&b邀请已发送给&f%player%"
+        Recieved: "&b%player% &f邀请你加入派对 同意请输入&a/party accept"
+        Accepted: "&a你加入了&b%player%的 &a派对"
+        Cant-Invite-Yourself: "&c你不能邀请你自己"
+      Not-Owner: "&c你无法执行此操作，因为你不是队伍的拥有者。"
+    Coins:
+      Add: "&b%coins% &f被添加到你的账户"
+      Remove: "&b%coins% &f从你的账户被移除."
+      Set: "&f你现在有&b%coins% &f硬币."
+      Sender: "&f你发送了 &b%coins% 硬币 &f给 %player%."
+      Reciever: "&f你收到了 &b%coins% 金币 &f来自 %player%。"
+    Lobby-Teleport: "&f传送至大厅."
+    Compass-Teleport: "&f传送至&b%name%&f."
+    Selection-Made: "&f你选择了 &b%name% &f在 %type%&f。"
+    Game-Status-Set: "&f游戏状态已设置为 &b%status%"
+    Language-Set: "&f你的语言选择是&b%language%&f."
+    Generating-World: "&aGenerating a new world.."
+    Tier-Set: "&fThe tier has been set to &b%chest%"
+    Cages-Done: "&f这个笼子已经被放置 设置旁观者位置请使用/rsw setspectator."
+    Team:
+      Join: "&f你 &a加入了 &9%team%"
+      Leave: "&f你 &c离开了 &9%team%"
+      Broadcast-Join: "&b%player% &f加入了队伍."
+      Broadcast-Leave: "&b%player% &c离开了队伍"
+      TeamMate-Damage-Cancel: "&f你不能伤害你的&9队友&f."
+    Shop:
+      Buy: "&f你使用&ffor &a%coins% &f硬币购买了 &b%name%."
+      Click-To-Buy: "&f点击使用&a%coins% &f硬币进行购买"
+      Already-Bought: "&f你已经购买了 &b%name%&f."
+      No-Permission: "&f你 &c没有权限 &f购买这个物品"
+      Not-Buyable: "&f此物品 &c无法 &a购买&f。"
+      Click-To-Select: "&f点击选择这个物品."
+      Bought-On: "&f购买于: &b"
+    Commands:
+      No-Permission: "&c你没有权限去执行这个命令."
+      Config-Reload: "&a配置已重载."
+      Coins: "&f你有 &b%coins% &f硬币."
+      Match-Force-Start: "&f比赛已被 &a强制 &f开始。"
+      Match-Force-Start-Denial: "&f你 &c无法 &f强制开始此比赛，因为玩家人数不足。"
+      No-Match: "&c你不在一个比赛中"
+      Lobby-Set: "&f大厅&a已设置&f."
+      Maps: "&f有 &b%rooms% &f张地图被注册了."
+      Players: "&f有 &b%players% &f个玩家在线."
+      No-Game-Found: "&f未找到比赛。请稍后再试！"
+      No-Map-Found: "&f未找到地图。"
+      Map-Found: "&f找到游戏！正在加入中...请稍候..."
+      No-Tier-Found: "&f未找到等级。"
+      No-Player-Found: "&f未找到玩家。"
+      Map-Registered: "&f地图已被 &a注册&f。"
+      Map-Unregistered: "&f地图已被 &c取消注册&f。"
+      Map-Deleted: "&f地图已被 &c删除&f。"
+      Map-Incorrect-Number-Of-Cages-Solo: "&c你必须为地图中的玩家人数设置正确数量的笼子！"
+      Map-Incorrect-Number-Of-Cages-Teams: "&c你必须为地图中的队伍数量设置正确数量的笼子！"
+      Map-Spectator-Location-Not-Set: "&c旁观者位置未设置。"
+      Map-Spectator-Location-Set: "&f旁观者位置 &a已设置&f。"
+      Map-No-Cages-Set: "&c没有设置笼子。"
+      Map-Is-Unregistered: "&c此地图未注册。"
+      Map-Already-Registered: "&c此地图已注册。"
+      Map-Already-Unregistered: "&c此地图已取消注册。"
+      Map-Unregister-To-Edit: "&c你需要先取消注册此地图才能编辑。"
+      Map-Renamed: "&f地图已被 &a重命名&f。"
+      Map-Exists: "&c已存在具有该名称的地图。"
+      Kit-Exists: "&c已存在具有该名称的套件。"
+      Lobby-Loc-Not-Set: "&f大厅位置 &c未设置&f。"
+      Insuficient-Coins: "&c你无法执行此操作。&f你只有 &b%coins%&f 金币。"
+      Command-Not-Found: "&f未找到具有该语法的命令。"
+      Add-Tier: "&f物品已添加到等级中。"
+      Set-Tier: "&f等级已设置。"
+      Reset-Done: "&a重置已成功执行。"
+    Map:
+      Saving: "&a保存地图"
+      Reset: "&c地图正在重置。"
+      Reset-Done: "&a地图已重置。"
+      Registered: "&f地图已被 &a注册&f。"
+      Suggest-Match-Cancel: "&c你现在无法执行此操作。&f你可以使用 /rsw leave 离开此游戏。"
+      No-Boundaries: "&f边界 &c未设置。"
+      Already-In-Match: "&c你已经在一个比赛中了."
+      Player-Join: "&b%player% &f加入了游戏. (&9%players%&7/&9%maxplayers%&f)"
+      Player-Leave: "&b%player% &f离开了游戏 (&9%players%&7/&9%maxplayers%&f)"
+      Match-Cancelled: "&c游戏取消 人数不足."
+      Start-Countdown: "&f空岛战争将在 &9%time% &f秒后开始"
+      Match-End: "&f游戏已经结束 &a你将在&b%time% &a秒后被传送至大厅"
+      Invincibility-End: "&f所有玩家的无敌状态已结束。"
+      Play-Again: "&e你想再玩一把吗? &l点击这里!"
+      Cant-Join: "&f你 &c无法 &f现在加入这个房间。"
+      Blocked-Command: "&f此命令在比赛中 &c被禁用&f。"
+      Spectating-Disabled: "&b观战 &f在此房间中 &c被禁用&f。"
+      Room-Full: "&f此房间已 &c满员&f。"
+      Tracker-Found: "&f正在追踪 &b%player%"
+      No-Tracker-Found: "&f没有可追踪的玩家。"
+      Winner-Broadcast: "&b%winner% &f在地图 &a%displayname% &e胜利了"
+      Leave: "&e你离开了比赛."
+      Already-Started: "&f此比赛 &c已开始&f。"
+      Edit-Map:
+        - "&f如果找到，示意图将被放置。你也可以粘贴你的示意图或创建一个新地图。"
+        - "&b> &c&l重要 &r&f请使用 //pos1 和 //pos2 或 WorldEdit 斧头设置边界，然后使用 //expand vert 扩展到地图的整个高度！"
+        - "&b> &a使用信标放置 %cages% 个笼子。"
+        - "&b> &a在快捷栏中更改地图设置。"
+        - "&b> &a完成后，保存地图。"
+      Events:
+        Refill:
+          - "&9&L重新填充箱子"
+          - "&6箱子已重新填充!"
+        TNTRain:
+          - "&c&lTNT 雨"
+          - "&c小心TNT!"
+      Title:
+        Win: "&b%player% &a胜利了!"
+        DeathMatch: "&c世界正在缩小！"
+      Player-Spectate: "&f你现在是 &a旁观者."
+      Start:
+        - "&7&m&l                                 "
+        - "&b空岛战争!"
+        - "&f箱子类型: &b%chests%"
+        - "&f投掷物类型: &b%project%"
+        - "&f选择的时间: &b%time%"
+        - "&f职业: &b%kit%"
+        - "&7&m&l                                 "
+      End-Log:
+        - "&7&m&l                                 "
+        - "&b奖励总览"
+        - "&f所用时间: &b%time%"
+        - "&f收集的硬币: &b%recvcoins%"
+        - "&f总获得硬币: &b%totalcoins%"
+        - "&f击杀数: &b%kills%"
+        - "&7&m&l                                 "
+  Menus:
+    Maps-Title: "地图"
+    Achievements-Title: "&d成就"
+    Spectate-Title: "&9玩家"
+    Vote-Title: "&b&l投票"
+    Chests-Vote-Title: "&7&l箱子类型"
+    Projectiles-Vote-Title: "&7&l投掷物"
+    Time-Vote-Title: "&7&l游戏时间"
+    Game-History-Title: "&e&l历史游戏"
+    Language:
+      Title: "&9&l语言"
+      Select: "&f点击来切换语言."
+    Player-Profile:
+      Title: "&9&l你的个人档案"
+      View-Item: "&f点击浏览."
+      Reset-Data:
+        Title: "&4重置你的数据"
+        Alert: "&c请注意 这个操作无法恢复."
+    Shop-Menu-Title: "&f商店 "
+    Spectator-Shop-Menu-Title: "&0旁观者 &f商店"
+  Itens:
+    Profile:
+      Name: "&9你的信息 &7(右键点击)"
+    CageSet:
+      Name: "&b点击这里添加一个笼子"
+    Maps:
+      Name: "&b地图 &7(右键点击)"
+    Shop:
+      Name: "&2商店 &7(右键点击)"
+    Leave:
+      Name: "&c离开 &7(右键点击)"
+    Vote:
+      Name: "&b投票 &7(右键点击)"
+    Spectate:
+      Name: "&b旁观 &7(右键点击)"
+    Kit:
+      Name: "&e职业 &7(右键点击)"
+    PlayAgain:
+      Name: "&d再玩一次 &7(右键点击)"
+    Chest1:
+      Name: Common Chest
+    Chest2:
+      Name: MID Chest
+    Settings:
+      Name: "&e设置"
+    Save:
+      Name: "&a保存"
+    Statistics:
+      Name: "&f%player% &f的数据统计"
+      Lore:
+        - "%space%"
+        - " &f硬币: &e%coins%"
+        - "%space%"
+        - " &f单挑胜利: &a%solowins%"
+        - " &f组队胜利: &a%teamwins%"
+        - " &f击杀: &a%kills%"
+        - " &f死亡: &a%deaths%"
+        - "%space%"
+        - " &f游玩数: &b%gamesplayed%"
+        - " &f失败: &b%loses%"
+        - "%space%"
+    Map:
+      Not-Found: "&9没有地图被找到"
+      Title: "&9&l%displayname% &7| &f&l%mode%"
+      Description:
+        - ""
+        - "&f玩家数: &b%players%&f/&b%maxplayers%"
+        - "&f点击加入!"
+        - ""
+  Scoreboards:
+    Lobby:
+      Lines:
+        - "%space%"
+        - " &f硬币: &e%coins%"
+        - "%space%"
+        - " &f单挑胜利: &a%solowins%"
+        - " &f组队胜利: &a%teamwins%"
+        - " &f击杀数: &a%kills%"
+        - " &f死亡数: &a%deaths%"
+        - "%space%"
+        - " &b排位 &f单挑胜利: &b%rankedsolowins%"
+        - " &b排位 &f组队胜利: &b%rankedteamwins%"
+        - " &b排位 &f击杀: &b%rankedkills%"
+        - " &b排位 &f死亡: &b%rankeddeaths%"
+        - "%space%"
+      Title: "&f&lSkyWars"
+    Cage:
+      Lines:
+        - "%space%"
+        - " &f玩家数: &b%players%"
+        - " &fState: &b%state%"
+        - "%space%"
+      Title: "&f地图: &b%displayname% &7- &b%mode%"
+    Game:
+      Lines:
+        - "%space%"
+        - " &f玩家数: &b%players%"
+        - " &f旁观者数: &b%spectators%"
+        - " &f下一个事件: &b%nextevent%"
+        - " &f模式: &b%mode%"
+        - " &f击杀数: &b%kills%"
+        - "%space%"
+        - " &f游戏已用时间: &b%runtime%"
+        - "%space%"
+      Title: "&f地图: &b%displayname% &7- &b%mode%"
+    Spectate:
+      Lines:
+        - "%space%"
+        - " &f玩家数: &b%players%"
+        - " &f旁观者数: &b%spectators%"
+        - " &f下一个事件: &b%nextevent%"
+        - " &f模式: &b%mode%"
+        - "%space%"
+        - " &f游戏已用时间: &b%runtime%"
+        - "%space%"
+      Title: "&f地图: &b%displayname%"
+  Tab:
+    Other:
+      Header:
+        - "&f"
+        - "&b&lSkyWars"
+        - " &a&l主大厅"
+        - "&f"
+      Footer:
+        - "&f"
+    In-Game:
+      Header:
+        - "&f"
+      Footer:
+        - "&f"
+  Titles:
+    Join-Room:
+      - "&f选择你的职业"
+      - "&f投出你的票!"
+  Modes:
+    Solo: "&e单挑"
+    Solo-Ranked: "&e单挑 - &b排位"
+    Teams: "&9组队"
+    Teams-Ranked: "&9组队 - &b排位"
+  States:
+    All: "&2全部"
+    Available: "&a可用"
+    Waiting: "&f等待中"
+    Starting: "&e开始中"
+    Playing: "&c进行中"
+    Finishing: "&4结束中"
+    Resetting: "&0重置中"
+    Spectating: "&5观战中"
+  Shop-Categories:
+    Cage-Blocks: "&e笼子方块"
+    Win-Blocks: "&5胜利方块"
+    Kits: "&9职业"
+    Bow-Particles: "&a弓箭特效"
+  Vote:
+    Cant-Vote: "&c你现在不能投票."
+    Vote: "&f你投给了 &b%thing%"
+    Already-Voted: "&f你 &c已经 投票了&f."
+    Time:
+      Day: "&e&L白天"
+      Night: "&7&l黑夜"
+      Rain: "&9&l雨天"
+      Sunset: "&6&l傍晚"
+    Chests:
+      Name: "&f&l箱子"
+      Basic: "&b&l基本"
+      Normal: "&f&l普通"
+      Epic: "&a&l史诗"
+    Projectiles:
+      Normal: "&f&l普通"
+      Break: "&6&l破坏方块"
+  Kits:
+    Price: "&f价格: &9%price%"
+    Contains: "&e此套件包含："
+    Item: "&fx%amount% &b%item%"
+    Buy: "&f左键&a购买&f! &b右键浏览."
+    Select: "&f左键&b选择&f. &b右键浏览."
+    Not-Found: "&c未找到具有该名称的套件。"
+    Delete: "&f职业已被&a删除&f."
+    Created: "&f职业已被&a创建&f."
+  Statistics:
+    Name: "&b统计"
+    Player-List:
+      - "&f语言: &b%lang%"
+      - "&f选择的职业: &b%kit%"
+      - "&f笼子选择类型: &b%cage%"
+      - "&f硬币: &b%coins%"
+      - "&7"
+      - "&f第一次加入: &b%firstjoin%"
+      - "&f上一次加入: &b%lastjoin%"
+    Game-Log-List:
+      - "&f地图: &b%map%"
+      - "&f玩家数: &b%players%"
+      - "&f排位: %ranked%"
+      - "&f胜利: %win%"
+      - "&f击杀: &b%kills%"
+      - "&f时间: &b%time%"
+    Games-List:
+      - "&e游戏次数: &f%games%"
+      - "&7> 胜利: &f%wins% %wins_percentage%"
+      - "&7> 失败: &f%looses% %looses_percentage%"
+      - "&7> 排位: &f%ranked% %ranked_percentage%"
+      - "&e击杀数:"
+      - "&7> 平均击杀: &f%average_kills%"
+      - "&7> 最多的击杀数: &f%most_kills%"
+      - "&e游戏时间:"
+      - "&7> 平均时间: &f%average_time%"
+      - "&7> 最短时间: &f%longest_time%"
+      - "&7> 最长时间: &f%shortest_time%"
+    Wins:
+      Solo: "&f单挑 &b胜利"
+      Teams: "&f组队 &b胜利"
+    Kills: "&c击杀"
+    Deaths: "&e死亡"
+    Loses: "&5失败"
+    Games:
+      Played: "&f游戏 &b游玩"
+      Balance: "&f游戏 &a硬币"
+      Kills: "&f游戏 &c击杀"

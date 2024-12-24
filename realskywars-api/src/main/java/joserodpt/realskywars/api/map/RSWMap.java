@@ -991,6 +991,23 @@ public abstract class RSWMap {
         this.save(Data.EVENTS, true);
     }
 
+    public ItemStack getIconForPlayer(RSWPlayer p) {
+        return Itens.createItem(this.getState().getStateMaterial(this.isRanked()),
+                Math.min(64, Math.max(1, this.getPlayerCount())),
+                TranslatableLine.ITEM_MAP_NAME.get(p).replace("%map%", this.getName()).replace("%displayname%", this.getDisplayName()).replace("%mode%", this.getGameMode().getDisplayName(p)) + (this.isRanked() ? " &bRANKED" : ""),
+                variableListForIcon(TranslatableList.ITEMS_MAP_DESCRIPTION.get(p)));
+    }
+
+    private List<String> variableListForIcon(List<String> list) {
+        if (this.isUnregistered()) {
+            list.add("&c&lUNREGISTERED");
+        }
+        return list.stream()
+                .map(s -> s.replace("%players%", String.valueOf(this.getPlayerCount()))
+                        .replace("%maxplayers%", String.valueOf(this.getMaxPlayers())))
+                .collect(Collectors.toList());
+    }
+
     public enum Data {
         ALL, SETTINGS, WORLD, NAME, TYPE, NUM_PLAYERS, CAGES, CHESTS, SPECT_LOC, BORDER, EVENTS
     }

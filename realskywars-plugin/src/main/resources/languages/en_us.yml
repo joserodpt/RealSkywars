@@ -23,7 +23,9 @@ en_us:
           pattern: minecraft:stripe_middle
         - color: RED
           pattern: minecraft:straight_cross
-    Version: 1
+    Authors:
+      - "JoseGamer_PT/Plugin Author"
+    Version: 2
   Messages:
     Achievements:
       Get: "&fCongratulations! You have achieved &b%achievement% &fand won &a%reward%"

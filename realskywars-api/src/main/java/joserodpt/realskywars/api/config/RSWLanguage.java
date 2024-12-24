@@ -36,7 +36,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +63,8 @@ public class RSWLanguage {
         this.config = YamlConfiguration.loadConfiguration(configFile);
 
         this.displayName = this.getConfig().getString(this.getKey() + ".Language-Specific.Displayname");
-        this.icon = Itens.renameItem(Objects.requireNonNull(ItemStackSpringer.getItemDeSerialized(sectionToMap(this.getKey() + ".Language-Specific.Icon"))), "&e&l" + this.getDisplayName(), Collections.singletonList(this.getString(".Menus.Language.Select")));
+
+        this.icon = Itens.renameItem(Objects.requireNonNull(ItemStackSpringer.getItemDeSerialized(sectionToMap(this.getKey() + ".Language-Specific.Icon"))), "&e&l" + this.getDisplayName(), generateLore());
         translationFile = new File(folder, this.getKey() + ".json");
 
         // download the language file from https://assets.mcasset.cloud/1.21/assets/minecraft/lang/{getTranslationKey()}.json to the translations folder
@@ -76,9 +77,22 @@ public class RSWLanguage {
         }
     }
 
+    private List<String> generateLore() {
+        List<String> lore = new ArrayList<>();
+        lore.add(this.getString(".Menus.Language.Select"));
+
+        List<String> authors = this.getStringList(".Language-Specific.Authors");
+        if (authors != null && !authors.isEmpty()) {
+            lore.add("&7Authors: ");
+            authors.forEach(author -> lore.add("&7- &f" + author));
+        }
+
+        return lore;
+    }
+
     private Map<String, Object> sectionToMap(String section) {
         Map<String, Object> newMap = new HashMap<>();
-        getConfig().getConfigurationSection(section).getKeys(false).forEach(route -> {
+        this.getConfig().getConfigurationSection(section).getKeys(false).forEach(route -> {
             newMap.put(route, getConfig().get(section + "." + route));
         });
 
@@ -98,7 +112,7 @@ public class RSWLanguage {
     }
 
     public String getKey() {
-        return key;
+        return this.key;
     }
 
     public void downloadLanguageFile() throws Exception {
