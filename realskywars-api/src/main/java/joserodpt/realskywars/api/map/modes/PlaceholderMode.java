@@ -16,10 +16,14 @@ package joserodpt.realskywars.api.map.modes;
  */
 
 import joserodpt.realskywars.api.cages.RSWCage;
+import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.map.modes.teams.RSWTeam;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.utils.Itens;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
 
@@ -99,5 +103,10 @@ public class PlaceholderMode extends RSWMap {
 
     @Override
     public void addCage(Location location) {
+    }
+
+    @Override
+    public ItemStack getIconForPlayer(RSWPlayer p) {
+        return Itens.createItem(Material.DEAD_BUSH, 1, TranslatableLine.ITEM_MAP_NOTFOUND_NAME.get(p));
     }
 }
