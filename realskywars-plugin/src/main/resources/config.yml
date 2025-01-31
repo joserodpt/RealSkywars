@@ -1,4 +1,4 @@
-Version: 10
+Version: 11
 Debug-Mode: false
 Config:
   Prefix: "&fReal&bSkywars &7> &r"
@@ -45,6 +45,7 @@ Config:
   Auto-Teleport-To-Lobby: true
   Scoreboard-In-Lobby: true
   Enable-Tab-Formatting: true
+  Enable-Chat-Per-Map: false
   Shops:
     Enable-Shop: true
     Enable-Spectator-Shop: true

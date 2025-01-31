@@ -50,6 +50,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -413,14 +414,12 @@ public class PlayerListener implements Listener {
                     } else {
                         damaged.teleport(damaged.getMatch().getSpectatorLocation());
                     }
-
                 } else {
                     e.setCancelled(true);
                     damaged.heal();
                     rs.getLobbyManagerAPI().tpToLobby(damaged);
                 }
             } else {
-                rs.getLogger().warning(damaged.isInvencible() ? "Player is invencible" : "Player is not invencible");
                 if (damaged.isInvencible() || rs.getLobbyManagerAPI().isInLobby(damaged.getLocation().getWorld())) {
                     e.setCancelled(true);
                 }
@@ -525,6 +524,31 @@ public class PlayerListener implements Listener {
                 }
             } else {
                 e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_NO_AVAILABLE_MAPS.getSingle());
+            }
+        }
+    }
+
+    @EventHandler
+    public void onAsyncChat(AsyncPlayerChatEvent e) {
+        if (RSWConfig.file().getBoolean("Config.Enable-Chat-Per-Map", false)) {
+            RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(e.getPlayer());
+            if (p != null) {
+                if (p.isInMatch()) {
+                    e.getRecipients().clear();
+                    for (RSWPlayer gp : p.getMatch().getAllPlayers()) {
+                        e.getRecipients().add(gp.getPlayer());
+                    }
+                } else {
+                    e.getRecipients().clear();
+                    for (Player gp : Bukkit.getOnlinePlayers()) {
+                        e.getRecipients().add(gp);
+                    }
+                    for (RSWPlayer player : rs.getPlayerManagerAPI().getPlayers()) {
+                        if (player.isInMatch()) {
+                            e.getRecipients().remove(player.getPlayer());
+                        }
+                    }
+                }
             }
         }
     }

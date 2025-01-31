@@ -17,6 +17,7 @@ package joserodpt.realskywars.api.config;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
+import dev.dejvokep.boostedyaml.route.Route;
 import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
 import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
@@ -38,7 +39,9 @@ public class RSWConfig {
                     GeneralSettings.DEFAULT,
                     LoaderSettings.builder().setAutoUpdate(true).build(),
                     DumperSettings.DEFAULT,
-                    UpdaterSettings.builder().setVersioning(new BasicVersioning("Version")).build());
+                    UpdaterSettings.builder().addIgnoredRoute(
+                            "1", Route.fromString("Config.Lobby")
+                    ).setVersioning(new BasicVersioning("Version")).build());
         } catch (final IOException e) {
             RealSkywarsAPI.getInstance().getLogger().severe("Couldn't setup " + name + "!");
             RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());
