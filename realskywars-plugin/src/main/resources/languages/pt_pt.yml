@@ -131,7 +131,7 @@ pt_pt:
         - "&eSe encontrada, uma esquemática será colocada no mapa. Podes também colar uma esquemática ou fazer um novo mata."
         - "&b> &c&lIMPORTANTE &r&fDefine os limites com //pos1 e //pos2 ou um machado de madeira do WorldEdit, e depois faz //expand vert para cobrir toda a altura do mapa!"
         - "&b> &aUsa o beacon para meter %cages% jaulas. "
-        - "&b> &aMuda as definições do mapa na tua hotbat."
+        - "&b> &aMuda as definições do mapa na tua hotbar."
         - "&b> &aQuando feito, salva o mapa."
       Events:
         Refill:

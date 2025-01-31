@@ -514,8 +514,9 @@ public class MapManager extends MapManagerAPI {
             if (rswMap.isPresent())
                 return rswMap;
 
-            //then, games sorting by max players
+            //then, games sorting by max players, excluding playing games or finishing games
             return this.maps.values().stream()
+                    .filter(map -> map.getState() != RSWMap.MapState.PLAYING && map.getState() != RSWMap.MapState.FINISHING)
                     .max(Comparator.comparingInt(RSWMap::getPlayerCount));
         } else {
             //first, find all games of the type required that are starting
@@ -539,9 +540,9 @@ public class MapManager extends MapManagerAPI {
             if (rswMap.isPresent())
                 return rswMap;
 
-            //then, games sorting by max players
+            //then, games sorting by max players, excluding playing games or finishing games
             return this.maps.values().stream()
-                    .filter(map -> map.getGameMode() == type)
+                    .filter(map -> map.getGameMode() == type && map.getState() != RSWMap.MapState.PLAYING && map.getState() != RSWMap.MapState.FINISHING)
                     .max(Comparator.comparingInt(RSWMap::getPlayerCount));
         }
     }
