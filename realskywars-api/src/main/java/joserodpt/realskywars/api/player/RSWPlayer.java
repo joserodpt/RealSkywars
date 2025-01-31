@@ -223,6 +223,18 @@ public class RSWPlayer {
         }
     }
 
+    public void enablePlayerTab(boolean val) {
+        this.playerTab = val ? new RSWPlayerTab(this) : new RSWPlayerNoTab();
+    }
+
+    public void enablePlayerScoreboard(boolean val) {
+        if (val) {
+            this.playerSB = new RSWPlayerScoreboard(this);
+        } else {
+            this.playerSB.stop();
+        }
+    }
+
     public void resetData() {
         RSWPlayer p = this;
         sendMessage("&cAre you sure you want to erase your data? This action is irreversible.");
