@@ -299,6 +299,7 @@ public class PlayerListener implements Listener {
                     return;
                 }
             }
+            return;
         }
 
         if (p != null) {
