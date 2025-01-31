@@ -53,6 +53,17 @@ public enum TranslatableList {
     }
 
     public List<String> get(RSWPlayer player) {
+        if (this == TITLE_ROOMJOIN) {
+            List<String> list = getInLanguage(player.getLanguage());
+            if (list.size() != 2) {
+                RealSkywarsAPI.getInstance().getLogger().warning("Title RoomJoin must have 2 lines, but has " + list.size());
+
+                while (list.size() != 2) {
+                    list.add("SEE CONSOLE");
+                }
+            }
+            return list;
+        }
         return getInLanguage(player.getLanguage());
     }
 

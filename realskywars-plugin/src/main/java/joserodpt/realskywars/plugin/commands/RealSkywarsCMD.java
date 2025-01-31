@@ -466,7 +466,6 @@ public class RealSkywarsCMD extends CommandBase {
     }
 
     @SubCommand("maps")
-    @Permission("rsw.admin")
     @SuppressWarnings("unused")
     public void mapscmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
