@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public abstract class MapManagerAPI {
-    public Boolean endMaps = false;
+    public Boolean shutdown = false;
 
     public abstract void loadMaps();
 
@@ -39,7 +39,7 @@ public abstract class MapManagerAPI {
 
     public abstract RSWMap getMap(String s);
 
-    public abstract void endMaps();
+    public abstract void endMaps(boolean shutdown);
 
     public abstract List<RSWMap> getMapsForPlayer(RSWPlayer rswPlayer);
 

@@ -182,7 +182,7 @@ public class DatabaseManager extends DatabaseManagerAPI {
     @Override
     public void savePlayerData(PlayerDataRow playerDataRow, boolean async) {
         playerDataCache.put(playerDataRow.getUUID(), playerDataRow);
-        if (async) {
+        if (async && !rsa.getMapManagerAPI().shutdown) {
             Bukkit.getScheduler().runTaskAsynchronously(rsa.getPlugin(), () -> savePlayerData(playerDataRow, false));
         } else {
             try {

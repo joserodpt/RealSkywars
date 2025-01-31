@@ -208,7 +208,7 @@ public class RealSkywars extends RealSkywarsAPI {
 
     @Override
     public void reload() {
-        mapManagerAPI.endMaps();
+        mapManagerAPI.endMaps(false);
 
         RSWConfig.reload();
         RSWMapsConfig.reload();

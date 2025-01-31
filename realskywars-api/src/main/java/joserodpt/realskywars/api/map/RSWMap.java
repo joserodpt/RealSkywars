@@ -764,7 +764,7 @@ public abstract class RSWMap {
             RSWPlayerItems.LOBBY.giveSet(p);
         }
 
-        if (this.getState() == MapState.PLAYING || this.getState() == MapState.FINISHING) {
+        if ((this.getState() == MapState.PLAYING || this.getState() == MapState.FINISHING) && !RealSkywarsAPI.getInstance().getMapManagerAPI().shutdown) {
             checkWin();
         }
 

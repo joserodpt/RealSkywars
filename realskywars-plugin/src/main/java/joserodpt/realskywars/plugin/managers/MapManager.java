@@ -446,8 +446,8 @@ public class MapManager extends MapManagerAPI {
     }
 
     @Override
-    public void endMaps() {
-        this.endMaps = true;
+    public void endMaps(boolean shutdown) {
+        this.shutdown = true;
 
         for (RSWMap g : this.maps.values()) {
             g.kickPlayers(TranslatableLine.ADMIN_SHUTDOWN.getSingle());

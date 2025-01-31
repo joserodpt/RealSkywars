@@ -420,6 +420,7 @@ public class PlayerListener implements Listener {
                     rs.getLobbyManagerAPI().tpToLobby(damaged);
                 }
             } else {
+                rs.getLogger().warning(damaged.isInvencible() ? "Player is invencible" : "Player is not invencible");
                 if (damaged.isInvencible() || rs.getLobbyManagerAPI().isInLobby(damaged.getLocation().getWorld())) {
                     e.setCancelled(true);
                 }

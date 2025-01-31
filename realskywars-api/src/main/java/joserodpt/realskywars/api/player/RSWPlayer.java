@@ -536,12 +536,12 @@ public class RSWPlayer {
     }
 
     public void hidePlayer(Plugin plugin, Player pl) {
-        if (!this.bot && pl != null && !RealSkywarsAPI.getInstance().getMapManagerAPI().endMaps)
+        if (!this.bot && pl != null && !RealSkywarsAPI.getInstance().getMapManagerAPI().shutdown)
             this.getPlayer().hidePlayer(plugin, pl);
     }
 
     public void showPlayer(Plugin plugin, Player pl) {
-        if (!this.bot && pl != null && !RealSkywarsAPI.getInstance().getMapManagerAPI().endMaps)
+        if (!this.bot && pl != null && !RealSkywarsAPI.getInstance().getMapManagerAPI().shutdown)
             this.getPlayer().showPlayer(plugin, pl);
     }
 

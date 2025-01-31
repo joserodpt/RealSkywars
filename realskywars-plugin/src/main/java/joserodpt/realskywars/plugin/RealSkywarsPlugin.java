@@ -336,7 +336,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
     }
 
     public void onDisable() {
-        realSkywars.getMapManagerAPI().endMaps();
+        realSkywars.getMapManagerAPI().endMaps(true);
 
         if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
             this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
