@@ -1,4 +1,4 @@
-Version: 3
+Version: 4
 Shops:
   Cage-Blocks:
     item1:
@@ -612,3 +612,12 @@ Shops:
       Material: IRON_BARS
       Price: 10.0
       Permission: RealSkywars.Win-Block
+  Spectator-Shop:
+    item106:
+      Displayname: '&6Golden Apple'
+      Material: GOLDEN_APPLE
+      Price: 50.0
+    item107:
+      Displayname: '&5Ender Pearl'
+      Material: ENDER_PEARL
+      Price: 20.0

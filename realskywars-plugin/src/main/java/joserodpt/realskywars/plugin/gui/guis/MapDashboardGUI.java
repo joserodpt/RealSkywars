@@ -149,7 +149,7 @@ public class MapDashboardGUI {
                                 }
                                 current.loadInv();
 
-                                p.sendMessage(TranslatableLine.GAME_STATUS_SET.get(gp, true).replace("%status%", current.game.getState().name()));
+                                p.sendMessage(TranslatableLine.GAME_STATUS_SET.get(gp, true).replace("%status%", current.game.getState().getDisplayName(gp)));
                                 break;
                             case 13:
                                 // settings
