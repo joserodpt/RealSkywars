@@ -56,7 +56,7 @@ public class ShopGUI {
     private final Inventory inv;
     private final RSWPlayer rswp;
     private final Map<Integer, RSWBuyableItem> display = new HashMap<>();
-    private RSWBuyableItem.ItemCategory cat;
+    private final RSWBuyableItem.ItemCategory cat;
 
     public ShopGUI(RSWPlayer rswp, RSWBuyableItem.ItemCategory t) {
         this.rswp = rswp;
@@ -100,7 +100,11 @@ public class ShopGUI {
             inv.setItem(47, placeholder);
         }
 
-        inv.setItem(48, Itens.createItem(Material.LEATHER_CHESTPLATE, 1, TranslatableLine.KITS.get(rswp)));
+        if (cat != RSWBuyableItem.ItemCategory.SPEC_SHOP) {
+            inv.setItem(48, Itens.createItem(Material.LEATHER_CHESTPLATE, 1, TranslatableLine.KITS.get(rswp)));
+        } else {
+            inv.setItem(48, placeholder);
+        }
 
         if (RSWConfig.file().getBoolean("Config.Shops.Enable-Bow-Particles-Shop") && cat != RSWBuyableItem.ItemCategory.SPEC_SHOP) {
             inv.setItem(50, Itens.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(rswp)));
@@ -225,23 +229,26 @@ public class ShopGUI {
                                 switch (e.getClick()) {
                                     case SWAP_OFFHAND:
                                         a.addAmount(1);
-                                        current.inv.setItem(e.getRawSlot(), a.getIcon(current.rswp));
+                                        ItemStack item = a.getIcon(current.rswp);
+                                        item.setAmount(a.getAmount());
+                                        current.inv.setItem(e.getRawSlot(), item);
                                         break;
                                     case DROP:
                                         a.addAmount(-1);
-                                        current.inv.setItem(e.getRawSlot(), a.getIcon(current.rswp));
+                                        ItemStack item2 = a.getIcon(current.rswp);
+                                        item2.setAmount(a.getAmount());
+                                        current.inv.setItem(e.getRawSlot(), item2);
                                         break;
                                     default:
-                                        if (p.getPlayer().hasPermission(a.getPermission())) {
+                                        if (a.getPermission() == null || p.getPlayer().hasPermission(a.getPermission())) {
                                             TransactionManager cm = new TransactionManager(p, a.getPrice(), TransactionManager.Operations.REMOVE, false);
                                             p.closeInventory();
 
                                             if (cm.removeCoins()) {
                                                 p.getWorld().dropItem(p.getLocation(), new ItemStack(a.getMaterial(), a.getAmount()));
-                                                a.setAmount(1);
                                                 p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.get(p, true).replace("%name%", a.getDisplayName()).replace("%coins%", a.getPriceFormatted()));
-                                            } else {
                                                 a.setAmount(1);
+                                            } else {
                                                 p.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(p, true).replace("%coins%", RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoinsFormatted(p)));
                                             }
                                         } else {
