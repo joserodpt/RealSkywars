@@ -15,20 +15,18 @@ package joserodpt.realskywars.plugin.commands;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import dev.triumphteam.cmd.bukkit.annotation.Permission;
+import dev.triumphteam.cmd.core.BaseCommand;
+import dev.triumphteam.cmd.core.annotation.Command;
+import dev.triumphteam.cmd.core.annotation.Default;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import me.mattstudios.mf.annotations.Alias;
-import me.mattstudios.mf.annotations.Command;
-import me.mattstudios.mf.annotations.Default;
-import me.mattstudios.mf.annotations.Permission;
-import me.mattstudios.mf.base.CommandBase;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@Command("leave")
-@Alias({"sair", "ragequit"})
-public class SairCMD extends CommandBase {
+@Command(value = "leave", alias = {"sair", "ragequit"})
+public class SairCMD extends BaseCommand {
 
     public RealSkywarsAPI rs;
 

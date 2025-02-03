@@ -70,6 +70,10 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>repo</id>
+            <url>https://repo.triumphteam.dev/snapshots/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -109,9 +113,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>me.mattstudios.utils</groupId>
-            <artifactId>matt-framework</artifactId>
-            <version>1.4</version>
+            <groupId>dev.triumphteam</groupId>
+            <artifactId>triumph-cmd-bukkit</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>me.clip</groupId>
@@ -150,7 +154,7 @@
         <dependency>
             <groupId>joserodpt.realpermissions</groupId>
             <artifactId>RealPermissions</artifactId>
-            <version>0.4.1</version>
+            <version>0.4.2</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/../libs/RealPermissions.jar</systemPath>
         </dependency>

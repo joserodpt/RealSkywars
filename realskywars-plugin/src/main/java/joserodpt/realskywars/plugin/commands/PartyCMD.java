@@ -15,24 +15,22 @@ package joserodpt.realskywars.plugin.commands;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import dev.triumphteam.cmd.bukkit.annotation.Permission;
+import dev.triumphteam.cmd.core.BaseCommand;
+import dev.triumphteam.cmd.core.annotation.Command;
+import dev.triumphteam.cmd.core.annotation.Default;
+import dev.triumphteam.cmd.core.annotation.SubCommand;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
-import me.mattstudios.mf.annotations.Alias;
-import me.mattstudios.mf.annotations.Command;
-import me.mattstudios.mf.annotations.Default;
-import me.mattstudios.mf.annotations.Permission;
-import me.mattstudios.mf.annotations.SubCommand;
-import me.mattstudios.mf.base.CommandBase;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-@Command("party")
-@Alias({"p", "festa", "f", "swp", "rswparty"})
-public class PartyCMD extends CommandBase {
+@Command(value = "party", alias = {"p", "festa", "f", "swp", "rswparty"})
+public class PartyCMD extends BaseCommand {
 
     public RealSkywarsAPI rs;
     private final String onlyPlayer = "[RealSkywars] Only players can run this command.";

@@ -15,6 +15,10 @@ package joserodpt.realskywars.plugin;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import dev.triumphteam.cmd.bukkit.BukkitCommandManager;
+import dev.triumphteam.cmd.bukkit.message.BukkitMessageKey;
+import dev.triumphteam.cmd.core.message.MessageKey;
+import dev.triumphteam.cmd.core.suggestion.SuggestionKey;
 import joserodpt.realpermissions.api.RealPermissionsAPI;
 import joserodpt.realpermissions.api.pluginhook.ExternalPlugin;
 import joserodpt.realpermissions.api.pluginhook.ExternalPluginPermission;
@@ -63,11 +67,10 @@ import joserodpt.realskywars.plugin.gui.guis.VoteGUI;
 import joserodpt.realskywars.plugin.listeners.EventListener;
 import joserodpt.realskywars.plugin.listeners.PlayerListener;
 import joserodpt.realskywars.plugin.managers.DatabaseManager;
-import me.mattstudios.mf.base.CommandManager;
-import me.mattstudios.mf.base.components.TypeResult;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -182,76 +185,70 @@ public class RealSkywarsPlugin extends JavaPlugin {
         //load leaderboard
         realSkywars.getLeaderboardManagerAPI().refreshLeaderboards();
 
-        CommandManager commandManager = new CommandManager(this);
-        commandManager.hideTabComplete(true);
+        BukkitCommandManager<CommandSender> commandManager = BukkitCommandManager.create(this);
+
         //command suggestions
-        commandManager.getCompletionHandler().register("#createsuggestions", input -> IntStream.range(0, 200)
+        commandManager.registerSuggestion(SuggestionKey.of("#createsuggestions"), (sender, context) -> IntStream.range(0, 200)
                 .mapToObj(i -> "Map" + i)
                 .collect(Collectors.toCollection(ArrayList::new)));
 
-        commandManager.getCompletionHandler().register("#maps", input -> new ArrayList<>(realSkywars.getMapManagerAPI().getMapNames()));
-        commandManager.getCompletionHandler().register("#boolean", input -> Arrays.asList("false", "true"));
-        commandManager.getCompletionHandler().register("#worldtype", input -> Arrays.asList("default", "schematic"));
-        commandManager.getCompletionHandler().register("#kits", input -> realSkywars.getKitManagerAPI().getKits().stream()
+        commandManager.registerSuggestion(SuggestionKey.of("#maps"), (sender, context) -> new ArrayList<>(realSkywars.getMapManagerAPI().getMapNames()));
+        commandManager.registerSuggestion(SuggestionKey.of("#boolean"), (sender, context) -> Arrays.asList("false", "true"));
+        commandManager.registerSuggestion(SuggestionKey.of("#worldtype"), (sender, context) -> Arrays.asList("default", "schematic"));
+        commandManager.registerSuggestion(SuggestionKey.of("#kits"), (sender, context) -> realSkywars.getKitManagerAPI().getKits().stream()
                 .map(kit -> Text.strip(kit.getName()))
                 .collect(Collectors.toList()));
 
-        commandManager.getParameterHandler().register(RSWChest.Tier.class, argument -> {
+        commandManager.registerArgument(RSWChest.Tier.class, (sender, argument) -> {
             try {
-                RSWChest.Tier tt = RSWChest.Tier.valueOf(argument.toString().toUpperCase());
-                return new TypeResult(tt, argument);
+                return RSWChest.Tier.valueOf(argument.toString().toUpperCase());
             } catch (Exception e) {
-                return new TypeResult(null, argument);
+                return null;
             }
         });
-        commandManager.getParameterHandler().register(RSWChest.Type.class, argument -> {
+        commandManager.registerArgument(RSWChest.Type.class, (sender, argument) -> {
             try {
-                RSWChest.Type tt = RSWChest.Type.valueOf(argument.toString().toUpperCase());
-                return new TypeResult(tt, argument);
+                return RSWChest.Type.valueOf(argument.toUpperCase());
             } catch (Exception e) {
-                return new TypeResult(null, argument);
+                return null;
             }
         });
-        commandManager.getParameterHandler().register(RSWMap.GameMode.class, argument -> {
+        commandManager.registerArgument(RSWMap.GameMode.class, (sender, argument) -> {
             try {
-                RSWMap.GameMode tt = RSWMap.GameMode.valueOf(argument.toString().toUpperCase());
-                return new TypeResult(tt, argument);
+                return RSWMap.GameMode.valueOf(argument.toUpperCase());
             } catch (Exception e) {
-                return new TypeResult(null, argument);
+                return null;
             }
         });
-        commandManager.getParameterHandler().register(RSWWorld.WorldType.class, argument -> {
+        commandManager.registerArgument(RSWWorld.WorldType.class, (sender, argument) -> {
             try {
-                RSWWorld.WorldType tt = RSWWorld.WorldType.valueOf(argument.toString().toUpperCase());
-                return new TypeResult(tt, argument);
+                return RSWWorld.WorldType.valueOf(argument.toUpperCase());
             } catch (Exception e) {
-                return new TypeResult(null, argument);
+                return null;
             }
         });
-        commandManager.getParameterHandler().register(TransactionManager.Operations.class, argument -> {
+        commandManager.registerArgument(TransactionManager.Operations.class, (sender, argument) -> {
             try {
-                TransactionManager.Operations tt = TransactionManager.Operations.valueOf(argument.toString().toUpperCase());
-                return new TypeResult(tt, argument);
+                return TransactionManager.Operations.valueOf(argument.toUpperCase());
             } catch (Exception e) {
-                return new TypeResult(null, argument);
+                return null;
             }
         });
-        commandManager.getParameterHandler().register(RealSkywarsCMD.KIT_OPERATION.class, argument -> {
+        commandManager.registerArgument(RealSkywarsCMD.KIT_OPERATION.class, (sender, argument) -> {
             try {
-                RealSkywarsCMD.KIT_OPERATION tt = RealSkywarsCMD.KIT_OPERATION.valueOf(argument.toString().toUpperCase());
-                return new TypeResult(tt, argument);
+                return RealSkywarsCMD.KIT_OPERATION.valueOf(argument.toUpperCase());
             } catch (Exception e) {
-                return new TypeResult(null, argument);
+                return null;
             }
         });
 
         //command messages
-        commandManager.getMessageHandler().register("cmd.no.exists", sender -> sender.sendMessage(realSkywars.getLanguageManagerAPI().getPrefix() + TranslatableLine.CMD_NOT_FOUND.getDefault()));
-        commandManager.getMessageHandler().register("cmd.no.permission", sender -> sender.sendMessage(realSkywars.getLanguageManagerAPI().getPrefix() + TranslatableLine.CMD_NO_PERM.getDefault()));
-        commandManager.getMessageHandler().register("cmd.wrong.usage", sender -> sender.sendMessage(realSkywars.getLanguageManagerAPI().getPrefix() + Text.color("&cWrong usage for the command!")));
+        commandManager.registerMessage(MessageKey.UNKNOWN_COMMAND, (sender, context) -> sender.sendMessage(realSkywars.getLanguageManagerAPI().getPrefix() + TranslatableLine.CMD_NOT_FOUND.getDefault()));
+        commandManager.registerMessage(BukkitMessageKey.NO_PERMISSION, (sender, context) -> sender.sendMessage(realSkywars.getLanguageManagerAPI().getPrefix() + TranslatableLine.CMD_NO_PERM.getDefault()));
+        commandManager.registerMessage(MessageKey.NOT_ENOUGH_ARGUMENTS, (sender, context) -> sender.sendMessage(realSkywars.getLanguageManagerAPI().getPrefix() + Text.color("&cWrong usage for the command!")));
 
         //registo de comandos #portugal
-        commandManager.register(new RealSkywarsCMD(realSkywars), new SairCMD(realSkywars), new PartyCMD(realSkywars));
+        commandManager.registerCommand(new RealSkywarsCMD(realSkywars), new SairCMD(realSkywars), new PartyCMD(realSkywars));
 
         //placeholderAPI support
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
