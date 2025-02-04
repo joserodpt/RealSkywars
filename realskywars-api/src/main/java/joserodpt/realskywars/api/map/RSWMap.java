@@ -24,7 +24,6 @@ import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.database.PlayerGameHistoryRow;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
-import joserodpt.realskywars.api.map.modes.RSWSign;
 import joserodpt.realskywars.api.map.modes.teams.RSWTeam;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.player.RSWPlayerItems;
@@ -1143,6 +1142,25 @@ public abstract class RSWMap {
             }
         }
 
+        public String getDefaultTranslation() {
+            switch (this) {
+                case AVAILABLE:
+                    return TranslatableLine.MAP_STATE_AVAILABLE.getDefault();
+                case STARTING:
+                    return TranslatableLine.MAP_STATE_STARTING.getDefault();
+                case WAITING:
+                    return TranslatableLine.MAP_STATE_WAITING.getDefault();
+                case PLAYING:
+                    return TranslatableLine.MAP_STATE_PLAYING.getDefault();
+                case FINISHING:
+                    return TranslatableLine.MAP_STATE_FINISHING.getDefault();
+                case RESETTING:
+                    return TranslatableLine.MAP_STATE_RESETTING.getDefault();
+                default:
+                    return "?";
+            }
+        }
+
         public Material getStateMaterial(boolean ranked) {
             switch (this) {
                 case WAITING:
@@ -1256,6 +1274,17 @@ public abstract class RSWMap {
                     return TranslatableLine.SOLO_MODE.get(p);
                 case TEAMS:
                     return TranslatableLine.TEAMS_MODE.get(p);
+                default:
+                    return "?";
+            }
+        }
+
+        public String getDefaultTranslation() {
+            switch (this) {
+                case SOLO:
+                    return TranslatableLine.SOLO_MODE.getDefault();
+                case TEAMS:
+                    return TranslatableLine.TEAMS_MODE.getDefault();
                 default:
                     return "?";
             }

@@ -1,4 +1,4 @@
-package joserodpt.realskywars.api.map.modes;
+package joserodpt.realskywars.api.map;
 
 /*
  *   _____            _  _____ _
@@ -16,7 +16,6 @@ package joserodpt.realskywars.api.map.modes;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -39,7 +38,7 @@ public class RSWSign {
     }
 
     public void update() {
-        if (this.game == null) {
+        if (this.game == null || RealSkywarsAPI.getInstance().getMapManagerAPI().shutdown) {
             return;
         }
 
@@ -49,8 +48,8 @@ public class RSWSign {
 
                 s.setLine(0, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix());
                 s.setLine(1, Text.color("&b" + this.getGame().getName()));
-                s.setLine(2, Text.color("&f" + this.getGame().getGameMode().name() + " | &f" + this.getGame().getPlayerCount() + "&7/&f" + this.getGame().getMaxPlayers()));
-                s.setLine(3, Text.color("&b&l" + this.getGame().getState().name()));
+                s.setLine(2, Text.color("&f" + this.getGame().getGameMode().getDefaultTranslation() + "&r&f | " + this.getGame().getPlayerCount() + "&7/&f" + this.getGame().getMaxPlayers()));
+                s.setLine(3, Text.color("&b&l" + this.getGame().getState().getDefaultTranslation()));
                 s.update();
 
                 this.b.getWorld().getBlockAt(this.getBehindBlock().getLocation()).setType(this.getGame().getState().getStateMaterial(this.getGame().isRanked()));
