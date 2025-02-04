@@ -50,7 +50,7 @@ public class Text {
         if (string == null) {
             return "";
         }
-        return ChatColor.translateAlternateColorCodes('&', string);
+        return ForestColorAPI.colorize(string);
     }
 
     public static String strip(String s) {
