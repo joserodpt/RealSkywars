@@ -159,7 +159,9 @@ public class SoloMode extends RSWMap {
                         ws.sendMessage(TranslatableLine.PLAYER_JOIN_ARENA.get(p, true).replace("%player%", p.getDisplayName()).replace("%players%", getPlayerCount() + "").replace("%maxplayers%", getMaxPlayers() + ""));
                     }
 
-                    p.getInventory().clear();
+                    if (p.getInventory() != null) {
+                        p.getInventory().clear();
+                    }
                     RSWPlayerItems.CAGE.giveSet(p);
 
                     //update tab

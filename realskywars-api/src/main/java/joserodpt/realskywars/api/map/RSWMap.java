@@ -709,7 +709,9 @@ public abstract class RSWMap {
 
         p.setBarNumber(0);
         p.setInvincible(false);
-        p.getInventory().clear();
+        if (p.getInventory() != null) {
+            p.getInventory().clear();
+        }
         TranslatableLine.MATCH_LEAVE.send(p, true);
 
         if (!RSWConfig.file().getBoolean("Config.Shops.Only-Buy-Kits-Per-Match")) {

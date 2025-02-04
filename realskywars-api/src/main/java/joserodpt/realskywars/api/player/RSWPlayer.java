@@ -512,6 +512,7 @@ public class RSWPlayer {
     }
 
     public PlayerInventory getInventory() {
+        if (this.player == null) return null;
         return this.player.getInventory();
     }
 
