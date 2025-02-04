@@ -667,7 +667,7 @@ public class RealSkywarsCMD extends BaseCommand {
         }
     }
 
-    @SubCommand(value = "delete", alias = "del")
+    @SubCommand(value = "delete", alias = {"del", "cancel"})
     @Permission("rsw.admin")
     //@WrongUsage("&c/rsw delete <map>")
     @SuppressWarnings("unused")
