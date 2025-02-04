@@ -27,9 +27,9 @@ import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.map.modes.teams.RSWTeam;
 import joserodpt.realskywars.api.party.RSWParty;
-import joserodpt.realskywars.api.player.tab.RSWPlayerNoTab;
 import joserodpt.realskywars.api.player.tab.RSWPlayerTab;
 import joserodpt.realskywars.api.player.tab.RSWPlayerTabInterface;
+import joserodpt.realskywars.api.player.tab.RSWPlayerTabNoStyle;
 import joserodpt.realskywars.api.utils.PlayerInput;
 import joserodpt.realskywars.api.utils.Text;
 import net.md_5.bungee.api.ChatMessageType;
@@ -99,7 +99,7 @@ public class RSWPlayer {
         this.rankedLoses = rankedLoses;
         this.rankedGamesPlayed = rankedGamesPlayed;
 
-        this.playerTab = RSWConfig.file().getBoolean("Config.Enable-Tab-Formatting", true) ? new RSWPlayerTab(this) : new RSWPlayerNoTab();
+        this.playerTab = RSWConfig.file().getBoolean("Config.Enable-Tab-Formatting", true) ? new RSWPlayerTab(this) : new RSWPlayerTabNoStyle(this);
     }
 
     public RSWPlayer(boolean anonName) {
@@ -221,10 +221,6 @@ public class RSWPlayer {
         if (!this.bot) {
             this.player.sendMessage(Text.color(string));
         }
-    }
-
-    public void enablePlayerTab(boolean val) {
-        this.playerTab = val ? new RSWPlayerTab(this) : new RSWPlayerNoTab();
     }
 
     public void enablePlayerScoreboard(boolean val) {

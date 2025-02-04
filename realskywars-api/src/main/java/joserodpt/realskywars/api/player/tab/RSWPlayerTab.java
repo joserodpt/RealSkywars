@@ -16,10 +16,12 @@ package joserodpt.realskywars.api.player.tab;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -81,13 +83,29 @@ public class RSWPlayerTab implements RSWPlayerTabInterface {
             String header, footer;
             if (this.player.isInMatch()) {
                 header = String.join("\n", TranslatableList.TAB_HEADER_MATCH.get(this.player)).replace("%map%", this.player.getMatch().getName()).replace("%displayname%", this.player.getMatch().getDisplayName()).replace("%players%", this.player.getMatch().getPlayers().size() + "").replace("%space%", Text.makeSpace());
+                header = papi(this.player.getPlayer(), header);
                 footer = String.join("\n", TranslatableList.TAB_FOOTER_MATCH.get(this.player)).replace("%map%", this.player.getMatch().getName()).replace("%displayname%", this.player.getMatch().getDisplayName()).replace("%players%", this.player.getMatch().getPlayers().size() + "").replace("%space%", Text.makeSpace());
+                footer = papi(this.player.getPlayer(), footer);
             } else {
                 header = String.join("\n", TranslatableList.TAB_HEADER_OTHER.get(this.player)).replace("%players%", RealSkywarsAPI.getInstance().getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.ALL) + "").replace("%space%", Text.makeSpace());
+                header = papi(this.player.getPlayer(), header);
                 footer = String.join("\n", TranslatableList.TAB_FOOTER_OTHER.get(this.player)).replace("%players%", RealSkywarsAPI.getInstance().getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.ALL) + "").replace("%space%", Text.makeSpace());
+                footer = papi(this.player.getPlayer(), footer);
             }
 
             this.setHeaderFooter(header, footer);
+        }
+    }
+
+    private String papi(final Player p, final String t) {
+        if (p == null) {
+            return t;
+        }
+
+        if (RSWConfig.file().getBoolean("Config.PlaceholderAPI-In-Tab")) {
+            return PlaceholderAPI.setPlaceholders(p.getPlayer(), t);
+        } else {
+            return t;
         }
     }
 }

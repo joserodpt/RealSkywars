@@ -15,40 +15,62 @@ package joserodpt.realskywars.api.player.tab;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.player.RSWPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class RSWPlayerNoTab implements RSWPlayerTabInterface {
+public class RSWPlayerTabNoStyle implements RSWPlayerTabInterface {
 
-    public RSWPlayerNoTab() {
+    private final RSWPlayer player;
+    private final List<Player> show = new ArrayList<>();
+
+    public RSWPlayerTabNoStyle(RSWPlayer player) {
+        this.player = player;
+        clear();
+        updateRoomTAB();
     }
 
     @Override
     public void addPlayers(Player p) {
+        if (p.getUniqueId() != this.player.getUUID() && !this.show.contains(p)) {
+            this.show.add(p);
+        }
     }
 
     @Override
     public void addPlayers(List<Player> p) {
+        this.show.addAll(p);
     }
 
     @Override
     public void removePlayers(Player p) {
+        this.show.remove(p);
     }
 
     @Override
     public void reset() {
+        this.show.addAll(Bukkit.getOnlinePlayers());
     }
 
     @Override
     public void clear() {
+        this.show.clear();
     }
 
     @Override
     public void setHeaderFooter(String h, String f) {
     }
 
+
     @Override
     public void updateRoomTAB() {
+        if (!this.player.isBot()) {
+            Bukkit.getOnlinePlayers().forEach(pl -> this.player.hidePlayer(RealSkywarsAPI.getInstance().getPlugin(), pl));
+            this.show.forEach(rswPlayer -> this.player.showPlayer(RealSkywarsAPI.getInstance().getPlugin(), rswPlayer));
+        }
     }
 }

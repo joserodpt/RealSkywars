@@ -1,4 +1,4 @@
-Version: 11
+Version: 12
 Debug-Mode: false
 Config:
   Prefix: "&fReal&bSkywars &7> &r"
@@ -56,6 +56,7 @@ Config:
     Enable-Bow-Particles-Shop: true
   Right-Click-Player-Info: true
   PlaceholderAPI-In-Scoreboard: false
+  PlaceholderAPI-In-Tab: false
   Disable-Player-Reset: false
   Disable-Language-Selection: false
   Disable-Lobby-Items: false
