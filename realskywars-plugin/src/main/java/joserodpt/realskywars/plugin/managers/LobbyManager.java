@@ -40,13 +40,13 @@ public class LobbyManager extends LobbyManagerAPI {
     @Override
     public void loadLobby() {
         this.loginTP = RSWConfig.file().getBoolean("Config.Auto-Teleport-To-Lobby");
-        if (RSWConfig.file().isSection("Config.Lobby")) {
-            double x = RSWConfig.file().getDouble("Config.Lobby.X");
-            double y = RSWConfig.file().getDouble("Config.Lobby.Y");
-            double z = RSWConfig.file().getDouble("Config.Lobby.Z");
-            float yaw = RSWConfig.file().getFloat("Config.Lobby.Yaw");
-            float pitch = RSWConfig.file().getFloat("Config.Lobby.Pitch");
-            World world = Bukkit.getServer().getWorld(RSWConfig.file().getString("Config.Lobby.World"));
+        if (RSWConfig.file().isSection("Lobby")) {
+            double x = RSWConfig.file().getDouble("Lobby.X");
+            double y = RSWConfig.file().getDouble("Lobby.Y");
+            double z = RSWConfig.file().getDouble("Lobby.Z");
+            float yaw = RSWConfig.file().getFloat("Lobby.Yaw");
+            float pitch = RSWConfig.file().getFloat("Lobby.Pitch");
+            World world = Bukkit.getServer().getWorld(RSWConfig.file().getString("Lobby.World"));
             this.lobbyLOC = new Location(world, x, y, z, yaw, pitch);
         }
     }

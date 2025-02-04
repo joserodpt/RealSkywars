@@ -429,12 +429,12 @@ public class RealSkywarsCMD extends BaseCommand {
     public void setlobby(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            RSWConfig.file().set("Config.Lobby.World", p.getLocation().getWorld().getName());
-            RSWConfig.file().set("Config.Lobby.X", p.getLocation().getX());
-            RSWConfig.file().set("Config.Lobby.Y", p.getLocation().getY());
-            RSWConfig.file().set("Config.Lobby.Z", p.getLocation().getZ());
-            RSWConfig.file().set("Config.Lobby.Yaw", p.getLocation().getYaw());
-            RSWConfig.file().set("Config.Lobby.Pitch", p.getLocation().getPitch());
+            RSWConfig.file().set("Lobby.World", p.getLocation().getWorld().getName());
+            RSWConfig.file().set("Lobby.X", p.getLocation().getX());
+            RSWConfig.file().set("Lobby.Y", p.getLocation().getY());
+            RSWConfig.file().set("Lobby.Z", p.getLocation().getZ());
+            RSWConfig.file().set("Lobby.Yaw", p.getLocation().getYaw());
+            RSWConfig.file().set("Lobby.Pitch", p.getLocation().getPitch());
             RSWConfig.save();
             rs.getLobbyManagerAPI().setLobbyLoc(p.getLocation());
             TranslatableLine.CMD_CLOBBY_SET.send(p, true);
@@ -592,7 +592,7 @@ public class RealSkywarsCMD extends BaseCommand {
                 return;
             }
 
-            if (RSWConfig.file().isSection("Config.Lobby")) {
+            if (RSWConfig.file().isSection("Lobby")) {
                 RSWMap map = rs.getMapManagerAPI().getMap(mapname);
                 if (map == null) {
                     if (teamPlayers == null) {

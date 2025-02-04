@@ -20,7 +20,6 @@ import joserodpt.realskywars.api.map.RSWMap;
 import org.bukkit.Bukkit;
 
 public class RSWEventsAPI {
-
     public void callRoomStateChange(RSWMap g) {
         Bukkit.getPluginManager().callEvent(new RSWRoomStateChangeEvent(g));
         g.updateSigns();

@@ -83,7 +83,9 @@ public class RSWMapEvent {
                 this.room.getAllPlayers().forEach(rswPlayer -> rswPlayer.sendTitle("", TranslatableLine.TITLE_DEATHMATCH.get(rswPlayer), 10, 20, 5));
                 this.room.getAllPlayers().forEach(rswPlayer -> rswPlayer.playSound(Sound.ENTITY_ENDER_DRAGON_GROWL, 50, 50));
 
-                this.room.getBorder().setSize((double) this.room.getBorderSize() / 2, 30L);
+                int factor = Math.max(1, RSWConfig.file().getInt("Config.Death-Match-Shrink-Factor", 2));
+
+                this.room.getBorder().setSize((double) this.room.getBorderSize() / factor, 30L);
                 this.room.getBorder().setCenter(this.room.getMapCuboid().getCenter());
                 break;
         }

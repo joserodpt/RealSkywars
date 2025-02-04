@@ -92,6 +92,7 @@ Config:
   Time-EndGame: 10
   Refresh-Leaderboards: 600
   Vote-Before-Seconds: 3
+  Death-Match-Shrink-Factor: 2
   Maximum-Game-Time:
     Solo: 300
     Teams: 500
