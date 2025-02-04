@@ -171,6 +171,7 @@ public class TeamsMode extends RSWMap {
                         p.getPlayer().sendTitle(up.get(0), up.get(1), 10, 120, 10);
                     }
 
+                    p.getInventory().clear();
                     RSWPlayerItems.CAGE.giveSet(p);
 
                     //update tab

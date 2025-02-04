@@ -39,7 +39,6 @@ public enum RSWPlayerItems {
 
         switch (this) {
             case CAGE:
-                p.getInventory().clear();
                 setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Cage.Kit"), ITEM_KITS.get(p));
                 setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Cage.Vote"), ITEM_VOTE.get(p));
                 setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Cage.Leave"), ITEM_LEAVE.get(p));
@@ -48,13 +47,11 @@ public enum RSWPlayerItems {
                 if (RSWConfig.file().getBoolean("Config.Disable-Lobby-Items", false)) {
                     return;
                 }
-                p.getInventory().clear();
                 setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Lobby.Profile"), ITEM_PROFILE.get(p));
                 setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Lobby.Maps"), ITEM_MAPS.get(p));
                 setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Lobby.Shop"), ITEM_SHOP.get(p));
                 break;
             case SPECTATOR:
-                p.getInventory().clear();
                 setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Spectator.Spectate"), ITEM_SPECTATE.get(p));
                 if (p.getState() != RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
                     setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Spectator.Play-Again"), ITEM_PLAYAGAIN.get(p));
@@ -65,7 +62,6 @@ public enum RSWPlayerItems {
                 setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Spectator.Leave"), ITEM_LEAVE.get(p));
                 break;
             case SETUP:
-                p.getInventory().clear();
                 setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Setup.Cage"), ITEM_SETCAGE.get(p));
                 setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest1"), ITEM_CHEST1.get(p));
                 setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest2"), ITEM_CHEST2.get(p));

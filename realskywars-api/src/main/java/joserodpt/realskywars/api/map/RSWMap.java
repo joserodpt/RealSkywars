@@ -480,6 +480,7 @@ public abstract class RSWMap {
                 break;
         }
 
+        p.getInventory().clear();
         RSWPlayerItems.SPECTATOR.giveSet(p);
     }
 
@@ -709,6 +710,7 @@ public abstract class RSWMap {
 
         p.setBarNumber(0);
         p.setInvincible(false);
+        p.getInventory().clear();
         TranslatableLine.MATCH_LEAVE.send(p, true);
 
         if (!RSWConfig.file().getBoolean("Config.Shops.Only-Buy-Kits-Per-Match")) {

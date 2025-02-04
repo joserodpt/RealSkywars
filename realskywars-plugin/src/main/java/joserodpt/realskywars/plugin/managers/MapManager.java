@@ -301,6 +301,7 @@ public class MapManager extends MapManagerAPI {
 
         Text.sendList(p.getPlayer(), Text.replaceVarInList(TranslatableList.EDIT_MAP.get(p), "%cages%", teams + ""));
 
+        p.getInventory().clear();
         RSWPlayerItems.SETUP.giveSet(p);
         p.getPlayer().setGameMode(org.bukkit.GameMode.CREATIVE);
 
@@ -576,6 +577,7 @@ public class MapManager extends MapManagerAPI {
         p.setGameMode(org.bukkit.GameMode.CREATIVE);
         p.teleport(map.getSpectatorLocation());
         Text.sendList(p.getPlayer(), Text.replaceVarInList(TranslatableList.EDIT_MAP.get(p), "%cages%", map.getGameMode() == RSWMap.GameMode.SOLO ? String.valueOf(map.getMaxPlayers()) : map.getTeams().size() + ""));
+        p.getInventory().clear();
         RSWPlayerItems.SETUP.giveSet(p);
 
         map.getCages().forEach(rswCage -> map.getRSWWorld().getWorld().getBlockAt(rswCage.getLocation()).setType(Material.BEACON));
