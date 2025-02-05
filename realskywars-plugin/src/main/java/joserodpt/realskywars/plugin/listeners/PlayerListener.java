@@ -301,22 +301,29 @@ public class PlayerListener implements Listener {
                     return;
                 }
             }
-
-            if (p.getState() == RSWPlayer.PlayerState.CAGE) {
-                event.setCancelled(true);
-            }
-
-            return;
         }
 
         if (p != null) {
             switch (p.getState()) {
+                case PLAYING:
+                    if (event.getBlock().getType() == Material.CHEST) {
+                        RSWChest chest = p.getMatch().getChest(event.getBlock().getLocation());
+                        if (chest != null) {
+                            if (chest.isOpened()) {
+                                chest.clearHologram();
+                                chest.cancelTasks();
+                            } else {
+                                chest.populate();
+                            }
+                        }
+                    }
+                    break;
                 case SPECTATOR:
                 case EXTERNAL_SPECTATOR:
                 case CAGE:
                     event.setCancelled(true);
                 case LOBBY_OR_NOGAME:
-                    if (rs.getLobbyManagerAPI().isInLobby(p.getLocation().getWorld())) {
+                    if (rs.getLobbyManagerAPI().isInLobby(p.getLocation().getWorld()) && !p.getPlayer().isOp()) {
                         event.setCancelled(true);
                     }
                     break;
