@@ -49,6 +49,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -596,6 +597,18 @@ public class PlayerListener implements Listener {
             assert gp != null;
             if (gp.getBowParticle() != null && gp.isInMatch()) {
                 gp.addTrail(new RSWBowTrail(gp.getBowParticle(), e.getEntity(), gp));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onFoodLevelChange(FoodLevelChangeEvent e) {
+        if (e.getEntity() instanceof Player) {
+            Player p = (Player) e.getEntity();
+            RSWPlayer gp = rs.getPlayerManagerAPI().getPlayer(p);
+            if (gp != null && gp.isInMatch() && gp.getState() == RSWPlayer.PlayerState.CAGE) {
+                e.setFoodLevel(20);
+                e.setCancelled(true);
             }
         }
     }
