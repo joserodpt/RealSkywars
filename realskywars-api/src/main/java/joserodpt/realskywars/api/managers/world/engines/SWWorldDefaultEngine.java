@@ -59,6 +59,8 @@ public class SWWorldDefaultEngine implements SWWorldEngine {
             //Load world
             this.world = this.wm.createEmptyWorld(this.getName(), World.Environment.NORMAL);
             if (this.world != null) {
+                this.world.setTime(0);
+                this.world.setStorm(false);
                 WorldBorder wb = this.world.getWorldBorder();
 
                 wb.setCenter(this.gameRoom.getMapCuboid().getCenter());

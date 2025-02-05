@@ -62,6 +62,9 @@ public class SWWorldSchematicEngine implements SWWorldEngine {
                     //place schematic
                     WorldEditUtils.pasteSchematic(this.schematicName, new Location(this.world, 0, 64, 0), null);
 
+                    this.world.setTime(0);
+                    this.world.setStorm(false);
+
                     WorldBorder wb = this.world.getWorldBorder();
 
                     wb.setCenter(this.gameRoom.getMapCuboid().getCenter());

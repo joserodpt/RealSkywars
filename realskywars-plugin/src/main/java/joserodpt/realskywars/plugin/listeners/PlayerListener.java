@@ -301,6 +301,11 @@ public class PlayerListener implements Listener {
                     return;
                 }
             }
+
+            if (p.getState() == RSWPlayer.PlayerState.CAGE) {
+                event.setCancelled(true);
+            }
+
             return;
         }
 
