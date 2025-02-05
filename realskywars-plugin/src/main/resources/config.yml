@@ -40,6 +40,7 @@ Config:
     Enabled: false
     Kick-Player: true
     Lobby-Server: lobby
+    Map-State-As-Motd: false
   Use-Vault-As-Currency: false
   Invincibility-Seconds: 3
   Auto-Teleport-To-Lobby: true

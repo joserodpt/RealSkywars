@@ -21,6 +21,7 @@ import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.effects.RSWBowTrail;
+import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.shop.RSWBuyableItem;
@@ -508,18 +509,23 @@ public class PlayerListener implements Listener {
     public void onAsyncPlayerJoin(AsyncPlayerPreLoginEvent e) {
         // auto join random match
         if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
-            Optional<RSWMap> suitableGame = rs.getMapManagerAPI().findSuitableGame(null);
-            if (suitableGame.isPresent()) {
-                RSWMap game = suitableGame.get();
+            if (rs.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL).isEmpty()) {
+                e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_NO_AVAILABLE_MAPS.getSingle());
+                return;
+            }
+
+            Optional<RSWMap> map = rs.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL).stream().findFirst();
+            if (map.isPresent()) {
+                RSWMap game = map.get();
                 if (game.getState() == RSWMap.MapState.RESETTING) {
                     e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_RESETTING_MESSAGE.getSingle());
                     return;
                 }
 
-                if (suitableGame.get().isFull() && !game.isSpectatorEnabled()) {
+                if (game.isFull() && !game.isSpectatorEnabled()) {
                     e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_FULL.getSingle());
                 } else {
-                    rs.getPlayerManagerAPI().getFastJoin().put(e.getUniqueId(), suitableGame.get());
+                    rs.getPlayerManagerAPI().getFastJoin().put(e.getUniqueId(), game);
                     e.allow();
                 }
             } else {

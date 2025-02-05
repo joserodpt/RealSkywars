@@ -91,7 +91,12 @@ public class EventListener implements Listener {
             List<RSWMap> maps = new ArrayList<>(rs.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL));
             RSWMap map = maps.get(0);
             event.setMaxPlayers(maps.size() == 1 ? map.getMaxPlayers() : 1);
-            event.setMotd(Text.color("&f&lReal&B&LSkywars &r&6Version &e" + rs.getPlugin().getDescription().getVersion() + "\n&dBungeecord &r&2Map: &a" + (maps.size() == 1 ? map.getName() : "?")));
+
+            if (RSWConfig.file().getBoolean("Config.Bungeecord.Map-State-As-Motd")) {
+                event.setMotd(Text.color((maps.size() == 1 ? map.getState().getDefaultTranslation() : "?")));
+            } else {
+                event.setMotd(Text.color("&f&lReal&B&LSkywars &r&6Version &e" + rs.getPlugin().getDescription().getVersion() + "\n&7Bungeecord - Map: &f" + (maps.size() == 1 ? map.getName() : "?") + " > " + (maps.size() == 1 ? map.getState().getDefaultTranslation() : "?")));
+            }
         }
     }
 }
