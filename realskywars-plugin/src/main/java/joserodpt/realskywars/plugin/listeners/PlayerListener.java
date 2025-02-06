@@ -52,6 +52,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -104,6 +105,22 @@ public class PlayerListener implements Listener {
                 case SPECTATOR:
                 case EXTERNAL_SPECTATOR:
                     e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onClickItems(InventoryClickEvent e) {
+        if (e.getWhoClicked() instanceof Player) {
+            RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) e.getWhoClicked());
+            if (p != null) {
+                switch (p.getState()) {
+                    case SPECTATOR:
+                    case EXTERNAL_SPECTATOR:
+                    case CAGE:
+                        e.setCancelled(true);
+                        break;
+                }
             }
         }
     }
