@@ -198,10 +198,10 @@ public abstract class RSWMap {
         }, (t) -> {
             this.bossbar.tick();
             if (this.getInvincibilitySeconds() == t.getPassedSeconds()) {
-                for (RSWPlayer player : this.getPlayers()) {
-                    player.setInvincible(false);
-                    TranslatableLine.INVINCIBILITY_END.send(player, true);
-                }
+                this.getPlayers().forEach(rswPlayer -> {
+                    rswPlayer.setInvincible(false);
+                    TranslatableLine.INVINCIBILITY_END.send(rswPlayer, true);
+                });
             }
         }
         );

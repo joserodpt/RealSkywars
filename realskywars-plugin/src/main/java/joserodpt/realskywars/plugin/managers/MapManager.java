@@ -388,6 +388,7 @@ public class MapManager extends MapManagerAPI {
 
         map.getCages().forEach(rswCage -> rswCage.setMap(map));
 
+        p.getPlayer().getInventory().clear();
         rs.getLobbyManagerAPI().tpToLobby(p);
 
         // Save Data

@@ -127,8 +127,16 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void items(PlayerInteractEvent e) {
+        RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(e.getPlayer());
+        if (p == null) {
+            return;
+        }
         switch (e.getAction()) {
             case PHYSICAL:
+                if (e.getClickedBlock().getType() == Material.FARMLAND && (p.getState() == RSWPlayer.PlayerState.SPECTATOR || p.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR)) {
+                    e.setCancelled(true);
+                    break;
+                }
                 if (rs.getLobbyManagerAPI().getLobbyLocation() != null && e.getPlayer().getWorld().equals(rs.getLobbyManagerAPI().getLobbyLocation().getWorld())) {
                     switch (e.getClickedBlock().getType()) {
                         case STONE_PRESSURE_PLATE:
@@ -142,7 +150,6 @@ public class PlayerListener implements Listener {
                 break;
             case RIGHT_CLICK_BLOCK:
             case RIGHT_CLICK_AIR:
-                RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(e.getPlayer());
                 if (p != null) {
                     if (p.getPlayer() != null && p.getPlayer().isOp()) {
                         if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().getType() == Material.COMPARATOR) {
