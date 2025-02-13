@@ -513,15 +513,20 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onHit(EntityDamageByEntityEvent e) {
+        Player whoHit = (Player) e.getDamager();
+        RSWPlayer hitter = rs.getPlayerManagerAPI().getPlayer(whoHit);
+
         if (e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
             Player whoWasHit = (Player) e.getEntity();
-            Player whoHit = (Player) e.getDamager();
-            RSWPlayer hitter = rs.getPlayerManagerAPI().getPlayer(whoHit);
             RSWPlayer hurt = rs.getPlayerManagerAPI().getPlayer(whoWasHit);
             if (hitter.getTeam() != null && hitter.getTeam().getMembers().contains(hurt)) {
                 TranslatableLine.TEAMMATE_DAMAGE_CANCEL.send(hitter, true);
                 e.setCancelled(true);
             }
+            if (hitter.getState() == RSWPlayer.PlayerState.SPECTATOR || hitter.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
+                e.setCancelled(true);
+            }
+        } else {
             if (hitter.getState() == RSWPlayer.PlayerState.SPECTATOR || hitter.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
                 e.setCancelled(true);
             }
