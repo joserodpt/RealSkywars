@@ -19,11 +19,15 @@ import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.cages.RSWTeamCage;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.utils.TeamColorLoop;
 import joserodpt.realskywars.api.utils.Text;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class RSWTeam {
 
@@ -32,11 +36,18 @@ public class RSWTeam {
     private final RSWTeamCage tc;
     private final List<RSWPlayer> members = new ArrayList<>();
     private Boolean eliminated = false, playing = false;
+    private Team teamBukkit = Bukkit.getScoreboardManager().getMainScoreboard().getTeam(getTeamNameScoreboard());
+
 
     public RSWTeam(int i, int maxMemb, Location c) {
         this.id = i;
         this.tc = new RSWTeamCage(i, c.getBlockX(), c.getBlockY(), c.getBlockZ());
         this.maxMembers = maxMemb;
+        if (teamBukkit == null) {
+            teamBukkit = Bukkit.getScoreboardManager().getMainScoreboard().registerNewTeam(getTeamNameScoreboard());
+        }
+
+        teamBukkit.setColor(TeamColorLoop.getTeamColor());
     }
 
     public void addPlayer(RSWPlayer p) {
@@ -49,6 +60,7 @@ public class RSWTeam {
         }
 
         p.teleport(this.tc.getLocation());
+        this.teamBukkit.addEntry(p.getName());
         p.sendMessage(TranslatableLine.TEAM_JOIN.get(p, true).replace("%team%", getName()));
     }
 
@@ -61,6 +73,7 @@ public class RSWTeam {
             this.eliminated = true;
         }
         p.setTeam(null);
+        this.teamBukkit.removeEntry(p.getName());
         p.sendMessage(TranslatableLine.TEAM_LEAVE.get(p, true).replace("%team%", getName()));
     }
 
@@ -110,5 +123,9 @@ public class RSWTeam {
 
     public int getMemberCount() {
         return this.getMembers().size();
+    }
+
+    public String getTeamNameScoreboard() {
+        return "rswT" + UUID.randomUUID();
     }
 }

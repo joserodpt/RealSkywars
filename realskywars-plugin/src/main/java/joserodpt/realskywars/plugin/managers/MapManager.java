@@ -43,6 +43,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
+import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -449,13 +450,15 @@ public class MapManager extends MapManagerAPI {
 
     @Override
     public void endMaps(boolean shutdown) {
-        this.shutdown = true;
+        this.shutdown = shutdown;
 
         for (RSWMap g : this.maps.values()) {
             g.kickPlayers(TranslatableLine.ADMIN_SHUTDOWN.getSingle());
             g.resetArena(RSWMap.OperationReason.SHUTDOWN);
             g.clear();
         }
+
+        Bukkit.getScoreboardManager().getMainScoreboard().getTeams().forEach(Team::unregister);
     }
 
     @Override

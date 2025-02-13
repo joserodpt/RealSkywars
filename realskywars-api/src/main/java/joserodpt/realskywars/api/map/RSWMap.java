@@ -642,7 +642,7 @@ public abstract class RSWMap {
 
     public void sendLog(RSWPlayer p, boolean winner) {
         if (p.getPlayer() != null) {
-            TranslatableList.MAP_END_LOG.get(p).forEach(s -> p.sendCenterMessage(s.replace("%recvcoins%", Text.formatDouble(p.getGameBalance())).replace("%totalcoins%", RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoinsFormatted(p)).replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + "").replace("%time%", Text.formatSeconds(this.mapTimer.getPassedSeconds()))));
+            TranslatableList.MAP_END_LOG.get(p).forEach(s -> p.sendCenterMessage(s.replace("%recvcoins%", Text.formatDouble(p.getGameBalance())).replace("%totalcoins%", RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoinsFormatted(p)).replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + "").replace("%time%", Text.formatSeconds(this.getMapTimer().getPassedSeconds()))));
 
             RealSkywarsAPI.getInstance().getDatabaseManagerAPI().saveNewGameHistory(new PlayerGameHistoryRow(p.getPlayer(), this.getName(), this.getGameMode().name(), this.isRanked(), this.getStartingPlayers(), p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS), winner, this.getTimePassed()), true);
 

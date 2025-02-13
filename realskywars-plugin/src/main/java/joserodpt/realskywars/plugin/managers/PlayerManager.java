@@ -309,5 +309,4 @@ public class PlayerManager extends PlayerManagerAPI {
     public List<UUID> getTeleporting() {
         return this.teleporting;
     }
-
 }
