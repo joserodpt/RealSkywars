@@ -448,13 +448,7 @@ public class PlayerListener implements Listener {
             if (e.getCause() == EntityDamageEvent.DamageCause.VOID) {
                 if (damaged.isInMatch()) {
                     e.setDamage(0);
-                    if (damaged.getState() == RSWPlayer.PlayerState.SPECTATOR || damaged.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
-                            damaged.getPlayer().spigot().respawn();
-                            damaged.teleport(damaged.getMatch().getSpectatorLocation());
-                        }, 1);
-                        return;
-                    }
+                    if (checkSpectate(damaged)) return;
 
                     if (damaged.getMatch().getState() == RSWMap.MapState.PLAYING) {
                         damaged.addStatistic(RSWPlayer.Statistic.DEATH, 1, damaged.getMatch().isRanked());
@@ -486,6 +480,7 @@ public class PlayerListener implements Listener {
         Player pkiller = e.getEntity().getKiller();
 
         Location deathLoc = null;
+        String msg = e.getDeathMessage();
         e.setDeathMessage(null);
 
         if (pkiller != null) {
@@ -497,32 +492,37 @@ public class PlayerListener implements Listener {
         }
 
         RSWPlayer killed = rs.getPlayerManagerAPI().getPlayer(pkilled);
-
-        if (killed.getState() == RSWPlayer.PlayerState.SPECTATOR || killed.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
-                killed.getPlayer().spigot().respawn();
-                killed.teleport(killed.getMatch().getSpectatorLocation());
-            }, 1);
-            return;
+        if (killed == null && killed.isInMatch()) {
+            killed.getMatch().getPlayers().forEach(rswPlayer -> rswPlayer.sendMessage(msg));
         }
+
+        if (checkSpectate(killed)) return;
 
         if (killed.isInMatch() && killed.getMatch().getState().equals(RSWMap.MapState.PLAYING)) {
             killed.addStatistic(RSWPlayer.Statistic.DEATH, 1, killed.getMatch().isRanked());
 
             Location finalDeathLoc = deathLoc;
             Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
-                if (killed.getPlayer() != null) {
-                    killed.getPlayer().spigot().respawn();
+                if (killed.getPlayer() == null) {
+                    return;
                 }
-                if (finalDeathLoc == null) {
-                    if (killed.getPlayer() != null)
-                        killed.getMatch().spectate(killed, RSWMap.SpectateType.INSIDE_GAME, killed.getMatch().getSpectatorLocation());
-                } else {
-                    if (killed.getPlayer() != null)
-                        killed.getMatch().spectate(killed, RSWMap.SpectateType.INSIDE_GAME, finalDeathLoc);
-                }
+                killed.getPlayer().spigot().respawn();
+
+                killed.getMatch().spectate(killed, RSWMap.SpectateType.INSIDE_GAME,
+                        finalDeathLoc == null ? killed.getMatch().getSpectatorLocation() : finalDeathLoc);
             }, 1);
         }
+    }
+
+    private boolean checkSpectate(RSWPlayer killed) {
+        if (killed.getState() == RSWPlayer.PlayerState.SPECTATOR || killed.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
+                killed.getPlayer().spigot().respawn();
+                killed.teleport(killed.getMatch().getSpectatorLocation());
+            }, 1);
+            return true;
+        }
+        return false;
     }
 
     @EventHandler
