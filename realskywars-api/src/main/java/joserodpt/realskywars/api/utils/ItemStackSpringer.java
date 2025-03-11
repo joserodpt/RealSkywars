@@ -18,12 +18,14 @@ package joserodpt.realskywars.api.utils;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BookMeta;
@@ -45,6 +47,16 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ItemStackSpringer {
+
+    private static final Gson gson = new Gson();
+
+    public static String getItemSerializedJSON(ItemStack i) {
+        return gson.toJson(getItemSerialized(i));
+    }
+
+    public static ItemStack getItemDeSerializedJSON(String s) {
+        return getItemDeSerialized(gson.fromJson(s, HashMap.class));
+    }
 
     public static Map<String, Object> getItemSerialized(ItemStack i) {
         return getItemSerialized(-1, i);
@@ -87,6 +99,15 @@ public class ItemStackSpringer {
             singleItem.put(ItemCategories.ENCHANTMENTS.name(), i.getEnchantments().entrySet().stream()
                     .map(entry -> entry.getKey().getKey().getKey() + ":" + entry.getValue())
                     .collect(Collectors.joining(";")));
+        }
+
+        //save item's itemflags
+        if (i.hasItemMeta()) {
+            if (!i.getItemMeta().getItemFlags().isEmpty()) {
+                singleItem.put(ItemCategories.ITEM_FLAGS.name(), i.getItemMeta().getItemFlags().stream()
+                        .map(Enum::name)
+                        .collect(Collectors.joining(";")));
+            }
         }
 
         //Leather Armor Items
@@ -194,12 +215,12 @@ public class ItemStackSpringer {
     }
 
     public static ItemStack getItemDeSerialized(Map<String, Object> data) {
-        //Debugger.print(ItemStackSpringer.class, "Attempting to deserialize Item with Data " + data.toString());
+        debugPrint(ItemStackSpringer.class, "Attempting to deserialize Item with Data " + data.toString());
         if (!data.containsKey(ItemCategories.MATERIAL.name())) {
             return null;
         }
 
-        //Debugger.print(ItemStackSpringer.class, "Attempting to deserialize Item Data of Material " + data.get(ItemCategories.MATERIAL.name()));
+        debugPrint(ItemStackSpringer.class, "Attempting to deserialize Item Data of Material " + data.get(ItemCategories.MATERIAL.name()));
 
         Material m = Material.valueOf((String) data.get(ItemCategories.MATERIAL.name()));
 
@@ -248,9 +269,22 @@ public class ItemStackSpringer {
                     }
 
                     Enchantment enchantment = getEnchantmentByName(enchantmentName);
-                    //Debugger.print(ItemStackSpringer.class, "Trying to apply " + enchantmentName + " - " + enchantmentLevel);
+                    debugPrint(ItemStackSpringer.class, "Trying to apply " + enchantmentName + " - " + enchantmentLevel);
                     if (enchantment != null) {
                         i.addUnsafeEnchantment(enchantment, enchantmentLevel);
+                    }
+                }
+            }
+            if (ItemCategories.ITEM_FLAGS.name().equals(key)) {
+                String[] flags = value.toString().split(";");
+                for (String flagName : flags) {
+                    try {
+                        ItemFlag flag = ItemFlag.valueOf(flagName);
+                        assert meta != null;
+                        meta.addItemFlags(flag);
+                        i.setItemMeta(meta);
+                    } catch (IllegalArgumentException e) {
+                        RealSkywarsAPI.getInstance().getPlugin().getLogger().severe(flagName + " isn't a known ItemFlag (is this a bug?) Skipping this flag.");
                     }
                 }
             }
@@ -305,7 +339,7 @@ public class ItemStackSpringer {
                     }
 
                     Enchantment enchantment = getEnchantmentByName(enchantmentName);
-                    //Debugger.print(ItemStackSpringer.class, "Trying to apply " + enchantmentName + " - " + enchantmentLevel);
+                    debugPrint(ItemStackSpringer.class, "Trying to apply " + enchantmentName + " - " + enchantmentLevel);
                     if (enchantment != null) {
                         enchbookmeta.addStoredEnchant(enchantment, enchantmentLevel, true);
                     }
@@ -339,9 +373,14 @@ public class ItemStackSpringer {
             }
         }
 
-        //Debugger.print(ItemStackSpringer.class, "Item Deserialized: " + i);
+        debugPrint(ItemStackSpringer.class, "Item Deserialized: " + i);
 
         return i;
+    }
+
+    private static void debugPrint(Class<?> c, String s) {
+        if (false)
+            RealSkywarsAPI.getInstance().getPlugin().getLogger().warning(c.getName() + " -> " + s);
     }
 
     private static Map<String, Object> serializeFirework(FireworkEffect fireworkEffect) {
@@ -443,13 +482,13 @@ public class ItemStackSpringer {
             case "vanishing_curse":
                 return Enchantment.VANISHING_CURSE;
             default:
-                RealSkywarsAPI.getInstance().getLogger().severe(name + " isn't a known Enchantment (is this a bug?) Skipping this enchant.");
+                RealSkywarsAPI.getInstance().getPlugin().getLogger().severe(name + " isn't a known Enchantment (is this a bug?) Skipping this enchant.");
                 return null;
         }
     }
 
     public enum ItemCategories {
-        SLOT, NAME, MATERIAL, AMOUNT, DAMAGE, LORE, ENCHANTMENTS, EMPTY,
+        SLOT, NAME, MATERIAL, AMOUNT, DAMAGE, LORE, ENCHANTMENTS, EMPTY, ITEM_FLAGS,
         LEATHER_ARMOR_COLOR, BANNER_PATTERNS, BOOK_DATA, BOOK_ENCHANTMENTS, FIREWORK_DATA, POTION_DATA
     }
 
