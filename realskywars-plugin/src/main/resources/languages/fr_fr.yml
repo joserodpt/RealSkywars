@@ -6,25 +6,10 @@ fr_fr:
       MATERIAL: WHITE_BANNER
       BANNER_PATTERNS:
         - color: RED
-          pattern: minecraft:cross
-        - color: WHITE
-          pattern: minecraft:stripe_downleft
-        - color: WHITE
-          pattern: minecraft:stripe_downright
-        - color: WHITE
-          pattern: minecraft:stripe_downright
-        - color: WHITE
-          pattern: minecraft:stripe_downleft
-        - color: RED
-          pattern: minecraft:cross
-        - color: WHITE
-          pattern: minecraft:stripe_center
-        - color: WHITE
-          pattern: minecraft:stripe_middle
-        - color: RED
-          pattern: minecraft:straight_cross
-    Authors:
-      - "JoseGamer_PT/Auteur du plugin"
+          pattern: minecraft:stripe_right
+        - color: BLUE
+          pattern: minecraft:stripe_left
+    Authors: "Funasitien/InsertSomeFunctionHere"
     Version: 2
   Messages:
     Achievements:
