@@ -20,11 +20,7 @@ jobs:
           distribution: temurin
           java-version: '23'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Build plugin
-        run: ./gradlew build --no-daemon
+      - run: mvn --batch-mode --update-snapshots verify
 
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
