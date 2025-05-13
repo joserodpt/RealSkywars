@@ -1,0 +1,29 @@
+name: 📦 Build Minecraft Plugin
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 23
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '23'
+
+      - run: mvn --batch-mode --update-snapshots verify
+
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RealSkywars
+          path: build/libs/*.jar
