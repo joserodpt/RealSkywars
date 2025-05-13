@@ -75,7 +75,7 @@ public class LanguageManager extends LanguageManagerAPI {
             }
 
             //copy default language files
-            for (String langFile : new String[]{"en_us", "pt_pt", "es_es", "zh_cn"}) {
+            for (String langFile : new String[]{"en_us", "pt_pt", "es_es", "fr_fr", "zh_cn"}) {
                 //check if the language file exists
                 File file = new File(languagesFolder, langFile + ".yml");
                 if (!file.exists()) {

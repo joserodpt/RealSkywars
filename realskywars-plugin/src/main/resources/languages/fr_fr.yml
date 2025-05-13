@@ -9,8 +9,9 @@ fr_fr:
           pattern: minecraft:stripe_right
         - color: BLUE
           pattern: minecraft:stripe_left
-    Authors: "Funasitien/InsertSomeFunctionHere"
-    Version: 2
+    Authors:
+      - "Funasitien/InsertSomeFunctionHere"
+    Version: 1
   Messages:
     Achievements:
       Get: "&fFélicitations ! Vous avez accompli &b%achievement% &fet remporté &a%reward%"

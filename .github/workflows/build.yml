@@ -25,5 +25,5 @@ jobs:
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
         with:
-          name: minecraft-plugin-jar
+          name: RealSkywars
           path: build/libs/*.jar
