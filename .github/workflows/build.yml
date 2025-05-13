@@ -1,6 +1,7 @@
 name: 📦 Build Minecraft Plugin
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
