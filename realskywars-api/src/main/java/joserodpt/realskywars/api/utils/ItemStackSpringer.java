@@ -252,6 +252,10 @@ public class ItemStackSpringer {
                 damageable.setDamage(newDamageValue);
                 i.setItemMeta((ItemMeta) damageable);
             }
+            if (ItemCategories.CUSTOM_MODEL_DATA.name().equals(key)) {
+                meta.setCustomModelData((int) value);
+                i.setItemMeta(meta);
+            }
             if (ItemCategories.ENCHANTMENTS.name().equals(key)) {
                 String[] enchantments = value.toString().split(";");
                 for (String enchantmentEntry : enchantments) {
@@ -489,7 +493,7 @@ public class ItemStackSpringer {
 
     public enum ItemCategories {
         SLOT, NAME, MATERIAL, AMOUNT, DAMAGE, LORE, ENCHANTMENTS, EMPTY, ITEM_FLAGS,
-        LEATHER_ARMOR_COLOR, BANNER_PATTERNS, BOOK_DATA, BOOK_ENCHANTMENTS, FIREWORK_DATA, POTION_DATA
+        LEATHER_ARMOR_COLOR, BANNER_PATTERNS, BOOK_DATA, BOOK_ENCHANTMENTS, FIREWORK_DATA, POTION_DATA, CUSTOM_MODEL_DATA
     }
 
     public static ItemStack[] getItemsDeSerialized(List<Map<String, Object>> l) {

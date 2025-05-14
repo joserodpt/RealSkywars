@@ -145,3 +145,13 @@ Kits:
       - AMOUNT: 1
         SLOT: 12
         MATERIAL: MUSIC_DISC_13
+  Custom:
+    Display-Name: '&9Custom'
+    Price: 10.0
+    Icon: IRON_SWORD
+    Permission: RealSkywars.Custom
+    Contents:
+      - AMOUNT: 1
+        SLOT: 0
+        MATERIAL: IRON_SWORD
+        CUSTOM_MODEL_DATA: 1234
