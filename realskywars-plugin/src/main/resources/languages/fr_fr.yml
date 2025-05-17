@@ -1,0 +1,387 @@
+fr_fr:
+  Language-Specific:
+    Displayname: "Français"
+    Icon:
+      AMOUNT: 1
+      MATERIAL: WHITE_BANNER
+      BANNER_PATTERNS:
+        - color: RED
+          pattern: minecraft:stripe_right
+        - color: BLUE
+          pattern: minecraft:stripe_left
+    Authors:
+      - "Funasitien/InsertSomeFunctionHere"
+    Version: 1
+  Messages:
+    Achievements:
+      Get: "&fFélicitations ! Vous avez accompli &b%achievement% &fet remporté &a%reward%"
+      Reward: "&aRécompense : &e%reward%"
+      Goal: "&fObjectif : &e%goal%"
+      Names:
+        Coins: "pièces"
+    Party:
+      Already-In: "&fVous êtes déjà dans une équipe."
+      Kick: "&f%player% &ca été expulsé de l'équipe."
+      Join: "&f%player% &aa rejoint l'équipe."
+      Leave: "&f%player% &avel quitté l'équipe."
+      Not-In-Party: "&cVous n'êtes pas dans une équipe."
+      Already-Created: "&cVous avez déjà créé une équipe."
+      Created: "&aVous avez créé une équipe ! Invitez avec /party invite <nom>"
+      Insufficient-Room-Space: "&cImpossible de téléporter l'équipe dans cette salle : pas assez de places disponibles."
+      Disband: "&cVous avez dissous l'équipe."
+      Invite:
+        Not-Found: "&cInvitaion introuvable pour ce joueur."
+        Sent: "&bInvitation envoyée à &f%player%"
+        Recieved: "&b%player% &fvous a invité dans son équipe ! Acceptez avec &a/party accept"
+        Accepted: "&aVous avez rejoint l'équipe de &b%player%"
+        Cant-Invite-Yourself: "&cVous ne pouvez pas vous inviter vous-même."
+      Not-Owner: "&cVous ne pouvez pas effectuer cette action car vous n'êtes pas le propriétaire de l'équipe."
+    Coins:
+      Add: "&b%coins% &font ajouté à votre solde."
+      Remove: "&b%coins% &font retiré de votre solde."
+      Set: "&fVous avez maintenant &b%coins% &fpièces."
+      Sender: "&fVous avez envoyé &b%coins% pièces &fà %player%."
+      Reciever: "&fVous avez reçu &b%coins% pièces &fde la part de %player%."
+    Lobby-Teleport: "&fTéléporté au lobby."
+    Compass-Teleport: "&fTéléporté vers &b%name%&f."
+    Selection-Made: "&fVous avez sélectionné &b%name% &fdans %type%&f."
+    Game-Status-Set: "&fLe statut du jeu est maintenant &b%status%"
+    Language-Set: "&fVotre langue est désormais &b%language%&f."
+    Generating-World: "&aGénération d'un nouveau monde…"
+    Tier-Set: "&fLe niveau a été défini sur &b%chest%"
+    Cages-Done: "&fLes cages ont été placées. Définissez l’emplacement des spectateurs avec /rsw setspectator."
+    Team:
+      Join: "&fVous &aa rejoint &9%team%"
+      Leave: "&fVous &cl avez quitté &9%team%"
+      Broadcast-Join: "&b%player% &fa rejoint l'équipe."
+      Broadcast-Leave: "&b%player% &fal quitté l'équipe."
+      TeamMate-Damage-Cancel: "&fVous ne pouvez pas blesser votre &9coéquipier&f."
+    Shop:
+      Buy: "&fVous avez acheté &b%name% &fpour &a%coins% &fpièces."
+      Click-To-Buy: "&fCliquez ici pour acheter pour &a%coins% &fpièces."
+      Already-Bought: "&fVous avez déjà acheté &b%name%&f."
+      No-Permission: "&fVous n’êtes pas autorisé &fpour acheter cet objet."
+      Not-Buyable: "&fCet objet &cn’est pas achetable&f."
+      Click-To-Select: "&fCliquez ici pour sélectionner cet objet."
+      Bought-On: "&fAcheté le : &b"
+    Commands:
+      No-Permission: "&cVous n’avez pas la permission d’exécuter cette commande."
+      Config-Reload: "&aConfiguration rechargée."
+      Coins: "&fVous avez &b%coins% &fpièces."
+      Match-Force-Start: "&fLa partie a été &alancée de force&f."
+      Match-Force-Start-Denial: "&fVous ne pouvez &cpas &flancer cette partie de force : pas assez de joueurs."
+      No-Match: "&cVous n’êtes pas dans une partie."
+      Lobby-Set: "&fLe lobby &fa été défini&f."
+      Maps: "&fIl y a &b%rooms% &fcartes enregistrées."
+      Players: "&fIl y a &b%players% &fjoueurs en ligne."
+      No-Game-Found: "&fAucun jeu trouvé. Réessayez plus tard !"
+      No-Map-Found: "&fAucune carte trouvée."
+      Map-Found: "&fJeu trouvé ! On vous ajoute… veuillez patienter…"
+      No-Tier-Found: "&fAucun niveau trouvé."
+      No-Player-Found: "&fAucun joueur trouvé."
+      Map-Registered: "&fLa carte a été &aenregistrée&f."
+      Map-Unregistered: "&fLa carte a été &cdésenregistrée&f."
+      Map-Deleted: "&fLa carte a été &csupprimée&f."
+      Map-Incorrect-Number-Of-Cages-Solo: "&cVous devez définir le bon nombre de cages pour le nombre de joueurs !"
+      Map-Incorrect-Number-Of-Cages-Teams: "&cVous devez définir le bon nombre de cages pour le nombre d’équipes !"
+      Map-Spectator-Location-Not-Set: "&cL’emplacement du spectateur n’est pas défini."
+      Map-Spectator-Location-Set: "&fL’emplacement du spectateur &fa été défini."
+      Map-No-Cages-Set: "&cAucune cage n’est définie."
+      Map-Is-Unregistered: "&cCette carte est désenregistrée."
+      Map-Already-Registered: "&cCette carte est déjà enregistrée."
+      Map-Already-Unregistered: "&cCette carte est déjà désenregistrée."
+      Map-Unregister-To-Edit: "&cVous devez d’abord désenregistrer cette carte pour l’éditer."
+      Map-Renamed: "&fLa carte a été &arenommée&f."
+      Map-Exists: "&cUne carte porte déjà ce nom."
+      Kit-Exists: "&cUn kit porte déjà ce nom."
+      Lobby-Loc-Not-Set: "&fL’emplacement du lobby &cn’est pas défini."
+      Insuficient-Coins: "&cAction impossible. &fVous n’avez que &b%coins%&f pièces."
+      Command-Not-Found: "&fAucune commande trouvée avec cette syntaxe."
+      Add-Tier: "&fLes objets ont été ajoutés au niveau."
+      Set-Tier: "&fLe niveau a été défini."
+      Reset-Done: "&aRéinitialisation effectuée avec succès."
+    Map:
+      Saving: "&aEnregistrement de la carte…"
+      Reset: "&cLa carte est en cours de réinitialisation."
+      Reset-Done: "&aLa carte a été réinitialisée."
+      Registered: "&fLa carte a été &aenregistrée&f."
+      Suggest-Match-Cancel: "&cImpossible maintenant. &fVous pouvez faire /rsw leave pour quitter."
+      No-Boundaries: "&fLes limites &c ne sont pas définies."
+      Already-In-Match: "&cVous êtes déjà dans une partie."
+      Player-Join: "&b%player% &fa rejoint la partie. (&9%players%&7/&9%maxplayers%&f)"
+      Player-Leave: "&b%player% &fa quitté la partie. (&9%players%&7/&9%maxplayers%&f)"
+      Match-Cancelled: "&cPartie annulée, pas assez de joueurs."
+      Start-Countdown: "&fSkywars commence dans &9%time% &fseconde(s)"
+      Match-End: "&fLa partie est terminée. &aTéléportation au lobby dans &b%time% &fsecondes."
+      Invincibility-End: "&fL’invincibilité est terminée pour tous les joueurs."
+      Play-Again: "&eVous voulez rejouer ? &lCliquez ici !"
+      Cant-Join: "&fVous ne pouvez &cpas &frejoindre cette salle pour l’instant."
+      Blocked-Command: "&fCette commande est &crestreinte &fpendant la partie."
+      Spectating-Disabled: "&bLe spectate est &cdésactivé &fdans cette salle."
+      Room-Full: "&fCette salle est &cpleine&f."
+      Tracker-Found: "&fVous suivez désormais &b%player%"
+      No-Tracker-Found: "&fAucun joueur à suivre."
+      Winner-Broadcast: "&b%winner% &fa gagné sur la carte &a%displayname%"
+      Leave: "&eVous avez quitté la partie."
+      Already-Started: "&fCette partie a &bdéjà&f commencé."
+      Edit-Map:
+        - "&eSi présente, un schéma sera placé. Vous pouvez aussi coller votre schéma ou créer une nouvelle carte."
+        - "&b> &c&lIMPORTANT &r&fDéfinissez les limites avec //pos1 et //pos2 ou une hache WorldEdit, puis //expand vert pour couvrir toute la hauteur !"
+        - "&b> &aUtilisez le beacon pour placer %cages% cages."
+        - "&b> &aModifiez les paramètres de la carte dans la barre d’outil."
+        - "&b> &aQuand c’est fini, enregistrez la carte."
+      Events:
+        Refill:
+          - "&9&lRAVITAILLEMENT DES COFFRES"
+          - "&6Les coffres sont en cours de ravitaillement !"
+        TNTRain:
+          - "&c&lPLUIE DE TNT"
+          - "&cAttention à la TNT !"
+      Title:
+        Win: "&b%player% &aa gagné !"
+        DeathMatch: "&cLe monde se rétrécit…"
+      Player-Spectate: "&fVous êtes maintenant en &aSPECTATEUR."
+      Start:
+        - "&7&m&l                                 "
+        - "&bSkywars &fa commencé !"
+        - "&fCoffres sélectionnés : &b%chests%"
+        - "&fProjectiles sélectionnés : &b%project%"
+        - "&fDurée sélectionnée : &b%time%"
+        - "&fKit sélectionné : &b%kit%"
+        - "&7&m&l                                 "
+      End-Log:
+        - "&7&m&l                                 "
+        - "&bRésumé"
+        - "&fTemps : &b%time%"
+        - "&fPièces reçues : &b%recvcoins%"
+        - "&fTotal de pièces : &b%totalcoins%"
+        - "&fEliminations : &b%kills%"
+        - "&7&m&l                                 "
+  Menus:
+    Maps-Title: "Cartes"
+    Achievements-Title: "&dSuccès"
+    Spectate-Title: "&9Joueurs"
+    Vote-Title: "&b&lVote"
+    Chests-Vote-Title: "&7&lCoffres"
+    Projectiles-Vote-Title: "&7&lProjectiles"
+    Time-Vote-Title: "&7&lTemps"
+    Game-History-Title: "&e&lHistorique des parties"
+    Language:
+      Title: "&9&lLangue"
+      Select: "&fCliquez ici pour sélectionner cette langue."
+    Player-Profile:
+      Title: "&9&lVotre profil"
+      View-Item: "&fCliquez ici pour voir cet objet."
+      Reset-Data:
+        Title: "&4Réinitialiser vos données"
+        Alert: "&cAgissez avec prudence. Cette action est irréversible."
+    Shop-Menu-Title: "&fBoutique &9Catégories"
+    Spectator-Shop-Menu-Title: "&0Boutique &fSpectateur"
+  Itens:
+    Profile:
+      Name: "&9Votre Profil &7(Clic droit)"
+    CageSet:
+      Name: "&bPlacez-moi pour ajouter une cage"
+    Maps:
+      Name: "&bCartes &7(Clic droit)"
+    Shop:
+      Name: "&2Boutique &7(Clic droit)"
+    Leave:
+      Name: "&cQuitter &7(Clic droit)"
+    Vote:
+      Name: "&bVote &7(Clic droit)"
+    Spectate:
+      Name: "&bSpectate &7(Clic droit)"
+    Kit:
+      Name: "&eKits &7(Clic droit)"
+    PlayAgain:
+      Name: "&dRejouer &7(Clic droit)"
+    Chest1:
+      Name: "Coffre Commun"
+    Chest2:
+      Name: "Coffre Intermédiaire"
+    Settings:
+      Name: "&eParamètres"
+    Save:
+      Name: "&aEnregistrer"
+    Statistics:
+      Name: "&fStatistiques de %player%"
+      Lore:
+        - "%space%"
+        - " &fPièces : &e%coins%"
+        - "%space%"
+        - " &fVictoires Solo : &a%solowins%"
+        - " &fVictoires Équipe : &a%teamwins%"
+        - " &fEliminations : &a%kills%"
+        - " &fMorts : &a%deaths%"
+        - "%space%"
+        - " &fParties jouées : &b%gamesplayed%"
+        - " &fDéfaites : &b%loses%"
+        - "%space%"
+    Map:
+      Not-Found: "&9Aucune carte trouvée"
+      Title: "&9&l%displayname% &7| &f&l%mode%"
+      Description:
+        - ""
+        - "&fJoueurs : &b%players%&f/&b%maxplayers%"
+        - "&fCliquez pour rejoindre !"
+        - ""
+  Scoreboards:
+    Lobby:
+      Lines:
+        - " &fPièces : &e%coins%"
+        - "%space%"
+        - " &fVic. SOLO : &a%solowins%"
+        - " &fVic. ÉQ. : &a%teamwins%"
+        - " &fElims : &a%kills%"
+        - " &fMorts : &a%deaths%"
+        - "%space%"
+        - " &bR &fVic. SOLO : &b%rankedsolowins%"
+        - " &bR &fVic. ÉQ. : &b%rankedteamwins%"
+        - " &bR &fElims : &b%rankedkills%"
+        - " &bR &fMorts : &b%rankeddeaths%"
+        - "%space%"
+        - " &fParties : &a%gamesplayed% &7/ &b%rankedgamesplayed%"
+        - " &fDéfaites : &a%loses% &7/ &b%rankedloses%"
+        - " &b%playing% &fjouent"
+      Title: "&aRealSkywars &fLobby"
+    Cage:
+      Lines:
+        - "%space%"
+        - " &fJoueurs : &b%players%"
+        - " &fÉtat : &b%state%"
+        - "%space%"
+      Title: "&fCarte : &b%displayname% &7- &b%mode%"
+    Game:
+      Lines:
+        - "%space%"
+        - " &fJoueurs : &b%players%"
+        - " &fSpectateurs : &b%spectators%"
+        - " &fProchain événement : &b%nextevent%"
+        - " &fMode : &b%mode%"
+        - " &fElims : &b%kills%"
+        - "%space%"
+        - " &fDurée : &b%runtime%"
+        - "%space%"
+      Title: "&fCarte : &b%displayname% &7- &b%mode%"
+    Spectate:
+      Lines:
+        - "%space%"
+        - " &fJoueurs : &b%players%"
+        - " &fSpectateurs : &b%spectators%"
+        - " &fProchain événement : &b%nextevent%"
+        - " &fMode : &b%mode%"
+        - "%space%"
+        - " &fDurée : &b%runtime%"
+        - "%space%"
+      Title: "&fCarte : &b%displayname%"
+  Tab:
+    Other:
+      Header:
+        - "&f"
+        - " &f&lReal&b&lSkywars"
+        - " &a&lLobby"
+        - "&f"
+      Footer:
+        - "&f"
+        - "&fJoueurs : &b%players%"
+        - "&f"
+    In-Game:
+      Header:
+        - "&f"
+        - " &f&lReal&b&lSkywars"
+        - " &fVous jouez sur :"
+        - " &b%displayname%"
+        - "&f"
+      Footer:
+        - "%space%"
+        - "&fJoueurs : &b%players%"
+        - "%space%"
+  Titles:
+    Join-Room:
+      - "&fSélectionnez votre kit"
+      - "&fet votez !"
+  Modes:
+    Solo: "&eSolo"
+    Solo-Ranked: "&eSolo &bClassé"
+    Teams: "&9Équipes"
+    Teams-Ranked: "&9Équipes &bClassées"
+  States:
+    All: "&2Tous"
+    Available: "&aDisponible"
+    Waiting: "&fEn attente"
+    Starting: "&eDémarrage"
+    Playing: "&cEn cours"
+    Finishing: "&4Fin de partie"
+    Resetting: "&0Réinitialisation"
+    Spectating: "&5Spectate"
+  Shop-Categories:
+    Cage-Blocks: "&eBlocs de cage"
+    Win-Blocks: "&5Blocs de victoire"
+    Kits: "&9Kits"
+    Bow-Particles: "&aParticules d’arc"
+  Vote:
+    Cant-Vote: "&cVous ne pouvez pas voter pour l’instant."
+    Vote: "&fVous avez voté pour &b%thing%"
+    Already-Voted: "&fVous avez &cdéjà voté&f."
+    Time:
+      Day: "&e&lJour"
+      Night: "&7&lNuit"
+      Rain: "&9&lPluie"
+      Sunset: "&6&lCoucher de soleil"
+    Chests:
+      Name: "&f&lCoffres"
+      Basic: "&b&lBasique"
+      Normal: "&f&lNormal"
+      Epic: "&a&lÉpique"
+    Projectiles:
+      Normal: "&f&lNormal"
+      Break: "&6&lBriser des blocs"
+  Kits:
+    Price: "&fPrix : &9%price%"
+    Contains: "&eCe kit contient :"
+    Item: "&fx%amount% &b%item%"
+    Buy: "&fClic gauche pour &aacheter&f ! Clic droit pour prévisualiser."
+    Select: "&fClic gauche pour &bsélectionner&f. Clic droit pour prévisualiser."
+    Not-Found: "&cAucun kit trouvé avec ce nom."
+    Delete: "&fLe kit a été &asupprimé&f."
+    Created: "&fLe kit a été &acréé&f."
+  Statistics:
+    Name: "&bStats"
+    Player-List:
+      - "&fLangue : &b%lang%"
+      - "&fKit sélectionné : &b%kit%"
+      - "&fCage sélectionnée : &b%cage%"
+      - "&fPièces : &b%coins%"
+      - "&7"
+      - "&fPremière connexion : &b%firstjoin%"
+      - "&fDernière connexion : &b%lastjoin%"
+    Game-Log-List:
+      - "&fCarte : &b%map%"
+      - "&fJoueurs : &b%players%"
+      - "&fClassé : %ranked%"
+      - "&fVictoire : %win%"
+      - "&fElims : &b%kills%"
+      - "&fTemps : &b%time%"
+    Games-List:
+      - "&eParties : &f%games%"
+      - "&7> Victoires : &f%wins% %wins_percentage%"
+      - "&7> Défaites : &f%looses% %looses_percentage%"
+      - "&7> Classées : &f%ranked% %ranked_percentage%"
+      - "&eElims :"
+      - "&7> Moyenne : &f%average_kills%"
+      - "&7> Max : &f%most_kills%"
+      - "&eDurées :"
+      - "&7> Moyenne : &f%average_time%"
+      - "&7> Plus court : &f%shortest_time%"
+      - "&7> Plus long : &f%longest_time%"
+    Wins:
+      Solo: "&fVictoires Solo"
+      Teams: "&fVictoires Équipes"
+    Kills: "&cEliminations"
+    Deaths: "&eMorts"
+    Loses: "&5Défaites"
+    Games:
+      Played: "&fParties &bjouées"
+      Balance: "&fBilan de la partie"
+      Kills: "&fElims de la partie"
