@@ -16,7 +16,6 @@ package joserodpt.realskywars.plugin;
  */
 
 import dev.triumphteam.cmd.bukkit.BukkitCommandManager;
-import dev.triumphteam.cmd.bukkit.message.BukkitMessageKey;
 import dev.triumphteam.cmd.core.message.MessageKey;
 import dev.triumphteam.cmd.core.suggestion.SuggestionKey;
 import joserodpt.realpermissions.api.RealPermissionsAPI;
@@ -47,6 +46,7 @@ import joserodpt.realskywars.api.nms.NMS118R2andUP;
 import joserodpt.realskywars.api.utils.GUIBuilder;
 import joserodpt.realskywars.api.utils.PlayerInput;
 import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.plugin.commands.BaseCommandWA;
 import joserodpt.realskywars.plugin.commands.PartyCMD;
 import joserodpt.realskywars.plugin.commands.RealSkywarsCMD;
 import joserodpt.realskywars.plugin.commands.SairCMD;
@@ -78,7 +78,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -240,13 +242,17 @@ public class RealSkywarsPlugin extends JavaPlugin {
             }
         });
 
-        //command messages
-        commandManager.registerMessage(MessageKey.UNKNOWN_COMMAND, (sender, context) -> sender.sendMessage(realSkywars.getLanguageManagerAPI().getPrefix() + TranslatableLine.CMD_NOT_FOUND.getDefault()));
-        commandManager.registerMessage(BukkitMessageKey.NO_PERMISSION, (sender, context) -> sender.sendMessage(realSkywars.getLanguageManagerAPI().getPrefix() + TranslatableLine.CMD_NO_PERM.getDefault()));
-        commandManager.registerMessage(MessageKey.NOT_ENOUGH_ARGUMENTS, (sender, context) -> sender.sendMessage(realSkywars.getLanguageManagerAPI().getPrefix() + Text.color("&cWrong usage for the command!")));
-
         //registo de comandos #portugal
-        commandManager.registerCommand(new RealSkywarsCMD(realSkywars), new SairCMD(realSkywars), new PartyCMD(realSkywars));
+        Map<String, BaseCommandWA> commands = new HashMap<>();
+        registerCommand("realskywars", new RealSkywarsCMD(realSkywars), commands, commandManager);
+        registerCommand("leave", new SairCMD(realSkywars), commands, commandManager);
+        registerCommand("party", new PartyCMD(realSkywars), commands, commandManager);
+
+        commandManager.registerMessage(MessageKey.UNKNOWN_COMMAND, (sender, context) -> sender.sendMessage(realSkywars.getLanguageManagerAPI().getPrefix() + TranslatableLine.CMD_NOT_FOUND.getDefault()));
+        commandManager.registerMessage(MessageKey.NOT_ENOUGH_ARGUMENTS, (sender, context) -> sender.sendMessage());
+        commandManager.registerMessage(MessageKey.NOT_ENOUGH_ARGUMENTS, (sender, context) -> {
+            Text.send(sender, realSkywars.getLanguageManagerAPI().getPrefix() + commands.get(context.getCommand()).getWrongUsage(context.getSubCommand()));
+        });
 
         //placeholderAPI support
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
@@ -324,6 +330,11 @@ public class RealSkywarsPlugin extends JavaPlugin {
         logWithColor("&b  |_|  \\_\\___|\\__,_|_|_____/|_|\\_\\\\__, | \\_/\\_/ \\__,_|_|  |___/");
         logWithColor("&b   &8Made by: &9JoseGamer_PT           &b__/ |      &8Version: &9" + this.getDescription().getVersion());
         logWithColor("&b                                  |___/");
+    }
+
+    private void registerCommand(String realmines, BaseCommandWA mineCMD, Map<String, BaseCommandWA> commands, BukkitCommandManager<CommandSender> commandManager) {
+        commands.put(realmines, mineCMD);
+        commandManager.registerCommand(mineCMD);
     }
 
     public void logWithColor(String s) {

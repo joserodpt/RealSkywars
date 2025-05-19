@@ -16,7 +16,6 @@ package joserodpt.realskywars.plugin.commands;
  */
 
 import dev.triumphteam.cmd.bukkit.annotation.Permission;
-import dev.triumphteam.cmd.core.BaseCommand;
 import dev.triumphteam.cmd.core.annotation.Command;
 import dev.triumphteam.cmd.core.annotation.Default;
 import dev.triumphteam.cmd.core.annotation.Optional;
@@ -66,7 +65,7 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 @Command(value = "realskywars", alias = {"sw", "rsw"})
-public class RealSkywarsCMD extends BaseCommand {
+public class RealSkywarsCMD extends BaseCommandWA {
 
     private final String onlyPlayer = "[RealSkywars] Only players can run this command.";
     public RealSkywarsAPI rs;
@@ -249,13 +248,12 @@ public class RealSkywarsCMD extends BaseCommand {
 
     @SubCommand(value = "balance", alias = "bal")
     @Permission("rsw.coins")
-    //@WrongUsage("&c/rsw bal")
+    @WrongUsage("&c/rsw bal")
     @SuppressWarnings("unused")
     public void balancecmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-
-            p.sendMessage(TranslatableLine.CMD_COINS.get(p).replace("%coins%", rs.getCurrencyAdapterAPI().getCoinsFormatted(p)));
+            Text.send(p.getPlayer(), TranslatableLine.CMD_COINS.get(p).replace("%coins%", rs.getCurrencyAdapterAPI().getCoinsFormatted(p)));
         } else {
             commandSender.sendMessage(onlyPlayer);
         }
@@ -263,7 +261,7 @@ public class RealSkywarsCMD extends BaseCommand {
 
     @SubCommand("coins")
     @Permission("rsw.coins")
-    //@WrongUsage("&c/rsw coins <send;add;set;remove> <name> <coins>")
+    @WrongUsage("&c/rsw coins <send;add;set;remove> <name> <coins>")
     @SuppressWarnings("unused")
     public void coinscmd(final CommandSender commandSender, TransactionManager.Operations o, Player target, Double coins) {
         if (o == null) {
@@ -576,7 +574,7 @@ public class RealSkywarsCMD extends BaseCommand {
 
     @SubCommand("create")
     @Permission("rsw.admin")
-    //@WrongUsage("&c/rsw create <name> <type> <players> or /rsw create <name> <type> <number of teams> <players per team>")
+    @WrongUsage("&c/rsw create <name> <type> <players> or /rsw create <name> <type> <number of teams> <players per team>")
     @SuppressWarnings("unused")
     public void createcmd(final CommandSender commandSender, @Suggestion("#createsuggestions") String mapname, @Suggestion("#worldtype") RSWWorld.WorldType wt, Integer maxPlayersandTeams, @Optional Integer teamPlayers) {
         if (commandSender instanceof Player) {
@@ -613,7 +611,7 @@ public class RealSkywarsCMD extends BaseCommand {
 
     @SubCommand(value = "unregister", alias = "unreg")
     @Permission("rsw.admin")
-    //@WrongUsage("&c/rsw unregister <map>")
+    @WrongUsage("&c/rsw unregister <map>")
     @SuppressWarnings("unused")
     public void unregistercmd(final CommandSender commandSender, @Suggestion("#maps") String mapName) {
         RSWMap map = rs.getMapManagerAPI().getMap(mapName);
@@ -632,7 +630,7 @@ public class RealSkywarsCMD extends BaseCommand {
 
     @SubCommand(value = "register", alias = "ref")
     @Permission("rsw.admin")
-    //@WrongUsage("&c/rsw register <map>")
+    @WrongUsage("&c/rsw register <map>")
     @SuppressWarnings("unused")
     public void registercmd(final CommandSender commandSender, @Suggestion("#maps") String mapName) {
         RSWMap map = rs.getMapManagerAPI().getMap(mapName);
@@ -651,7 +649,7 @@ public class RealSkywarsCMD extends BaseCommand {
 
     @SubCommand(value = "editmap", alias = "edit")
     @Permission("rsw.admin")
-    //@WrongUsage("&c/rsw edit <map>")
+    @WrongUsage("&c/rsw edit <map>")
     @SuppressWarnings("unused")
     public void editmapcmd(final CommandSender commandSender, @Suggestion("#maps") String mapName) {
         if (commandSender instanceof Player) {
@@ -669,7 +667,7 @@ public class RealSkywarsCMD extends BaseCommand {
 
     @SubCommand(value = "delete", alias = {"del", "cancel"})
     @Permission("rsw.admin")
-    //@WrongUsage("&c/rsw delete <map>")
+    @WrongUsage("&c/rsw delete <map>")
     @SuppressWarnings("unused")
     public void deletecmd(final CommandSender commandSender, @Suggestion("#maps") String mapName) {
         RSWMap map = rs.getMapManagerAPI().getMap(mapName);
@@ -683,7 +681,7 @@ public class RealSkywarsCMD extends BaseCommand {
 
     @SubCommand(value = "rename", alias = "ren")
     @Permission("rsw.admin")
-    //@WrongUsage("&c/rsw rename <map>")
+    @WrongUsage("&c/rsw rename <map>")
     @SuppressWarnings("unused")
     public void renamecmd(final CommandSender commandSender, @Suggestion("#maps") final String mapName, final String displayName) {
         RSWMap map = rs.getMapManagerAPI().getMap(mapName);
@@ -698,7 +696,7 @@ public class RealSkywarsCMD extends BaseCommand {
 
     @SubCommand("reset")
     @Permission("rsw.admin")
-    //@WrongUsage("&c/rsw reset <map>")
+    @WrongUsage("&c/rsw reset <map>")
     @SuppressWarnings("unused")
     public void resetcmd(final CommandSender commandSender, @Suggestion("#maps") String mapSTR) {
         RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
@@ -722,7 +720,7 @@ public class RealSkywarsCMD extends BaseCommand {
 
     @SubCommand("item2config")
     @Permission("rsw.admin")
-    //@WrongUsage("&c/rsw item2config")
+    @WrongUsage("&c/rsw item2config")
     @SuppressWarnings("unused")
     public void item2configcmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
