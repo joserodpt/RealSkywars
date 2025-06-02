@@ -142,7 +142,7 @@ public class TransactionManager {
         if (!this.console) {
             this.fromPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + "Coins added to Player " + this.toPlayer.getName());
         } else {
-            RealSkywarsAPI.getInstance().getLogger().info("Coins added to Player " + this.toPlayer.getName());
+            RealSkywarsAPI.getInstance().getLogger().info("Coins " + this.operationQuantity + " added to Player " + this.toPlayer.getName());
         }
     }
 
