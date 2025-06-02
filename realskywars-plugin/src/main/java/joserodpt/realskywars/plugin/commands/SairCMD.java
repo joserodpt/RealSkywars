@@ -16,7 +16,6 @@ package joserodpt.realskywars.plugin.commands;
  */
 
 import dev.triumphteam.cmd.bukkit.annotation.Permission;
-import dev.triumphteam.cmd.core.BaseCommand;
 import dev.triumphteam.cmd.core.annotation.Command;
 import dev.triumphteam.cmd.core.annotation.Default;
 import joserodpt.realskywars.api.RealSkywarsAPI;
@@ -26,7 +25,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @Command(value = "leave", alias = {"sair", "ragequit"})
-public class SairCMD extends BaseCommand {
+public class SairCMD extends BaseCommandWA {
 
     public RealSkywarsAPI rs;
 
