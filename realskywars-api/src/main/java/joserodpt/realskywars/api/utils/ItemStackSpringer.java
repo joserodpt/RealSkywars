@@ -108,6 +108,10 @@ public class ItemStackSpringer {
                         .map(Enum::name)
                         .collect(Collectors.joining(";")));
             }
+
+            if (i.getItemMeta().hasCustomModelData()) {
+                singleItem.put(ItemCategories.CUSTOM_MODEL_DATA.name(), i.getItemMeta().getCustomModelData());
+            }
         }
 
         //Leather Armor Items
