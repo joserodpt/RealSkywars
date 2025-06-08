@@ -54,6 +54,7 @@ import joserodpt.realskywars.plugin.currency.LocalCurrencyAdapter;
 import joserodpt.realskywars.plugin.currency.VaultCurrencyAdapter;
 import joserodpt.realskywars.plugin.gui.guis.AchievementViewerGUI;
 import joserodpt.realskywars.plugin.gui.guis.GameHistoryGUI;
+import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapDashboardGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapEventEditorGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapSettingsGUI;
@@ -163,6 +164,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
         pm.registerEvents(TierViewer.getListener(), this);
         pm.registerEvents(AchievementViewerGUI.getListener(), this);
         pm.registerEvents(GameHistoryGUI.getListener(), this);
+        pm.registerEvents(KitSettingsGUI.getListener(), this);
         pm.registerEvents(VoteGUI.getListener(), this);
         pm.registerEvents(SettingsGUI.getListener(), this);
 
