@@ -90,6 +90,18 @@ public class KitManager extends KitManagerAPI {
 
     @Override
     public void registerKit(RSWKit k) {
+        if (k == null || k.getName() == null || k.getName().isEmpty()) {
+            Debugger.printerr(KitManager.class, "Kit is null or has no name! Cannot register.");
+            return;
+        }
+
+        if (this.kits.containsKey(k.getName())) {
+            Debugger.printerr(KitManager.class, "Kit with name " + k.getName() + " already exists! Cannot register.");
+            return;
+        }
+
+        this.kits.put(k.getName(), k);
+
         RSWKitsConfig.file().set("Kits." + k.getName() + ".Display-Name", k.getDisplayName());
         RSWKitsConfig.file().set("Kits." + k.getName() + ".Price", k.getPrice());
         RSWKitsConfig.file().set("Kits." + k.getName() + ".Icon", k.getMaterial().name());

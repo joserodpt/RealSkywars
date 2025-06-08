@@ -94,7 +94,6 @@ public class KitSettingsGUI {
                             if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
 
                             if (e.getRawSlot() == 22) {
-                                RealSkywarsAPI.getInstance().getKitManagerAPI().getKits().add(current.kt);
                                 RealSkywarsAPI.getInstance().getKitManagerAPI().registerKit(current.kt);
 
                                 p.closeInventory();
