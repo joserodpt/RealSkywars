@@ -47,6 +47,7 @@ Config:
   Scoreboard-In-Lobby: true
   Enable-Tab-Formatting: true
   Enable-Chat-Per-Map: false
+  Disable-Chest-Animation: false
   Shops:
     Enable-Shop: true
     Enable-Spectator-Shop: true
