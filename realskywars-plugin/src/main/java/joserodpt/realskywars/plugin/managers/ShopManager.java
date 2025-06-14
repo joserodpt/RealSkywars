@@ -29,6 +29,7 @@ import org.bukkit.Particle;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -220,7 +221,11 @@ public class ShopManager extends ShopManagerAPI {
     @Override
     public Collection<RSWBuyableItem> getBoughtItems(RSWBuyableItem.ItemCategory t, RSWPlayer p) {
         if (t == RSWBuyableItem.ItemCategory.KIT) {
-            return rs.getDatabaseManagerAPI().getPlayerBoughtItemsCategory(p.getPlayer(), t).stream().map(playerBoughtItemsRow -> rs.getKitManagerAPI().getKit(playerBoughtItemsRow)).collect(Collectors.toList());
+            List<RSWBuyableItem> kits = rs.getDatabaseManagerAPI().getPlayerBoughtItemsCategory(p.getPlayer(), t).stream().map(playerBoughtItemsRow -> rs.getKitManagerAPI().getKit(playerBoughtItemsRow)).collect(Collectors.toList());
+            if (getCategoryContents(RSWBuyableItem.ItemCategory.KIT).stream().anyMatch(rswBuyableItem -> rswBuyableItem.getPrice() == 0)) {
+                kits.addAll(rs.getKitManagerAPI().getKitsAsBuyables().stream().filter(rswBuyableItem -> rswBuyableItem.getPrice() == 0).collect(Collectors.toList()));
+            }
+            return kits;
         }
         return rs.getDatabaseManagerAPI().getPlayerBoughtItemsCategory(p.getPlayer(), t).stream().map(playerBoughtItemsRow -> this.shopItems.get(playerBoughtItemsRow.getItemID())).collect(Collectors.toList());
     }
