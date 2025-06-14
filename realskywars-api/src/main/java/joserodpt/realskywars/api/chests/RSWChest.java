@@ -180,14 +180,14 @@ public class RSWChest {
                 //
             }, () -> {
                 this.getLocation().getWorld().spawnParticle(Particle.CLOUD, this.getLocation().add(0.5, 0, 0.5), 5);
-                if (this.isChest()) {
+                if (this.isChest() && !RSWConfig.file().getBoolean("Config.Disable-Chest-Animation")) {
                     RealSkywarsAPI.getInstance().getNMS().playChestAnimation(this.getChestBlock(), false);
                 }
                 this.clear();
                 this.hologram.deleteHologram();
             }, (t) -> {
                 this.hologram.setTime(t.getSecondsLeft());
-                if (this.isChest()) {
+                if (this.isChest() && !RSWConfig.file().getBoolean("Config.Disable-Chest-Animation")) {
                     RealSkywarsAPI.getInstance().getNMS().playChestAnimation(this.getChestBlock(), true);
                 }
             });

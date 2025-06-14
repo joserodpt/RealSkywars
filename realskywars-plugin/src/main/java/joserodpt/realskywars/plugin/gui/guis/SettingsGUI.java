@@ -111,6 +111,7 @@ public class SettingsGUI {
             new SettingEntry("PlaceholderAPI In Scoreboard", "Config.PlaceholderAPI-In-Scoreboard", 0),
             new SettingEntry("Disable Player Reset", "Config.Disable-Player-Reset", 0),
             new SettingEntry("Disable Language Selection", "Config.Disable-Language-Selection", 0),
+            new SettingEntry("Disable Chest Animation", "Config.Disable-Chest-Animation", 0),
             new SettingEntry("Shuffle Items In Chests", "Config.Shuffle-Items-In-Chest", 0),
             new SettingEntry("Enable Server as Bungeecord", "Config.Bungeecord.Enabled", 0),
             new SettingEntry("Bungeecord: Kick Player instead of Moving Player to Lobby", "Config.Bungeecord.Kick-Player", 0),
