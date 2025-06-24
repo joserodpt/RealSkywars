@@ -2,7 +2,6 @@ package joserodpt.realskywars.plugin.commands;
 
 import dev.triumphteam.cmd.core.BaseCommand;
 import dev.triumphteam.cmd.core.annotation.SubCommand;
-import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.utils.Text;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +30,6 @@ public class BaseCommandWA extends BaseCommand {
     }
 
     public String getWrongUsage(@NotNull String subCommand) {
-        return this.commandUsages.getOrDefault(subCommand, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + Text.color("&cWrong usage for the command!"));
+        return this.commandUsages.getOrDefault(subCommand, Text.color("&cWrong usage for the command!"));
     }
 }
