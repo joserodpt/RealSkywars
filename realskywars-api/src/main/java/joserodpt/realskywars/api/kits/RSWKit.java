@@ -62,7 +62,7 @@ public class RSWKit extends RSWBuyableItem {
     private List<String> getDescription(RSWPlayer p, Pair<Boolean, String> boughtPair) {
         List<String> desc = new ArrayList<>();
 
-        if (!boughtPair.getKey())
+        if (!boughtPair.getKey() && super.getPrice() != 0)
             desc.add(TranslatableLine.KIT_PRICE.get(p).replace("%price%", super.getPriceFormatted()));
 
         //contents
@@ -80,10 +80,16 @@ public class RSWKit extends RSWBuyableItem {
         }
 
         desc.add("");
-        if (boughtPair.getKey()) {
-            desc.add(TranslatableLine.SHOP_BOUGHT_ON.get(p) + boughtPair.getValue());
+        if (super.getPrice() == 0) {
+            desc.add(TranslatableLine.KIT_SELECT.get(p));
+        } else {
+            if (boughtPair.getKey()) {
+                desc.add(TranslatableLine.SHOP_BOUGHT_ON.get(p) + boughtPair.getValue());
+                desc.add(TranslatableLine.KIT_SELECT.get(p));
+            } else {
+                desc.add(TranslatableLine.KIT_BUY.get(p));
+            }
         }
-        desc.add(boughtPair.getKey() ? TranslatableLine.KIT_SELECT.get(p) : TranslatableLine.KIT_BUY.get(p));
 
         return desc;
     }
