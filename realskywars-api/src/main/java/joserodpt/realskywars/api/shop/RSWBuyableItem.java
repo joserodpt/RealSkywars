@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class RSWBuyableItem {
 
@@ -121,6 +122,9 @@ public class RSWBuyableItem {
     }
 
     public Pair<Boolean, String> isBought(RSWPlayer p) {
+        if (this.getPrice() == 0) {
+            return new Pair<>(true, "free");
+        }
         return RealSkywarsAPI.getInstance().getDatabaseManagerAPI().didPlayerBoughtItem(p, this);
     }
 
@@ -138,8 +142,11 @@ public class RSWBuyableItem {
         }
 
         Pair<Boolean, String> res = this.isBought(p);
-        return res.getKey() ? Itens.createItemLoreEnchanted(this.getMaterial(), this.getAmount(), "&b" + this.getDisplayName(), Collections.singletonList("&f" + TranslatableLine.SHOP_BOUGHT_ON.get(p) + res.getValue())) :
-                Itens.createItem(this.getMaterial(), 1, "&b" + this.getDisplayName(), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%coins%", this.getPriceFormatted())));
+        if (res.getKey()) {
+            return Itens.createItemLoreEnchanted(this.getMaterial(), this.getAmount(), "&b" + this.getDisplayName(), Objects.equals(res.getValue(), "free") ? Collections.singletonList(TranslatableLine.SHOP_CLICK_2_SELECT.get(p)) : Arrays.asList("&f" + TranslatableLine.SHOP_BOUGHT_ON.get(p) + res.getValue(), TranslatableLine.SHOP_CLICK_2_SELECT.get(p)));
+        } else {
+            return Itens.createItem(this.getMaterial(), 1, "&b" + this.getDisplayName(), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_BUY.get(p).replace("%coins%", this.getPriceFormatted())));
+        }
     }
 
     public void setDummy() {

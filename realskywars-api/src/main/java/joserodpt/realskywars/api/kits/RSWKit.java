@@ -27,7 +27,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class RSWKit extends RSWBuyableItem {
     public enum Perks {ENDER}
@@ -55,8 +57,11 @@ public class RSWKit extends RSWBuyableItem {
     public ItemStack getIcon(RSWPlayer p) {
         Pair<Boolean, String> res = this.isBought(p);
 
-        return res.getKey() ? Itens.createItemLoreEnchanted(super.getMaterial(), this.getAmount(), "&r&f" + this.getDisplayName(), this.getDescription(p, res)) :
-                Itens.createItem(super.getMaterial(), this.getAmount(), "&r&f" + this.getDisplayName(), this.getDescription(p, res));
+        if (res.getKey()) {
+            return Itens.createItemLoreEnchanted(this.getMaterial(), this.getAmount(), "&r&f" + this.getDisplayName(), Objects.equals(res.getValue(), "free") ? Collections.singletonList(TranslatableLine.KIT_SELECT.get(p)) : this.getDescription(p, res));
+        } else {
+            return Itens.createItem(super.getMaterial(), this.getAmount(), "&r&f" + this.getDisplayName(), this.getDescription(p, res));
+        }
     }
 
     private List<String> getDescription(RSWPlayer p, Pair<Boolean, String> boughtPair) {
@@ -80,15 +85,11 @@ public class RSWKit extends RSWBuyableItem {
         }
 
         desc.add("");
-        if (super.getPrice() == 0) {
+        if (boughtPair.getKey()) {
+            desc.add(TranslatableLine.SHOP_BOUGHT_ON.get(p) + boughtPair.getValue());
             desc.add(TranslatableLine.KIT_SELECT.get(p));
         } else {
-            if (boughtPair.getKey()) {
-                desc.add(TranslatableLine.SHOP_BOUGHT_ON.get(p) + boughtPair.getValue());
-                desc.add(TranslatableLine.KIT_SELECT.get(p));
-            } else {
-                desc.add(TranslatableLine.KIT_BUY.get(p));
-            }
+            desc.add(TranslatableLine.KIT_BUY.get(p));
         }
 
         return desc;

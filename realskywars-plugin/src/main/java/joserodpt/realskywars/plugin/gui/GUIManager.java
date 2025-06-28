@@ -199,12 +199,11 @@ public class GUIManager {
         }
 
         inventory.setItem(event -> {
+            p.closeInventory();
             if (id == 0) {
-                p.closeInventory();
                 PlayerItemsGUI pc = new PlayerItemsGUI(p, RSWBuyableItem.ItemCategory.KIT);
                 pc.openInventory(p);
             } else {
-                p.closeInventory();
                 ShopGUI s = new ShopGUI(p, RSWBuyableItem.ItemCategory.KIT);
                 s.openInventory(p);
             }

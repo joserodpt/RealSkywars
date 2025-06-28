@@ -252,7 +252,7 @@ public class PlayerItemsGUI {
                                 }
 
                                 if (e.getClick() == ClickType.RIGHT && clicked instanceof RSWKit) {
-                                    GUIManager.openKitPreview(p, (RSWKit) clicked, 1);
+                                    GUIManager.openKitPreview(p, (RSWKit) clicked, 0);
                                     return;
                                 }
 

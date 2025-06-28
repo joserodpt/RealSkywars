@@ -29,7 +29,6 @@ import org.bukkit.Particle;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -220,13 +219,22 @@ public class ShopManager extends ShopManagerAPI {
 
     @Override
     public Collection<RSWBuyableItem> getBoughtItems(RSWBuyableItem.ItemCategory t, RSWPlayer p) {
+        Map<String, RSWBuyableItem> items = new HashMap<>();
         if (t == RSWBuyableItem.ItemCategory.KIT) {
-            List<RSWBuyableItem> kits = rs.getDatabaseManagerAPI().getPlayerBoughtItemsCategory(p.getPlayer(), t).stream().map(playerBoughtItemsRow -> rs.getKitManagerAPI().getKit(playerBoughtItemsRow)).collect(Collectors.toList());
-            if (getCategoryContents(RSWBuyableItem.ItemCategory.KIT).stream().anyMatch(rswBuyableItem -> rswBuyableItem.getPrice() == 0)) {
-                kits.addAll(rs.getKitManagerAPI().getKitsAsBuyables().stream().filter(rswBuyableItem -> rswBuyableItem.getPrice() == 0).collect(Collectors.toList()));
-            }
-            return kits;
+            rs.getDatabaseManagerAPI().getPlayerBoughtItemsCategory(p.getPlayer(), t).stream().map(playerBoughtItemsRow -> rs.getKitManagerAPI().getKit(playerBoughtItemsRow)).forEach(rswKit -> items.put(rswKit.getConfigKey(), rswKit));
+        } else {
+            rs.getDatabaseManagerAPI().getPlayerBoughtItemsCategory(p.getPlayer(), t).stream().map(playerBoughtItemsRow -> this.shopItems.get(playerBoughtItemsRow.getItemID()))
+                    .forEach(rswBuyableItem -> items.put(rswBuyableItem.getConfigKey(), rswBuyableItem));
         }
-        return rs.getDatabaseManagerAPI().getPlayerBoughtItemsCategory(p.getPlayer(), t).stream().map(playerBoughtItemsRow -> this.shopItems.get(playerBoughtItemsRow.getItemID())).collect(Collectors.toList());
+
+        //add free items
+        getCategoryContents(t).stream().filter(rswBuyableItem -> rswBuyableItem.getPrice() == 0).forEach(rswBuyableItem -> {
+            if (!items.containsKey(rswBuyableItem.getConfigKey())) {
+                items.put(rswBuyableItem.getConfigKey(), rswBuyableItem);
+            }
+        });
+
+
+        return items.values();
     }
 }

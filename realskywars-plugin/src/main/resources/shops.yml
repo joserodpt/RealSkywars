@@ -29,7 +29,7 @@ Shops:
     item6:
       Displayname: '&bGLASS'
       Material: GLASS
-      Price: 20.0
+      Price: 0
       Permission: RealSkywars.Cage
     item7:
       Displayname: '&bWHITE_STAINED_GLASS'
@@ -189,11 +189,6 @@ Shops:
     item38:
       Displayname: '&bBOOKSHELF'
       Material: BOOKSHELF
-      Price: 20.0
-      Permission: RealSkywars.Cage
-    item39:
-      Displayname: '&bDIAMOND_BLOCK'
-      Material: DIAMOND_BLOCK
       Price: 20.0
       Permission: RealSkywars.Cage
     item40:
