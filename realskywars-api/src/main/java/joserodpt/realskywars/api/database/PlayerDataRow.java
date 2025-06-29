@@ -20,7 +20,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -75,7 +75,7 @@ public class PlayerDataRow {
     private int ranked_deaths;
 
     @DatabaseField(columnName = "loses")
-    private int loses;
+    private int losses;
 
     @DatabaseField(columnName = "loses_ranked")
     private int ranked_loses;
@@ -98,7 +98,7 @@ public class PlayerDataRow {
     @DatabaseField(columnName = "games_list")
     private String games_list_legacy;
 
-    public PlayerDataRow(Player p) {
+    public PlayerDataRow(OfflinePlayer p) {
         this.uuid = p.getUniqueId();
         this.name = p.getName();
         this.coins = 0D;
@@ -163,8 +163,8 @@ public class PlayerDataRow {
         return this.ranked_kills;
     }
 
-    public int getLoses() {
-        return this.loses;
+    public int getLosses() {
+        return this.losses;
     }
 
     public int getLoses_ranked() {
@@ -229,7 +229,7 @@ public class PlayerDataRow {
                 if (ranked) {
                     this.ranked_loses = value;
                 } else {
-                    this.loses = value;
+                    this.losses = value;
                 }
                 break;
             case DEATHS:

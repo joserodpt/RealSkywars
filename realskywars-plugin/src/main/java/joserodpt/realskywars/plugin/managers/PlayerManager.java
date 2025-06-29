@@ -56,7 +56,7 @@ public class PlayerManager extends PlayerManagerAPI {
         try {
             PlayerDataRow playerDataRow = rs.getDatabaseManagerAPI().getPlayerData(player);
 
-            RSWPlayer p = new RSWPlayer(player, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, playerDataRow.getKills(), playerDataRow.getDeaths(), playerDataRow.getStats_wins_solo(), playerDataRow.getStats_wins_teams(), playerDataRow.getCoins(), playerDataRow.getLanguage(), playerDataRow.getLoses(), playerDataRow.getGames_played(), playerDataRow.getRanked_kills(), playerDataRow.getRanked_deaths(), playerDataRow.getStats_wins_ranked_solo(), playerDataRow.getStats_wins_ranked_teams(), playerDataRow.getLoses_ranked(), playerDataRow.getRanked_games_played());
+            RSWPlayer p = new RSWPlayer(player, RSWPlayer.PlayerState.LOBBY_OR_NOGAME, playerDataRow.getKills(), playerDataRow.getDeaths(), playerDataRow.getStats_wins_solo(), playerDataRow.getStats_wins_teams(), playerDataRow.getCoins(), playerDataRow.getLanguage(), playerDataRow.getLosses(), playerDataRow.getGames_played(), playerDataRow.getRanked_kills(), playerDataRow.getRanked_deaths(), playerDataRow.getStats_wins_ranked_solo(), playerDataRow.getStats_wins_ranked_teams(), playerDataRow.getLoses_ranked(), playerDataRow.getRanked_games_played());
 
             String lang = playerDataRow.getLanguage();
             if (lang == null || lang.isEmpty() || !rs.getLanguageManagerAPI().getLanguagesMap().containsKey(lang)) {

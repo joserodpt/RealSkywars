@@ -23,6 +23,7 @@ import joserodpt.realskywars.api.player.RSWGameHistoryStats;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.shop.RSWBuyableItem;
 import joserodpt.realskywars.api.utils.Pair;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +43,7 @@ public abstract class DatabaseManagerAPI {
 
     public abstract List<PlayerBoughtItemsRow> getPlayerBoughtItemsCategory(Player p, RSWBuyableItem.ItemCategory cat);
 
-    public abstract PlayerDataRow getPlayerData(Player p);
+    public abstract PlayerDataRow getPlayerData(OfflinePlayer p);
 
     public abstract void savePlayerData(PlayerDataRow playerDataRow, boolean async);
 

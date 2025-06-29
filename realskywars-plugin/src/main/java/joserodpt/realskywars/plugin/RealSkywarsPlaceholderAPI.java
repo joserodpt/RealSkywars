@@ -111,6 +111,21 @@ public class RealSkywarsPlaceholderAPI extends PlaceholderExpansion {
                 return rsa.getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.TEAMS) + "";
             case "playing_ranked":
                 return rsa.getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.RANKED) + "";
+            case "kills":
+                return rsa.getDatabaseManagerAPI().getPlayerData(player).getKills() + "";
+            case "deaths":
+                return rsa.getDatabaseManagerAPI().getPlayerData(player).getDeaths() + "";
+            case "wins_solo":
+                return rsa.getDatabaseManagerAPI().getPlayerData(player).getStats_wins_solo() + "";
+            case "wins_teams":
+                return rsa.getDatabaseManagerAPI().getPlayerData(player).getStats_wins_teams() + "";
+            case "wins_ranked_solo":
+                return rsa.getDatabaseManagerAPI().getPlayerData(player).getStats_wins_ranked_solo() + "";
+            case "wins_ranked_teams":
+                return rsa.getDatabaseManagerAPI().getPlayerData(player).getStats_wins_ranked_teams() + "";
+            case "losses":
+                return rsa.getDatabaseManagerAPI().getPlayerData(player).getLosses() + "";
+
             //SOLO
             case "solo_wins_1":
                 return rsa.getLeaderboardManagerAPI().getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories.SOLO_WINS).getIndex(1);

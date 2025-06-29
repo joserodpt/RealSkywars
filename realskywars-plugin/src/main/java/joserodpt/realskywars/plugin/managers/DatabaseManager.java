@@ -35,6 +35,7 @@ import joserodpt.realskywars.api.shop.RSWBuyableItem;
 import joserodpt.realskywars.api.utils.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -175,7 +176,7 @@ public class DatabaseManager extends DatabaseManagerAPI {
     }
 
     @Override
-    public PlayerDataRow getPlayerData(Player p) {
+    public PlayerDataRow getPlayerData(OfflinePlayer p) {
         return playerDataCache.getOrDefault(p.getUniqueId(), new PlayerDataRow(p));
     }
 
