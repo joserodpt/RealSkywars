@@ -461,9 +461,13 @@ public class PlayerListener implements Listener {
                         damaged.teleport(damaged.getMatch().getSpectatorLocation());
                     }
                 } else {
-                    e.setCancelled(true);
-                    damaged.heal();
-                    rs.getLobbyManagerAPI().tpToLobby(damaged);
+                    if (!RSWConfig.file().getBoolean("Config.Disable-Lobby-Void-Teleport", false)) {
+                        if (rs.getLobbyManagerAPI().isInLobby(damaged.getLocation().getWorld())) {
+                            e.setCancelled(true);
+                            damaged.heal();
+                            rs.getLobbyManagerAPI().tpToLobby(damaged);
+                        }
+                    }
                 }
             } else {
                 if (damaged.isInvencible() || rs.getLobbyManagerAPI().isInLobby(damaged.getLocation().getWorld())) {

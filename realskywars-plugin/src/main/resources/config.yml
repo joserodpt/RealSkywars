@@ -1,4 +1,4 @@
-Version: 12
+Version: 13
 Debug-Mode: false
 Config:
   Prefix: "&fReal&bSkywars &7> &r"
@@ -62,6 +62,7 @@ Config:
   Disable-Player-Reset: false
   Disable-Language-Selection: false
   Disable-Lobby-Items: false
+  Disable-Lobby-Void-Teleport: false
   Disable-Map-Starting-Countdown:
     Message: false
     Actionbar: false
