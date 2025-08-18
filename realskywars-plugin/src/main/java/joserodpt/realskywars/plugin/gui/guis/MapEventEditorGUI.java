@@ -62,7 +62,8 @@ public class MapEventEditorGUI {
         this.inv = Bukkit.getServer().createInventory(null, 54, "Event Editor for " + map.getName());
 
         this.p = new Pagination<>(28, map.getEvents().stream().filter(e -> e.getEventType() != RSWMapEvent.EventType.BORDERSHRINK).collect(Collectors.toList()));
-        fillChest(this.p.getPage(this.pageNumber));
+
+        fillChest(this.p.totalPages() > 0 ? this.p.getPage(pageNumber) : Collections.emptyList());
     }
 
     public static Listener getListener() {
@@ -87,15 +88,11 @@ public class MapEventEditorGUI {
                         switch (e.getRawSlot()) {
                             case 3:
                                 current.map.addEvent(new RSWMapEvent(current.map, RSWMapEvent.EventType.REFILL));
-
-                                current.p = new Pagination<>(28, current.map.getEvents().stream().filter(ev -> ev.getEventType() != RSWMapEvent.EventType.BORDERSHRINK).collect(Collectors.toList()));
-                                current.fillChest(current.p.getPage(current.pageNumber));
+                                current.refreshPagination();
                                 break;
                             case 5:
                                 current.map.addEvent(new RSWMapEvent(current.map, RSWMapEvent.EventType.TNTRAIN));
-
-                                current.p = new Pagination<>(28, current.map.getEvents().stream().filter(ev -> ev.getEventType() != RSWMapEvent.EventType.BORDERSHRINK).collect(Collectors.toList()));
-                                current.fillChest(current.p.getPage(current.pageNumber));
+                                current.refreshPagination();
                                 break;
                             case 49:
                                 clicker.closeInventory();
@@ -126,9 +123,7 @@ public class MapEventEditorGUI {
                             RSWMapEvent a = current.display.get(e.getRawSlot());
                             if (e.getClick() == ClickType.DROP) {
                                 current.map.removeEvent(a);
-
-                                current.p = new Pagination<>(28, current.map.getEvents().stream().filter(ev -> ev.getEventType() != RSWMapEvent.EventType.BORDERSHRINK).collect(Collectors.toList()));
-                                current.fillChest(current.p.getPage(current.pageNumber));
+                                current.refreshPagination();
                             } else {
                                 p.closeInventory();
                                 new PlayerInput((Player) clicker, input -> {
@@ -157,7 +152,7 @@ public class MapEventEditorGUI {
                     --asd.pageNumber;
                 }
 
-                asd.fillChest(asd.p.getPage(asd.pageNumber));
+                asd.fillChest(asd.p.totalPages() > 0 ? asd.p.getPage(asd.pageNumber) : Collections.emptyList());
             }
 
             private void nextPage(MapEventEditorGUI asd) {
@@ -165,7 +160,7 @@ public class MapEventEditorGUI {
                     ++asd.pageNumber;
                 }
 
-                asd.fillChest(asd.p.getPage(asd.pageNumber));
+                asd.fillChest(asd.p.totalPages() > 0 ? asd.p.getPage(asd.pageNumber) : Collections.emptyList());
             }
 
             @EventHandler
@@ -184,8 +179,22 @@ public class MapEventEditorGUI {
         };
     }
 
+    private void refreshPagination() {
+        List<RSWMapEvent> filteredEvents = map.getEvents().stream()
+                .filter(ev -> ev.getEventType() != RSWMapEvent.EventType.BORDERSHRINK)
+                .collect(Collectors.toList());
+
+        this.p = new Pagination<>(28, filteredEvents);
+
+        if (!p.exists(pageNumber)) {
+            pageNumber = 0;
+        }
+
+        fillChest(p.totalPages() > 0 ? p.getPage(pageNumber) : Collections.emptyList());
+    }
+
     private boolean lastPage() {
-        return pageNumber == (p.totalPages() - 1);
+        return p.totalPages() == 0 || pageNumber == (p.totalPages() - 1);
     }
 
     private boolean firstPage() {
