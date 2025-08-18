@@ -73,7 +73,9 @@ public class RSWPlayerScoreboard {
         if (this.task != null) {
             this.task.cancel();
         }
-        this.fb.delete();
+        if (!this.fb.isDeleted()) {
+            this.fb.delete();
+        }
     }
 
     public void run() {
@@ -85,6 +87,9 @@ public class RSWPlayerScoreboard {
                     switch (p.getState()) {
                         case LOBBY_OR_NOGAME:
                             if (!RealSkywarsAPI.getInstance().getLobbyManagerAPI().scoreboardInLobby() || !RealSkywarsAPI.getInstance().getLobbyManagerAPI().isInLobby(p.getWorld())) {
+                                if (!fb.isDeleted()) {
+                                    fb.delete();
+                                }
                                 return;
                             }
                             lista = TranslatableList.SCOREBOARD_LOBBY_LINES.get(p);
@@ -117,6 +122,10 @@ public class RSWPlayerScoreboard {
     }
 
     private void displayScoreboard(String title, List<String> elements) {
+        if (this.fb.isDeleted()) {
+            this.fb = new FastBoard(p.getPlayer());
+        }
+
         this.fb.updateTitle(title);
         this.fb.updateLines(elements);
     }
