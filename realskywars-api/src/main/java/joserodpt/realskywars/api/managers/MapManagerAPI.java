@@ -81,5 +81,7 @@ public abstract class MapManagerAPI {
 
     public abstract void editMap(RSWPlayer p, RSWMap sw);
 
+    public abstract void duplicateMap(RSWMap original, String newName);
+
     public enum MapGamemodes {SOLO, SOLO_RANKED, TEAMS, TEAMS_RANKED, RANKED, ALL}
 }

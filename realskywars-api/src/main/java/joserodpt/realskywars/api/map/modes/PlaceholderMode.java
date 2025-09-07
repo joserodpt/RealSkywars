@@ -109,4 +109,9 @@ public class PlaceholderMode extends RSWMap {
     public ItemStack getIconForPlayer(RSWPlayer p) {
         return Itens.createItem(Material.DEAD_BUSH, 1, TranslatableLine.ITEM_MAP_NOTFOUND_NAME.get(p));
     }
+
+    @Override
+    public RSWMap duplicate(String newName) {
+        return null;
+    }
 }

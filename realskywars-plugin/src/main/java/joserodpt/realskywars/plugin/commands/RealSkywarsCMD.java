@@ -137,6 +137,28 @@ public class RealSkywarsCMD extends BaseCommandWA {
         }
     }
 
+    @SubCommand(value = "duplicate", alias = {"dup", "copy"})
+    @Permission("rsw.admin")
+    @WrongUsage("&c/rsw duplicate <map> <new_name>")
+    @SuppressWarnings("unused")
+    public void duplicatecmd(final CommandSender commandSender, @Suggestion("#maps") String originalName, String newName) {
+        RSWMap original = rs.getMapManagerAPI().getMap(originalName);
+        if (original == null) {
+            TranslatableLine.CMD_NO_MAP_FOUND.sendDefault(commandSender, true);
+            return;
+        }
+        if (rs.getMapManagerAPI().getMap(newName) != null) {
+            Text.send(commandSender, "&cJá existe um mapa com esse nome.");
+            return;
+        }
+        try {
+            rs.getMapManagerAPI().duplicateMap(original, newName);
+            Text.send(commandSender, "&aMapa duplicado com sucesso como &e" + newName);
+        } catch (Exception e) {
+            Text.send(commandSender, "&cErro ao duplicar o mapa: " + e.getMessage());
+        }
+    }
+
     @SubCommand("kit")
     @Permission("rsw.admin")
     @SuppressWarnings("unused")

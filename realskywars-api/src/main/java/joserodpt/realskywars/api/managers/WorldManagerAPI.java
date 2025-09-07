@@ -15,6 +15,7 @@ package joserodpt.realskywars.api.managers;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realskywars.api.managers.world.RSWWorld;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
@@ -53,6 +54,8 @@ public abstract class WorldManagerAPI {
     public void clearDroppedItems(World world) {
         world.getEntities().stream().filter(e -> e.getType() == EntityType.DROPPED_ITEM).forEach(org.bukkit.entity.Entity::remove);
     }
+
+    public abstract World duplicateWorld(RSWWorld original, String newName);
 
     public enum CopyTo {ROOT, RSW_FOLDER}
 

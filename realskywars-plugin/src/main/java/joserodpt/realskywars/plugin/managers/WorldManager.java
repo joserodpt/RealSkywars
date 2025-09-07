@@ -19,6 +19,7 @@ import com.google.common.collect.Lists;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.WorldManagerAPI;
+import joserodpt.realskywars.api.managers.world.RSWWorld;
 import org.bukkit.Difficulty;
 import org.bukkit.GameRule;
 import org.bukkit.World;
@@ -240,4 +241,16 @@ public class WorldManager extends WorldManagerAPI {
         }
     }
 
+    @Override
+    public World duplicateWorld(RSWWorld original, String newName) {
+        File source = new File(rs.getPlugin().getServer().getWorldContainer().getAbsolutePath(), original.getName());
+        File target = new File(rs.getPlugin().getServer().getWorldContainer().getAbsolutePath(), newName);
+        this.copyWorld(original.getName(), source, target);
+        boolean loaded = this.loadWorld(newName, original.getWorld().getEnvironment());
+        if (loaded) {
+            return org.bukkit.Bukkit.getWorld(newName);
+        } else {
+            return null;
+        }
+    }
 }

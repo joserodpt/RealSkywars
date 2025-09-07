@@ -97,7 +97,7 @@ public abstract class RSWMap {
     private final Map<UUID, Integer> projectileVotes = new HashMap<>();
     private final Map<UUID, Integer> timeVotes = new HashMap<>();
 
-    public RSWMap(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState estado, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean borderEnabled, Location pos1, Location pos2, Map<Location, RSWChest> chests, Boolean rankd, Boolean unregistered) {
+    public RSWMap(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, MapState state, int maxPlayers, Location spectatorLocation, Boolean specEnabled, Boolean instantEnding, Boolean borderEnabled, Location pos1, Location pos2, Map<Location, RSWChest> chests, Boolean rankd, Boolean unregistered) {
         this.name = nome;
         this.displayName = displayName;
         this.schematicName = schematicName;
@@ -113,7 +113,7 @@ public abstract class RSWMap {
             this.border.setSize(this.borderSize);
         }
 
-        this.state = estado;
+        this.state = state;
         this.maxPlayers = maxPlayers;
         this.maxGameTime = RSWMapsConfig.file().getInt(this.getName() + ".Settings.Max-Game-Time", -1);
         if (this.maxGameTime == -1) {
@@ -554,6 +554,10 @@ public abstract class RSWMap {
 
     public Collection<RSWChest> getChests() {
         return this.chests.values();
+    }
+
+    public Map<Location, RSWChest> getChestsMap() {
+        return this.chests;
     }
 
     public List<RSWMapEvent> getEvents() {
@@ -1010,6 +1014,8 @@ public abstract class RSWMap {
                         .replace("%maxplayers%", String.valueOf(this.getMaxPlayers())))
                 .collect(Collectors.toList());
     }
+
+    public abstract RSWMap duplicate(String newName);
 
     public enum Data {
         ALL, SETTINGS, WORLD, NAME, TYPE, NUM_PLAYERS, CAGES, CHESTS, SPECT_LOC, BORDER, EVENTS

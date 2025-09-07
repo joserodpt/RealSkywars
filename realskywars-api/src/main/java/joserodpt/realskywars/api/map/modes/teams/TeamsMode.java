@@ -15,6 +15,7 @@ package joserodpt.realskywars.api.map.modes.teams;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
@@ -43,6 +44,7 @@ public class TeamsMode extends RSWMap {
     private int maxTeamsNumber = 0;
     private final Map<Location, RSWTeam> teams;
 
+    //setup
     public TeamsMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, int teamsNumber, int playersPerTeam) {
         super(nome, displayName, w, schematicName, wt, MapState.RESETTING, teamsNumber * playersPerTeam, null, true, false, true, null, null, new HashMap<>(), false, true);
 
@@ -315,5 +317,28 @@ public class TeamsMode extends RSWMap {
         t.getTeamCage().setMap(this);
         this.teams.put(location, t);
         this.save(Data.CAGES, true);
+    }
+
+    @Override
+    public RSWMap duplicate(String newName) {
+        World w = RealSkywarsAPI.getInstance().getWorldManagerAPI().duplicateWorld(this.getRSWWorld(), newName);
+        if (w == null) return null;
+        return new TeamsMode(newName,
+                newName,
+                w,
+                this.getShematicName(),
+                this.getRSWWorld().getType(),
+                MapState.AVAILABLE,
+                teams,
+                this.getMaxPlayers(),
+                this.getSpectatorLocation(),
+                this.isSpectatorEnabled(),
+                this.isInstantEndEnabled(),
+                this.isBorderEnabled(),
+                this.getPOS1(),
+                this.getPOS2(),
+                this.getChestsMap(),
+                this.isRanked(),
+                true);
     }
 }

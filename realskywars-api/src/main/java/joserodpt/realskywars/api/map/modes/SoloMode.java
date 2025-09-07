@@ -15,6 +15,7 @@ package joserodpt.realskywars.api.map.modes;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.cages.RSWSoloCage;
 import joserodpt.realskywars.api.chests.RSWChest;
@@ -294,5 +295,28 @@ public class SoloMode extends RSWMap {
         cage.setMap(this);
         this.cages.put(location, cage);
         this.save(Data.CAGES, true);
+    }
+
+    @Override
+    public RSWMap duplicate(String newName) {
+        World w = RealSkywarsAPI.getInstance().getWorldManagerAPI().duplicateWorld(this.getRSWWorld(), newName);
+        if (w == null) return null;
+        return new SoloMode(newName,
+                newName,
+                w,
+                this.getShematicName(),
+                this.getRSWWorld().getType(),
+                MapState.AVAILABLE,
+                cages,
+                this.getMaxPlayers(),
+                this.getSpectatorLocation(),
+                this.isSpectatorEnabled(),
+                this.isInstantEndEnabled(),
+                this.isBorderEnabled(),
+                this.getPOS1(),
+                this.getPOS2(),
+                this.getChestsMap(),
+                this.isRanked(),
+                true);
     }
 }

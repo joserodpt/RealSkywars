@@ -586,4 +586,16 @@ public class MapManager extends MapManagerAPI {
 
         map.getCages().forEach(rswCage -> map.getRSWWorld().getWorld().getBlockAt(rswCage.getLocation()).setType(Material.BEACON));
     }
+
+    @Override
+    public void duplicateMap(RSWMap original, String newName) {
+        RSWMap newMap = original.duplicate(newName);
+        if (newMap != null) {
+            this.addMap(newMap);
+            newMap.setUnregistered(false);
+            newMap.save(RSWMap.Data.ALL, true);
+        } else {
+            rs.getLogger().warning("Could not duplicate map " + original.getName() + " to " + newName + " (possibly a bug?)");
+        }
+    }
 }
