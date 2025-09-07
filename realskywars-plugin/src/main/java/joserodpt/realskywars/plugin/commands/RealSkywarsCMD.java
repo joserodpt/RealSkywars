@@ -148,14 +148,14 @@ public class RealSkywarsCMD extends BaseCommandWA {
             return;
         }
         if (rs.getMapManagerAPI().getMap(newName) != null) {
-            Text.send(commandSender, "&cJá existe um mapa com esse nome.");
+            Text.send(commandSender, TranslatableLine.MAP_EXISTS.getDefault());
             return;
         }
         try {
             rs.getMapManagerAPI().duplicateMap(original, newName);
-            Text.send(commandSender, "&aMapa duplicado com sucesso como &e" + newName);
+            Text.send(commandSender, "&aMap duplicated with success!");
         } catch (Exception e) {
-            Text.send(commandSender, "&cErro ao duplicar o mapa: " + e.getMessage());
+            Text.send(commandSender, "&cError duplicating map: " + e.getMessage());
         }
     }
 

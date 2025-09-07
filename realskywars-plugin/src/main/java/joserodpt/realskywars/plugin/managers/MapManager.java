@@ -591,6 +591,8 @@ public class MapManager extends MapManagerAPI {
     public void duplicateMap(RSWMap original, String newName) {
         RSWMap newMap = original.duplicate(newName);
         if (newMap != null) {
+            //rest world
+            newMap.reset();
             this.addMap(newMap);
             newMap.setUnregistered(false);
             newMap.save(RSWMap.Data.ALL, true);

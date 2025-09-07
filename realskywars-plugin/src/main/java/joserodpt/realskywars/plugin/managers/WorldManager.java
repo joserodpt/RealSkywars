@@ -160,13 +160,7 @@ public class WorldManager extends WorldManagerAPI {
                         }
                     }
                 } else {
-                    java.io.InputStream in = new java.io.FileInputStream(source);
-                    OutputStream out = new java.io.FileOutputStream(target);
-                    byte[] buffer = new byte['Ѐ'];
-                    int length;
-                    while ((length = in.read(buffer)) > 0) out.write(buffer, 0, length);
-                    in.close();
-                    out.close();
+                    copyFile(source, target);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -246,11 +240,37 @@ public class WorldManager extends WorldManagerAPI {
         File source = new File(rs.getPlugin().getServer().getWorldContainer().getAbsolutePath(), original.getName());
         File target = new File(rs.getPlugin().getServer().getWorldContainer().getAbsolutePath(), newName);
         this.copyWorld(original.getName(), source, target);
+
+        //check if there's schematics in the maps folder
+        File maps = new File(rs.getPlugin().getDataFolder(), "maps");
+        File sourceMap = new File(maps, original.getName() + ".schem");
+        if (sourceMap.exists()) {
+            File targetMap = new File(maps, newName + ".schem");
+
+            try {
+                copyFile(sourceMap, targetMap);
+            } catch (IOException e) {
+                RealSkywarsAPI.getInstance().getLogger().severe("Failed to copy schematic: + " + original.getName() + ".schem");
+                RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());
+            }
+        }
+
         boolean loaded = this.loadWorld(newName, original.getWorld().getEnvironment());
+
         if (loaded) {
             return org.bukkit.Bukkit.getWorld(newName);
         } else {
             return null;
         }
+    }
+
+    private void copyFile(File source, File targe) throws IOException {
+        java.io.InputStream in = new java.io.FileInputStream(source);
+        OutputStream out = new java.io.FileOutputStream(targe);
+        byte[] buffer = new byte['Ѐ'];
+        int length;
+        while ((length = in.read(buffer)) > 0) out.write(buffer, 0, length);
+        in.close();
+        out.close();
     }
 }
