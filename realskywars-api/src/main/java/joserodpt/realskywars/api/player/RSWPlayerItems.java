@@ -17,9 +17,14 @@ package joserodpt.realskywars.api.player;
 
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
+import joserodpt.realskywars.api.utils.ItemStackSpringer;
 import joserodpt.realskywars.api.utils.Itens;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public enum RSWPlayerItems {
     LOBBY, CAGE, SETUP, SPECTATOR, ITEM_PROFILE, ITEM_SETCAGE, ITEM_MAPS, ITEM_SHOP, ITEM_LEAVE, ITEM_VOTE, ITEM_SPECTATE, ITEM_KITS, ITEM_PLAYAGAIN, ITEM_CHEST1, ITEM_CHEST2, ITEM_SETINGS, ITEM_SAVE;
@@ -71,34 +76,73 @@ public enum RSWPlayerItems {
         }
     }
 
+    private ItemStack getConfiguredItem(String itemKey, Material defaultMaterial, int defaultAmount, String defaultName) {
+        String basePath = "Config.Items." + itemKey;
+
+        if (!RSWConfig.file().contains(basePath)) {
+            return Itens.createItem(defaultMaterial, defaultAmount, defaultName);
+        }
+
+        Map<String, Object> itemData = new HashMap<>();
+        itemData.put(ItemStackSpringer.ItemCategories.MATERIAL.name(),
+                RSWConfig.file().getString(basePath + ".MATERIAL", defaultMaterial.name()));
+        itemData.put(ItemStackSpringer.ItemCategories.AMOUNT.name(),
+                RSWConfig.file().getInt(basePath + ".AMOUNT", defaultAmount));
+        itemData.put(ItemStackSpringer.ItemCategories.NAME.name(),
+                RSWConfig.file().getString(basePath + ".NAME", defaultName));
+
+        List<String> lore = RSWConfig.file().getStringList(basePath + ".LORE");
+        if (lore != null && !lore.isEmpty()) {
+            itemData.put(ItemStackSpringer.ItemCategories.LORE.name(), lore);
+        }
+
+        if (RSWConfig.file().contains(basePath + ".CUSTOM_MODEL_DATA")) {
+            itemData.put(ItemStackSpringer.ItemCategories.CUSTOM_MODEL_DATA.name(),
+                    RSWConfig.file().getInt(basePath + ".CUSTOM_MODEL_DATA"));
+        }
+
+        String enchantments = RSWConfig.file().getString(basePath + ".ENCHANTMENTS");
+        if (enchantments != null && !enchantments.isBlank()) {
+            itemData.put(ItemStackSpringer.ItemCategories.ENCHANTMENTS.name(), enchantments);
+        }
+
+        String itemFlags = RSWConfig.file().getString(basePath + ".ITEM_FLAGS");
+        if (itemFlags != null && !itemFlags.isBlank()) {
+            itemData.put(ItemStackSpringer.ItemCategories.ITEM_FLAGS.name(), itemFlags);
+        }
+
+        ItemStack configuredItem = ItemStackSpringer.getItemDeSerialized(itemData);
+        return configuredItem != null ? configuredItem : Itens.createItem(defaultMaterial, defaultAmount, defaultName);
+    }
+
     public ItemStack get(RSWPlayer p) {
         switch (this) {
             case ITEM_KITS:
-                return Itens.createItem(Material.BOW, 1, TranslatableLine.ITEM_KIT_NAME.get(p));
+                return getConfiguredItem("Kit", Material.BOW, 1, TranslatableLine.ITEM_KIT_NAME.get(p));
             case ITEM_PROFILE:
-                return Itens.createItem(Material.BOOK, 1, TranslatableLine.ITEM_PROFILE_NAME.get(p));
+                return getConfiguredItem("Profile", Material.BOOK, 1, TranslatableLine.ITEM_PROFILE_NAME.get(p));
             case ITEM_SETCAGE:
-                return Itens.createItem(Material.BEACON, 1, TranslatableLine.ITEM_CAGESET_NAME.get(p));
+                return getConfiguredItem("Cage", Material.BEACON, 1, TranslatableLine.ITEM_CAGESET_NAME.get(p));
             case ITEM_MAPS:
-                return Itens.createItem(Material.NETHER_STAR, 1, TranslatableLine.ITEM_MAPS_NAME.get(p));
+                return getConfiguredItem("Maps", Material.NETHER_STAR, 1, TranslatableLine.ITEM_MAPS_NAME.get(p));
             case ITEM_SHOP:
-                return Itens.createItem(Material.EMERALD, 1, TranslatableLine.ITEM_SHOP_NAME.get(p));
+                return getConfiguredItem("Shop", Material.EMERALD, 1, TranslatableLine.ITEM_SHOP_NAME.get(p));
             case ITEM_LEAVE:
-                return Itens.createItem(Material.MINECART, 1, TranslatableLine.ITEM_LEAVE_NAME.get(p));
+                return getConfiguredItem("Leave", Material.MINECART, 1, TranslatableLine.ITEM_LEAVE_NAME.get(p));
             case ITEM_VOTE:
-                return Itens.createItem(Material.HOPPER, 1, TranslatableLine.ITEM_VOTE_NAME.get(p));
+                return getConfiguredItem("Vote", Material.HOPPER, 1, TranslatableLine.ITEM_VOTE_NAME.get(p));
             case ITEM_SPECTATE:
-                return Itens.createItem(Material.MAP, 1, TranslatableLine.ITEM_SPECTATE_NAME.get(p));
+                return getConfiguredItem("Spectate", Material.MAP, 1, TranslatableLine.ITEM_SPECTATE_NAME.get(p));
             case ITEM_PLAYAGAIN:
-                return Itens.createItem(Material.TOTEM_OF_UNDYING, 1, TranslatableLine.ITEM_PLAYAGAIN_NAME.get(p));
+                return getConfiguredItem("Play-Again", Material.TOTEM_OF_UNDYING, 1, TranslatableLine.ITEM_PLAYAGAIN_NAME.get(p));
             case ITEM_CHEST1:
-                return Itens.createItem(Material.CHEST, 1, TranslatableLine.ITEM_CHEST1_NAME.get(p));
+                return getConfiguredItem("Chest1", Material.CHEST, 1, TranslatableLine.ITEM_CHEST1_NAME.get(p));
             case ITEM_CHEST2:
-                return Itens.createItem(Material.CHEST, 1, TranslatableLine.ITEM_CHEST2_NAME.get(p));
+                return getConfiguredItem("Chest2", Material.CHEST, 1, TranslatableLine.ITEM_CHEST2_NAME.get(p));
             case ITEM_SETINGS:
-                return Itens.createItem(Material.COMPARATOR, 1, TranslatableLine.ITEM_SETTINGS_NAME.get(p));
+                return getConfiguredItem("Settings", Material.COMPARATOR, 1, TranslatableLine.ITEM_SETTINGS_NAME.get(p));
             case ITEM_SAVE:
-                return Itens.createItem(Material.CHEST_MINECART, 1, TranslatableLine.ITEM_SAVE_NAME.get(p));
+                return getConfiguredItem("Save", Material.CHEST_MINECART, 1, TranslatableLine.ITEM_SAVE_NAME.get(p));
         }
         return new ItemStack(Material.DEAD_BUSH);
     }

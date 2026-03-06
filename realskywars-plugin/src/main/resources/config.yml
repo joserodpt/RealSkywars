@@ -1,4 +1,4 @@
-Version: 13
+Version: 14
 Debug-Mode: false
 Config:
   Prefix: "&fReal&bSkywars &7> &r"
@@ -48,6 +48,7 @@ Config:
   Enable-Tab-Formatting: true
   Enable-Chat-Per-Map: false
   Disable-Chest-Animation: false
+  Presure-Plate-Join-Game: true
   Shops:
     Enable-Shop: true
     Enable-Spectator-Shop: true
@@ -86,6 +87,123 @@ Config:
       Chest2: 4
       Settings: 6
       Save: 7
+  # New: customize the RealSkywars items.
+  Items:
+    # Lobby items
+    Profile:
+      MATERIAL: PLAYER_HEAD
+      AMOUNT: 1
+      NAME: "&b&lProfile"
+      LORE:
+        - "&7Open your player profile."
+        - "&8Dummy example with lore."
+      CUSTOM_MODEL_DATA: 1001
+      ITEM_FLAGS: HIDE_ATTRIBUTES
+    Maps:
+      MATERIAL: MAP
+      AMOUNT: 1
+      NAME: "&e&lMaps Browser"
+      LORE:
+        - "&7Browse available arenas."
+        - "&8Example item using custom model data."
+      CUSTOM_MODEL_DATA: 1002
+    Shop:
+      MATERIAL: EMERALD
+      AMOUNT: 3
+      NAME: "&a&lShop"
+      LORE:
+        - "&7Open the cosmetics shop."
+        - "&7This example uses a stack size."
+      CUSTOM_MODEL_DATA: 1003
+
+    # Cage / pre-game items
+    Kit:
+      MATERIAL: BOW
+      AMOUNT: 1
+      NAME: "&6&lKit Selector"
+      LORE:
+        - "&7Choose your kit before the match starts."
+        - "&8Example placeholder item."
+      CUSTOM_MODEL_DATA: 2001
+      ITEM_FLAGS: HIDE_ATTRIBUTES
+    Vote:
+      MATERIAL: HOPPER
+      AMOUNT: 1
+      NAME: "&d&lVote"
+      LORE:
+        - "&7Vote for chest mode, time, or modifiers."
+        - "&8Example with simple lore."
+      CUSTOM_MODEL_DATA: 2002
+    Cage:
+      MATERIAL: BEACON
+      AMOUNT: 1
+      NAME: "&b&lCage Selector"
+      LORE:
+        - "&7Choose your cage style."
+        - "&8You can swap this for any block/item."
+      CUSTOM_MODEL_DATA: 2003
+    Leave:
+      MATERIAL: BARRIER
+      AMOUNT: 1
+      NAME: "&c&lLeave"
+      LORE:
+        - "&7Leave the current session."
+        - "&8Shared example item."
+      CUSTOM_MODEL_DATA: 2004
+
+    # Spectator items
+    Spectate:
+      MATERIAL: COMPASS
+      AMOUNT: 1
+      NAME: "&f&lSpectate"
+      LORE:
+        - "&7Teleport to players still alive."
+        - "&8Useful spectator navigation item."
+      CUSTOM_MODEL_DATA: 3001
+    Play-Again:
+      MATERIAL: TOTEM_OF_UNDYING
+      AMOUNT: 1
+      NAME: "&a&lPlay Again"
+      LORE:
+        - "&7Queue for another game."
+        - "&8Example using a flashy material."
+      CUSTOM_MODEL_DATA: 3002
+
+    # Setup / admin items
+    Chest1:
+      MATERIAL: CHEST
+      AMOUNT: 1
+      NAME: "&e&lSet Chest Tier 1"
+      LORE:
+        - "&7Assign the first chest loot table."
+        - "&8Admin setup example."
+      CUSTOM_MODEL_DATA: 4001
+    Chest2:
+      MATERIAL: TRAPPED_CHEST
+      AMOUNT: 1
+      NAME: "&6&lSet Chest Tier 2"
+      LORE:
+        - "&7Assign the second chest loot table."
+        - "&8Another setup example."
+      CUSTOM_MODEL_DATA: 4002
+    Settings:
+      MATERIAL: COMPARATOR
+      AMOUNT: 1
+      NAME: "&9&lSettings"
+      LORE:
+        - "&7Open map or match settings."
+        - "&8Example config item."
+      CUSTOM_MODEL_DATA: 4003
+    Save:
+      MATERIAL: NETHER_STAR
+      AMOUNT: 1
+      NAME: "&a&lSave"
+      LORE:
+        - "&7Save the current setup."
+        - "&8Example admin confirmation item."
+      CUSTOM_MODEL_DATA: 4004
+      ENCHANTMENTS: unbreaking:1
+      ITEM_FLAGS: HIDE_ENCHANTS
   # Time in seconds
   Time:
     Formatting: dd-MM-yyyy HH:mm:ss
