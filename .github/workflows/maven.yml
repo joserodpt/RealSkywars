@@ -25,10 +25,13 @@ jobs:
       - name: Build project
         run: mvn --batch-mode --update-snapshots clean install
 
+      - name: Sanitize branch name
+        run: echo "SAFE_REF_NAME=${GITHUB_REF_NAME//\//-}" >> "$GITHUB_ENV"
+
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
         with:
-          name: RealSkywars-plugin-${{ github.ref_name }}
+          name: RealSkywars-plugin-${{ env.SAFE_REF_NAME }}
           path: realskywars-plugin/target/RealSkywarsPlugin-*.jar
           if-no-files-found: error
 
