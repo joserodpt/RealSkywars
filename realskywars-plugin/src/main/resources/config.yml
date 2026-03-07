@@ -48,7 +48,7 @@ Config:
   Enable-Tab-Formatting: true
   Enable-Chat-Per-Map: false
   Disable-Chest-Animation: false
-  Presure-Plate-Join-Game: true
+  Pressure-Plate-Join-Game: true
   Shops:
     Enable-Shop: true
     Enable-Spectator-Shop: true

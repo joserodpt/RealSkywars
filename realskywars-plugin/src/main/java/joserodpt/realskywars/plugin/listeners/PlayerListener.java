@@ -151,7 +151,7 @@ public class PlayerListener implements Listener {
                     e.setCancelled(true);
                     break;
                 }
-                if (RSWConfig.file().getBoolean("Config.Presure-Plate-Join-Game") && rs.getLobbyManagerAPI().getLobbyLocation() != null && e.getPlayer().getWorld().equals(rs.getLobbyManagerAPI().getLobbyLocation().getWorld())) {
+                if (RSWConfig.file().getBoolean("Config.Pressure-Plate-Join-Game") && rs.getLobbyManagerAPI().getLobbyLocation() != null && e.getPlayer().getWorld().equals(rs.getLobbyManagerAPI().getLobbyLocation().getWorld())) {
                     switch (e.getClickedBlock().getType()) {
                         case STONE_PRESSURE_PLATE:
                             e.getPlayer().performCommand("rsw play SOLO");
