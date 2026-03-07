@@ -88,9 +88,15 @@ public enum RSWPlayerItems {
                 RSWConfig.file().getString(basePath + ".MATERIAL", defaultMaterial.name()));
         itemData.put(ItemStackSpringer.ItemCategories.AMOUNT.name(),
                 RSWConfig.file().getInt(basePath + ".AMOUNT", defaultAmount));
-        itemData.put(ItemStackSpringer.ItemCategories.NAME.name(),
-                RSWConfig.file().getString(basePath + ".NAME", defaultName));
 
+        String configuredName = null;
+        if (RSWConfig.file().contains(basePath + ".NAME")) {
+            configuredName = RSWConfig.file().getString(basePath + ".NAME");
+        }
+        if (configuredName == null || configuredName.isBlank()) {
+            configuredName = defaultName;
+        }
+        itemData.put(ItemStackSpringer.ItemCategories.NAME.name(), configuredName);
         List<String> lore = RSWConfig.file().getStringList(basePath + ".LORE");
         if (lore != null && !lore.isEmpty()) {
             itemData.put(ItemStackSpringer.ItemCategories.LORE.name(), lore);
