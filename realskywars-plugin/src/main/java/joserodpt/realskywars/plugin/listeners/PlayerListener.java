@@ -96,7 +96,7 @@ public class PlayerListener implements Listener {
 
     //special items handling
     @EventHandler
-    public void pegar(EntityPickupItemEvent e) {
+    public void onItemPickup(EntityPickupItemEvent e) {
         if (e.getEntity() instanceof Player) {
             RSWPlayer gp = rs.getPlayerManagerAPI().getPlayer((Player) e.getEntity());
             if (gp == null) {
@@ -151,7 +151,7 @@ public class PlayerListener implements Listener {
                     e.setCancelled(true);
                     break;
                 }
-                if (rs.getLobbyManagerAPI().getLobbyLocation() != null && e.getPlayer().getWorld().equals(rs.getLobbyManagerAPI().getLobbyLocation().getWorld())) {
+                if (RSWConfig.file().getBoolean("Config.Pressure-Plate-Join-Game") && rs.getLobbyManagerAPI().getLobbyLocation() != null && e.getPlayer().getWorld().equals(rs.getLobbyManagerAPI().getLobbyLocation().getWorld())) {
                     switch (e.getClickedBlock().getType()) {
                         case STONE_PRESSURE_PLATE:
                             e.getPlayer().performCommand("rsw play SOLO");
