@@ -34,6 +34,14 @@
         <url>https://github.com/joserodpt/RealSkywars/issues</url>
     </issueManagement>
 
+         <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/joserodpt/RealSkywars</url>
+    </repository>
+  </distributionManagement>
+
     <build>
         <defaultGoal>clean install</defaultGoal>
     </build>
