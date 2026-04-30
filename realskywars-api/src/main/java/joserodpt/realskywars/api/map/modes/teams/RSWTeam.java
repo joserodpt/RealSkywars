@@ -57,9 +57,11 @@ public class RSWTeam {
         p.setTeam(this);
         if (members.size() == 1 && p.getPlayer() != null) {
             this.tc.addPlayer(p);
+        } else {
+            p.teleport(this.tc.getLocation());
+            p.setInvincible(true);
         }
 
-        p.teleport(this.tc.getLocation());
         this.teamBukkit.addEntry(p.getName());
         p.sendMessage(TranslatableLine.TEAM_JOIN.get(p, true).replace("%team%", getName()));
     }
