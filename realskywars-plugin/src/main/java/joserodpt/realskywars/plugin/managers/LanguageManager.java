@@ -140,7 +140,14 @@ public class LanguageManager extends LanguageManagerAPI {
 
     @Override
     public String getDefaultLanguage() {
-        return this.langList.get(RSWConfig.file().getString("Config.Default-Language")) != null ? RSWConfig.file().getString("Config.Default-Language") : this.langList.keySet().stream().findFirst().get();
+        String configuredLanguage = RSWConfig.file().getString("Config.Languages.Default-Language");
+        if (configuredLanguage == null || !this.langList.containsKey(configuredLanguage)) {
+            configuredLanguage = RSWConfig.file().getString("Config.Default-Language");
+        }
+
+        return configuredLanguage != null && this.langList.containsKey(configuredLanguage)
+                ? configuredLanguage
+                : this.langList.keySet().stream().findFirst().get();
     }
 
     public RSWLanguage getDefaultLanguageObject() {

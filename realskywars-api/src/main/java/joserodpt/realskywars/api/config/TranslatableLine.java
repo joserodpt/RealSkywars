@@ -265,7 +265,12 @@ public enum TranslatableLine {
     }
 
     public String getDefault() {
-        return getInLanguage(RSWConfig.file().getString("Config.Languages.Default-Language"));
+        String configuredLanguage = RSWConfig.file().getString("Config.Languages.Default-Language");
+        if (configuredLanguage == null) {
+            configuredLanguage = RSWConfig.file().getString("Config.Default-Language");
+        }
+
+        return getInLanguage(configuredLanguage != null ? configuredLanguage : RealSkywarsAPI.getInstance().getLanguageManagerAPI().getDefaultLanguage());
     }
 
     public void sendDefault(CommandSender p, boolean prefix) {
