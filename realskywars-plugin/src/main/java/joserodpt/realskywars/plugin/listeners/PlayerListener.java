@@ -286,6 +286,7 @@ public class PlayerListener implements Listener {
                     if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().hasItemMeta()) {
                         switch (e.getPlayer().getInventory().getItemInMainHand().getType()) {
                             case BOOK:
+                            case PLAYER_HEAD:
                                 e.setCancelled(true);
                                 GUIManager.openPlayerProfile(p);
                                 e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);

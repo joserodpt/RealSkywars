@@ -100,7 +100,7 @@ Config:
       CUSTOM_MODEL_DATA: 1001
       ITEM_FLAGS: HIDE_ATTRIBUTES
     Maps:
-      MATERIAL: MAP
+      MATERIAL: NETHER_STAR
       AMOUNT: 1
       NAME: "&e&lMaps Browser"
       LORE:

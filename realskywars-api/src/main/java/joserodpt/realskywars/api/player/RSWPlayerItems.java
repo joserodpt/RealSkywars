@@ -126,7 +126,7 @@ public enum RSWPlayerItems {
             case ITEM_KITS:
                 return getConfiguredItem("Kit", Material.BOW, 1, TranslatableLine.ITEM_KIT_NAME.get(p));
             case ITEM_PROFILE:
-                return getConfiguredItem("Profile", Material.BOOK, 1, TranslatableLine.ITEM_PROFILE_NAME.get(p));
+                return getConfiguredItem("Profile", Material.PLAYER_HEAD, 1, TranslatableLine.ITEM_PROFILE_NAME.get(p));
             case ITEM_SETCAGE:
                 return getConfiguredItem("Cage", Material.BEACON, 1, TranslatableLine.ITEM_CAGESET_NAME.get(p));
             case ITEM_MAPS:
