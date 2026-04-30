@@ -19,6 +19,7 @@ if [[ -z "$VERSION" ]]; then
 fi
 
 JAR_NAME="RealSkywarsPlugin-${VERSION}.jar"
+OUTPUT_JAR_NAME="RealSkywars-${VERSION}.jar"
 
 echo "Building RealSkywarsPlugin..."
 mvn -pl realskywars-plugin -am clean package
@@ -34,6 +35,6 @@ if [[ ! -f "$SOURCE_JAR" ]]; then
 fi
 
 mkdir -p "$TARGET_DIR"
-cp "$SOURCE_JAR" "$TARGET_DIR/"
+cp "$SOURCE_JAR" "$TARGET_DIR/$OUTPUT_JAR_NAME"
 
-echo "Done: Copied $JAR_NAME to $TARGET_DIR"
+echo "Done: Copied $JAR_NAME to $TARGET_DIR/$OUTPUT_JAR_NAME"

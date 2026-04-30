@@ -15,10 +15,6 @@ package joserodpt.realskywars.api.utils;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import group.aelysium.rustyconnector.RC;
-import group.aelysium.rustyconnector.common.magic_link.MagicLinkCore;
-import group.aelysium.rustyconnector.server.ServerKernel;
-
 import eu.cloudnetservice.driver.inject.InjectionLayer;
 import eu.cloudnetservice.driver.registry.ServiceRegistry;
 import eu.cloudnetservice.modules.bridge.player.PlayerManager;
@@ -30,6 +26,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Set;
 
 public class BungeecordUtils {
@@ -45,13 +43,9 @@ public class BungeecordUtils {
         }
 
         if (Bukkit.getPluginManager().isPluginEnabled("rustyconnector-paper")) {
-            ServerKernel kernel = RC.S.Kernel();
-            kernel.sendID(
-                    player.getUniqueId().toString(),
-                    name,
-                    Set.of(
-                            MagicLinkCore.Packets.SendPlayer.Flag.FAMILY //
-                    ));
+            if (sendViaRustyConnector(player, name)) {
+                return;
+            }
             return;
         }
 
@@ -59,5 +53,43 @@ public class BungeecordUtils {
         out.writeUTF("Connect");
         out.writeUTF(name);
         player.sendPluginMessage(jp, "BungeeCord", out.toByteArray());
+    }
+
+    private static boolean sendViaRustyConnector(Player player, String name) {
+        try {
+            Object kernel = resolveRustyConnectorKernel();
+            if (kernel == null) {
+                return false;
+            }
+
+            Class<?> flagClass = Class.forName("group.aelysium.rustyconnector.common.magic_link.MagicLinkCore$Packets$SendPlayer$Flag");
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            Set<?> flags = Set.of(Enum.valueOf((Class<Enum>) flagClass, "FAMILY"));
+
+            Method sendId = kernel.getClass().getMethod("sendID", String.class, String.class, Set.class);
+            sendId.invoke(kernel, player.getUniqueId().toString(), name, flags);
+            return true;
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    private static Object resolveRustyConnectorKernel() {
+        try {
+            Class<?> nestedClass = Class.forName("group.aelysium.rustyconnector.RC$S");
+            Method kernelMethod = nestedClass.getMethod("Kernel");
+            return kernelMethod.invoke(null);
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
+            // Fall through to the alternate layout below.
+        }
+
+        try {
+            Class<?> rcClass = Class.forName("group.aelysium.rustyconnector.RC");
+            Object sInstance = rcClass.getField("S").get(null);
+            Method kernelMethod = sInstance.getClass().getMethod("Kernel");
+            return kernelMethod.invoke(sInstance);
+        } catch (ClassNotFoundException | NoSuchFieldException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
+            return null;
+        }
     }
 }
