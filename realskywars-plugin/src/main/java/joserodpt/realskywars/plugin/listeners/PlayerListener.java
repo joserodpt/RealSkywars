@@ -451,15 +451,24 @@ public class PlayerListener implements Listener {
                     e.setDamage(0);
                     if (checkSpectate(damaged)) return;
 
-                    if (damaged.getMatch().getState() == RSWMap.MapState.PLAYING) {
-                        damaged.addStatistic(RSWPlayer.Statistic.DEATH, 1, damaged.getMatch().isRanked());
+                    RSWMap match = damaged.getMatch();
+                    if (match == null) {
+                        return;
+                    }
+
+                    if (match.getState() == RSWMap.MapState.PLAYING) {
+                        damaged.addStatistic(RSWPlayer.Statistic.DEATH, 1, match.isRanked());
 
                         Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
+                            if (match != damaged.getMatch() || damaged.getPlayer() == null) {
+                                return;
+                            }
+
                             damaged.getPlayer().spigot().respawn();
-                            damaged.getMatch().spectate(damaged, RSWMap.SpectateType.INSIDE_GAME, damaged.getMatch().getSpectatorLocation());
+                            match.spectate(damaged, RSWMap.SpectateType.INSIDE_GAME, match.getSpectatorLocation());
                         }, 1);
                     } else {
-                        damaged.teleport(damaged.getMatch().getSpectatorLocation());
+                        damaged.teleport(match.getSpectatorLocation());
                     }
                 } else {
                     if (!RSWConfig.file().getBoolean("Config.Disable-Lobby-Void-Teleport", false)) {
