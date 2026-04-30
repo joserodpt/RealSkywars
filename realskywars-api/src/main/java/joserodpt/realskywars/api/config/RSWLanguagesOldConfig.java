@@ -28,8 +28,14 @@ public class RSWLanguagesOldConfig {
     private static YamlDocument document;
 
     public static void setup(final JavaPlugin rm) {
+        File file = new File(rm.getDataFolder(), name);
+        if (!file.exists()) {
+            document = null;
+            return;
+        }
+
         try {
-            document = YamlDocument.create(new File(rm.getDataFolder(), name));
+            document = YamlDocument.create(file);
         } catch (final IOException e) {
             RealSkywarsAPI.getInstance().getLogger().severe("Couldn't setup " + name + "!");
             RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());

@@ -69,9 +69,6 @@ public class LanguageManager extends LanguageManagerAPI {
                         throw new RuntimeException(e);
                     }
                 });
-
-                RSWLanguagesOldConfig.file().remove("Languages");
-                RSWLanguagesOldConfig.save();
             }
 
             //copy default language files
