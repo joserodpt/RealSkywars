@@ -109,7 +109,7 @@ Config:
       CUSTOM_MODEL_DATA: 1002
     Shop:
       MATERIAL: EMERALD
-      AMOUNT: 3
+      AMOUNT: 1
       NAME: "&a&lShop"
       LORE:
         - "&7Open the cosmetics shop."
