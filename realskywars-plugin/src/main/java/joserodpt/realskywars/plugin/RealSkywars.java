@@ -192,16 +192,6 @@ public class RealSkywars extends RealSkywarsAPI {
     }
 
     @Override
-    public String getServerVersion() {
-        return Bukkit.getServer().getClass().getPackage().getName().substring(23);
-    }
-
-    @Override
-    public String getSimpleServerVersion() {
-        return Bukkit.getServer().getBukkitVersion().split("-")[0];
-    }
-
-    @Override
     public boolean hasNewUpdate() {
         return this.plugin.hasNewUpdate();
     }

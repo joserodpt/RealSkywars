@@ -24,6 +24,7 @@ import joserodpt.realskywars.api.config.RSWLanguage;
 import joserodpt.realskywars.api.config.RSWLanguagesOldConfig;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.utils.ServerVersionUtil;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -99,7 +100,7 @@ public class LanguageManager extends LanguageManagerAPI {
             }
         }
 
-        String simpleVersion = rsa.getSimpleServerVersion();
+        String simpleVersion = ServerVersionUtil.getSimpleServerVersion();
         File folder = new File(rsa.getPlugin().getDataFolder(), "languages");
         File translationVersionFile = new File(folder, "version.yml");
 

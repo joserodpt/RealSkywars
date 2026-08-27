@@ -21,6 +21,7 @@ import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.utils.ItemStackSpringer;
 import joserodpt.realskywars.api.utils.Itens;
+import joserodpt.realskywars.api.utils.ServerVersionUtil;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -54,7 +55,7 @@ public class RSWLanguage {
     private JsonObject json = null;
 
 
-    private final String version = RealSkywarsAPI.getInstance().getSimpleServerVersion();
+    private final String version = ServerVersionUtil.getSimpleServerVersion();
 
     public RSWLanguage(File configFile) {
         this.key = configFile.getName().replace(".yml", "");

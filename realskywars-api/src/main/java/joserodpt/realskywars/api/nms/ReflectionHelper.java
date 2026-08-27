@@ -16,13 +16,14 @@ package joserodpt.realskywars.api.nms;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.utils.ServerVersionUtil;
 import org.bukkit.Bukkit;
 
 public class ReflectionHelper {
     private static final String CRAFTBUKKIT_PACKAGE = Bukkit.getServer().getClass().getPackage().getName();
 
     public static Class<?> getNMSClass(final String str) {
-        return getClass("net.minecraft.server." + RealSkywarsAPI.getInstance().getServerVersion() + "." + str);
+        return getClass("net.minecraft.server." + ServerVersionUtil.getServerVersion() + "." + str);
     }
 
     public static Class<?> getCraftBukkitClass(final String str) {

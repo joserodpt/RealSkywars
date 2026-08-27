@@ -1,0 +1,27 @@
+{
+    "editor.formatOnSave": true,
+    "emeraldwalk.runonsave": {
+        "message": "Compiling project on save...",
+        "messageAfter": "Compilation finished.",
+        "showElapsed": true,
+        "commands": [
+            {
+                "match": "\\.(java|yml|yaml|xml|md)$",
+                "cmd": "./compile.sh",
+                "message": "Running compile.sh...",
+                "messageAfter": "compile.sh finished.",
+                "showElapsed": true,
+                "autoShowOutputPanel": "always"
+            },
+            {
+                "match": "\\.(java|yml|yaml|xml|md)$",
+                "cmd": "/Desktop/Files/dev/restart.sh",
+                "message": "Restarting server...",
+                "messageAfter": "Server restarted.",
+                "showElapsed": true,
+                "autoShowOutputPanel": "always",
+                "isAsync": true
+            }
+        ]
+    }
+}

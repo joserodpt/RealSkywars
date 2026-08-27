@@ -45,6 +45,7 @@ import joserodpt.realskywars.api.nms.NMS117R1;
 import joserodpt.realskywars.api.nms.NMS118R2andUP;
 import joserodpt.realskywars.api.utils.GUIBuilder;
 import joserodpt.realskywars.api.utils.PlayerInput;
+import joserodpt.realskywars.api.utils.ServerVersionUtil;
 import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.plugin.commands.BaseCommandWA;
 import joserodpt.realskywars.plugin.commands.PartyCMD;
@@ -355,7 +356,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
     }
 
     private boolean setupNMS() {
-        String version = Bukkit.getServer().getBukkitVersion().split("-")[0];
+        String version = ServerVersionUtil.getSimpleServerVersion();
         getLogger().info("Server version: " + version);
 
         switch (version) {
