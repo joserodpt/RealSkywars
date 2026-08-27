@@ -37,6 +37,16 @@ public enum RSWPlayerItems {
         p.getInventory().setItem(slot, i);
     }
 
+    /** Compares against the configured item instead of a hardcoded material. */
+    public boolean matches(RSWPlayer p, ItemStack item) {
+        if (item == null || item.getType() == Material.AIR) {
+            return false;
+        }
+
+        ItemStack configured = this.get(p);
+        return configured != null && item.isSimilar(configured);
+    }
+
     public void giveSet(RSWPlayer p) {
         if (p.isBot() || p.getPlayer() == null) {
             return;

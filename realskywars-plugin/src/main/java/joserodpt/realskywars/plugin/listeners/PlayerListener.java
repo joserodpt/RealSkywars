@@ -24,6 +24,7 @@ import joserodpt.realskywars.api.effects.RSWBowTrail;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.player.RSWPlayerItems;
 import joserodpt.realskywars.api.shop.RSWBuyableItem;
 import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.plugin.gui.GUIManager;
@@ -62,6 +63,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupArrowEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
 
@@ -165,20 +167,31 @@ public class PlayerListener implements Listener {
             case RIGHT_CLICK_BLOCK:
             case RIGHT_CLICK_AIR:
                 if (p != null) {
+                    ItemStack hand = e.getPlayer().getInventory().getItemInMainHand();
                     if (p.getPlayer() != null && p.getPlayer().isOp()) {
-                        if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().getType() == Material.COMPARATOR) {
+                        if (RSWPlayerItems.ITEM_SETINGS.matches(p, hand)) {
                             RSWMap map = rs.getMapManagerAPI().getMap(p.getPlayer().getWorld());
                             if (map != null && map.isUnregistered()) {
                                 MapSettingsGUI m = new MapSettingsGUI(p, map);
                                 m.openInventory(p);
                                 return;
                             }
-                        } else if (e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory().getItemInMainHand().getType() == Material.CHEST_MINECART) {
+                        } else if (RSWPlayerItems.ITEM_SAVE.matches(p, hand)) {
                             p.getPlayer().performCommand("rsw finish");
                             return;
                         }
                     }
                     if (p.isInMatch()) {
+                        //the leave item is shared by both states and can be reconfigured
+                        if ((p.getState() == RSWPlayer.PlayerState.CAGE
+                                || p.getState() == RSWPlayer.PlayerState.SPECTATOR
+                                || p.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR)
+                                && RSWPlayerItems.ITEM_LEAVE.matches(p, hand)) {
+                            e.setCancelled(true);
+                            p.getMatch().removePlayer(p);
+                            return;
+                        }
+
                         switch (p.getState()) {
                             case PLAYING:
                                 //fill chests

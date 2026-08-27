@@ -73,15 +73,16 @@ public class WorldManager extends WorldManagerAPI {
     @Override
     public void copyWorld(String name, CopyTo t) {
         File maps = new File(rs.getPlugin().getDataFolder(), "maps");
-        String root = rs.getPlugin().getServer().getWorldContainer().getAbsolutePath();
-        File source = new File(root, name);
-        File target = new File(maps, name);
+        World loaded = rs.getPlugin().getServer().getWorld(name);
+        //a loaded world can live outside of the container, so ask it where it is
+        File root = loaded != null ? loaded.getWorldFolder() : new File(rs.getPlugin().getServer().getWorldContainer(), name);
+        File template = new File(maps, name);
         switch (t) {
             case ROOT:
-                this.copyWorld(name, target, source);
+                this.copyWorld(name, template, root);
                 break;
             case RSW_FOLDER:
-                this.copyWorld(name, source, target);
+                this.copyWorld(name, root, template);
                 break;
         }
     }
@@ -148,26 +149,36 @@ public class WorldManager extends WorldManagerAPI {
         try {
             List<String> ignore = Lists.newArrayList("uid.dat", "session.dat", "session.lock");
             if (!ignore.contains(source.getName())) {
+                if (!source.exists()) {
+                    throw new FileNotFoundException(source.toString());
+                }
                 if (source.isDirectory()) {
-                    if ((!target.exists()) && (target.mkdirs())) {
-                        String[] files = source.list();
-                        if (files != null) {
-                            for (String file : files) {
-                                File srcFile = new File(source, file);
-                                File destFile = new File(target, file);
-                                copyWorld(name, srcFile, destFile);
-                            }
+                    //an already existing target must still be copied into, not skipped
+                    if (!target.exists() && !target.mkdirs()) {
+                        throw new IOException("Unable to create directory: " + target);
+                    }
+
+                    String[] files = source.list();
+                    if (files != null) {
+                        for (String file : files) {
+                            File srcFile = new File(source, file);
+                            File destFile = new File(target, file);
+                            copyWorld(name, srcFile, destFile);
                         }
                     }
                 } else {
+                    File parent = target.getParentFile();
+                    if (parent != null && !parent.exists() && !parent.mkdirs()) {
+                        throw new IOException("Unable to create directory: " + parent);
+                    }
                     copyFile(source, target);
                 }
             }
         } catch (FileNotFoundException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe("Failed to copy world: + " + name + " not found");
+            RealSkywarsAPI.getInstance().getLogger().severe("Failed to copy world: " + name + " not found");
             RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());
         } catch (IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe("Failed to copy world: + " + name);
+            RealSkywarsAPI.getInstance().getLogger().severe("Failed to copy world: " + name);
             RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());
         }
     }
@@ -267,7 +278,7 @@ public class WorldManager extends WorldManagerAPI {
     private void copyFile(File source, File targe) throws IOException {
         java.io.InputStream in = new java.io.FileInputStream(source);
         OutputStream out = new java.io.FileOutputStream(targe);
-        byte[] buffer = new byte['Ѐ'];
+        byte[] buffer = new byte[8192];
         int length;
         while ((length = in.read(buffer)) > 0) out.write(buffer, 0, length);
         in.close();

@@ -56,16 +56,16 @@ public class KitManager extends KitManagerAPI {
                     String matString = RSWKitsConfig.file().getString("Kits." + name + ".Icon");
                     Material mat;
                     RSWKit rswKit;
-                    try {
-                        mat = Material.getMaterial(matString);
-                    } catch (Exception e) {
+                    //matchMaterial also accepts lowercase and namespaced names, unlike getMaterial
+                    mat = matString == null ? null : Material.matchMaterial(matString.toUpperCase());
+                    if (mat == null) {
                         mat = Material.BARRIER;
                         RealSkywarsAPI.getInstance().getLogger().warning(matString + " isn't a valid material [KIT]");
                     }
 
                     List<Map<String, Object>> inv = (List<Map<String, Object>>) RSWKitsConfig.file().getList("Kits." + name + ".Contents");
 
-                    if (inv.isEmpty()) {
+                    if (inv == null || inv.isEmpty()) {
                         Debugger.printerr(KitManager.class, "Inventory Itens on " + "Kits." + name + ".Contents" + " are empty! Skipping kit.");
                         continue;
                     }
@@ -82,7 +82,7 @@ public class KitManager extends KitManagerAPI {
                     Debugger.print(KitManager.class, "Loaded " + rswKit);
                 } catch (Exception e) {
                     Bukkit.getLogger().warning("Error loading kit: " + name + "! Skipping kit.");
-                    Bukkit.getLogger().warning(e.getMessage());
+                    Bukkit.getLogger().warning(String.valueOf(e.getMessage()));
                 }
             }
         }

@@ -36,6 +36,7 @@ public class RSWPlayerScoreboard {
     private FastBoard fb = null;
     private final RSWPlayer p;
     private BukkitTask task;
+    private boolean disabled;
 
     public RSWPlayerScoreboard(RSWPlayer r) {
         this.p = r;
@@ -45,6 +46,7 @@ public class RSWPlayerScoreboard {
                 this.run();
             }
         } catch (Exception e) {
+            this.disabled = true;
             Bukkit.getLogger().warning("Could not create scoreboard for player " + r.getName() + " - " + e.getMessage());
         }
     }
@@ -73,7 +75,7 @@ public class RSWPlayerScoreboard {
         if (this.task != null) {
             this.task.cancel();
         }
-        if (!this.fb.isDeleted()) {
+        if (this.fb != null && !this.fb.isDeleted()) {
             this.fb.delete();
         }
     }
@@ -87,7 +89,7 @@ public class RSWPlayerScoreboard {
                     switch (p.getState()) {
                         case LOBBY_OR_NOGAME:
                             if (!RealSkywarsAPI.getInstance().getLobbyManagerAPI().scoreboardInLobby() || !RealSkywarsAPI.getInstance().getLobbyManagerAPI().isInLobby(p.getWorld())) {
-                                if (!fb.isDeleted()) {
+                                if (fb != null && !fb.isDeleted()) {
                                     fb.delete();
                                 }
                                 return;
@@ -122,11 +124,31 @@ public class RSWPlayerScoreboard {
     }
 
     private void displayScoreboard(String title, List<String> elements) {
-        if (this.fb.isDeleted()) {
-            this.fb = new FastBoard(p.getPlayer());
+        if (this.disabled) {
+            return;
         }
 
-        this.fb.updateTitle(title);
-        this.fb.updateLines(elements);
+        try {
+            if (this.fb == null || this.fb.isDeleted()) {
+                this.fb = new FastBoard(p.getPlayer());
+            }
+
+            this.fb.updateTitle(title);
+            this.fb.updateLines(elements);
+        } catch (Exception e) {
+            //stop the task instead of logging the same failure every tick
+            this.disabled = true;
+            if (this.task != null) {
+                this.task.cancel();
+            }
+            try {
+                if (this.fb != null && !this.fb.isDeleted()) {
+                    this.fb.delete();
+                }
+            } catch (Exception ignored) {
+                //FastBoard can also fail while cleaning up on an unsupported server
+            }
+            Bukkit.getLogger().warning("Scoreboard disabled for " + p.getName() + " - could not update it: " + e.getMessage());
+        }
     }
 }

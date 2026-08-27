@@ -59,6 +59,10 @@ public class ShopManager extends ShopManagerAPI {
 
         for (String category : RSWShopsConfig.file().getSection("Shops").getRoutesAsStrings(false)) {
             RSWBuyableItem.ItemCategory cat = RSWBuyableItem.ItemCategory.getCategoryByName(category);
+            if (cat == null) {
+                rs.getLogger().warning("Unknown shop category " + category + "! Skipping it.");
+                continue;
+            }
             for (String item : RSWShopsConfig.file().getSection("Shops." + category).getRoutesAsStrings(false)) {
                 //verify if item already exists
                 if (shopItems.containsKey(item)) {
@@ -77,12 +81,19 @@ public class ShopManager extends ShopManagerAPI {
                     }
                 }
 
+                //one bad material must not abort the whole shop load
+                Material parsedMaterial = material == null ? null : Material.matchMaterial(material.toUpperCase());
+                if (parsedMaterial == null) {
+                    rs.getLogger().warning("Invalid material " + material + " in " + category + "." + item + "! Skipping it.");
+                    continue;
+                }
+
                 RSWBuyableItem buyableItem;
                 if (cat == RSWBuyableItem.ItemCategory.BOW_PARTICLE) {
                     String particle = RSWShopsConfig.file().getString("Shops." + category + "." + item + ".Extras.Particle");
-                    buyableItem = new RSWParticleItem(item, displayname, Material.valueOf(material), price, permission, particle);
+                    buyableItem = new RSWParticleItem(item, displayname, parsedMaterial, price, permission, particle);
                 } else {
-                    buyableItem = new RSWBuyableItem(item, displayname, Material.valueOf(material), price, permission, cat, extras);
+                    buyableItem = new RSWBuyableItem(item, displayname, parsedMaterial, price, permission, cat, extras);
                 }
                 shopItems.put(item, buyableItem);
             }
