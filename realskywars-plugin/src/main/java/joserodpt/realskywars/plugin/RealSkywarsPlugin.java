@@ -21,6 +21,7 @@ import dev.triumphteam.cmd.core.suggestion.SuggestionKey;
 import joserodpt.realpermissions.api.RealPermissionsAPI;
 import joserodpt.realpermissions.api.pluginhook.ExternalPlugin;
 import joserodpt.realpermissions.api.pluginhook.ExternalPluginPermission;
+import joserodpt.realscoreboard.api.RealScoreboardAPI;
 import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.chests.RSWChest;
@@ -44,6 +45,7 @@ import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.nms.NMS114R1tov116R3;
 import joserodpt.realskywars.api.nms.NMS117R1;
 import joserodpt.realskywars.api.nms.NMS118R2andUP;
+import joserodpt.realskywars.api.player.RSWPlayerScoreboard;
 import joserodpt.realskywars.api.utils.GUIBuilder;
 import joserodpt.realskywars.api.utils.PlayerInput;
 import joserodpt.realskywars.api.utils.ServerVersionUtil;
@@ -67,6 +69,7 @@ import joserodpt.realskywars.plugin.gui.guis.PlayerItemsGUI;
 import joserodpt.realskywars.plugin.gui.guis.SettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.ShopGUI;
 import joserodpt.realskywars.plugin.gui.guis.VoteGUI;
+import joserodpt.realskywars.plugin.hooks.RealScoreboardRenderer;
 import joserodpt.realskywars.plugin.listeners.EventListener;
 import joserodpt.realskywars.plugin.listeners.HologramWinListener;
 import joserodpt.realskywars.plugin.listeners.LuckyBlockListener;
@@ -183,6 +186,9 @@ public class RealSkywarsPlugin extends JavaPlugin {
 
         realSkywars.getMapManagerAPI().loadMaps();
         getLogger().info("Loaded " + realSkywars.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL).size() + " maps.");
+        //hook into realscoreboard, before any player scoreboard is created
+        setupRealScoreboard();
+
         realSkywars.getPlayerManagerAPI().loadPlayers();
 
         if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
@@ -336,6 +342,30 @@ public class RealSkywarsPlugin extends JavaPlugin {
         getLogger().info("<------------- RealSkywars vPT ------------->".replace("PT", this.getDescription().getVersion()));
     }
 
+    /**
+     * Hands our scoreboards over to RealScoreboard when it is installed, so the
+     * two plugins stop fighting over the sidebar. It then decides what each
+     * player sees, showing our board even to players who turned theirs off
+     * while they are in a match.
+     */
+    private void setupRealScoreboard() {
+        if (getServer().getPluginManager().getPlugin("RealScoreboard") == null) {
+            return;
+        }
+
+        try {
+            //this also fails on an older RealScoreboard, before we commit to it
+            RealScoreboardAPI.getInstance().getExternalScoreboardManagerAPI().registerHook(this);
+
+            RSWPlayerScoreboard.setRenderer(new RealScoreboardRenderer(this));
+            getLogger().info("Hooked into RealScoreboard!");
+        } catch (Throwable t) {
+            //keep drawing our own boards
+            RSWPlayerScoreboard.setRenderer(null);
+            getLogger().warning("RealScoreboard was found but could not be hooked into, is it up to date? " + t);
+        }
+    }
+
     private void printASCII() {
         logWithColor("&b   _____            _  _____ _ ");
         logWithColor("&b  |  __ \\          | |/ ____| |");
@@ -367,6 +397,14 @@ public class RealSkywarsPlugin extends JavaPlugin {
 
         if (RSWConfig.file() != null && RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
             this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
+        }
+
+        if (RSWPlayerScoreboard.isRenderedExternally()) {
+            try {
+                RealScoreboardAPI.getInstance().getExternalScoreboardManagerAPI().clearAll(this);
+            } catch (Throwable ignored) {
+                //RealScoreboard may already be gone, and it drops our boards on its own anyway
+            }
         }
 
         HandlerList.unregisterAll(this);

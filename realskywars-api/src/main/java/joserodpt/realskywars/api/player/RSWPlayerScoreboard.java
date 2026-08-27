@@ -33,6 +33,21 @@ import java.util.stream.Collectors;
 
 public class RSWPlayerScoreboard {
 
+    /**
+     * Draws our scoreboards. Null while RealSkywars draws its own; set when a
+     * scoreboard plugin takes over, so we never touch a board of our own -
+     * two plugins fighting over the sidebar objective would flicker.
+     */
+    private static volatile RSWScoreboardRenderer renderer;
+
+    public static void setRenderer(RSWScoreboardRenderer renderer) {
+        RSWPlayerScoreboard.renderer = renderer;
+    }
+
+    public static boolean isRenderedExternally() {
+        return renderer != null;
+    }
+
     private FastBoard fb = null;
     private final RSWPlayer p;
     private BukkitTask task;
@@ -47,7 +62,9 @@ public class RSWPlayerScoreboard {
         }
 
         try {
-            this.fb = new FastBoard(r.getPlayer());
+            if (renderer == null) {
+                this.fb = new FastBoard(r.getPlayer());
+            }
             if (RealSkywarsAPI.getInstance().getLobbyManagerAPI().getLobbyLocation() != null) {
                 this.run();
             }
@@ -78,6 +95,7 @@ public class RSWPlayerScoreboard {
     }
 
     public void stop() {
+        this.clearBoard();
         if (this.task != null) {
             this.task.cancel();
         }
@@ -99,6 +117,8 @@ public class RSWPlayerScoreboard {
                     switch (p.getState()) {
                         case LOBBY_OR_NOGAME:
                             if (!RealSkywarsAPI.getInstance().getLobbyManagerAPI().scoreboardInLobby() || !RealSkywarsAPI.getInstance().getLobbyManagerAPI().isInLobby(p.getWorld())) {
+                                //nothing to show here, so hand the player back to whoever else wants them
+                                clearBoard();
                                 if (fb != null && !fb.isDeleted()) {
                                     fb.delete();
                                 }
@@ -129,11 +149,26 @@ public class RSWPlayerScoreboard {
                             .collect(Collectors.toList());
 
                     int maxLines = Math.max(1, RSWConfig.file().getInt("Config.Scoreboard.Max-Lines", 15));
-                    displayScoreboard(variables(tit, p), send.subList(0, Math.min(send.size(), maxLines)));
+                    String title = variables(tit, p);
+                    List<String> lines = send.subList(0, Math.min(send.size(), maxLines));
+
+                    RSWScoreboardRenderer external = renderer;
+                    if (external == null) {
+                        displayScoreboard(title, lines);
+                    } else {
+                        external.render(p, title, lines, p.getState() != RSWPlayer.PlayerState.LOBBY_OR_NOGAME);
+                    }
                 }
             }
         }.runTaskTimer(RealSkywarsAPI.getInstance().getPlugin(), 0L,
                 Math.max(1, RSWConfig.file().getInt("Config.Scoreboard.Update-Interval", 20)));
+    }
+
+    private void clearBoard() {
+        RSWScoreboardRenderer external = renderer;
+        if (external != null) {
+            external.clear(this.p);
+        }
     }
 
     private void displayScoreboard(String title, List<String> elements) {
