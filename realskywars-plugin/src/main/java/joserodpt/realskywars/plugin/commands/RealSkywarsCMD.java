@@ -31,6 +31,8 @@ import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.kits.KitInventory;
 import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
+import joserodpt.realskywars.api.managers.holograms.HologramType;
+import joserodpt.realskywars.api.managers.holograms.RSWLobbyHologram;
 import joserodpt.realskywars.api.managers.TransactionManager;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.RSWMap;
@@ -41,7 +43,6 @@ import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.api.utils.WorldEditUtils;
 import joserodpt.realskywars.plugin.gui.GUIManager;
 import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
-import joserodpt.realskywars.plugin.gui.guis.HologramGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapDashboardGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerGUI;
@@ -63,6 +64,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Command(value = "realskywars", alias = {"sw", "rsw"})
@@ -379,17 +381,141 @@ public class RealSkywarsCMD extends BaseCommandWA {
         }
     }
 
-    @SubCommand(value = "holograms", alias = {"holo", "hologram"})
+    //only the trailing argument may be optional, so listing lives in its own subcommand
+    @SubCommand(value = "hologram", alias = {"holo"})
+    @Permission("rsw.admin")
+    @WrongUsage("&c/rsw hologram create <name> <type>, /rsw hologram delete <name>, or /rsw holograms to list them")
+    @SuppressWarnings("unused")
+    public void hologram(final CommandSender commandSender, @Suggestion("#hologramactions") String action,
+                         @Suggestion("#holograms") String name, @Optional @Suggestion("#hologramtypes") String type) {
+        String prefix = rs.getLanguageManagerAPI().getPrefix();
+
+        switch (action.toLowerCase()) {
+            case "create":
+                hologramCreate(commandSender, prefix, name, type);
+                break;
+            case "delete":
+            case "remove":
+                hologramDelete(commandSender, prefix, name);
+                break;
+            case "list":
+                hologramList(commandSender, prefix);
+                break;
+            default:
+                Text.send(commandSender, prefix + "&cUnknown action &f" + action + "&c. Use create or delete, or /rsw holograms to list them.");
+        }
+    }
+
+    @SubCommand(value = "holograms", alias = {"hololist"})
     @Permission("rsw.admin")
     @SuppressWarnings("unused")
     public void holograms(final CommandSender commandSender) {
-        if (commandSender instanceof Player) {
-            RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            HologramGUI h = new HologramGUI(p, rs.getLobbyHologramManagerAPI());
-            h.openInventory(p);
-        } else {
+        hologramList(commandSender, rs.getLanguageManagerAPI().getPrefix());
+    }
+
+    private void hologramCreate(final CommandSender commandSender, String prefix, String name, String type) {
+        if (!(commandSender instanceof Player)) {
+            //the hologram is placed where the sender stands
             commandSender.sendMessage(onlyPlayer);
+            return;
         }
+
+        if (name == null || type == null) {
+            Text.send(commandSender, prefix + "&cUsage: /rsw hologram create <name> <type>");
+            return;
+        }
+
+        HologramType hologramType = HologramType.getByName(type);
+        if (hologramType == null) {
+            Text.send(commandSender, prefix + "&cUnknown hologram type &f" + type + "&c. Available: &f" + hologramTypeNames());
+            return;
+        }
+
+        if (!rs.getLobbyHologramManagerAPI().isValidNewId(name)) {
+            Text.send(commandSender, prefix + "&c&f" + name + "&c is already taken or contains characters other than letters, digits, - and _.");
+            return;
+        }
+
+        Player player = (Player) commandSender;
+        RSWLobbyHologram created = rs.getLobbyHologramManagerAPI().createHologram(name, hologramType, player.getLocation());
+        if (created == null) {
+            Text.send(commandSender, prefix + "&cCould not create the hologram. See the console for details.");
+            return;
+        }
+
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
+        Text.send(commandSender, prefix + "&fPlaced hologram &b" + created.getId() + " &7(" + hologramType.name() + ")&f here.");
+        if (!created.isActive()) {
+            Text.send(commandSender, prefix + "&cNo hologram plugin is installed, so it will not be visible. Install HolographicDisplays or DecentHolograms.");
+        }
+    }
+
+    private void hologramDelete(final CommandSender commandSender, String prefix, String name) {
+        if (name == null) {
+            Text.send(commandSender, prefix + "&cUsage: /rsw hologram delete <name>");
+            return;
+        }
+
+        if (rs.getLobbyHologramManagerAPI().getHologram(name) == null) {
+            Text.send(commandSender, prefix + "&cThere is no hologram named &f" + name + "&c.");
+            return;
+        }
+
+        rs.getLobbyHologramManagerAPI().removeHologram(name);
+        if (commandSender instanceof Player) {
+            Player player = (Player) commandSender;
+            player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 50, 50);
+        }
+        Text.send(commandSender, prefix + "&fRemoved hologram &b" + name + "&f.");
+    }
+
+    private void hologramList(final CommandSender commandSender, String prefix) {
+        Collection<RSWLobbyHologram> holograms = rs.getLobbyHologramManagerAPI().getHolograms();
+        if (holograms.isEmpty()) {
+            Text.send(commandSender, prefix + "&fThere are no holograms. Place one with &b/rsw hologram create <name> <type>&f.");
+            return;
+        }
+
+        Text.send(commandSender, prefix + "&fHolograms &7(" + holograms.size() + ")&f:");
+        for (RSWLobbyHologram holo : holograms) {
+            String where = holo.getLocation() == null ? "&cunknown location"
+                    : "&7" + holo.getLocation().getWorld().getName() + " " + holo.getLocation().getBlockX() + ", "
+                    + holo.getLocation().getBlockY() + ", " + holo.getLocation().getBlockZ();
+            String line = "&7- &b" + holo.getId() + " &7(" + holo.getType().name() + ") " + where
+                    + (holo.isActive() ? "" : " &cnot rendered");
+
+            if (commandSender instanceof Player && holo.getLocation() != null) {
+                TextComponent a = new TextComponent(Text.color(line));
+                a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw hologramtp " + holo.getId()));
+                a.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Text.color("&fClick to teleport to &b" + holo.getId())).create()));
+                ((Player) commandSender).spigot().sendMessage(a);
+            } else {
+                Text.send(commandSender, line);
+            }
+        }
+    }
+
+    @SubCommand("hologramtp")
+    @Permission("rsw.admin")
+    @WrongUsage("&c/rsw hologramtp <name>")
+    @SuppressWarnings("unused")
+    public void hologramtp(final CommandSender commandSender, @Suggestion("#holograms") String name) {
+        if (!(commandSender instanceof Player)) {
+            commandSender.sendMessage(onlyPlayer);
+            return;
+        }
+
+        RSWLobbyHologram holo = rs.getLobbyHologramManagerAPI().getHologram(name);
+        if (holo == null || holo.getLocation() == null) {
+            Text.send(commandSender, rs.getLanguageManagerAPI().getPrefix() + "&cThere is no hologram named &f" + name + "&c.");
+            return;
+        }
+
+        ((Player) commandSender).teleport(holo.getLocation());
+    }
+
+    private static String hologramTypeNames() {
+        return Arrays.stream(HologramType.values()).map(Enum::name).collect(Collectors.joining(", "));
     }
 
     @SubCommand("lobby")

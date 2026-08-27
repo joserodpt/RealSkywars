@@ -7,7 +7,10 @@ Config:
   # How many places the %1%..%n% placeholders can go up to.
   Leaderboard-Size: 10
   # %1%, %2%, ... are leaderboard rows. %online%, %playing%, %maps% and %games%
-  # work on every hologram. %winner%, %map% and %date% are for Last-Winner.
+  # work on every hologram. %winner%, %map% and %date% are for Last-Winner and
+  # come from the game history table, not from this file.
+  # Holograms are placed with /rsw hologram create <name> <type> and land under
+  # a Holograms section below.
   Lines:
     Last-Winner:
       - "&6&lLAST WINNER"

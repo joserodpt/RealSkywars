@@ -45,6 +45,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -153,6 +154,19 @@ public class DatabaseManager extends DatabaseManagerAPI {
             rsa.getLogger().severe("Error while getting the player data:" + exception.getMessage());
         }
         return new Pair<>(Collections.emptyList(), new RSWGameHistoryStats());
+    }
+
+    @Override
+    public PlayerGameHistoryRow getLastWin() {
+        try {
+            //the date column is a config-formatted string, so it cannot be ordered in SQL
+            return playerGameHistoryDao.queryForEq("win", true).stream()
+                    .max(Comparator.comparing(PlayerGameHistoryRow::getFormattedDateObject))
+                    .orElse(null);
+        } catch (SQLException exception) {
+            rsa.getLogger().severe("Error while getting the last win:" + exception.getMessage());
+        }
+        return null;
     }
 
     @Override

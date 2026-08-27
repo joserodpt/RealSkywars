@@ -24,6 +24,8 @@ import joserodpt.realpermissions.api.pluginhook.ExternalPluginPermission;
 import joserodpt.realscoreboard.api.RealScoreboardAPI;
 import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.managers.holograms.HologramType;
+import joserodpt.realskywars.api.managers.holograms.RSWLobbyHologram;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.chests.TierViewer;
 import joserodpt.realskywars.api.config.RSWAchievementsConfig;
@@ -58,7 +60,6 @@ import joserodpt.realskywars.plugin.currency.LocalCurrencyAdapter;
 import joserodpt.realskywars.plugin.currency.VaultCurrencyAdapter;
 import joserodpt.realskywars.plugin.gui.guis.AchievementViewerGUI;
 import joserodpt.realskywars.plugin.gui.guis.GameHistoryGUI;
-import joserodpt.realskywars.plugin.gui.guis.HologramGUI;
 import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapDashboardGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapEventEditorGUI;
@@ -178,7 +179,6 @@ public class RealSkywarsPlugin extends JavaPlugin {
         pm.registerEvents(KitSettingsGUI.getListener(), this);
         pm.registerEvents(VoteGUI.getListener(), this);
         pm.registerEvents(SettingsGUI.getListener(), this);
-        pm.registerEvents(HologramGUI.getListener(), this);
 
         realSkywars.getShopManagerAPI().loadShopItems();
         realSkywars.getKitManagerAPI().loadKits();
@@ -218,6 +218,14 @@ public class RealSkywarsPlugin extends JavaPlugin {
         commandManager.registerSuggestion(SuggestionKey.of("#worldtype"), (sender, context) -> Arrays.asList("default", "schematic"));
         commandManager.registerSuggestion(SuggestionKey.of("#kits"), (sender, context) -> realSkywars.getKitManagerAPI().getKits().stream()
                 .map(kit -> Text.strip(kit.getName()))
+                .collect(Collectors.toList()));
+
+        commandManager.registerSuggestion(SuggestionKey.of("#hologramactions"), (sender, context) -> Arrays.asList("create", "delete", "list"));
+        commandManager.registerSuggestion(SuggestionKey.of("#hologramtypes"), (sender, context) -> Arrays.stream(HologramType.values())
+                .map(Enum::name)
+                .collect(Collectors.toList()));
+        commandManager.registerSuggestion(SuggestionKey.of("#holograms"), (sender, context) -> realSkywars.getLobbyHologramManagerAPI().getHolograms().stream()
+                .map(RSWLobbyHologram::getId)
                 .collect(Collectors.toList()));
 
         commandManager.registerArgument(RSWChest.Tier.class, (sender, argument) -> {

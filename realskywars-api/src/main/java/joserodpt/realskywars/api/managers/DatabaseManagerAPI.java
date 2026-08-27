@@ -39,6 +39,12 @@ public abstract class DatabaseManagerAPI {
 
     public abstract Pair<Collection<PlayerGameHistoryRow>, RSWGameHistoryStats> getPlayerGameHistory(Player p);
 
+    /**
+     * The most recent winning game history row, or null if nobody has won yet.
+     * Hits the database, so call it off the main thread.
+     */
+    public abstract PlayerGameHistoryRow getLastWin();
+
     public abstract List<PlayerBoughtItemsRow> getPlayerBoughtItems(Player p);
 
     public abstract List<PlayerBoughtItemsRow> getPlayerBoughtItemsCategory(Player p, RSWBuyableItem.ItemCategory cat);

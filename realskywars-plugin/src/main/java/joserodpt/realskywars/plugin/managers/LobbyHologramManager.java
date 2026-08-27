@@ -17,6 +17,7 @@ package joserodpt.realskywars.plugin.managers;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWHologramConfig;
+import joserodpt.realskywars.api.database.PlayerGameHistoryRow;
 import joserodpt.realskywars.api.leaderboards.RSWLeaderboard;
 import joserodpt.realskywars.api.managers.LobbyHologramManagerAPI;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
@@ -36,6 +37,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Owns the lobby holograms: the last winner display, the leaderboards and the
@@ -45,10 +47,16 @@ import java.util.Map;
 public class LobbyHologramManager extends LobbyHologramManagerAPI {
 
     private static final String DATA_ROUTE = "Holograms";
+    private static final Pattern VALID_ID = Pattern.compile("[A-Za-z0-9_-]+");
 
     private final RealSkywarsAPI rsa;
     private final Map<String, RSWLobbyHologram> holograms = new LinkedHashMap<>();
     private BukkitTask refreshTask;
+
+    //derived from the game history table, so it is never written to holograms.yml
+    private String lastWinnerName;
+    private String lastWinnerMap;
+    private String lastWinnerDate;
 
     public LobbyHologramManager(RealSkywarsAPI rsa) {
         this.rsa = rsa;
@@ -83,22 +91,68 @@ public class LobbyHologramManager extends LobbyHologramManagerAPI {
             }
         }
 
+        //older versions cached the last winner here; it now comes from the database
+        if (RSWHologramConfig.file().isSection("Data")) {
+            RSWHologramConfig.file().remove("Data");
+            RSWHologramConfig.save();
+        }
+
+        this.seedLastWinner();
         this.startRefreshTask();
+    }
+
+    /** Fills the last winner from the most recent winning game history row. */
+    private void seedLastWinner() {
+        if (this.holograms.values().stream().noneMatch(holo -> holo.getType() == HologramType.LAST_WINNER)) {
+            return;
+        }
+
+        if (this.rsa.getDatabaseManagerAPI() == null) {
+            //the database failed to come up; the next win still fills the hologram
+            return;
+        }
+
+        Bukkit.getScheduler().runTaskAsynchronously(this.rsa.getPlugin(), () -> {
+            PlayerGameHistoryRow row = this.rsa.getDatabaseManagerAPI().getLastWin();
+            if (row == null) {
+                return;
+            }
+
+            Bukkit.getScheduler().runTask(this.rsa.getPlugin(), () -> {
+                //a match that ended while the query was running wins over the stored row
+                if (this.lastWinnerName == null) {
+                    this.lastWinnerName = row.getPlayerName();
+                    this.lastWinnerMap = row.getMap();
+                    this.lastWinnerDate = row.getDate();
+                    this.refreshLastWinner();
+                }
+            });
+        });
     }
 
     /** Creates a hologram and, unless loading, writes it to holograms.yml. */
     @Override
-    public RSWLobbyHologram createHologram(HologramType type, Location loc) {
+    public RSWLobbyHologram createHologram(String id, HologramType type, Location loc) {
         if (RSWHologramConfig.file() == null) {
             this.rsa.getLogger().severe("Cannot create a hologram: holograms.yml was not loaded.");
             return null;
         }
 
-        String id = type.name().toLowerCase() + "_" + (this.holograms.size() + 1);
-        while (this.holograms.containsKey(id)) {
-            id = id + "_";
+        if (!this.isValidNewId(id)) {
+            return null;
         }
+
         return this.spawn(id, type, loc, true);
+    }
+
+    @Override
+    public boolean isValidNewId(String id) {
+        if (id == null || !VALID_ID.matcher(id).matches() || this.holograms.containsKey(id)) {
+            return false;
+        }
+
+        //a hologram whose world is unloaded is in the config but not in memory
+        return RSWHologramConfig.file() == null || !RSWHologramConfig.file().contains(DATA_ROUTE + "." + id);
     }
 
     private RSWLobbyHologram spawn(String id, HologramType type, Location loc, boolean save) {
@@ -217,9 +271,9 @@ public class LobbyHologramManager extends LobbyHologramManagerAPI {
 
     private String placeholders(String line, HologramType type) {
         String result = line
-                .replace("%winner%", RSWHologramConfig.file().getString("Data.Last-Winner.Name", "-"))
-                .replace("%map%", RSWHologramConfig.file().getString("Data.Last-Winner.Map", "-"))
-                .replace("%date%", RSWHologramConfig.file().getString("Data.Last-Winner.Date", "-"))
+                .replace("%winner%", this.lastWinnerName == null ? "-" : this.lastWinnerName)
+                .replace("%map%", this.lastWinnerMap == null ? "-" : this.lastWinnerMap)
+                .replace("%date%", this.lastWinnerDate == null ? "-" : this.lastWinnerDate)
                 .replace("%online%", String.valueOf(Bukkit.getOnlinePlayers().size()))
                 .replace("%playing%", String.valueOf(this.rsa.getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.ALL)))
                 .replace("%maps%", String.valueOf(this.rsa.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL).size()))
@@ -260,18 +314,21 @@ public class LobbyHologramManager extends LobbyHologramManagerAPI {
                 .count();
     }
 
-    /** Records the winner shown by the LAST_WINNER holograms. */
+    /**
+     * Records the winner shown by the LAST_WINNER holograms. Only caches it: the
+     * match is already persisted as a game history row, which is what a restart
+     * reads back.
+     */
     @Override
     public void setLastWinner(String winner, String map) {
-        if (RSWHologramConfig.file() == null) {
-            return;
-        }
+        this.lastWinnerName = winner;
+        this.lastWinnerMap = map;
+        this.lastWinnerDate = Text.getDateAndTime();
 
-        RSWHologramConfig.file().set("Data.Last-Winner.Name", winner);
-        RSWHologramConfig.file().set("Data.Last-Winner.Map", map);
-        RSWHologramConfig.file().set("Data.Last-Winner.Date", Text.getDateAndTime());
-        RSWHologramConfig.save();
+        this.refreshLastWinner();
+    }
 
+    private void refreshLastWinner() {
         this.holograms.values().stream()
                 .filter(holo -> holo.getType() == HologramType.LAST_WINNER)
                 .forEach(this::refresh);

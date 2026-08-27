@@ -26,8 +26,11 @@ public abstract class LobbyHologramManagerAPI {
     /** Reads holograms.yml and spawns every hologram it lists. */
     public abstract void loadHolograms();
 
-    /** Creates a hologram at the given location and persists it. */
-    public abstract RSWLobbyHologram createHologram(HologramType type, Location loc);
+    /**
+     * Creates a hologram under the given id at the given location and persists it.
+     * Returns null if the id is already taken or the hologram could not be placed.
+     */
+    public abstract RSWLobbyHologram createHologram(String id, HologramType type, Location loc);
 
     /** Removes a hologram from the world and from holograms.yml. */
     public abstract void removeHologram(String id);
@@ -45,6 +48,9 @@ public abstract class LobbyHologramManagerAPI {
 
     /** Records the winner shown by the LAST_WINNER holograms. */
     public abstract void setLastWinner(String winner, String map);
+
+    /** True if the id is free and made only of letters, digits, - and _. */
+    public abstract boolean isValidNewId(String id);
 
     public abstract void startRefreshTask();
 
