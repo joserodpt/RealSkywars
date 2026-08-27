@@ -24,6 +24,7 @@ import joserodpt.realskywars.api.map.RSWMap;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 
+import java.io.File;
 import java.util.Objects;
 
 public class SWWorldDefaultEngine implements SWWorldEngine {
@@ -52,12 +53,27 @@ public class SWWorldDefaultEngine implements SWWorldEngine {
         if (Objects.requireNonNull(rr) == RSWMap.OperationReason.SHUTDOWN) {//delete world
             this.deleteWorld(RSWMap.OperationReason.SHUTDOWN);
         } else {
+            File template = new File(new File(RealSkywarsAPI.getInstance().getPlugin().getDataFolder(), "maps"), this.worldName);
+            File current = this.world != null ? this.world.getWorldFolder() : new File(RealSkywarsAPI.getInstance().getPlugin().getServer().getWorldContainer(), this.worldName);
+
+            //a map without a template cannot be restored after being deleted, so save one first
+            if (!template.isDirectory() && current.isDirectory()) {
+                RealSkywarsAPI.getInstance().getLogger().warning("Map " + this.worldName + " has no template in the maps folder. Creating one before resetting.");
+                this.wm.copyWorld(this.worldName, WorldManagerAPI.CopyTo.RSW_FOLDER);
+            }
+
+            if (!template.isDirectory()) {
+                RealSkywarsAPI.getInstance().getLogger().severe("Cannot reset map " + this.worldName + ": no template found at " + template + ". The map was left untouched.");
+                this.gameRoom.setState(RSWMap.MapState.AVAILABLE);
+                return;
+            }
+
             this.deleteWorld(RSWMap.OperationReason.RESET);
             //Copy world
-            this.wm.copyWorld(this.getName(), WorldManagerAPI.CopyTo.ROOT);
+            this.wm.copyWorld(this.worldName, WorldManagerAPI.CopyTo.ROOT);
 
             //Load world
-            this.world = this.wm.createEmptyWorld(this.getName(), World.Environment.NORMAL);
+            this.world = this.wm.createEmptyWorld(this.worldName, World.Environment.NORMAL);
             if (this.world != null) {
                 this.world.setTime(0);
                 this.world.setStorm(false);
@@ -68,7 +84,7 @@ public class SWWorldDefaultEngine implements SWWorldEngine {
 
                 this.gameRoom.setState(RSWMap.MapState.AVAILABLE);
             } else {
-                RealSkywarsAPI.getInstance().getLogger().severe("ERROR! Could not load " + this.getName());
+                RealSkywarsAPI.getInstance().getLogger().severe("ERROR! Could not load " + this.worldName);
             }
         }
     }

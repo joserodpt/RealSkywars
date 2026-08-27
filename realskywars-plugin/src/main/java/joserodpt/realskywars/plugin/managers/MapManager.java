@@ -45,6 +45,7 @@ import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.scoreboard.Team;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -385,6 +386,14 @@ public class MapManager extends MapManagerAPI {
 
             //Copy world
             rs.getWorldManagerAPI().copyWorld(map.getRSWWorld().getName(), WorldManager.CopyTo.RSW_FOLDER);
+
+            //without a template the map cannot be reset later, so refuse to register it
+            File template = new File(new File(rs.getPlugin().getDataFolder(), "maps"), map.getRSWWorld().getName());
+            if (!template.isDirectory()) {
+                rs.getLogger().severe("Map template for " + map.getName() + " was not created at " + template + ". The map was not registered.");
+                TranslatableLine.MAP_UNREGISTER_TO_EDIT.send(p, true);
+                return;
+            }
         }
 
         map.getCages().forEach(rswCage -> rswCage.setMap(map));
@@ -445,7 +454,11 @@ public class MapManager extends MapManagerAPI {
 
     @Override
     protected Boolean isRanked(String s) {
-        return RSWMapsConfig.file().getBoolean(s + ".ranked");
+        //maps saved before the Settings section existed still carry the old route
+        if (RSWMapsConfig.file().contains(s + ".ranked")) {
+            return RSWMapsConfig.file().getBoolean(s + ".ranked");
+        }
+        return RSWMapsConfig.file().getBoolean(s + ".Settings.Ranked");
     }
 
     @Override

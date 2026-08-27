@@ -117,6 +117,12 @@ public class RSWLanguage {
     }
 
     public void downloadLanguageFile() throws Exception {
+        //forks and proxies report versions like "26.2.build.112", which are not valid mcasset.cloud paths
+        if (version == null || !version.matches("\\d+\\.\\d+(\\.\\d+)?")) {
+            Debugger.print(RSWLanguage.class, "Skipping minecraft language download for unsupported server version " + version);
+            return;
+        }
+
         RealSkywarsAPI.getInstance().getLogger().info("Downloading minecraft language file for " + getKey() + " (" + version + ") ...");
 
         String fileName = getKey() + ".json";
@@ -141,7 +147,9 @@ public class RSWLanguage {
                     Files.copy(inputStream, translationFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
                 }
             } else {
-                RealSkywarsAPI.getInstance().getLogger().severe("Failed to download language file for " + getKey() + "(" + version + ") -> Response: " + connection.getResponseMessage());
+                Debugger.print(RSWLanguage.class, "Minecraft language file unavailable for " + getKey() + " (" + version + ") -> Response: " + connection.getResponseMessage());
+                connection.disconnect();
+                return;
             }
 
             // Disconnect the connection
@@ -186,6 +194,8 @@ public class RSWLanguage {
             return RealSkywarsAPI.getInstance().getNMS().getItemName(mat);
         }
 
+        if (json == null) return RealSkywarsAPI.getInstance().getNMS().getItemName(mat);
+
         String name = mat.getKey().getKey();
         if (name.contains("wall_")) name = name.replace("wall_", "");
 
@@ -200,6 +210,8 @@ public class RSWLanguage {
             return Text.beautifyEnumName(ench.getKey().getKey());
         }
 
+        if (json == null) return Text.beautifyEnumName(ench.getKey().getKey());
+
         return getLocalizedString("enchantment.minecraft." + ench.getKey().getKey());
     }
 
@@ -210,6 +222,8 @@ public class RSWLanguage {
             Debugger.print(RSWLanguage.class, "Could not load language " + this.getKey() + " - " + this.getDisplayName() + " -> Exception: " + e.getMessage());
             return Text.beautifyEnumName(type.name());
         }
+
+        if (json == null) return Text.beautifyEnumName(type.name());
 
         String name = type.name();
         if (name == null) return getLocalizedString("entity.notFound");
@@ -224,7 +238,8 @@ public class RSWLanguage {
             return key;
         }
 
-        if (json == null) return "Language file " + getKey() + " not loaded!";
+        //fall back to the route itself instead of leaking an error message into item names
+        if (json == null || !json.has(key)) return key;
         return json.get(key).getAsString();
     }
 

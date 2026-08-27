@@ -47,6 +47,11 @@ public class RSWLanguagesOldConfig {
     }
 
     public static void save() {
+        //setup() leaves the document null when the legacy file does not exist
+        if (document == null) {
+            return;
+        }
+
         try {
             document.save();
         } catch (final IOException e) {
@@ -55,6 +60,10 @@ public class RSWLanguagesOldConfig {
     }
 
     public static void reload() {
+        if (document == null) {
+            return;
+        }
+
         try {
             document.reload();
         } catch (final IOException e) {
