@@ -140,6 +140,15 @@ pt_pt:
         TNTRain:
           - "&c&lCHUVA DE TNT"
           - "&cCuidado com a TNT!"
+        LuckyBlock-Spawn:
+          - "&e&lLUCKY BLOCKS"
+          - "&6Apareceram lucky blocks!"
+        LuckyBlock-Rain:
+          - "&e&lCHUVA LUCKY"
+          - "&6Estao a cair lucky blocks!"
+        LuckyBlock-Treasure:
+          - "&e&lTESOURO LUCKY"
+          - "&6Recebeste um lucky block!"
       Title:
         Win: "&b%player% &avenceu!"
         DeathMatch: "&cO mundo está encolhendo..."

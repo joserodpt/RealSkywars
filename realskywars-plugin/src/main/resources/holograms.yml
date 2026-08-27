@@ -1,0 +1,46 @@
+Version: 1
+Config:
+  # Lobby holograms need HolographicDisplays or DecentHolograms installed.
+  Enabled: true
+  # How often the holograms are refreshed, in ticks (20 = 1 second).
+  Refresh-Interval: 600
+  # How many places the %1%..%n% placeholders can go up to.
+  Leaderboard-Size: 10
+  # %1%, %2%, ... are leaderboard rows. %online%, %playing%, %maps% and %games%
+  # work on every hologram. %winner%, %map% and %date% are for Last-Winner.
+  Lines:
+    Last-Winner:
+      - "&6&lLAST WINNER"
+      - "&f%winner%"
+      - "&7on &b%map%"
+      - "&8%date%"
+    Top-Wins-Solo:
+      - "&b&lTOP WINS &7(Solo)"
+      - "%1%"
+      - "%2%"
+      - "%3%"
+      - "%4%"
+      - "%5%"
+    Top-Wins-Teams:
+      - "&a&lTOP WINS &7(Teams)"
+      - "%1%"
+      - "%2%"
+      - "%3%"
+      - "%4%"
+      - "%5%"
+    Top-Kills:
+      - "&c&lTOP KILLS"
+      - "%1%"
+      - "%2%"
+      - "%3%"
+      - "%4%"
+      - "%5%"
+    Server-Info:
+      - "&9&lREAL&b&lSKYWARS"
+      - "&fOnline: &b%online%"
+      - "&fPlaying: &b%playing%"
+      - "&fRunning games: &b%games%"
+      - "&fMaps: &b%maps%"
+    Custom:
+      - "&9&lRealSkywars"
+      - "&fEdit these lines in holograms.yml"

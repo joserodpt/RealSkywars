@@ -19,4 +19,7 @@ import joserodpt.realskywars.api.managers.holograms.RSWHologram;
 
 public abstract class HologramManagerAPI {
     public abstract RSWHologram getHologramInstance();
+
+    /** Which hologram plugin, if any, was hooked on startup. */
+    public abstract RSWHologram.HType getSelectedType();
 }

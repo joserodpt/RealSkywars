@@ -20,6 +20,7 @@ import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
+import joserodpt.realskywars.api.events.RSWPlayerWinEvent;
 import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.RSWMap;
@@ -28,6 +29,7 @@ import joserodpt.realskywars.api.player.RSWPlayerItems;
 import joserodpt.realskywars.api.player.tab.RSWPlayerTabInterface;
 import joserodpt.realskywars.api.utils.CountdownTimer;
 import joserodpt.realskywars.api.utils.Text;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -227,6 +229,10 @@ public class TeamsMode extends RSWMap {
             this.setState(MapState.FINISHING);
 
             RSWTeam winRSWTeam = getPlayers().get(0).getTeam();
+
+            if (!winRSWTeam.getMembers().isEmpty()) {
+                Bukkit.getPluginManager().callEvent(new RSWPlayerWinEvent(winRSWTeam.getMembers().get(0), winRSWTeam.getMembers(), this));
+            }
 
             super.getMapTimer().killTask();
             super.getTimeCounterTask().cancel();

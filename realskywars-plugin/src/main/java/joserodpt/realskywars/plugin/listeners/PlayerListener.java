@@ -26,6 +26,7 @@ import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.player.RSWPlayerItems;
 import joserodpt.realskywars.api.shop.RSWBuyableItem;
+import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.plugin.gui.GUIManager;
 import joserodpt.realskywars.plugin.gui.guis.MapSettingsGUI;
@@ -650,6 +651,9 @@ public class PlayerListener implements Listener {
         }
 
         rs.getPlayerManagerAPI().loadPlayer(e.getPlayer());
+
+        //warm the skin cache so the profile item shows the real head
+        Itens.cachePlayerTexture(e.getPlayer());
     }
 
     @EventHandler
@@ -658,6 +662,9 @@ public class PlayerListener implements Listener {
         if (p != null) {
             p.leave();
         }
+
+        //re-fetched on the next join, so a skin change is picked up
+        Itens.forgetPlayerTexture(e.getPlayer().getUniqueId());
     }
 
     @EventHandler

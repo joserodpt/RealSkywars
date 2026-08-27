@@ -136,6 +136,15 @@ zh_cn:
         TNTRain:
           - "&c&lTNT 雨"
           - "&c小心TNT!"
+        LuckyBlock-Spawn:
+          - "&e&l幸运方块"
+          - "&6幸运方块出现了!"
+        LuckyBlock-Rain:
+          - "&e&l幸运之雨"
+          - "&6幸运方块正在掉落!"
+        LuckyBlock-Treasure:
+          - "&e&l幸运宝藏"
+          - "&6你获得了一个幸运方块!"
       Title:
         Win: "&b%player% &a胜利了!"
         DeathMatch: "&c世界正在缩小！"

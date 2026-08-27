@@ -41,6 +41,7 @@ import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.api.utils.WorldEditUtils;
 import joserodpt.realskywars.plugin.gui.GUIManager;
 import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
+import joserodpt.realskywars.plugin.gui.guis.HologramGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapDashboardGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerGUI;
@@ -373,6 +374,19 @@ public class RealSkywarsCMD extends BaseCommandWA {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
             SettingsGUI v = new SettingsGUI(p, rs);
             v.openInventory(p);
+        } else {
+            commandSender.sendMessage(onlyPlayer);
+        }
+    }
+
+    @SubCommand(value = "holograms", alias = {"holo", "hologram"})
+    @Permission("rsw.admin")
+    @SuppressWarnings("unused")
+    public void holograms(final CommandSender commandSender) {
+        if (commandSender instanceof Player) {
+            RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
+            HologramGUI h = new HologramGUI(p, rs.getLobbyHologramManagerAPI());
+            h.openInventory(p);
         } else {
             commandSender.sendMessage(onlyPlayer);
         }

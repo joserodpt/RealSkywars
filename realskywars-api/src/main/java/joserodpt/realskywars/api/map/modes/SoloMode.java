@@ -21,6 +21,7 @@ import joserodpt.realskywars.api.cages.RSWSoloCage;
 import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
+import joserodpt.realskywars.api.events.RSWPlayerWinEvent;
 import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.RSWMap;
@@ -31,6 +32,7 @@ import joserodpt.realskywars.api.player.tab.RSWPlayerTabInterface;
 import joserodpt.realskywars.api.utils.CountdownTimer;
 import joserodpt.realskywars.api.utils.FireworkUtils;
 import joserodpt.realskywars.api.utils.Text;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -208,6 +210,8 @@ public class SoloMode extends RSWMap {
 
             RSWPlayer p = getPlayers().get(0);
             p.setInvincible(true);
+
+            Bukkit.getPluginManager().callEvent(new RSWPlayerWinEvent(p, this));
 
             super.getMapTimer().killTask();
             super.getTimeCounterTask().cancel();

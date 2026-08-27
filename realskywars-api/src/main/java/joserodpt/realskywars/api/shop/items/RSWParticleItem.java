@@ -15,6 +15,7 @@ package joserodpt.realskywars.api.shop.items;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.shop.RSWBuyableItem;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -28,6 +29,14 @@ public class RSWParticleItem extends RSWBuyableItem {
     }
 
     public Particle getParticle() {
-        return Particle.valueOf((String) this.getExtrasMap().get("Particle"));
+        Object configured = this.getExtrasMap().get("Particle");
+
+        try {
+            return Particle.valueOf(String.valueOf(configured).toUpperCase());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            //an unknown particle must not break the trail or the shop item
+            RealSkywarsAPI.getInstance().getLogger().warning(configured + " isn't a valid Particle for shop item " + this.getConfigKey() + ". Using FLAME.");
+            return Particle.FLAME;
+        }
     }
 }

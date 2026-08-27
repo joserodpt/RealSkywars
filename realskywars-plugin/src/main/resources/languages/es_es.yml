@@ -145,6 +145,15 @@ es_es:
         TNTRain:
           - "&c&lLLUVIA DE TNT"
           - "&c¡Cuidado con la TNT!"
+        LuckyBlock-Spawn:
+          - "&e&lLUCKY BLOCKS"
+          - "&6Han aparecido lucky blocks!"
+        LuckyBlock-Rain:
+          - "&e&lLLUVIA LUCKY"
+          - "&6Estan cayendo lucky blocks!"
+        LuckyBlock-Treasure:
+          - "&e&lTESORO LUCKY"
+          - "&6Has recibido un lucky block!"
       Title:
         Win: "&b%player% &aha ganado!"
         DeathMatch: "&cEl mundo se está reduciendo..."

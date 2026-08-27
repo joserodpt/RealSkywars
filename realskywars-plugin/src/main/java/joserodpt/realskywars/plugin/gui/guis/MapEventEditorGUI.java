@@ -94,6 +94,18 @@ public class MapEventEditorGUI {
                                 current.map.addEvent(new RSWMapEvent(current.map, RSWMapEvent.EventType.TNTRAIN));
                                 current.refreshPagination();
                                 break;
+                            case 1:
+                                current.map.addEvent(new RSWMapEvent(current.map, RSWMapEvent.EventType.LUCKYBLOCK_SPAWN));
+                                current.refreshPagination();
+                                break;
+                            case 4:
+                                current.map.addEvent(new RSWMapEvent(current.map, RSWMapEvent.EventType.LUCKYBLOCK_RAIN));
+                                current.refreshPagination();
+                                break;
+                            case 7:
+                                current.map.addEvent(new RSWMapEvent(current.map, RSWMapEvent.EventType.LUCKYBLOCK_TREASURE));
+                                current.refreshPagination();
+                                break;
                             case 49:
                                 clicker.closeInventory();
                                 if (inventories.containsKey(uuid)) {
@@ -205,12 +217,15 @@ public class MapEventEditorGUI {
         inv.clear();
         display.clear();
 
-        for (int slot : new int[]{0, 1, 2, 4, 6, 7, 8, 9, 17, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53}) {
+        for (int slot : new int[]{0, 2, 6, 8, 9, 17, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53}) {
             inv.setItem(slot, placeholder);
         }
 
         inv.setItem(3, Itens.createItem(RSWMapEvent.EventType.REFILL.getIcon(), 1, "&fClick to add " + RSWMapEvent.EventType.REFILL.getName()));
         inv.setItem(5, Itens.createItem(RSWMapEvent.EventType.TNTRAIN.getIcon(), 1, "&fClick to add " + RSWMapEvent.EventType.TNTRAIN.getName()));
+        inv.setItem(1, Itens.createItem(RSWMapEvent.EventType.LUCKYBLOCK_SPAWN.getIcon(), 1, "&fClick to add " + RSWMapEvent.EventType.LUCKYBLOCK_SPAWN.getName()));
+        inv.setItem(4, Itens.createItem(RSWMapEvent.EventType.LUCKYBLOCK_RAIN.getIcon(), 1, "&fClick to add " + RSWMapEvent.EventType.LUCKYBLOCK_RAIN.getName()));
+        inv.setItem(7, Itens.createItem(RSWMapEvent.EventType.LUCKYBLOCK_TREASURE.getIcon(), 1, "&fClick to add " + RSWMapEvent.EventType.LUCKYBLOCK_TREASURE.getName()));
 
         if (firstPage()) {
             inv.setItem(18, placeholder);

@@ -27,6 +27,7 @@ import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.chests.TierViewer;
 import joserodpt.realskywars.api.config.RSWAchievementsConfig;
 import joserodpt.realskywars.api.config.RSWConfig;
+import joserodpt.realskywars.api.config.RSWHologramConfig;
 import joserodpt.realskywars.api.config.RSWKitsConfig;
 import joserodpt.realskywars.api.config.RSWLanguagesOldConfig;
 import joserodpt.realskywars.api.config.RSWMapsConfig;
@@ -55,6 +56,7 @@ import joserodpt.realskywars.plugin.currency.LocalCurrencyAdapter;
 import joserodpt.realskywars.plugin.currency.VaultCurrencyAdapter;
 import joserodpt.realskywars.plugin.gui.guis.AchievementViewerGUI;
 import joserodpt.realskywars.plugin.gui.guis.GameHistoryGUI;
+import joserodpt.realskywars.plugin.gui.guis.HologramGUI;
 import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapDashboardGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapEventEditorGUI;
@@ -66,6 +68,8 @@ import joserodpt.realskywars.plugin.gui.guis.SettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.ShopGUI;
 import joserodpt.realskywars.plugin.gui.guis.VoteGUI;
 import joserodpt.realskywars.plugin.listeners.EventListener;
+import joserodpt.realskywars.plugin.listeners.HologramWinListener;
+import joserodpt.realskywars.plugin.listeners.LuckyBlockListener;
 import joserodpt.realskywars.plugin.listeners.PlayerListener;
 import joserodpt.realskywars.plugin.managers.DatabaseManager;
 import net.milkbowl.vault.economy.Economy;
@@ -138,6 +142,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
         RSWSQLConfig.setup(this);
         RSWShopsConfig.setup(this);
         RSWKitsConfig.setup(this);
+        RSWHologramConfig.setup(this);
 
         //chests
         BasicChestConfig.setup(this);
@@ -152,6 +157,8 @@ public class RealSkywarsPlugin extends JavaPlugin {
 
         pm.registerEvents(new PlayerListener(realSkywars), this);
         pm.registerEvents(new EventListener(realSkywars), this);
+        pm.registerEvents(new LuckyBlockListener(realSkywars), this);
+        pm.registerEvents(new HologramWinListener(realSkywars), this);
         pm.registerEvents(PlayerInput.getListener(), this);
         pm.registerEvents(GUIBuilder.getListener(), this);
         pm.registerEvents(GameHistoryGUI.getListener(), this);
@@ -168,6 +175,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
         pm.registerEvents(KitSettingsGUI.getListener(), this);
         pm.registerEvents(VoteGUI.getListener(), this);
         pm.registerEvents(SettingsGUI.getListener(), this);
+        pm.registerEvents(HologramGUI.getListener(), this);
 
         realSkywars.getShopManagerAPI().loadShopItems();
         realSkywars.getKitManagerAPI().loadKits();
@@ -187,6 +195,10 @@ public class RealSkywarsPlugin extends JavaPlugin {
 
         //load leaderboard
         realSkywars.getLeaderboardManagerAPI().refreshLeaderboards();
+
+        //load lobby holograms
+        realSkywars.getLobbyHologramManagerAPI().loadHolograms();
+        getLogger().info("Loaded " + realSkywars.getLobbyHologramManagerAPI().getHolograms().size() + " lobby holograms.");
 
         BukkitCommandManager<CommandSender> commandManager = BukkitCommandManager.create(this);
 
@@ -345,6 +357,8 @@ public class RealSkywarsPlugin extends JavaPlugin {
     }
 
     public void onDisable() {
+        realSkywars.getLobbyHologramManagerAPI().stopRefreshTask();
+        realSkywars.getLobbyHologramManagerAPI().clear();
         realSkywars.getMapManagerAPI().endMaps(true);
 
         if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {

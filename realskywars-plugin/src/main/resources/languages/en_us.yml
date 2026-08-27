@@ -151,6 +151,15 @@ en_us:
         TNTRain:
           - "&c&lTNT RAIN"
           - "&cWatch out for TNT!"
+        LuckyBlock-Spawn:
+          - "&e&lLUCKY BLOCKS"
+          - "&6Lucky blocks have appeared!"
+        LuckyBlock-Rain:
+          - "&e&lLUCKY RAIN"
+          - "&6Lucky blocks are falling!"
+        LuckyBlock-Treasure:
+          - "&e&lLUCKY TREASURE"
+          - "&6You received a lucky block!"
       Title:
         Win: "&b%player% &awon!"
         DeathMatch: "&cThe world is shrinking..."

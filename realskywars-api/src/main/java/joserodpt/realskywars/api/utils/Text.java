@@ -17,6 +17,9 @@ package joserodpt.realskywars.api.utils;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -28,9 +31,26 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Text {
+
+    private static final char LEGACY_SECTION = '\u00A7';
+    //emits the "§x§R§R§G§G§B§B" hex format Spigot understands, instead of
+    //downsampling every hex colour to the nearest of the 16 legacy ones
+    private static final LegacyComponentSerializer LEGACY_HEX = LegacyComponentSerializer.builder()
+            .character(LEGACY_SECTION)
+            .hexColors()
+            .useUnusualXRepeatedCharacterHexFormat()
+            .build();
+    //matches <bold>, </bold>, <#facc15>, <gradient:#a:#b> but not ForestColorAPI's {#RRGGBB<}
+    private static final Pattern MINIMESSAGE_TAG = Pattern.compile("</?[a-zA-Z#][^<>\\s]*>");
+    private static final String[] LEGACY_COLORS = {
+            "#000000", "#0000AA", "#00AA00", "#00AAAA", "#AA0000", "#AA00AA",
+            "#FFAA00", "#AAAAAA", "#555555", "#5555FF", "#55FF55", "#55FFFF",
+            "#FF5555", "#FF55FF", "#FFFF55", "#FFFFFF"
+    };
 
     public static String anonName() {
         List<String> nicks = RSWConfig.file().getStringList("Config.Random-Nicknames");
@@ -50,7 +70,48 @@ public class Text {
         if (string == null) {
             return "";
         }
-        return ForestColorAPI.colorize(string);
+
+        //ForestColorAPI stays the default so existing "&#RRGGBB" and "{#RRGGBB>}"
+        //configs keep working untouched; MiniMessage only handles its own tags
+        if (!MINIMESSAGE_TAG.matcher(string).find() || !miniMessageEnabled()) {
+            return ForestColorAPI.colorize(string);
+        }
+
+        try {
+            String normalized = legacyToMiniMessage(string.replace(LEGACY_SECTION, '&'));
+            Component component = MiniMessage.miniMessage().deserialize(normalized);
+            return LEGACY_HEX.serialize(component);
+        } catch (RuntimeException e) {
+            //a malformed tag in a config must not break whatever is being rendered
+            RealSkywarsAPI.getInstance().getLogger().warning("Could not parse MiniMessage in \"" + string + "\": " + e.getMessage());
+            return ForestColorAPI.colorize(string);
+        }
+    }
+
+    private static boolean miniMessageEnabled() {
+        //color() runs while the configs are still being set up
+        return RSWConfig.file() == null || RSWConfig.file().getBoolean("Config.MiniMessage.Enabled", true);
+    }
+
+    /**
+     * Translates the legacy codes MiniMessage does not understand, so one line
+     * can mix "&l" with "<gradient:...>".
+     */
+    private static String legacyToMiniMessage(String value) {
+        String result = value;
+
+        for (int i = 0; i < LEGACY_COLORS.length; i++) {
+            String code = Integer.toHexString(i);
+            result = result.replace("&" + code, "<" + LEGACY_COLORS[i] + ">");
+            result = result.replace("&" + code.toUpperCase(), "<" + LEGACY_COLORS[i] + ">");
+        }
+
+        return result.replace("&k", "<obfuscated>")
+                .replace("&l", "<bold>")
+                .replace("&m", "<strikethrough>")
+                .replace("&n", "<underlined>")
+                .replace("&o", "<italic>")
+                .replace("&r", "<reset>");
     }
 
     public static String strip(String s) {

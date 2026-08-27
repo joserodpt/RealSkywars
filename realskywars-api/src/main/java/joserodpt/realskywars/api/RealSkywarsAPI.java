@@ -20,6 +20,7 @@ import joserodpt.realskywars.api.currency.CurrencyAdapterAPI;
 import joserodpt.realskywars.api.managers.AchievementsManagerAPI;
 import joserodpt.realskywars.api.managers.DatabaseManagerAPI;
 import joserodpt.realskywars.api.managers.HologramManagerAPI;
+import joserodpt.realskywars.api.managers.LobbyHologramManagerAPI;
 import joserodpt.realskywars.api.managers.KitManagerAPI;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.managers.LeaderboardManagerAPI;
@@ -94,6 +95,8 @@ public abstract class RealSkywarsAPI {
     public abstract AchievementsManagerAPI getAchievementsManagerAPI();
 
     public abstract HologramManagerAPI getHologramManagerAPI();
+
+    public abstract LobbyHologramManagerAPI getLobbyHologramManagerAPI();
 
     public abstract CurrencyAdapterAPI getCurrencyAdapterAPI();
 

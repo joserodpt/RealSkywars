@@ -39,6 +39,15 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <relocations>
+                        <!-- Paper ships its own Adventure: keep ours out of its way -->
+                        <relocation>
+                            <pattern>net.kyori</pattern>
+                            <shadedPattern>joserodpt.realskywars.libs.kyori</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
             </plugin>
         </plugins>
         <resources>

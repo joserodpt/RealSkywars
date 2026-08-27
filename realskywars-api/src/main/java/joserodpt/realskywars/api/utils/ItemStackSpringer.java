@@ -48,6 +48,8 @@ import java.util.stream.IntStream;
 
 public class ItemStackSpringer {
 
+    private static final String ITEMSADDER_PREFIX = "ITEMSADDER:";
+
     private static final Gson gson = new Gson();
 
     public static String getItemSerializedJSON(ItemStack i) {
@@ -226,7 +228,7 @@ public class ItemStackSpringer {
 
         debugPrint(ItemStackSpringer.class, "Attempting to deserialize Item Data of Material " + data.get(ItemCategories.MATERIAL.name()));
 
-        Material m = Material.valueOf((String) data.get(ItemCategories.MATERIAL.name()));
+        String material = String.valueOf(data.get(ItemCategories.MATERIAL.name()));
 
         int amount;
         try {
@@ -234,7 +236,22 @@ public class ItemStackSpringer {
         } catch (Exception ignored) {
             amount = 1;
         }
-        ItemStack i = new ItemStack(m, amount);
+
+        ItemStack i;
+        if (material.regionMatches(true, 0, ITEMSADDER_PREFIX, 0, ITEMSADDER_PREFIX.length())) {
+            i = Itens.itemsAdder(material.substring(ITEMSADDER_PREFIX.length()), amount);
+            if (i == null) {
+                RealSkywarsAPI.getInstance().getPlugin().getLogger().warning("Could not resolve ItemsAdder item " + material + ". Is ItemsAdder installed and the id correct?");
+                return null;
+            }
+        } else {
+            Material m = Material.matchMaterial(material.toUpperCase());
+            if (m == null) {
+                RealSkywarsAPI.getInstance().getPlugin().getLogger().warning(material + " isn't a known Material. Skipping this item.");
+                return null;
+            }
+            i = new ItemStack(m, amount);
+        }
 
         for (Map.Entry<String, Object> par : data.entrySet()) {
             ItemMeta meta = i.getItemMeta();

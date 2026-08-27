@@ -48,4 +48,9 @@ public class HologramManager extends HologramManagerAPI {
     public RSWHologram getHologramInstance() {
         return this.selected.getHologramInstance();
     }
+
+    @Override
+    public RSWHologram.HType getSelectedType() {
+        return this.selected;
+    }
 }

@@ -40,6 +40,12 @@ public class RSWPlayerScoreboard {
 
     public RSWPlayerScoreboard(RSWPlayer r) {
         this.p = r;
+
+        if (!RSWConfig.file().getBoolean("Config.Scoreboard.Enabled", true)) {
+            this.disabled = true;
+            return;
+        }
+
         try {
             this.fb = new FastBoard(r.getPlayer());
             if (RealSkywarsAPI.getInstance().getLobbyManagerAPI().getLobbyLocation() != null) {
@@ -81,6 +87,10 @@ public class RSWPlayerScoreboard {
     }
 
     public void run() {
+        if (this.disabled) {
+            return;
+        }
+
         this.task = new BukkitRunnable() {
             public void run() {
                 List<String> lista;
@@ -117,10 +127,13 @@ public class RSWPlayerScoreboard {
                     List<String> send = lista.stream()
                             .map(s -> variables(s, p))
                             .collect(Collectors.toList());
-                    displayScoreboard(variables(tit, p), send);
+
+                    int maxLines = Math.max(1, RSWConfig.file().getInt("Config.Scoreboard.Max-Lines", 15));
+                    displayScoreboard(variables(tit, p), send.subList(0, Math.min(send.size(), maxLines)));
                 }
             }
-        }.runTaskTimer(RealSkywarsAPI.getInstance().getPlugin(), 0L, 20);
+        }.runTaskTimer(RealSkywarsAPI.getInstance().getPlugin(), 0L,
+                Math.max(1, RSWConfig.file().getInt("Config.Scoreboard.Update-Interval", 20)));
     }
 
     private void displayScoreboard(String title, List<String> elements) {

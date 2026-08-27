@@ -19,6 +19,7 @@ import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RSWEventsAPI;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
+import joserodpt.realskywars.api.config.RSWHologramConfig;
 import joserodpt.realskywars.api.config.RSWKitsConfig;
 import joserodpt.realskywars.api.config.RSWLanguagesOldConfig;
 import joserodpt.realskywars.api.config.RSWMapsConfig;
@@ -43,6 +44,7 @@ import joserodpt.realskywars.api.nms.RSWnms;
 import joserodpt.realskywars.plugin.managers.AchievementsManager;
 import joserodpt.realskywars.plugin.managers.DatabaseManager;
 import joserodpt.realskywars.plugin.managers.HologramManager;
+import joserodpt.realskywars.plugin.managers.LobbyHologramManager;
 import joserodpt.realskywars.plugin.managers.KitManager;
 import joserodpt.realskywars.plugin.managers.LanguageManager;
 import joserodpt.realskywars.plugin.managers.LeaderboardManager;
@@ -78,6 +80,7 @@ public class RealSkywars extends RealSkywarsAPI {
     public final RSWEventsAPI rswEventsAPI = new RSWEventsAPI();
     private DatabaseManagerAPI databaseManagerAPI;
     private final HologramManagerAPI hologramManagerAPI;
+    private final LobbyHologramManager lobbyHologramManager;
     private CurrencyAdapterAPI currencyAdapterAPI;
 
     public RealSkywars(RealSkywarsPlugin plugin) {
@@ -94,6 +97,7 @@ public class RealSkywars extends RealSkywarsAPI {
         leaderboardManagerAPI = new LeaderboardManager(this);
         achievementsManagerAPI = new AchievementsManager(this);
         hologramManagerAPI = new HologramManager(this);
+        lobbyHologramManager = new LobbyHologramManager(this);
     }
 
     @Override
@@ -177,6 +181,11 @@ public class RealSkywars extends RealSkywarsAPI {
     }
 
     @Override
+    public LobbyHologramManager getLobbyHologramManagerAPI() {
+        return this.lobbyHologramManager;
+    }
+
+    @Override
     public HologramManagerAPI getHologramManagerAPI() {
         return this.hologramManagerAPI;
     }
@@ -203,6 +212,7 @@ public class RealSkywars extends RealSkywarsAPI {
         RSWConfig.reload();
         RSWMapsConfig.reload();
         RSWLanguagesOldConfig.reload();
+        RSWHologramConfig.reload();
 
         Debugger.debug = RSWConfig.file().getBoolean("Debug-Mode");
 
@@ -223,6 +233,7 @@ public class RealSkywars extends RealSkywarsAPI {
 
         mapManagerAPI.loadMaps();
         lobbyManagerAPI.loadLobby();
+        lobbyHologramManager.loadHolograms();
     }
 
     @Override

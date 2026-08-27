@@ -1,4 +1,4 @@
-Version: 14
+Version: 15
 Debug-Mode: false
 Config:
   Prefix: "&fReal&bSkywars &7> &r"
@@ -9,6 +9,9 @@ Config:
         REFILL: "&aRefill"
         TNTRAIN: "&cTNT &fRain"
         BORDERSHRINK: "&5End"
+        LUCKYBLOCK_SPAWN: "&eLucky &fBlocks"
+        LUCKYBLOCK_RAIN: "&eLucky &fRain"
+        LUCKYBLOCK_TREASURE: "&eLucky &fTreasure"
       Boss-Bar:
         Wait: "&fWaiting players."
         End: "&fThe match ended."
@@ -42,6 +45,49 @@ Config:
     Lobby-Server: lobby
     Map-State-As-Motd: false
   Use-Vault-As-Currency: false
+  MiniMessage:
+    # Allows MiniMessage tags such as <gradient:#38bdf8:#a78bfa>, <bold> and
+    # <#facc15> anywhere a message or item name is configured. Lines without
+    # MiniMessage tags keep being handled exactly as before, so the "&a" and
+    # "{#RRGGBB>}" formats still work.
+    Enabled: true
+  Scoreboard:
+    Enabled: true
+    # How often the scoreboard is redrawn, in ticks (20 = 1 second).
+    Update-Interval: 20
+    # Lines beyond this are not sent. Minecraft cannot show more than 15.
+    Max-Lines: 15
+  LuckyBlock:
+    Enabled: false
+    # Vanilla materials, or "ITEMSADDER:namespace:id" for ItemsAdder blocks.
+    Blocks:
+      - SPONGE
+    # Only counts lucky blocks broken inside a match.
+    Break-In-Match-Only: true
+    # How many rewards a single block hands out. 0 means all of them.
+    Rewards-Per-Break: 1
+    Sound: ENTITY_PLAYER_LEVELUP
+    # Sent to every player when a lucky block is opened. Leave empty to disable.
+    Broadcast: ""
+    # Name of the block given by the LUCKYBLOCK_TREASURE map event.
+    Item-Name: "&e&lLucky Block"
+    Events:
+      # Lucky blocks placed per player by the LUCKYBLOCK_SPAWN map event.
+      Spawn-Amount: 5
+      # Lucky blocks dropped per player by the LUCKYBLOCK_RAIN map event.
+      Rain-Amount: 15
+    # "WEIGHT=n|KIND:payload". KIND is ITEM, COMMAND, EFFECT or EXPLOSION.
+    # A higher weight is picked more often. WEIGHT is optional and defaults to 1.
+    Rewards:
+      - "WEIGHT=12|ITEM:MATERIAL=DIAMOND;AMOUNT=2;NAME=&bLucky Diamonds"
+      - "WEIGHT=10|ITEM:MATERIAL=IRON_INGOT;AMOUNT=8;NAME=&7Lucky Iron"
+      - "WEIGHT=8|ITEM:MATERIAL=GOLDEN_APPLE;AMOUNT=1;NAME=&6Golden Apple"
+      - "WEIGHT=8|ITEM:MATERIAL=ENDER_PEARL;AMOUNT=2;NAME=&dEnder Pearls"
+      - "WEIGHT=7|ITEM:MATERIAL=OBSIDIAN;AMOUNT=8;NAME=&5Obsidian"
+      - "WEIGHT=5|EFFECT:SPEED;DURATION=240;AMPLIFIER=2"
+      - "WEIGHT=4|EFFECT:REGENERATION;DURATION=120;AMPLIFIER=1"
+      - "WEIGHT=3|COMMAND:give %player% firework_rocket 16"
+      - "WEIGHT=2|EXPLOSION:2.0"
   Invincibility-Seconds: 3
   Auto-Teleport-To-Lobby: true
   Scoreboard-In-Lobby: true
@@ -221,9 +267,13 @@ Config:
   Kits:
     Ender-Pearl-Perk-Give-Interval: 120
   Default-Refill-Time: 180
-  # Events: REFILL, TNTRAIN
+  # Events: REFILL, TNTRAIN, LUCKYBLOCK_SPAWN, LUCKYBLOCK_RAIN, LUCKYBLOCK_TREASURE
   # REFILL refills the chests.
   # TNTRAIN, when executed, summons a TNT above all game players.
+  # LUCKYBLOCK_SPAWN places lucky blocks on the ground around each player.
+  # LUCKYBLOCK_RAIN drops lucky blocks from the sky above each player.
+  # LUCKYBLOCK_TREASURE gives every player a lucky block to place.
+  # The LUCKYBLOCK events need Config.LuckyBlock.Enabled to do anything.
   # Event Config: <event>@<time of execution in seconds>
   Events:
     Solo:
