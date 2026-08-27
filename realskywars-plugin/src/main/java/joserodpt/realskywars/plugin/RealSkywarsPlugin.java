@@ -357,11 +357,15 @@ public class RealSkywarsPlugin extends JavaPlugin {
     }
 
     public void onDisable() {
-        realSkywars.getLobbyHologramManagerAPI().stopRefreshTask();
-        realSkywars.getLobbyHologramManagerAPI().clear();
-        realSkywars.getMapManagerAPI().endMaps(true);
+        //onEnable can bail out before the configs and managers exist, and an
+        //NPE in here would hide whatever actually stopped the plugin loading
+        if (realSkywars != null) {
+            realSkywars.getLobbyHologramManagerAPI().stopRefreshTask();
+            realSkywars.getLobbyHologramManagerAPI().clear();
+            realSkywars.getMapManagerAPI().endMaps(true);
+        }
 
-        if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
+        if (RSWConfig.file() != null && RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
             this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
         }
 
@@ -378,6 +382,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
             case "1.17":
                 getLogger().info("Using the 1.17.1 NMS adapter.");
                 realSkywars.setNMS(new NMS117R1());
+                break;
             case "1.16.5":
             case "1.16.4":
             case "1.16.3":
@@ -396,7 +401,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
                 realSkywars.setNMS(new NMS114R1tov116R3());
                 break;
             default:
-                getLogger().info("Using default 1.18.2+ NMS adapter.");
+                getLogger().info("Using the default 1.18.2+ NMS adapter.");
                 realSkywars.setNMS(new NMS118R2andUP());
                 break;
         }
