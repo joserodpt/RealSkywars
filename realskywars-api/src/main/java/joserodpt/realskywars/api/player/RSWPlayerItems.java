@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 public enum RSWPlayerItems {
-    LOBBY, CAGE, SETUP, SPECTATOR, ITEM_PROFILE, ITEM_SETCAGE, ITEM_MAPS, ITEM_SHOP, ITEM_LEAVE, ITEM_VOTE, ITEM_SPECTATE, ITEM_KITS, ITEM_PLAYAGAIN, ITEM_CHEST1, ITEM_CHEST2, ITEM_SETINGS, ITEM_SAVE;
+    LOBBY, CAGE, SETUP, SPECTATOR, ITEM_PROFILE, ITEM_SETCAGE, ITEM_MAPS, ITEM_SHOP, ITEM_LEAVE, ITEM_VOTE, ITEM_SPECTATE, ITEM_KITS, ITEM_PLAYAGAIN, ITEM_CHEST1, ITEM_CHEST2, ITEM_SETINGS, ITEM_SAVE, ITEM_TEAMSELECT;
 
     private void setItem(RSWPlayer p, int slot, ItemStack i) {
         if (slot < 0 || slot > 40) {
@@ -56,6 +56,9 @@ public enum RSWPlayerItems {
             case CAGE:
                 setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Cage.Kit"), ITEM_KITS.get(p));
                 setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Cage.Vote"), ITEM_VOTE.get(p));
+                if (p.getMatch() != null && p.getMatch().isManualTeamSelection()) {
+                    setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Cage.Team-Select"), ITEM_TEAMSELECT.get(p));
+                }
                 setItem(p, RSWConfig.file().getInt("Config.Item-Slots.Cage.Leave"), ITEM_LEAVE.get(p));
                 break;
             case LOBBY:
@@ -159,6 +162,8 @@ public enum RSWPlayerItems {
                 return getConfiguredItem("Settings", Material.COMPARATOR, 1, TranslatableLine.ITEM_SETTINGS_NAME.get(p));
             case ITEM_SAVE:
                 return getConfiguredItem("Save", Material.CHEST_MINECART, 1, TranslatableLine.ITEM_SAVE_NAME.get(p));
+            case ITEM_TEAMSELECT:
+                return getConfiguredItem("Team-Select", Material.WHITE_BANNER, 1, TranslatableLine.ITEM_TEAMSELECT_NAME.get(p));
         }
         return new ItemStack(Material.DEAD_BUSH);
     }

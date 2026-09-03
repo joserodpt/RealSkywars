@@ -149,6 +149,7 @@ public class RSWPlayerScoreboard {
                 //FastBoard can also fail while cleaning up on an unsupported server
             }
             Bukkit.getLogger().warning("Scoreboard disabled for " + p.getName() + " - could not update it: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

@@ -28,11 +28,14 @@ import joserodpt.realskywars.api.player.RSWPlayerItems;
 import joserodpt.realskywars.api.player.tab.RSWPlayerTabInterface;
 import joserodpt.realskywars.api.utils.CountdownTimer;
 import joserodpt.realskywars.api.utils.Text;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +46,8 @@ public class TeamsMode extends RSWMap {
     private int maxMembersTeam = 0;
     private int maxTeamsNumber = 0;
     private final Map<Location, RSWTeam> teams;
+    /** Manual team selection: whether the transfer from the waiting lobby into the cages already ran. */
+    private boolean teamsCommitted = false;
 
     //setup
     public TeamsMode(String nome, String displayName, World w, String schematicName, RSWWorld.WorldType wt, int teamsNumber, int playersPerTeam) {
@@ -67,11 +72,108 @@ public class TeamsMode extends RSWMap {
         this.teams.forEach((loc, team) -> team.getTeamCage().setMap(this));
     }
 
+    /**
+     * Moves a player to the given team. Used by the team picker on maps with manual team selection.
+     * The player is not caged here - they keep waiting in the waiting lobby until
+     * {@link #commitTeams()} runs shortly before the match starts.
+     *
+     * @return true if the player is now on that team.
+     */
+    public boolean selectTeam(RSWPlayer p, RSWTeam team) {
+        if (p == null || team == null || p.getMatch() != this) {
+            return false;
+        }
+
+        if (this.getState() != MapState.AVAILABLE && this.getState() != MapState.WAITING && this.getState() != MapState.STARTING) {
+            TranslatableLine.TEAM_SELECT_LOCKED.send(p, true);
+            return false;
+        }
+
+        if (this.teamsCommitted) {
+            //the transfer into the cages already happened, switching now would leave a player behind
+            TranslatableLine.TEAM_SELECT_LOCKED.send(p, true);
+            return false;
+        }
+
+        if (p.getTeam() == team) {
+            TranslatableLine.TEAM_SELECT_ALREADY.send(p, true);
+            return false;
+        }
+
+        if (team.isTeamFull()) {
+            TranslatableLine.TEAM_SELECT_FULL.send(p, true);
+            return false;
+        }
+
+        if (p.hasTeam()) {
+            p.getTeam().removeMember(p);
+        }
+
+        team.addMember(p, false);
+        return true;
+    }
+
+    /**
+     * Puts everyone into their team's cage, auto assigning anyone who never picked one to the
+     * emptiest team. Idempotent, so both the countdown and a force start can call it.
+     */
+    private void commitTeams() {
+        if (this.teamsCommitted) {
+            return;
+        }
+        this.teamsCommitted = true;
+
+        for (RSWPlayer p : new ArrayList<>(super.getAllPlayers())) {
+            if (p.getState() != RSWPlayer.PlayerState.CAGE || p.hasTeam()) {
+                continue;
+            }
+
+            RSWTeam target = this.getTeams().stream()
+                    .filter(t -> !t.isTeamFull())
+                    .min(Comparator.comparingInt(RSWTeam::getMemberCount))
+                    .orElse(null);
+
+            if (target == null) {
+                //reachable on a misconfigured map: MapManager derives the team size with an integer
+                //division, so number-of-players can exceed teams * members. Better to send them back
+                //to the lobby than to start the match with a player stuck in the waiting lobby.
+                TranslatableLine.ROOM_FULL.send(p, true);
+                this.removePlayer(p);
+                continue;
+            }
+
+            target.addMember(p, false);
+            p.sendMessage(TranslatableLine.TEAM_AUTO_ASSIGNED.get(p, true).replace("%team%", target.getName()));
+        }
+
+        this.getTeams().forEach(RSWTeam::commitToCage);
+    }
+
+    @Override
+    protected void onStartCountdownTick(CountdownTimer t) {
+        if (!this.isManualTeamSelection() || this.teamsCommitted) {
+            return;
+        }
+
+        if (t.getSecondsLeft() <= RSWConfig.file().getInt("Config.Teams.Cage-Transfer-Seconds", 3)) {
+            this.commitTeams();
+        } else {
+            super.getAllPlayers().stream()
+                    .filter(p -> p.getState() == RSWPlayer.PlayerState.CAGE && !p.hasTeam())
+                    .forEach(p -> p.sendActionbar(TranslatableLine.TEAM_SELECT_REMINDER.get(p)));
+        }
+    }
+
     @Override
     public void forceStartMap() {
         if (super.getPlayerCount() < this.maxMembersTeam + 1) {
             super.cancelMapStart();
         } else {
+            //covers /rsw forcestart and a Cage-Transfer-Seconds of 0, where the countdown never got there
+            if (this.isManualTeamSelection()) {
+                this.commitTeams();
+            }
+
             this.setState(MapState.PLAYING);
             super.setStartingPlayers(super.getPlayerCount());
 
@@ -141,6 +243,14 @@ public class TeamsMode extends RSWMap {
                     }
                     break;
                 default:
+                    //Manual team selection parks joining players in the waiting lobby until they
+                    //pick a team. With no waiting lobby world there is nowhere to park them, so
+                    //keep the room shut rather than let them in and strand them somewhere else.
+                    if (this.isManualTeamSelection() && !super.getRealSkywarsAPI().getLobbyManagerAPI().isWaitingLobbyReady()) {
+                        TranslatableLine.WAITING_LOBBY_NOT_SET.send(p, true);
+                        return;
+                    }
+
                     if (this.getPlayerCount() == this.getMaxPlayers()) {
                         if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
                             spectate(p, SpectateType.EXTERNAL, null);
@@ -152,10 +262,20 @@ public class TeamsMode extends RSWMap {
                     }
 
                     //cage
-                    for (RSWTeam c : this.getTeams()) {
-                        if (!c.isTeamFull()) {
-                            c.addPlayer(p);
-                            break;
+                    boolean manual = this.isManualTeamSelection() && !p.isBot() && p.getPlayer() != null;
+                    if (manual) {
+                        //hold the player in the waiting lobby until they pick a team - no cage yet,
+                        //otherwise startRoom's per second re-teleport would drag them into it
+                        if (!super.getRealSkywarsAPI().getLobbyManagerAPI().tpToWaitingLobby(p)) {
+                            p.teleport(this.getSpectatorLocation());
+                        }
+                        p.setInvincible(true);
+                    } else {
+                        for (RSWTeam c : this.getTeams()) {
+                            if (!c.isTeamFull()) {
+                                c.addPlayer(p);
+                                break;
+                            }
                         }
                     }
 
@@ -195,6 +315,12 @@ public class TeamsMode extends RSWMap {
                         }
                     }
 
+                    if (manual) {
+                        //a tick later, so it survives the inventory clear and the join title
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(super.getRealSkywarsAPI().getPlugin(),
+                                () -> TeamSelectorGUI.open(p, this), 2);
+                    }
+
                     if (this.getPlayerCount() == this.maxMembersTeam + 1) {
                         super.startRoom();
                     }
@@ -211,6 +337,7 @@ public class TeamsMode extends RSWMap {
 
     @Override
     public void resetArena(OperationReason rr) {
+        this.teamsCommitted = false;
         this.getTeams().forEach(RSWTeam::reset);
         super.commonResetArena(rr);
     }
@@ -327,7 +454,7 @@ public class TeamsMode extends RSWMap {
     public RSWMap duplicate(String newName) {
         World w = RealSkywarsAPI.getInstance().getWorldManagerAPI().duplicateWorld(this.getRSWWorld(), newName);
         if (w == null) return null;
-        return new TeamsMode(newName,
+        TeamsMode copy = new TeamsMode(newName,
                 newName,
                 w,
                 this.getShematicName(),
@@ -344,5 +471,7 @@ public class TeamsMode extends RSWMap {
                 this.getChestsMap(),
                 this.isRanked(),
                 true);
+        copy.setManualTeamSelection(this.isManualTeamSelection());
+        return copy;
     }
 }

@@ -85,6 +85,8 @@ public abstract class RSWMap {
     private WorldBorder border;
 
     private MapState state;
+    /** TEAMS maps only: players pick their own team from a menu instead of being auto assigned. */
+    private boolean manualTeamSelection = false;
     private RSWBossbar bossbar;
     private RSWChest.Tier chestTier = RSWChest.Tier.NORMAL;
     private CountdownTimer mapTimer, startMapTimer, finishingTimer;
@@ -346,6 +348,29 @@ public abstract class RSWMap {
         this.getRealSkywarsAPI().getEventsAPI().callRoomStateChange(this);
         if (this.bossbar != null)
             this.bossbar.setState(w);
+    }
+
+    /**
+     * TEAMS maps only: whether players pick their own team from a menu while waiting in the waiting
+     * lobby, instead of being dropped into the first non-full team on join.
+     */
+    public boolean isManualTeamSelection() {
+        return this.manualTeamSelection;
+    }
+
+    public void setManualTeamSelection(boolean manualTeamSelection) {
+        this.setManualTeamSelection(manualTeamSelection, true);
+    }
+
+    /**
+     * @param save false when loading the value back from maps.yml, so startup doesn't rewrite the
+     *             file once per map.
+     */
+    public void setManualTeamSelection(boolean manualTeamSelection, boolean save) {
+        this.manualTeamSelection = manualTeamSelection;
+        if (save) {
+            this.save(Data.SETTINGS, true);
+        }
     }
 
     abstract public boolean canStartMap();
@@ -781,6 +806,15 @@ public abstract class RSWMap {
 
     abstract public int minimumPlayersToStartMap();
 
+    /**
+     * Called once per second while the start countdown is running and the map has enough players.
+     * Gives a game mode a chance to act before the match begins - TeamsMode uses it to move players
+     * out of the waiting lobby and into their cages a few seconds before the start.
+     */
+    protected void onStartCountdownTick(CountdownTimer t) {
+        //
+    }
+
     protected void startRoom() {
         this.startMapTimer = new CountdownTimer(RealSkywarsAPI.getInstance().getPlugin(), this.getTimeToStart(), () -> {
             //
@@ -813,6 +847,9 @@ public abstract class RSWMap {
 
                     p.setBarNumber(t.getSecondsLeft(), this.getTimeToStart());
                 }
+
+                //after the loop above, so a mode's own actionbar isn't overwritten by the countdown
+                this.onStartCountdownTick(t);
             }
         });
 
@@ -1113,6 +1150,7 @@ public abstract class RSWMap {
                 RSWMapsConfig.file().set(this.getName() + ".Settings.Time-End-Game", this.getTimeEndGame());
                 RSWMapsConfig.file().set(this.getName() + ".Settings.Time-To-Start", this.getTimeToStart());
                 RSWMapsConfig.file().set(this.getName() + ".Settings.Max-Game-Time", this.getMaxGameTime());
+                RSWMapsConfig.file().set(this.getName() + ".Settings.Manual-Team-Selection", this.isManualTeamSelection());
                 break;
             case BORDER:
                 RSWMapsConfig.file().set(this.getName() + ".World.Border.POS1-X", this.getPOS1().getX());

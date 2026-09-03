@@ -45,6 +45,7 @@ pt_pt:
       Sender: "&fEnviaste &b%coins% moedas &fpara %player%."
       Reciever: "&fRecebeste &b%coins% moedas &fde %player%."
     Lobby-Teleport: "&fTeleportado para o lobby."
+    Waiting-Lobby-Teleport: "&fÀ espera que a partida comece. Escolhe o teu time!"
     Compass-Teleport: "&fTeleportado para &b%name%&f."
     Selection-Made: "&fSelecionaste &b%name% &fem %type%&f."
     Game-Status-Set: "&fO status do jogo foi definido para &b%status%"
@@ -57,6 +58,11 @@ pt_pt:
       Leave: "&fTu &csaiste &9%team%"
       Broadcast-Join: "&b%player% &fjuntou-se ao time."
       Broadcast-Leave: "&b%player% &csaiu do time."
+      Full: "&cEsse time está cheio."
+      Already-In: "&fTu &ajá estás &fnesse time."
+      Selection-Locked: "&cJá não podes mudar de time."
+      Auto-Assigned: "&fFoste colocado no &9%team% &fporque não escolheste um time."
+      Select-Reminder: "&eEscolhe um time antes da partida começar!"
       TeamMate-Damage-Cancel: "&fTu não podes ferir o teu &9companheiro de time&f."
     Shop:
       Buy: "&fCompraste &b%name% &fpor &a%coins% &fmoedas."
@@ -74,6 +80,9 @@ pt_pt:
       Match-Force-Start-Denial: "&fTu &cnão podes &fforçar o início desta partida porque não há jogadores suficientes."
       No-Match: "&cTu não estás numa partida."
       Lobby-Set: "&fO lobby &afoi definido&f."
+      Waiting-Lobby-Set: "&fO lobby de espera &afoi definido&f."
+      Waiting-Lobby-Created: "&fO mundo do lobby de espera &afoi criado&f. Constrói-o e depois usa &b/rsw setwaitinglobby &fpara definires o spawn."
+      Waiting-Lobby-Create-Failed: "&cNão foi possível criar o mundo do lobby de espera."
       Maps: "&fHá &b%rooms% &fmapas registrados."
       Players: "&fHá &b%players% &fJogadores online."
       No-Game-Found: "&fNenhum jogo foi encontrado. Tenta novamente mais tarde!"
@@ -118,6 +127,7 @@ pt_pt:
       Invincibility-End: "&fA invencibilidade acabou para todos os jogadores."
       Play-Again: "&eQueres jogar novamente? &lClica aqui!"
       Cant-Join: "&fTu &cnão podes &fentrar nesta sala agora."
+      Waiting-Lobby-Not-Set: "&fEsta sala usa &bseleção manual de times &fmas o &clobby de espera não existe&f. Pede a um admin para o criar."
       Blocked-Command: "&fEste comando está &cbloqueado &fenquanto estás numa partida."
       Spectating-Disabled: "&bAssistir &festá &cdesativado &fnesta sala."
       Room-Full: "&fEsta sala está &ccheia&f."
@@ -194,6 +204,11 @@ pt_pt:
     Achievements-Title: "&dConquistas"
     Spectate-Title: "&9Jogadores"
     Vote-Title: "&b&lVotação"
+    Team-Select:
+      Title: "&b&lEscolhe o teu Time"
+      Click-To-Join: "&fClica aqui para entrares neste time."
+      Your-Team: "&a&lO teu time"
+      Empty: "&7&oAinda não está ninguém aqui"
     Chests-Vote-Title: "&7&lBaús"
     Projectiles-Vote-Title: "&7&lProjéteis"
     Time-Vote-Title: "&7&lTempo"
@@ -210,6 +225,8 @@ pt_pt:
     Shop-Menu-Title: "&fLoja &9Categorias"
     Spectator-Shop-Menu-Title: "&0Loja de &fEspectador"
   Itens:
+    Team-Select:
+      Name: "&bEscolher Time &7(Click Direito)"
     Profile:
       Name: "&9Perfil &7(Click Direito)"
     CageSet:

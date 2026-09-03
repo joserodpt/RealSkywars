@@ -57,6 +57,7 @@ en_us:
       Sender: "&fYou sent &b%coins% coins &fto %player%."
       Reciever: "&fYou recieved &b%coins% coins &ffrom %player%."
     Lobby-Teleport: "&fTeleported to the lobby."
+    Waiting-Lobby-Teleport: "&fWaiting for the match to start. Pick your team!"
     Compass-Teleport: "&fTeleported to &b%name%&f."
     Selection-Made: "&fYou selected &b%name% &fin %type%&f."
     Game-Status-Set: "&fThe game status has been set to &b%status%"
@@ -69,6 +70,11 @@ en_us:
       Leave: "&fYou &cleft &9%team%"
       Broadcast-Join: "&b%player% &fjoined the team."
       Broadcast-Leave: "&b%player% &cleft the team."
+      Full: "&cThat team is full."
+      Already-In: "&fYou are &aalready &fin that team."
+      Selection-Locked: "&cYou can't change teams anymore."
+      Auto-Assigned: "&fYou were placed in &9%team% &fbecause you didn't pick a team."
+      Select-Reminder: "&ePick a team before the match starts!"
       TeamMate-Damage-Cancel: "&fYou can't hurt your &9team-mate&f."
     Shop:
       Buy: "&fYou bought &b%name% &ffor &a%coins% &fcoins."
@@ -86,6 +92,9 @@ en_us:
       Match-Force-Start-Denial: "&fYou &ccan't &fforce start this match because there aren't enough players."
       No-Match: "&cYou aren't in a match."
       Lobby-Set: "&fThe lobby &ahas been set&f."
+      Waiting-Lobby-Set: "&fThe waiting lobby &ahas been set&f."
+      Waiting-Lobby-Created: "&fThe waiting lobby world &ahas been created&f. Build it, then run &b/rsw setwaitinglobby &fto set the spawn."
+      Waiting-Lobby-Create-Failed: "&cCould not create the waiting lobby world."
       Maps: "&fThere are &b%rooms% &fmaps registered."
       Players: "&fThere are &b%players% &fGamePlayers online."
       No-Game-Found: "&fNo game has been found. Try again later!"
@@ -130,6 +139,7 @@ en_us:
       Invincibility-End: "&fInvincibility has ended for all players."
       Play-Again: "&eWant to play again? &lClick here!"
       Cant-Join: "&fYou &ccan't &fjoin this room right now."
+      Waiting-Lobby-Not-Set: "&fThis room uses &bmanual team selection &fbut its &cwaiting lobby is missing&f. Ask an admin to set it up."
       Blocked-Command: "&fThis command is &cblocked &fwhile you are in a match."
       Spectating-Disabled: "&bSpectating &fis &cdisabled &fin this room."
       Room-Full: "&fThis room is &cfull&f."
@@ -176,6 +186,11 @@ en_us:
     Achievements-Title: "&dAchievements"
     Spectate-Title: "&9Players"
     Vote-Title: "&b&lVote"
+    Team-Select:
+      Title: "&b&lSelect your Team"
+      Click-To-Join: "&fClick here to join this team."
+      Your-Team: "&a&lYour team"
+      Empty: "&7&oNobody here yet"
     Chests-Vote-Title: "&7&lChests"
     Projectiles-Vote-Title: "&7&lProjectiles"
     Time-Vote-Title: "&7&lTime"
@@ -192,6 +207,8 @@ en_us:
     Shop-Menu-Title: "&fShop &9Categories"
     Spectator-Shop-Menu-Title: "&0Spectator &fShop"
   Itens:
+    Team-Select:
+      Name: "&bSelect Team &7(Right Click)"
     Profile:
       Name: "&9Your Profile &7(Right Click)"
     CageSet:

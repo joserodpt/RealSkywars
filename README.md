@@ -106,6 +106,12 @@ Permission: rsw.coins
 **/rsw lobby** - Teleport to the lobby.
 Permission: rsw.lobby
 
+**/rsw createwaitinglobby <world>** - Generates an empty world to build the waiting lobby in, and sets it as the waiting lobby. See [Manual Team Selection](#manual-team-selection).
+Permission: rsw.admin
+
+**/rsw setwaitinglobby** - Sets the waiting lobby spawn to where you are standing.
+Permission: rsw.admin
+
 **/rsw forcestart** - Force starts the current match.
 Permission: rsw.forcestart
 
@@ -141,6 +147,36 @@ Permission: rsw.party.leave
 7. Set the arena boundaries with //pos1 or //pos2 or with the worldedit axe.
    > NOTE: Don't forget to do //expand vert to cover the entire arena height.
 8. Save the arena with /rsw finish
+
+## Manual Team Selection
+
+By default, joining a **TEAMS** map drops you into the first team with a free slot. With manual team
+selection turned on, players instead wait in a shared **waiting lobby** and pick their own team from
+a menu. They are only moved into their team's cage a few seconds before the match starts.
+
+Players waiting in the lobby only see the other players of their own match, so several matches can
+fill up in the same lobby at once.
+
+**Setting it up**
+
+1. Run **/rsw createwaitinglobby <world name>**. RealSkywars generates an empty world, drops you on
+   a bedrock block in creative mode and points the waiting lobby at it.
+2. Build the lobby. The world is saved normally, so what you build stays there.
+3. Stand where players should spawn and run **/rsw setwaitinglobby**.
+4. For each TEAMS map you want this on: **/rsw unregister <map>**, open the map settings
+   (the settings item on your hotbar, or /rsw edit) and toggle **Manual Team Selection** on,
+   then save and register the map again.
+
+If no waiting lobby is configured, maps with the setting on fall back to holding players at the
+map's spectator location, so the feature still works - it just isn't a dedicated area.
+
+**Relevant config options** (`config.yml`)
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `Config.Teams.Cage-Transfer-Seconds` | `3` | How many seconds before the start everyone is moved from the waiting lobby into their cage. Players who never picked a team are put in the emptiest team at this point. |
+| `Config.Item-Slots.Cage.Team-Select` | `3` | Hotbar slot of the team selector item. |
+| `Config.Items.Team-Select` | `WHITE_BANNER` | Appearance of the team selector item. |
 
 ## Creating a game sign
 

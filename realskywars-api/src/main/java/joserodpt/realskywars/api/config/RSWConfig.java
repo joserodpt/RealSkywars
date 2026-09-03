@@ -39,9 +39,10 @@ public class RSWConfig {
                     GeneralSettings.DEFAULT,
                     LoaderSettings.builder().setAutoUpdate(true).build(),
                     DumperSettings.DEFAULT,
-                    UpdaterSettings.builder().addIgnoredRoute(
-                            "1", Route.fromString("Lobby")
-                    ).setVersioning(new BasicVersioning("Version")).build());
+                    UpdaterSettings.builder()
+                            .addIgnoredRoute("1", Route.fromString("Lobby"))
+                            .addIgnoredRoute("1", Route.fromString("Waiting-Lobby"))
+                            .setVersioning(new BasicVersioning("Version")).build());
         } catch (final IOException e) {
             RealSkywarsAPI.getInstance().getLogger().severe("Couldn't setup " + name + "!");
             RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());

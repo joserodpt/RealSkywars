@@ -1,4 +1,4 @@
-Version: 14
+Version: 15
 Debug-Mode: false
 Config:
   Prefix: "&fReal&bSkywars &7> &r"
@@ -49,6 +49,12 @@ Config:
   Enable-Chat-Per-Map: false
   Disable-Chest-Animation: false
   Pressure-Plate-Join-Game: true
+  Teams:
+    # Maps with "Manual Team Selection" enabled hold joining players in the waiting lobby
+    # (set it up with /rsw createwaitinglobby and /rsw setwaitinglobby) until they pick a team.
+    # How many seconds before the match starts everyone is moved into their team's cage.
+    # Players who never picked a team are put in the emptiest team at this point.
+    Cage-Transfer-Seconds: 3
   Shops:
     Enable-Shop: true
     Enable-Spectator-Shop: true
@@ -74,6 +80,7 @@ Config:
       Shop: 8
     Cage:
       Kit: 1
+      Team-Select: 3
       Vote: 4
       Leave: 7
     Spectator:
@@ -134,6 +141,12 @@ Config:
         - "&7Vote for chest mode, time, or modifiers."
         - "&8Example with simple lore."
       CUSTOM_MODEL_DATA: 2002
+    Team-Select:
+      MATERIAL: WHITE_BANNER
+      AMOUNT: 1
+      NAME: "&b&lSelect Team"
+      LORE:
+        - "&7Choose the team you want to play in."
     Cage:
       MATERIAL: BEACON
       AMOUNT: 1

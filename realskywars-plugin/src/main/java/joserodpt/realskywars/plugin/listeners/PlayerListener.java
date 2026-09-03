@@ -23,6 +23,8 @@ import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.effects.RSWBowTrail;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
+import joserodpt.realskywars.api.map.modes.teams.TeamSelectorGUI;
+import joserodpt.realskywars.api.map.modes.teams.TeamsMode;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.player.RSWPlayerItems;
 import joserodpt.realskywars.api.shop.RSWBuyableItem;
@@ -189,6 +191,17 @@ public class PlayerListener implements Listener {
                                 && RSWPlayerItems.ITEM_LEAVE.matches(p, hand)) {
                             e.setCancelled(true);
                             p.getMatch().removePlayer(p);
+                            return;
+                        }
+
+                        //checked before the material switch below, so a reconfigured item can't fall through it
+                        if (p.getState() == RSWPlayer.PlayerState.CAGE
+                                && p.getMatch() instanceof TeamsMode
+                                && p.getMatch().isManualTeamSelection()
+                                && RSWPlayerItems.ITEM_TEAMSELECT.matches(p, hand)) {
+                            e.setCancelled(true);
+                            TeamSelectorGUI.open(p, (TeamsMode) p.getMatch());
+                            e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                             return;
                         }
 
@@ -480,6 +493,11 @@ public class PlayerListener implements Listener {
                             damaged.getPlayer().spigot().respawn();
                             match.spectate(damaged, RSWMap.SpectateType.INSIDE_GAME, match.getSpectatorLocation());
                         }, 1);
+                    } else if (rs.getLobbyManagerAPI().isInWaitingLobby(damaged.getLocation().getWorld())) {
+                        //still picking a team - send them back to the waiting lobby, not into the map
+                        e.setCancelled(true);
+                        damaged.heal();
+                        rs.getLobbyManagerAPI().tpToWaitingLobby(damaged);
                     } else {
                         damaged.teleport(match.getSpectatorLocation());
                     }
@@ -493,7 +511,9 @@ public class PlayerListener implements Listener {
                     }
                 }
             } else {
-                if (damaged.isInvencible() || rs.getLobbyManagerAPI().isInLobby(damaged.getLocation().getWorld())) {
+                if (damaged.isInvencible()
+                        || rs.getLobbyManagerAPI().isInLobby(damaged.getLocation().getWorld())
+                        || rs.getLobbyManagerAPI().isInWaitingLobby(damaged.getLocation().getWorld())) {
                     e.setCancelled(true);
                 }
             }

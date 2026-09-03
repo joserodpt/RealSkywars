@@ -78,6 +78,12 @@ public class MapSettingsGUI {
         inv.setItem(14, Itens.createItem(Material.DIAMOND_SWORD, 1, "&9Ranked " + styleBool(map.isRanked()), Collections.singletonList("&7Ranked Mode toggle. Click to toggle.")));
         inv.setItem(16, Itens.createItem(Material.ITEM_FRAME, 1, "&9Border " + styleBool(map.isBorderEnabled()), Collections.singletonList("&7Border toggle. Click to toggle.")));
 
+        if (map.getGameMode() == RSWMap.GameMode.TEAMS) {
+            inv.setItem(20, Itens.createItem(Material.WHITE_BANNER, 1, "&9Manual Team Selection " + styleBool(map.isManualTeamSelection()),
+                    Arrays.asList("&7Players wait in the waiting lobby and pick their own team", "&7instead of being auto assigned. Click to toggle.",
+                            "&8Set the lobby up with /rsw createwaitinglobby.")));
+        }
+
         inv.setItem(22, Itens.createItem(Material.PISTON, 1, "&9Events", Collections.singletonList("&7Click here to edit this map's events.")));
 
         inv.setItem(28, Itens.createItem(Material.CLOCK, 1, "&9Max Game Time &f" + Text.formatSeconds(map.getMaxGameTime()), Collections.singletonList("&7Click to edit.")));
@@ -125,6 +131,11 @@ public class MapSettingsGUI {
                                     break;
                                 case 16:
                                     current.map.setBorderEnabled(!current.map.isBorderEnabled());
+                                    break;
+                                case 20:
+                                    if (current.map.getGameMode() == RSWMap.GameMode.TEAMS) {
+                                        current.map.setManualTeamSelection(!current.map.isManualTeamSelection());
+                                    }
                                     break;
                                 case 22:
                                     p.closeInventory();

@@ -43,7 +43,6 @@ public class RSWTeamCage extends RSWCage {
         // Adjust tpLocation based on the number of players to avoid overlapping
         Location tpLocation = getLocation().clone().add(0, 1, 0);
         p.teleport(MathUtils.lookAt(tpLocation, super.getMap().getSpectatorLocation()));
-        this.players.add(p);
     }
 
     @Override
@@ -142,7 +141,9 @@ public class RSWTeamCage extends RSWCage {
 
     @Override
     public void addPlayer(RSWPlayer p) {
-        this.players.add(p);
+        if (!this.players.contains(p)) {
+            this.players.add(p);
+        }
         p.setPlayerCage(this);
         this.setCage();
         this.tpPlayer(p);
@@ -153,6 +154,15 @@ public class RSWTeamCage extends RSWCage {
     public void removePlayer(RSWPlayer p) {
         this.players.remove(p);
         p.setPlayerCage(null);
+    }
+
+    /**
+     * Drops a player from the cage's occupant list but keeps their cage reference. Used when a
+     * player leaves their team, because RSWMap#spectate still needs getPlayerCage() afterwards to
+     * demolish the cage of an eliminated team.
+     */
+    public void forgetPlayer(RSWPlayer p) {
+        this.players.remove(p);
     }
 
     @Override

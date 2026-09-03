@@ -131,6 +131,7 @@ public class MapManager extends MapManagerAPI {
                         cgs.forEach((location, value) -> ts.put(location, new RSWTeam(tc.getAndIncrement(), teamSize, location)));
 
                         TeamsMode teas = new TeamsMode(s, displayName, w, RSWMapsConfig.file().getString(s + ".schematic"), wt, RSWMap.MapState.AVAILABLE, ts, RSWMapsConfig.file().getInt(s + ".number-of-players"), specLoc, isSpecEnabled(s), isInstantEndingEnabled(s), RSWMapsConfig.file().getBoolean(s + ".Settings.Border"), getPOS1(w, s), getPOS2(w, s), chests, isRanked(s), unregistered);
+                        teas.setManualTeamSelection(RSWMapsConfig.file().getBoolean(s + ".Settings.Manual-Team-Selection"), false);
                         teas.resetArena(RSWMap.OperationReason.LOAD);
                         this.addMap(teas);
                         break;

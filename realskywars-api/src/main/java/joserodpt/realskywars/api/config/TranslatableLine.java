@@ -16,6 +16,7 @@ package joserodpt.realskywars.api.config;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.command.CommandSender;
@@ -35,6 +36,7 @@ public enum TranslatableLine {
     ARENA_CANCEL(".Messages.Map.Match-Cancelled"),
     ARENA_START_COUNTDOWN(".Messages.Map.Start-Countdown"),
     LOBBY_TELEPORT(".Messages.Lobby-Teleport"),
+    WAITING_LOBBY_TELEPORT(".Messages.Waiting-Lobby-Teleport"),
     MATCH_END(".Messages.Map.Match-End"),
     INVINCIBILITY_END(".Messages.Map.Invincibility-End"),
     MATCH_LEAVE(".Messages.Map.Leave"),
@@ -54,6 +56,9 @@ public enum TranslatableLine {
     CMD_ALREADY_IN_MATCH(".Messages.Map.Already-In-Match"),
     CMD_CNO_MATCH(".Messages.Commands.No-Match"),
     CMD_CLOBBY_SET(".Messages.Commands.Lobby-Set"),
+    CMD_WAITING_LOBBY_SET(".Messages.Commands.Waiting-Lobby-Set"),
+    CMD_WAITING_LOBBY_CREATED(".Messages.Commands.Waiting-Lobby-Created"),
+    CMD_WAITING_LOBBY_CREATE_FAIL(".Messages.Commands.Waiting-Lobby-Create-Failed"),
     CMD_MATCH_CANCEL(".Messages.Map.Suggest-Match-Cancel"),
     CMD_COINS(".Messages.Commands.Coins"),
     CMD_NO_PERM(".Messages.Commands.No-Permission"),
@@ -115,11 +120,16 @@ public enum TranslatableLine {
     ITEM_VOTE_NAME(".Itens.Vote.Name"),
     ITEM_SETTINGS_NAME(".Itens.Settings.Name"),
     ITEM_SAVE_NAME(".Itens.Save.Name"),
+    ITEM_TEAMSELECT_NAME(".Itens.Team-Select.Name"),
 
     MENU_PLAYER_RESET_ALERT(".Menus.Player-Profile.Reset-Data.Alert"),
     MENU_PLAYERP_VIEWITEM(".Menus.Player-Profile.View-Item"),
     MENU_PLAYER_RESET_TITLE(".Menus.Player-Profile.Reset-Data.Title"),
     MENU_VOTE_TITLE(".Menus.Vote-Title"),
+    MENU_TEAMSELECT_TITLE(".Menus.Team-Select.Title"),
+    MENU_TEAMSELECT_CLICK(".Menus.Team-Select.Click-To-Join"),
+    MENU_TEAMSELECT_YOURS(".Menus.Team-Select.Your-Team"),
+    MENU_TEAMSELECT_EMPTY(".Menus.Team-Select.Empty"),
     MENU_CHESTS_TITLE(".Menus.Chests-Vote-Title"),
     MENU_PROJECTILES_TITLE(".Menus.Projectiles-Vote-Title"),
     MENU_TIME_TITLE(".Menus.Time-Vote-Title"),
@@ -154,6 +164,7 @@ public enum TranslatableLine {
     KIT_CREATED(".Kits.Created"),
 
     CANT_JOIN(".Messages.Map.Cant-Join"),
+    WAITING_LOBBY_NOT_SET(".Messages.Map.Waiting-Lobby-Not-Set"),
     ROOM_FULL(".Messages.Map.Room-Full"),
     SPECTATING_DISABLED(".Messages.Map.Spectating-Disabled"),
     BLOCKED_COMMAND(".Messages.Map.Blocked-Command"),
@@ -205,6 +216,11 @@ public enum TranslatableLine {
     TEAMMATE_DAMAGE_CANCEL(".Messages.Team.TeamMate-Damage-Cancel"),
     TEAM_BROADCAST_JOIN(".Messages.Team.Broadcast-Join"),
     TEAM_BROADCAST_LEAVE(".Messages.Team.Broadcast-Leave"),
+    TEAM_SELECT_FULL(".Messages.Team.Full"),
+    TEAM_SELECT_ALREADY(".Messages.Team.Already-In"),
+    TEAM_SELECT_LOCKED(".Messages.Team.Selection-Locked"),
+    TEAM_AUTO_ASSIGNED(".Messages.Team.Auto-Assigned"),
+    TEAM_SELECT_REMINDER(".Messages.Team.Select-Reminder"),
     ALREADY_STARTED(".Messages.Map.Already-Started"),
     NO_TRACKER(".Messages.Map.No-Tracker-Found"),
     TRACK_FOUND(".Messages.Map.Tracker-Found"),
@@ -249,11 +265,33 @@ public enum TranslatableLine {
     }
 
     public String getSingle() {
-        return Text.color(RSWConfig.file().getString("Config.Languages." + this.configPath));
+        String value = RSWConfig.file().getString("Config.Languages." + this.configPath);
+        return Text.color(value == null ? this.configPath : value);
     }
 
     public String getInLanguage(String l) {
-        return Text.color(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getLanguage(l).getString(this.configPath));
+        return Text.color(resolve(l));
+    }
+
+    /**
+     * Resolves this line in the given language, falling back to the default language and finally to
+     * the route itself. LanguageManager repairs missing keys on startup, but a message must never
+     * be able to blow up with an NPE inside {@link Text#color(String)} because of one.
+     */
+    private String resolve(String language) {
+        LanguageManagerAPI lm = RealSkywarsAPI.getInstance().getLanguageManagerAPI();
+
+        RSWLanguage lang = language == null ? null : lm.getLanguage(language);
+        String value = lang == null ? null : lang.getString(this.configPath);
+
+        if ((value == null || value.isEmpty()) && !lm.areLanguagesEmpty()) {
+            RSWLanguage def = lm.getLanguage(lm.getDefaultLanguage());
+            if (def != null && def != lang) {
+                value = def.getString(this.configPath);
+            }
+        }
+
+        return value == null ? this.configPath : value;
     }
 
     public String get(RSWPlayer player) {

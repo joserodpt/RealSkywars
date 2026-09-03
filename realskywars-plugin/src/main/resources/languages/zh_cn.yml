@@ -42,6 +42,7 @@ zh_cn:
       Sender: "&f你发送了 &b%coins% 硬币 &f给 %player%."
       Reciever: "&f你收到了 &b%coins% 金币 &f来自 %player%。"
     Lobby-Teleport: "&f传送至大厅."
+    Waiting-Lobby-Teleport: "&f等待比赛开始, 请选择你的队伍!"
     Compass-Teleport: "&f传送至&b%name%&f."
     Selection-Made: "&f你选择了 &b%name% &f在 %type%&f。"
     Game-Status-Set: "&f游戏状态已设置为 &b%status%"
@@ -54,6 +55,11 @@ zh_cn:
       Leave: "&f你 &c离开了 &9%team%"
       Broadcast-Join: "&b%player% &f加入了队伍."
       Broadcast-Leave: "&b%player% &c离开了队伍"
+      Full: "&c该队伍已满."
+      Already-In: "&f你&a已经&f在该队伍中了."
+      Selection-Locked: "&c你无法再更换队伍了."
+      Auto-Assigned: "&f由于你没有选择队伍, 你被分配到了 &9%team%&f."
+      Select-Reminder: "&e请在比赛开始前选择队伍!"
       TeamMate-Damage-Cancel: "&f你不能伤害你的&9队友&f."
     Shop:
       Buy: "&f你使用&ffor &a%coins% &f硬币购买了 &b%name%."
@@ -71,6 +77,9 @@ zh_cn:
       Match-Force-Start-Denial: "&f你 &c无法 &f强制开始此比赛，因为玩家人数不足。"
       No-Match: "&c你不在一个比赛中"
       Lobby-Set: "&f大厅&a已设置&f."
+      Waiting-Lobby-Set: "&f等待大厅&a已设置&f."
+      Waiting-Lobby-Created: "&f等待大厅世界&a已创建&f. 建造完成后使用 &b/rsw setwaitinglobby &f设置出生点."
+      Waiting-Lobby-Create-Failed: "&c无法创建等待大厅世界."
       Maps: "&f有 &b%rooms% &f张地图被注册了."
       Players: "&f有 &b%players% &f个玩家在线."
       No-Game-Found: "&f未找到比赛。请稍后再试！"
@@ -115,6 +124,7 @@ zh_cn:
       Invincibility-End: "&f所有玩家的无敌状态已结束。"
       Play-Again: "&e你想再玩一把吗? &l点击这里!"
       Cant-Join: "&f你 &c无法 &f现在加入这个房间。"
+      Waiting-Lobby-Not-Set: "&f该房间使用&b手动选择队伍&f，但其&c等待大厅不存在&f。请联系管理员进行设置。"
       Blocked-Command: "&f此命令在比赛中 &c被禁用&f。"
       Spectating-Disabled: "&b观战 &f在此房间中 &c被禁用&f。"
       Room-Full: "&f此房间已 &c满员&f。"
@@ -161,6 +171,11 @@ zh_cn:
     Achievements-Title: "&d成就"
     Spectate-Title: "&9玩家"
     Vote-Title: "&b&l投票"
+    Team-Select:
+      Title: "&b&l选择你的队伍"
+      Click-To-Join: "&f点击加入该队伍."
+      Your-Team: "&a&l你的队伍"
+      Empty: "&7&o暂时无人"
     Chests-Vote-Title: "&7&l箱子类型"
     Projectiles-Vote-Title: "&7&l投掷物"
     Time-Vote-Title: "&7&l游戏时间"
@@ -177,6 +192,8 @@ zh_cn:
     Shop-Menu-Title: "&f商店 "
     Spectator-Shop-Menu-Title: "&0旁观者 &f商店"
   Itens:
+    Team-Select:
+      Name: "&b选择队伍 &7(右键点击)"
     Profile:
       Name: "&9你的信息 &7(右键点击)"
     CageSet:

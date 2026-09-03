@@ -58,6 +58,7 @@ pl_pl:
       Sender: "&fYou sent &b%coins% coins &fto %player%."
       Reciever: "&fYou recieved &b%coins% coins &ffrom %player%."
     Lobby-Teleport: "&fPrzeteleportowano do lobby."
+    Waiting-Lobby-Teleport: "&fOczekiwanie na rozpoczęcie gry. Wybierz swoją drużynę!"
     Compass-Teleport: "&fPrzeteleportowano do &b%name%&f."
     Selection-Made: "&fWybrałeś &b%name% &fw %type%&f."
     Game-Status-Set: "&fStatus gry zmienił się do &b%status%"
@@ -70,6 +71,11 @@ pl_pl:
       Leave: "&cWyszedłeś &fz &9%team%"
       Broadcast-Join: "&b%player% &fdołączył do teamu."
       Broadcast-Leave: "&b%player% &cwyszedł z teamu."
+      Full: "&cTa drużyna jest pełna."
+      Already-In: "&fJesteś &ajuż &fw tej drużynie."
+      Selection-Locked: "&cNie możesz już zmienić drużyny."
+      Auto-Assigned: "&fZostałeś przydzielony do &9%team%&f, ponieważ nie wybrałeś drużyny."
+      Select-Reminder: "&eWybierz drużynę zanim gra się rozpocznie!"
       TeamMate-Damage-Cancel: "&fNie możesz uderzyć swojego członka drużyny &9team-mate&f."
     Shop:
       Buy: "&fKupiłeś &b%name% &fza &a%coins% &ffunduszy."
@@ -87,6 +93,9 @@ pl_pl:
       Match-Force-Start-Denial: "&cNie możesz &fprzedwcześnie zacząć gry, ponieważ nie ma wystarczającej liczby graczy."
       No-Match: "&cNie jesteś na arenie."
       Lobby-Set: "&fLobby &azostało ustawione&f."
+      Waiting-Lobby-Set: "&fLobby oczekiwania &azostało ustawione&f."
+      Waiting-Lobby-Created: "&fŚwiat lobby oczekiwania &azostał utworzony&f. Zbuduj go, a następnie użyj &b/rsw setwaitinglobby &faby ustawić spawn."
+      Waiting-Lobby-Create-Failed: "&cNie udało się utworzyć świata lobby oczekiwania."
       Maps: "&fJest &b%rooms% &fgrywalnych map."
       Players: "&fJest &b%players% &fgraczy online."
       No-Game-Found: "&fŻadna gra nie została znaleziona! Spróbuj później."
@@ -131,6 +140,7 @@ pl_pl:
       Invincibility-End: "&fNiewidzalność zakończyła się dla wszystkich graczy."
       Play-Again: "&eChcesz zagrać ponownie? &lKliknij mnie!"
       Cant-Join: "&cNie możesz &fdołączyć do tej gry teraz."
+      Waiting-Lobby-Not-Set: "&fTen pokój używa &bręcznego wyboru drużyn&f, ale jego &clobby oczekiwania nie istnieje&f. Poproś administratora o jego utworzenie."
       Blocked-Command: "&fTa komenda jest &czablokowana &fpodczas meczu."
       Spectating-Disabled: "&bObserwowanie jest &czablokowane &fna tej arenie."
       Room-Full: "&fArena jest pełna &cfull&f."
@@ -177,6 +187,11 @@ pl_pl:
     Achievements-Title: "&dOsiągnięcia"
     Spectate-Title: "&9Gracze"
     Vote-Title: "&b&lGłosowanie"
+    Team-Select:
+      Title: "&b&lWybierz swoją Drużynę"
+      Click-To-Join: "&fKliknij tutaj, aby dołączyć do tej drużyny."
+      Your-Team: "&a&lTwoja drużyna"
+      Empty: "&7&oNikogo tu jeszcze nie ma"
     Chests-Vote-Title: "&7&lSkrzynki"
     Projectiles-Vote-Title: "&7&lTryb"
     Time-Vote-Title: "&7&lCzas"
@@ -193,6 +208,8 @@ pl_pl:
     Shop-Menu-Title: "&fSklep &9Categories"
     Spectator-Shop-Menu-Title: "&0Spectator &fShop"
   Itens:
+    Team-Select:
+      Name: "&bWybierz Drużynę &7(PPM)"
     Profile:
       Name: "&9Twój profil &7(PPM)"
     CageSet:

@@ -52,7 +52,11 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -461,6 +465,69 @@ public class RealSkywarsCMD extends BaseCommandWA {
         } else {
             commandSender.sendMessage(onlyPlayer);
         }
+    }
+
+    @SubCommand("setwaitinglobby")
+    @Permission("rsw.admin")
+    @SuppressWarnings("unused")
+    public void setwaitinglobby(final CommandSender commandSender) {
+        if (commandSender instanceof Player) {
+            RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
+            saveWaitingLobby(p.getLocation());
+            TranslatableLine.CMD_WAITING_LOBBY_SET.send(p, true);
+        } else {
+            commandSender.sendMessage(onlyPlayer);
+        }
+    }
+
+    @SubCommand("createwaitinglobby")
+    @Permission("rsw.admin")
+    @SuppressWarnings("unused")
+    public void createwaitinglobby(final CommandSender commandSender, final String worldName) {
+        if (!(commandSender instanceof Player)) {
+            commandSender.sendMessage(onlyPlayer);
+            return;
+        }
+
+        RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
+        TranslatableLine.GENERATING_WORLD.send(p, true);
+
+        World w = rs.getWorldManagerAPI().createEmptyWorld(worldName, World.Environment.NORMAL);
+        if (w == null) {
+            TranslatableLine.CMD_WAITING_LOBBY_CREATE_FAIL.send(p, true);
+            return;
+        }
+
+        //something to stand on in an otherwise empty void world, same as a new map gets
+        w.getBlockAt(0, 64, 0).setType(Material.BEDROCK);
+        w.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+        w.setGameRule(GameRule.DO_INSOMNIA, false);
+        w.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
+        //WorldManager#loadWorld is tuned for map worlds, which are restored from a template on reset.
+        //A hand built lobby has to keep what the admin builds, and shouldn't be a pvp world.
+        w.setPVP(false);
+        w.setAutoSave(true);
+
+        Location loc = new Location(w, 0.5, 66, 0.5);
+        saveWaitingLobby(loc);
+
+        p.teleport(loc);
+        if (p.getPlayer() != null) {
+            p.getPlayer().setGameMode(org.bukkit.GameMode.CREATIVE);
+        }
+
+        TranslatableLine.CMD_WAITING_LOBBY_CREATED.send(p, true);
+    }
+
+    private void saveWaitingLobby(Location loc) {
+        RSWConfig.file().set("Waiting-Lobby.World", loc.getWorld().getName());
+        RSWConfig.file().set("Waiting-Lobby.X", loc.getX());
+        RSWConfig.file().set("Waiting-Lobby.Y", loc.getY());
+        RSWConfig.file().set("Waiting-Lobby.Z", loc.getZ());
+        RSWConfig.file().set("Waiting-Lobby.Yaw", loc.getYaw());
+        RSWConfig.file().set("Waiting-Lobby.Pitch", loc.getPitch());
+        RSWConfig.save();
+        rs.getLobbyManagerAPI().setWaitingLobbyLoc(loc);
     }
 
     @SubCommand("finish")

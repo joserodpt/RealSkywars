@@ -22,7 +22,9 @@ import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.TeamColorLoop;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
@@ -36,45 +38,79 @@ public class RSWTeam {
     private final RSWTeamCage tc;
     private final List<RSWPlayer> members = new ArrayList<>();
     private Boolean eliminated = false, playing = false;
-    private Team teamBukkit = Bukkit.getScoreboardManager().getMainScoreboard().getTeam(getTeamNameScoreboard());
+    private final String teamNameScoreboard = "rswT" + UUID.randomUUID();
+    private Team teamBukkit;
 
 
     public RSWTeam(int i, int maxMemb, Location c) {
         this.id = i;
         this.tc = new RSWTeamCage(i, c.getBlockX(), c.getBlockY(), c.getBlockZ());
         this.maxMembers = maxMemb;
-        if (teamBukkit == null) {
-            teamBukkit = Bukkit.getScoreboardManager().getMainScoreboard().registerNewTeam(getTeamNameScoreboard());
+
+        this.teamBukkit = Bukkit.getScoreboardManager().getMainScoreboard().getTeam(getTeamNameScoreboard());
+        if (this.teamBukkit == null) {
+            this.teamBukkit = Bukkit.getScoreboardManager().getMainScoreboard().registerNewTeam(getTeamNameScoreboard());
         }
 
-        teamBukkit.setColor(TeamColorLoop.getTeamColor());
+        this.teamBukkit.setColor(this.getColor());
     }
 
     public void addPlayer(RSWPlayer p) {
-        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.TEAM_BROADCAST_JOIN.get(p, true).replace("%player%", p.getName())));
+        this.addMember(p, true);
+    }
+
+    /**
+     * Adds a player to this team.
+     *
+     * @param intoCage whether the player is put in the team's cage right away. Manual team selection
+     *                 passes false: the player keeps waiting in the waiting lobby and is only caged
+     *                 by {@link #commitToCage()} shortly before the match starts. Setting a cage
+     *                 earlier would make {@code RSWMap#startRoom}'s per second re-teleport pull them
+     *                 out of the waiting lobby.
+     */
+    public void addMember(RSWPlayer p, boolean intoCage) {
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.TEAM_BROADCAST_JOIN.get(rswPlayer, true).replace("%player%", p.getName())));
 
         this.members.add(p);
         p.setTeam(this);
-        if (members.size() == 1 && p.getPlayer() != null) {
-            this.tc.addPlayer(p);
-        } else {
-            p.teleport(this.tc.getLocation());
-            p.setInvincible(true);
+
+        if (intoCage) {
+            if (members.size() == 1 && p.getPlayer() != null) {
+                this.tc.addPlayer(p);
+            } else {
+                p.teleport(this.tc.getLocation());
+                p.setInvincible(true);
+            }
         }
 
         this.teamBukkit.addEntry(p.getName());
         p.sendMessage(TranslatableLine.TEAM_JOIN.get(p, true).replace("%team%", getName()));
     }
 
+    /**
+     * Puts every member inside the team's cage. Idempotent, so it is safe to call from both the
+     * countdown and the force start path.
+     */
+    public void commitToCage() {
+        for (RSWPlayer p : new ArrayList<>(this.members)) {
+            if (p.getPlayer() != null && p.getPlayerCage() != this.tc) {
+                this.tc.addPlayer(p);
+            }
+        }
+    }
+
     public void removeMember(RSWPlayer p) {
         this.members.remove(p);
 
-        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.TEAM_BROADCAST_LEAVE.get(p, true).replace("%player%", p.getName())));
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.TEAM_BROADCAST_LEAVE.get(rswPlayer, true).replace("%player%", p.getName())));
 
         if (this.playing && members.isEmpty()) {
             this.eliminated = true;
         }
         p.setTeam(null);
+        //drop them from the cage's occupant list, but keep their cage reference: RSWMap#spectate
+        //reads getPlayerCage() right after this to demolish an eliminated team's cage
+        this.tc.forgetPlayer(p);
         this.teamBukkit.removeEntry(p.getName());
         p.sendMessage(TranslatableLine.TEAM_LEAVE.get(p, true).replace("%team%", getName()));
     }
@@ -89,6 +125,31 @@ public class RSWTeam {
 
     public String getName() {
         return "Team " + id;
+    }
+
+    public int getID() {
+        return this.id;
+    }
+
+    /**
+     * This team's colour, derived from its id so it is stable across maps and restarts.
+     */
+    public ChatColor getColor() {
+        return TeamColorLoop.colorForIndex(this.id);
+    }
+
+    /**
+     * The wool used to represent this team in menus.
+     */
+    public Material getIconMaterial() {
+        return TeamColorLoop.woolForIndex(this.id);
+    }
+
+    /**
+     * The team name coloured with {@link #getColor()}, for menus and messages.
+     */
+    public String getColoredName() {
+        return this.getColor() + this.getName();
     }
 
     public String getNames() {
@@ -128,6 +189,6 @@ public class RSWTeam {
     }
 
     public String getTeamNameScoreboard() {
-        return "rswT" + UUID.randomUUID();
+        return this.teamNameScoreboard;
     }
 }
