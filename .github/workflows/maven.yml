@@ -10,6 +10,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: Checkout repository
@@ -37,6 +40,23 @@ jobs:
 
       - name: Publish API to GitHub Packages
         if: github.ref == 'refs/heads/master'
-        run: mvn --batch-mode deploy -pl realskywars-api -am
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          pom=realskywars-api/pom.xml
+          coord() { mvn -B -q -f "$pom" help:evaluate -Dexpression="$1" -DforceStdout | tail -n 1; }
+          group=$(coord project.groupId); artifact=$(coord project.artifactId); version=$(coord project.version)
+
+          # GitHub Packages release versions are immutable: re-deploying one answers
+          # 422, so every master push after the first would fail. Publish only what
+          # is not there yet - a version bump is what triggers a new release.
+          url="https://maven.pkg.github.com/${GITHUB_REPOSITORY}/${group//.//}/${artifact}/${version}/${artifact}-${version}.pom"
+          status=$(curl -sS -o /dev/null -w '%{http_code}' -u "${GITHUB_ACTOR}:${GITHUB_TOKEN}" "$url")
+          if [ "$status" = "200" ]; then
+            echo "${group}:${artifact}:${version} is already published - nothing to do."
+            exit 0
+          fi
+
+          echo "Publishing ${group}:${artifact}:${version}"
+          mvn --batch-mode deploy -pl realskywars-api -am

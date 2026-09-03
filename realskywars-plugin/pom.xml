@@ -160,7 +160,7 @@
         </dependency>
         <dependency>
             <groupId>joserodpt</groupId>
-            <artifactId>RealSkywarsAPI</artifactId>
+            <artifactId>realskywars-api</artifactId>
             <version>1.2.1</version>
             <scope>compile</scope>
         </dependency>
