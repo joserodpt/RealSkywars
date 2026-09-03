@@ -35,6 +35,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
@@ -118,6 +119,21 @@ public class RSWChest {
         BlockData blockData = b.getBlockData();
         ((Directional) blockData).setFacing(this.bf);
         b.setBlockData(blockData);
+        clearTitle(b);
+    }
+
+    /**
+     * Chests are set up by placing the named CHEST item from the admin's hotbar, and vanilla copies
+     * that item's name onto the container it creates - so the chest kept opening as "NORMAL Chest"
+     * for everyone afterwards. Clearing it here covers the placement itself (both constructors run
+     * through {@link #clear()}) and every later map reset, so maps built before this get fixed too.
+     */
+    private void clearTitle(Block b) {
+        BlockState state = b.getState();
+        if (state instanceof Chest && ((Chest) state).getCustomName() != null) {
+            ((Chest) state).setCustomName(null);
+            state.update(true, false);
+        }
     }
 
     public Block getChestBlock() {
