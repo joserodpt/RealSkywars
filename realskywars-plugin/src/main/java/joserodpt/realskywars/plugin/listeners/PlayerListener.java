@@ -427,18 +427,26 @@ public class PlayerListener implements Listener {
                 }
             }
 
-            if (event.getBlock().getType() == Material.CHEST) {
-                RSWMap mp2 = rs.getMapManagerAPI().getMap(event.getBlock().getLocation().getWorld());
-                if (mp2 != null && mp2.isUnregistered()) {
+            RSWMap mp2 = rs.getMapManagerAPI().getMap(event.getBlock().getLocation().getWorld());
+            if (mp2 != null && mp2.isUnregistered()) {
+                int heldSlot = event.getPlayer().getInventory().getHeldItemSlot();
+                Material placed = event.getBlock().getType();
 
-                    if (event.getPlayer().getInventory().getHeldItemSlot() == RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest1")) {
-                        mp2.addChest(event.getBlock(), RSWChest.Type.NORMAL);
-                        pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "Added Normal Chest.");
-                    } else if (event.getPlayer().getInventory().getHeldItemSlot() == RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest2")) {
-                        mp2.addChest(event.getBlock(), RSWChest.Type.MID);
-                        pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "Added Mid Chest.");
-                    }
+                //Match the block against whatever the setup item is actually configured to be
+                //(Config.Items.Chest1/Chest2), not a hardcoded CHEST: the shipped default makes
+                //the mid one a TRAPPED_CHEST, so a hardcoded check dropped every mid chest on the
+                //floor without a word. RSWChest#setChest normalises the block to CHEST later.
+                if (heldSlot == RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest1")
+                        && placed == RSWPlayerItems.ITEM_CHEST1.get(pg).getType()) {
+                    mp2.addChest(event.getBlock(), RSWChest.Type.NORMAL);
+                    pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "Added Normal Chest.");
+                    return;
+                }
 
+                if (heldSlot == RSWConfig.file().getInt("Config.Item-Slots.Setup.Chest2")
+                        && placed == RSWPlayerItems.ITEM_CHEST2.get(pg).getType()) {
+                    mp2.addChest(event.getBlock(), RSWChest.Type.MID);
+                    pg.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "Added Mid Chest.");
                     return;
                 }
             }
