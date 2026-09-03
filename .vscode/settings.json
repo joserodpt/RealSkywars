@@ -15,7 +15,7 @@
             },
             {
                 "match": "\\.(java|yml|yaml|xml|md)$",
-                "cmd": "/Desktop/Files/dev/restart.sh",
+                "cmd": "/Desktop/dev/restart.sh",
                 "message": "Restarting server...",
                 "messageAfter": "Server restarted.",
                 "showElapsed": true,

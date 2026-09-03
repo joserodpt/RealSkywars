@@ -23,8 +23,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -42,7 +42,13 @@ public class TeamSelectorGUI {
             return;
         }
 
-        Collection<RSWTeam> teams = map.getTeams();
+        //getTeams() is backed by a HashMap keyed on cage location, so its iteration order has
+        //nothing to do with the team numbers: the picker showed them shuffled, and re-rendering
+        //after every pick could deal them out in a different order again. Sort by id, which is
+        //also what the name, colour and wool are derived from, so the menu reads 1, 2, 3...
+        List<RSWTeam> teams = new ArrayList<>(map.getTeams());
+        teams.sort(Comparator.comparingInt(RSWTeam::getID));
+
         int size = Math.max(9, (int) (Math.ceil((teams.size() + 1) / 9D) * 9));
         size = Math.min(size, 54);
 

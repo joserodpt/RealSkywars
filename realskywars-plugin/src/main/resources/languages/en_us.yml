@@ -139,7 +139,7 @@ en_us:
       Invincibility-End: "&fInvincibility has ended for all players."
       Play-Again: "&eWant to play again? &lClick here!"
       Cant-Join: "&fYou &ccan't &fjoin this room right now."
-      Waiting-Lobby-Not-Set: "&fThis room uses &bmanual team selection &fbut its &cwaiting lobby is missing&f. Ask an admin to set it up."
+      Waiting-Lobby-Not-Set: "&fThis room uses an &cwaiting lobby that is missing&f. Ask an admin to set it up."
       Blocked-Command: "&fThis command is &cblocked &fwhile you are in a match."
       Spectating-Disabled: "&bSpectating &fis &cdisabled &fin this room."
       Room-Full: "&fThis room is &cfull&f."
