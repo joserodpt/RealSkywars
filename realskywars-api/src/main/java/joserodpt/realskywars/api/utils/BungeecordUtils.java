@@ -15,11 +15,6 @@ package joserodpt.realskywars.api.utils;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import eu.cloudnetservice.driver.inject.InjectionLayer;
-import eu.cloudnetservice.driver.registry.ServiceRegistry;
-import eu.cloudnetservice.modules.bridge.player.PlayerManager;
-import eu.cloudnetservice.modules.bridge.player.executor.ServerSelectorType;
-
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
@@ -29,16 +24,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Set;
+import java.util.UUID;
 
 public class BungeecordUtils {
     public static void connect(String name, Player player, JavaPlugin jp) {
         if (player == null) {
             return;
         }
-        if (Bukkit.getPluginManager().isPluginEnabled("CloudNet-Bridge")) {
-            ServiceRegistry registry = InjectionLayer.ext().instance(ServiceRegistry.class);
-            PlayerManager playerManager = registry.firstProvider(PlayerManager.class);
-            playerManager.playerExecutor(player.getUniqueId()).connectToTask(name, ServerSelectorType.LOWEST_PLAYERS);
+        if (Bukkit.getPluginManager().isPluginEnabled("CloudNet-Bridge") && sendViaCloudNet(player, name)) {
             return;
         }
 
@@ -53,6 +46,33 @@ public class BungeecordUtils {
         out.writeUTF("Connect");
         out.writeUTF(name);
         player.sendPluginMessage(jp, "BungeeCord", out.toByteArray());
+    }
+
+    // CloudNet is reached reflectively: its driver ships Java 23 class files, so compiling
+    // against it would drag the whole plugin's target up with it. The server provides these
+    // classes at runtime whenever CloudNet-Bridge is installed.
+    private static boolean sendViaCloudNet(Player player, String name) {
+        try {
+            Class<?> injectionLayerClass = Class.forName("eu.cloudnetservice.driver.inject.InjectionLayer");
+            Class<?> serviceRegistryClass = Class.forName("eu.cloudnetservice.driver.registry.ServiceRegistry");
+            Class<?> playerManagerClass = Class.forName("eu.cloudnetservice.modules.bridge.player.PlayerManager");
+            Class<?> playerExecutorClass = Class.forName("eu.cloudnetservice.modules.bridge.player.executor.PlayerExecutor");
+            Class<?> serverSelectorTypeClass = Class.forName("eu.cloudnetservice.modules.bridge.player.executor.ServerSelectorType");
+
+            Object injectionLayer = injectionLayerClass.getMethod("ext").invoke(null);
+            Object registry = injectionLayerClass.getMethod("instance", Class.class).invoke(injectionLayer, serviceRegistryClass);
+            Object playerManager = serviceRegistryClass.getMethod("firstProvider", Class.class).invoke(registry, playerManagerClass);
+            Object playerExecutor = playerManagerClass.getMethod("playerExecutor", UUID.class).invoke(playerManager, player.getUniqueId());
+
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            Object lowestPlayers = Enum.valueOf((Class<Enum>) serverSelectorTypeClass, "LOWEST_PLAYERS");
+
+            playerExecutorClass.getMethod("connectToTask", String.class, serverSelectorTypeClass)
+                    .invoke(playerExecutor, name, lowestPlayers);
+            return true;
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | IllegalArgumentException | NullPointerException e) {
+            return false;
+        }
     }
 
     private static boolean sendViaRustyConnector(Player player, String name) {
