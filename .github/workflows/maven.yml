@@ -44,19 +44,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          pom=realskywars-api/pom.xml
-          coord() { mvn -B -q -f "$pom" help:evaluate -Dexpression="$1" -DforceStdout | tail -n 1; }
-          group=$(coord project.groupId); artifact=$(coord project.artifactId); version=$(coord project.version)
 
-          # GitHub Packages release versions are immutable: re-deploying one answers
-          # 422, so every master push after the first would fail. Publish only what
-          # is not there yet - a version bump is what triggers a new release.
-          url="https://maven.pkg.github.com/${GITHUB_REPOSITORY}/${group//.//}/${artifact}/${version}/${artifact}-${version}.pom"
-          status=$(curl -sS -o /dev/null -w '%{http_code}' -u "${GITHUB_ACTOR}:${GITHUB_TOKEN}" "$url")
-          if [ "$status" = "200" ]; then
-            echo "${group}:${artifact}:${version} is already published - nothing to do."
+          # GitHub Packages release versions are immutable: re-deploying one is
+          # refused with 409/422, so every master push that does not bump the
+          # version would fail the job. Probing the registry beforehand is not
+          # reliable (a GET here does not answer a plain 200), so deploy and
+          # treat only that refusal as "nothing to do" - bumping the version in
+          # realskywars-api/pom.xml is what publishes a new release.
+          log=$(mktemp)
+          if mvn --batch-mode deploy -pl realskywars-api -am 2>&1 | tee "$log"; then
             exit 0
           fi
 
-          echo "Publishing ${group}:${artifact}:${version}"
-          mvn --batch-mode deploy -pl realskywars-api -am
+          if grep -qE 'status code: (409|422)' "$log"; then
+            echo "This version is already published - nothing to do."
+            exit 0
+          fi
+          exit 1
