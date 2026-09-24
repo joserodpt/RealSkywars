@@ -22,6 +22,7 @@ import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.WorldBorder;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.inventory.ItemStack;
 
@@ -85,8 +86,11 @@ public class RSWMapEvent {
 
                 int factor = Math.max(1, RSWConfig.file().getInt("Config.Death-Match-Shrink-Factor", 2));
 
-                this.room.getBorder().setSize((double) this.room.getBorderSize() / factor, 30L);
-                this.room.getBorder().setCenter(this.room.getMapCuboid().getCenter());
+                WorldBorder border = this.room.getBorder();
+                if (border != null && this.room.getMapCuboid() != null) {
+                    border.setSize((double) this.room.getBorderSize() / factor, 30L);
+                    border.setCenter(this.room.getMapCuboid().getCenter());
+                }
                 break;
         }
     }

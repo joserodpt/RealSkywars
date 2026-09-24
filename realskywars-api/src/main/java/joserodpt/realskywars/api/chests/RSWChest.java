@@ -228,7 +228,9 @@ public class RSWChest {
     }
 
     public void clearHologram() {
-        this.hologram.deleteHologram();
+        if (this.hologram != null) {
+            this.hologram.deleteHologram();
+        }
     }
 
     public enum Tier {

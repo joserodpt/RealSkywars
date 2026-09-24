@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 
-@DatabaseTable(tableName = "realscoreboard_playerdata")
+@DatabaseTable(tableName = "realskywars_playerdata")
 public class PlayerDataRow {
     @DatabaseField(columnName = "uuid", canBeNull = false, id = true)
     private @NotNull UUID uuid;
@@ -99,8 +99,12 @@ public class PlayerDataRow {
     private String games_list_legacy;
 
     public PlayerDataRow(OfflinePlayer p) {
-        this.uuid = p.getUniqueId();
-        this.name = p.getName();
+        this(p.getUniqueId(), p.getName());
+    }
+
+    public PlayerDataRow(@NotNull UUID uuid, String name) {
+        this.uuid = uuid;
+        this.name = name;
         this.coins = 0D;
         this.lang = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getDefaultLanguage();
         this.prefs_mapviewer = "MAPV_ALL";
@@ -111,6 +115,38 @@ public class PlayerDataRow {
 
     public PlayerDataRow() {
         //for ORMLite
+    }
+
+    /**
+     * A copy taken on the main thread, so an async write never serializes a row the main thread is
+     * halfway through updating.
+     */
+    public PlayerDataRow copy() {
+        PlayerDataRow c = new PlayerDataRow();
+        c.uuid = this.uuid;
+        c.name = this.name;
+        c.lang = this.lang;
+        c.coins = this.coins;
+        c.prefs_mapviewer = this.prefs_mapviewer;
+        c.choosen_kit = this.choosen_kit;
+        c.prefs_cage_material = this.prefs_cage_material;
+        c.stats_wins_solo = this.stats_wins_solo;
+        c.stats_wins_ranked_solo = this.stats_wins_ranked_solo;
+        c.stats_wins_teams = this.stats_wins_teams;
+        c.stats_wins_ranked_teams = this.stats_wins_ranked_teams;
+        c.kills = this.kills;
+        c.ranked_kills = this.ranked_kills;
+        c.deaths = this.deaths;
+        c.ranked_deaths = this.ranked_deaths;
+        c.losses = this.losses;
+        c.ranked_loses = this.ranked_loses;
+        c.games_played = this.games_played;
+        c.ranked_games_played = this.ranked_games_played;
+        c.first_join = this.first_join;
+        c.last_join = this.last_join;
+        c.bought_items_legacy = this.bought_items_legacy;
+        c.games_list_legacy = this.games_list_legacy;
+        return c;
     }
 
     public String getLastJoin() {

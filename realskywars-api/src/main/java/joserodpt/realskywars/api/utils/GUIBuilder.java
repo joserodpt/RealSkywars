@@ -17,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -24,6 +25,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -69,25 +71,34 @@ public class GUIBuilder {
             public void onClick(InventoryClickEvent e) {
                 HumanEntity clicker = e.getWhoClicked();
                 if (clicker instanceof Player) {
-                    if (e.getCurrentItem() == null) {
-                        return;
-                    }
                     Player p = (Player) clicker;
                     if (p != null) {
                         UUID uuid = p.getUniqueId();
                         if (inventories.containsKey(uuid)) {
                             GUIBuilder current = inventories.get(uuid);
-                            if (!e.getInventory().getType().name()
-                                    .equalsIgnoreCase(current.getInventory().getType().name())) {
+                            if (!current.getInventory().equals(e.getInventory())) {
                                 return;
                             }
                             e.setCancelled(true);
-                            int slot = e.getSlot();
-                            if (current.runnables.get(slot) != null) {
+                            if (e.getCurrentItem() == null) {
+                                return;
+                            }
+                            //raw slot, so a click in the player's own inventory doesn't run the GUI slot with the same index
+                            int slot = e.getRawSlot();
+                            if (slot < current.getInventory().getSize() && current.runnables.get(slot) != null) {
                                 current.runnables.get(slot).run(e);
                             }
                         }
                     }
+                }
+            }
+
+            @EventHandler
+            public void onDrag(final InventoryDragEvent e) {
+                final GUIBuilder current = inventories.get(e.getWhoClicked().getUniqueId());
+                //dragging over this GUI's slots would drop the dragged items into it
+                if (current != null && current.getInventory().equals(e.getInventory())) {
+                    e.setCancelled(true);
                 }
             }
 
@@ -99,12 +110,24 @@ public class GUIBuilder {
                     }
                     Player p = (Player) e.getPlayer();
                     UUID uuid = p.getUniqueId();
-                    if (inventories.containsKey(uuid)) {
-                        inventories.get(uuid).unRegister();
+                    final GUIBuilder current = inventories.get(uuid);
+                    if (current != null && e.getInventory().equals(current.getInventory())) {
+                        current.unRegister();
                     }
                 }
             }
         };
+    }
+
+    //used on reload so nobody keeps clicking a GUI built from the old config
+    public static void closeAll() {
+        for (final GUIBuilder current : new ArrayList<>(inventories.values())) {
+            final Player p = Bukkit.getPlayer(current.uuid);
+            if (p != null && p.getOpenInventory().getTopInventory().equals(current.getInventory())) {
+                p.closeInventory();
+            }
+        }
+        inventories.clear();
     }
 
     public static ItemStack placeholder(DyeColor d, String n) {
@@ -149,9 +172,7 @@ public class GUIBuilder {
         InventoryView openInv = player.getOpenInventory();
         if (openInv != null) {
             Inventory openTop = player.getOpenInventory().getTopInventory();
-            if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
-                openTop.setContents(inv.getContents());
-            } else {
+            if (!inv.equals(openTop)) {
                 player.openInventory(inv);
             }
             register();

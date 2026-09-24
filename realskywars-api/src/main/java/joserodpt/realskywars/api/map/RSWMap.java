@@ -88,7 +88,6 @@ public abstract class RSWMap {
     private MapCuboid mapCuboid;
     private final Map<Location, RSWChest> chests;
     private final Map<Location, RSWSign> signs;
-    private WorldBorder border;
 
     private MapState state;
     /** TEAMS maps only: players pick their own team from a menu instead of being auto assigned. */
@@ -96,7 +95,7 @@ public abstract class RSWMap {
     private RSWBossbar bossbar;
     private RSWChest.Tier chestTier = RSWChest.Tier.NORMAL;
     private CountdownTimer mapTimer, startMapTimer, finishingTimer;
-    private BukkitTask timeCounterTask;
+    private BukkitTask timeCounterTask, overtimeTask;
     private ProjectileType projectileType = ProjectileType.NORMAL;
     private TimeType timeType = TimeType.DAY;
     private List<RSWMapEvent> events;
@@ -116,9 +115,9 @@ public abstract class RSWMap {
         if (pos1 != null && pos2 != null) {
             this.mapCuboid = new MapCuboid(pos1, pos2);
             this.borderSize = Math.max(this.mapCuboid.getSizeX(), this.mapCuboid.getSizeZ()); //set bigger size from x or z
-            this.border = w.getWorldBorder();
-            this.border.setCenter(this.mapCuboid.getCenter());
-            this.border.setSize(this.borderSize);
+            WorldBorder border = w.getWorldBorder();
+            border.setCenter(this.mapCuboid.getCenter());
+            border.setSize(this.borderSize);
         }
 
         this.state = state;
@@ -147,7 +146,7 @@ public abstract class RSWMap {
         this.timeToStart = RSWMapsConfig.file().getInt(this.getName() + ".Settings.Time-To-Start", -1);
         if (this.timeToStart == -1) {
             this.timeToStart = RSWConfig.file().getInt("Config.Time-To-Start");
-            RSWMapsConfig.file().set(this.getName() + ".Settings.Time-To-Start", this.getTimeEndGame());
+            RSWMapsConfig.file().set(this.getName() + ".Settings.Time-To-Start", this.getTimeToStart());
             RSWMapsConfig.save();
         }
 
@@ -179,7 +178,6 @@ public abstract class RSWMap {
         this.chests = null;
         this.signs = null;
         this.maxPlayers = -1;
-        this.border = null;
         this.borderSize = -1;
         this.spectatorLocation = null;
         this.schematicName = "";
@@ -202,8 +200,7 @@ public abstract class RSWMap {
 
     public void startTimers() {
         this.mapTimer = new CountdownTimer(RealSkywarsAPI.getInstance().getPlugin(), this.getMaxGameTime(), () -> {
-        }, () -> {
-        }, (t) -> {
+        }, this::onMaxGameTimeReached, (t) -> {
             this.bossbar.tick();
             if (this.getInvincibilitySeconds() == t.getPassedSeconds()) {
                 this.getPlayers().forEach(rswPlayer -> {
@@ -221,6 +218,57 @@ public abstract class RSWMap {
                 tickEvents();
             }
         }.runTaskTimer(RealSkywarsAPI.getInstance().getPlugin(), 0, 20);
+    }
+
+    /**
+     * The deathmatch border shrink fires at the same moment, so give it a while to play out, and end
+     * the match with no winner if nobody has won by then - otherwise a map where the last players
+     * never meet stays PLAYING forever.
+     */
+    private void onMaxGameTimeReached() {
+        if (this.getState() != MapState.PLAYING) {
+            return;
+        }
+        int overtime = Math.max(0, RSWConfig.file().getInt("Config.Death-Match-Max-Seconds", 60));
+        this.overtimeTask = Bukkit.getScheduler().runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), () -> {
+            if (this.getState() == MapState.PLAYING) {
+                this.endWithoutWinner();
+            }
+        }, overtime * 20L);
+    }
+
+    /**
+     * Ends a match nobody won: everyone left or died at once, or it outlasted the deathmatch.
+     */
+    protected void endWithoutWinner() {
+        this.setState(MapState.FINISHING);
+        this.stopMatchTimers();
+
+        for (RSWPlayer p : this.getPlayers()) {
+            this.sendLog(p, false);
+        }
+
+        this.getChests().forEach(RSWChest::cancelTasks);
+        this.getChests().forEach(RSWChest::clearHologram);
+
+        this.kickPlayers(null);
+        this.resetArena(OperationReason.RESET);
+    }
+
+    /**
+     * Stops the match clock and the event ticker. Safe to call more than once.
+     */
+    protected void stopMatchTimers() {
+        if (this.mapTimer != null) {
+            this.mapTimer.killTask();
+        }
+        if (this.timeCounterTask != null) {
+            this.timeCounterTask.cancel();
+        }
+        if (this.overtimeTask != null) {
+            this.overtimeTask.cancel();
+            this.overtimeTask = null;
+        }
     }
 
     private void tickEvents() {
@@ -268,7 +316,7 @@ public abstract class RSWMap {
     }
 
     public boolean isFull() {
-        return this.getPlayerCount() == this.getMaxPlayers();
+        return this.getPlayerCount() >= this.getMaxPlayers();
     }
 
     public String getName() {
@@ -296,7 +344,10 @@ public abstract class RSWMap {
     }
 
     public WorldBorder getBorder() {
-        return this.border;
+        //fetched every time: the default engine recreates the world on each reset, and a border
+        //captured once would belong to a world that no longer exists
+        World w = this.world == null ? null : this.world.getWorld();
+        return w == null ? null : w.getWorldBorder();
     }
 
     public int getPlayerCount() {
@@ -627,13 +678,23 @@ public abstract class RSWMap {
             for (String i : RSWMapsConfig.file().getStringList(this.getName() + ".Signs")) {
 
                 String[] signData = i.split("<");
-                World w = Bukkit.getWorld(signData[0]);
-                int x = Integer.parseInt(signData[1]);
-                int y = Integer.parseInt(signData[2]);
-                int z = Integer.parseInt(signData[3]);
+                World w = signData.length >= 4 ? Bukkit.getWorld(signData[0]) : null;
+                if (w == null) {
+                    Bukkit.getLogger().warning("[RealSkywars] Skipping invalid sign " + i + " on map " + this.getName());
+                    continue;
+                }
+
+                int x, y, z;
+                try {
+                    x = Integer.parseInt(signData[1]);
+                    y = Integer.parseInt(signData[2]);
+                    z = Integer.parseInt(signData[3]);
+                } catch (NumberFormatException e) {
+                    Bukkit.getLogger().warning("[RealSkywars] Skipping invalid sign " + i + " on map " + this.getName());
+                    continue;
+                }
 
                 Location l = new Location(w, x, y, z);
-                assert w != null;
                 list.put(l, new RSWSign(this, w.getBlockAt(l)));
             }
         }
@@ -754,7 +815,8 @@ public abstract class RSWMap {
         }
         TranslatableLine.MATCH_LEAVE.send(p, true);
 
-        if (!RSWConfig.file().getBoolean("Config.Shops.Only-Buy-Kits-Per-Match")) {
+        //kits bought per match only last for that match; otherwise the selection is kept
+        if (RSWConfig.file().getBoolean("Config.Shops.Only-Buy-Kits-Per-Match")) {
             p.setKit(null);
         }
 
@@ -769,6 +831,9 @@ public abstract class RSWMap {
 
         this.inMap.remove(p);
         p.setPlayerMap(null);
+        if (p.getUUID() != null) {
+            RealSkywarsAPI.getInstance().getPlayerManagerAPI().stopTracking(p.getUUID());
+        }
 
         //update tab
         if (!p.isBot()) {
@@ -870,12 +935,7 @@ public abstract class RSWMap {
     protected void commonResetArena(OperationReason rr) {
         this.setState(MapState.RESETTING);
 
-        if (this.timeCounterTask != null) {
-            this.timeCounterTask.cancel();
-        }
-        if (this.mapTimer != null) {
-            this.mapTimer.killTask();
-        }
+        this.stopMatchTimers();
         if (this.finishingTimer != null) {
             this.finishingTimer.killTask();
         }
@@ -886,6 +946,10 @@ public abstract class RSWMap {
 
         if (rr != OperationReason.SHUTDOWN) {
             this.getChests().forEach(RSWChest::clear);
+        } else {
+            //no block changes while shutting down, but the refill timers and holograms still have to go
+            this.getChests().forEach(RSWChest::cancelTasks);
+            this.getChests().forEach(RSWChest::clearHologram);
         }
         this.world.resetWorld(rr);
 
@@ -941,7 +1005,13 @@ public abstract class RSWMap {
                 continue;
             }
 
-            int time = Integer.parseInt(parse[1]);
+            int time;
+            try {
+                time = Integer.parseInt(parse[1].trim());
+            } catch (NumberFormatException e) {
+                Bukkit.getLogger().warning("Invalid event time: " + s);
+                continue;
+            }
             ret.add(new RSWMapEvent(this, et, time));
         }
 
@@ -1005,9 +1075,9 @@ public abstract class RSWMap {
     public void setBoundaries(Location pos1, Location pos2) {
         this.mapCuboid = new MapCuboid(pos1, pos2);
         this.borderSize = Math.max(this.mapCuboid.getSizeX(), this.mapCuboid.getSizeZ()); //set bigger size from x or z
-        this.border = this.getRSWWorld().getWorld().getWorldBorder();
-        this.border.setCenter(this.mapCuboid.getCenter());
-        this.border.setSize(this.borderSize);
+        WorldBorder border = this.getBorder();
+        border.setCenter(this.mapCuboid.getCenter());
+        border.setSize(this.borderSize);
         this.save(Data.BORDER, true);
     }
 

@@ -103,6 +103,11 @@ public class WorldManager extends WorldManagerAPI {
         worldCreator.generateStructures(false);
         worldCreator.generator(new VoidWorld());
         World world = worldCreator.createWorld();
+        //null on an invalid name, or when the server refuses to create it
+        if (world == null) {
+            rs.getLogger().severe("Could not create or load world " + worldName + ".");
+            return false;
+        }
         world.setDifficulty(Difficulty.NORMAL);
         world.setSpawnFlags(true, true);
         world.setPVP(true);

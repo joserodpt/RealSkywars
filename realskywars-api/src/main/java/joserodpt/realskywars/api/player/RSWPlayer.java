@@ -334,9 +334,8 @@ public class RSWPlayer {
     }
 
     public void setBowParticle(Particle bowParticle) {
-        if (this.bowParticle != null) {
-            this.bowParticle = bowParticle;
-        }
+        //null clears it
+        this.bowParticle = bowParticle;
     }
 
     public void setCageBlock(Material m) {

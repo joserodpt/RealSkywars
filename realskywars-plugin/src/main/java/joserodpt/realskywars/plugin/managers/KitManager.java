@@ -117,9 +117,10 @@ public class KitManager extends KitManagerAPI {
 
     @Override
     public void unregisterKit(RSWKit k) {
-        this.getKits().remove(k);
-        RSWKitsConfig.file().remove("Kits");
-        this.getKits().forEach(this::registerKit);
+        this.kits.remove(k.getName());
+        //just this kit's section: clearing "Kits" and re-registering the rest wrote nothing back, since
+        //registerKit skips kits that are already in the map, so every kit was wiped from kits.yml
+        RSWKitsConfig.file().remove("Kits." + k.getName());
         RSWKitsConfig.save();
     }
 

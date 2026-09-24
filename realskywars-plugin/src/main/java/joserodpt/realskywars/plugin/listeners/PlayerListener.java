@@ -44,6 +44,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -67,6 +68,11 @@ import org.bukkit.event.player.PlayerPickupArrowEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
+import java.util.List;
 import java.util.Optional;
 
 public class PlayerListener implements Listener {
@@ -151,7 +157,11 @@ public class PlayerListener implements Listener {
         }
         switch (e.getAction()) {
             case PHYSICAL:
-                if (e.getClickedBlock().getType() == Material.FARMLAND && (p.getState() == RSWPlayer.PlayerState.SPECTATOR || p.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR)) {
+                if (e.getClickedBlock() == null) {
+                    break;
+                }
+                //spectators trample farmland and trigger pressure plates and tripwires like anyone else
+                if (p.getState() == RSWPlayer.PlayerState.SPECTATOR || p.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
                     e.setCancelled(true);
                     break;
                 }
@@ -207,8 +217,8 @@ public class PlayerListener implements Listener {
 
                         switch (p.getState()) {
                             case PLAYING:
-                                //fill chests
-                                if (e.getClickedBlock() != null && e.getClickedBlock().getState() instanceof Chest) {
+                                //fill chests, unless another plugin (a region, a lock) stopped the open
+                                if (e.getClickedBlock() != null && e.useInteractedBlock() != Event.Result.DENY && e.getClickedBlock().getState() instanceof Chest) {
                                     RSWChest chest = p.getMatch().getChest(e.getClickedBlock().getLocation());
                                     if (chest != null) {
                                         chest.populate();
@@ -341,7 +351,7 @@ public class PlayerListener implements Listener {
 
     //player block interactions
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(event.getPlayer());
 
@@ -397,9 +407,13 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void place(BlockPlaceEvent event) {
         RSWPlayer pg = rs.getPlayerManagerAPI().getPlayer(event.getPlayer());
+        //an NPC, or a player whose data failed to load
+        if (pg == null) {
+            return;
+        }
 
         if (event.getPlayer().isOp()) {
             if (event.getBlock().getType().equals(Material.BEACON)) {
@@ -471,7 +485,7 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();
@@ -534,21 +548,28 @@ public class PlayerListener implements Listener {
         Player pkilled = e.getEntity();
         Player pkiller = e.getEntity().getKiller();
 
-        Location deathLoc = null;
-        String msg = e.getDeathMessage();
-        e.setDeathMessage(null);
+        RSWPlayer killed = rs.getPlayerManagerAPI().getPlayer(pkilled);
+        //an NPC, or a player whose data failed to load: not ours to handle
+        if (killed == null) {
+            return;
+        }
 
+        Location deathLoc = null;
         if (pkiller != null) {
             RSWPlayer killer = rs.getPlayerManagerAPI().getPlayer(pkiller);
-            if (killer.isInMatch()) {
+            if (killer != null && killer.isInMatch()) {
                 killer.addStatistic(RSWPlayer.Statistic.KILL, 1, killer.getMatch().isRanked());
             }
             deathLoc = pkiller.getLocation();
         }
 
-        RSWPlayer killed = rs.getPlayerManagerAPI().getPlayer(pkilled);
-        if (killed == null && killed.isInMatch()) {
-            killed.getMatch().getPlayers().forEach(rswPlayer -> rswPlayer.sendMessage(msg));
+        //only a match's own deaths are kept inside it, everywhere else the server's message stands
+        if (killed.isInMatch()) {
+            String msg = e.getDeathMessage();
+            e.setDeathMessage(null);
+            if (msg != null) {
+                killed.getMatch().getPlayers().forEach(rswPlayer -> rswPlayer.sendMessage(msg));
+            }
         }
 
         if (checkSpectate(killed)) return;
@@ -563,8 +584,13 @@ public class PlayerListener implements Listener {
                 }
                 killed.getPlayer().spigot().respawn();
 
-                killed.getMatch().spectate(killed, RSWMap.SpectateType.INSIDE_GAME,
-                        finalDeathLoc == null ? killed.getMatch().getSpectatorLocation() : finalDeathLoc);
+                //they may have left, or the match ended, during that tick
+                RSWMap match = killed.getMatch();
+                if (match == null) {
+                    return;
+                }
+                match.spectate(killed, RSWMap.SpectateType.INSIDE_GAME,
+                        finalDeathLoc == null ? match.getSpectatorLocation() : finalDeathLoc);
             }, 1);
         }
     }
@@ -572,18 +598,26 @@ public class PlayerListener implements Listener {
     private boolean checkSpectate(RSWPlayer killed) {
         if (killed.getState() == RSWPlayer.PlayerState.SPECTATOR || killed.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
+                if (killed.getPlayer() == null) {
+                    return;
+                }
                 killed.getPlayer().spigot().respawn();
-                killed.teleport(killed.getMatch().getSpectatorLocation());
+                if (killed.getMatch() != null) {
+                    killed.teleport(killed.getMatch().getSpectatorLocation());
+                }
             }, 1);
             return true;
         }
         return false;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onHit(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Player) {
             RSWPlayer hitter = rs.getPlayerManagerAPI().getPlayer((Player) e.getDamager());
+            if (hitter == null) {
+                return;
+            }
 
             if (hitter.getState() == RSWPlayer.PlayerState.SPECTATOR
                     || hitter.getState() == RSWPlayer.PlayerState.EXTERNAL_SPECTATOR) {
@@ -595,7 +629,7 @@ public class PlayerListener implements Listener {
 
                 RSWPlayer hurt = rs.getPlayerManagerAPI().getPlayer(whoWasHit);
 
-                if (hitter.getTeam() != null && hitter.getTeam().getMembers().contains(hurt)) {
+                if (hurt != null && hitter.getTeam() != null && hitter.getTeam().getMembers().contains(hurt)) {
                     TranslatableLine.TEAMMATE_DAMAGE_CANCEL.send(hitter, true);
                     e.setCancelled(true);
                 }
@@ -621,12 +655,10 @@ public class PlayerListener implements Listener {
     public void onAsyncPlayerJoin(AsyncPlayerPreLoginEvent e) {
         // auto join random match
         if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
-            if (rs.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL).isEmpty()) {
-                e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_NO_AVAILABLE_MAPS.getSingle());
-                return;
-            }
-
-            Optional<RSWMap> map = rs.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL).stream().findFirst();
+            //this is an async thread: only the map's state (a plain field read) is checked here, the
+            //actual join and its checks run on the main thread in loadPlayer
+            Collection<RSWMap> maps = new ArrayList<>(rs.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL));
+            Optional<RSWMap> map = maps.stream().findFirst();
             if (map.isPresent()) {
                 RSWMap game = map.get();
                 if (game.getState() == RSWMap.MapState.RESETTING) {
@@ -634,34 +666,44 @@ public class PlayerListener implements Listener {
                     return;
                 }
 
-                if (game.isFull() && !game.isSpectatorEnabled()) {
-                    e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_FULL.getSingle());
-                } else {
-                    rs.getPlayerManagerAPI().getFastJoin().put(e.getUniqueId(), game);
-                    e.allow();
-                }
+                rs.getPlayerManagerAPI().getFastJoin().put(e.getUniqueId(), game);
             } else {
                 e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslatableLine.BUNGEECORD_NO_AVAILABLE_MAPS.getSingle());
             }
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onAsyncPreLoginLoad(AsyncPlayerPreLoginEvent e) {
+        //fresh from the database on every join, so a Bungee network sharing one MySQL never sees a
+        //row another server has since changed. Done here, off the main thread, and only for logins
+        //that are actually going ahead
+        if (e.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) {
+            rs.getDatabaseManagerAPI().preloadPlayer(e.getUniqueId(), e.getName());
+        } else {
+            rs.getPlayerManagerAPI().getFastJoin().remove(e.getUniqueId());
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
     public void onAsyncChat(AsyncPlayerChatEvent e) {
         if (RSWConfig.file().getBoolean("Config.Enable-Chat-Per-Map", false)) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(e.getPlayer());
             if (p != null) {
-                if (p.isInMatch()) {
-                    e.getRecipients().clear();
-                    for (RSWPlayer gp : p.getMatch().getAllPlayers()) {
-                        e.getRecipients().add(gp.getPlayer());
+                //the match's lists are changed on the main thread while this async one reads them, so work
+                //on copies, retrying the rare copy that races a change
+                RSWMap match = p.getMatch();
+                List<RSWPlayer> inMatch = snapshot(match == null ? rs.getPlayerManagerAPI().getPlayers() : match.getAllPlayers());
+                e.getRecipients().clear();
+                if (match != null) {
+                    for (RSWPlayer gp : inMatch) {
+                        if (gp.getPlayer() != null) {
+                            e.getRecipients().add(gp.getPlayer());
+                        }
                     }
                 } else {
-                    e.getRecipients().clear();
-                    for (Player gp : Bukkit.getOnlinePlayers()) {
-                        e.getRecipients().add(gp);
-                    }
-                    for (RSWPlayer player : rs.getPlayerManagerAPI().getPlayers()) {
+                    e.getRecipients().addAll(Bukkit.getOnlinePlayers());
+                    for (RSWPlayer player : inMatch) {
                         if (player.isInMatch()) {
                             e.getRecipients().remove(player.getPlayer());
                         }
@@ -669,6 +711,16 @@ public class PlayerListener implements Listener {
                 }
             }
         }
+    }
+
+    private static List<RSWPlayer> snapshot(Collection<RSWPlayer> players) {
+        for (int i = 0; i < 3; ++i) {
+            try {
+                return new ArrayList<>(players);
+            } catch (ConcurrentModificationException ignored) {
+            }
+        }
+        return Collections.emptyList();
     }
 
     @EventHandler
@@ -686,6 +738,10 @@ public class PlayerListener implements Listener {
         if (p != null) {
             p.leave();
         }
+        rs.getPlayerManagerAPI().stopTracking(e.getPlayer().getUniqueId());
+        rs.getPlayerManagerAPI().getFastJoin().remove(e.getPlayer().getUniqueId());
+        //after leave(), whose final save is queued first
+        rs.getDatabaseManagerAPI().unloadPlayer(e.getPlayer().getUniqueId());
     }
 
     @EventHandler
@@ -693,8 +749,7 @@ public class PlayerListener implements Listener {
         if (e.getEntity().getShooter() != null && e.getEntity().getShooter() instanceof Player && e.getEntity() instanceof Arrow) {
             Player p = (Player) e.getEntity().getShooter();
             RSWPlayer gp = rs.getPlayerManagerAPI().getPlayer(p);
-            assert gp != null;
-            if (gp.getBowParticle() != null && gp.isInMatch()) {
+            if (gp != null && gp.getBowParticle() != null && gp.isInMatch()) {
                 gp.addTrail(new RSWBowTrail(gp.getBowParticle(), e.getEntity(), gp));
             }
         }

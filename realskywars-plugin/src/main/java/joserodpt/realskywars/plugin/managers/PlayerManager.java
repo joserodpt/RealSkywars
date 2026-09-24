@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.LANGUAGE;
 import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.PLAYER;
@@ -49,9 +50,10 @@ public class PlayerManager extends PlayerManagerAPI {
         this.rs = rs;
     }
 
-    Map<UUID, RSWMap> fastJoin = new HashMap<>();
+    //written from the async pre login
+    Map<UUID, RSWMap> fastJoin = new ConcurrentHashMap<>();
     public List<UUID> teleporting = new ArrayList<>();
-    private final Map<Player, Player> trackingPlayers = new HashMap<>();
+    private final Map<UUID, UUID> trackingPlayers = new HashMap<>();
     private final Map<UUID, RSWPlayer> players = new HashMap<>();
 
     @Override
@@ -81,12 +83,17 @@ public class PlayerManager extends PlayerManagerAPI {
                 for (String s : split) {
                     String[] data = s.split(";");
                     if (data.length == 7) {
-                        Boolean ranked = Boolean.parseBoolean(data[2]);
-                        int jogadores = Integer.parseInt(data[3]);
-                        boolean win = Boolean.parseBoolean(data[4]);
-                        int seconds = Integer.parseInt(data[5]);
+                        try {
+                            Boolean ranked = Boolean.parseBoolean(data[2]);
+                            int jogadores = Integer.parseInt(data[3]);
+                            boolean win = Boolean.parseBoolean(data[4]);
+                            int seconds = Integer.parseInt(data[5]);
 
-                        rs.getDatabaseManagerAPI().saveNewGameHistory(new PlayerGameHistoryRow(player, data[0], data[1], ranked, jogadores, win, seconds, data[6]), true);
+                            rs.getDatabaseManagerAPI().saveNewGameHistory(new PlayerGameHistoryRow(player, data[0], data[1], ranked, jogadores, win, seconds, data[6]), true);
+                        } catch (NumberFormatException e) {
+                            //one bad entry used to throw here and kick the player on every join
+                            rs.getLogger().warning("Skipping malformed legacy game history entry for " + player.getName() + ": " + s);
+                        }
                     }
                 }
 
@@ -148,9 +155,14 @@ public class PlayerManager extends PlayerManagerAPI {
 
             rs.getPlayerManagerAPI().addPlayer(p);
 
-            if (rs.getPlayerManagerAPI().getFastJoin().containsKey(player.getUniqueId())) {
-                rs.getPlayerManagerAPI().getFastJoin().get(player.getUniqueId()).addPlayer(p);
-                rs.getPlayerManagerAPI().getFastJoin().remove(player.getUniqueId());
+            RSWMap fastJoinMap = rs.getPlayerManagerAPI().getFastJoin().remove(player.getUniqueId());
+            if (fastJoinMap != null) {
+                //checked here rather than in the async pre login, which can't safely read the map's players
+                if (fastJoinMap.isFull() && !fastJoinMap.isSpectatorEnabled()) {
+                    player.kickPlayer(TranslatableLine.BUNGEECORD_FULL.getSingle());
+                    return;
+                }
+                fastJoinMap.addPlayer(p);
             } else {
                 if (rs.getLobbyManagerAPI().tpLobbyOnJoin()) {
                     rs.getLobbyManagerAPI().tpToLobby(p);
@@ -286,26 +298,40 @@ public class PlayerManager extends PlayerManagerAPI {
         Player target = search.get().getPlayer();
 
         //Credit GITHUB PlayerCompass
-        trackingPlayers.put(player, target);
+        trackingPlayers.put(player.getUniqueId(), target.getUniqueId());
         gp.sendMessage(TranslatableLine.TRACK_FOUND.with(PLAYER, target.getDisplayName()).get(gp, true));
 
+        RSWPlayer tracked = search.get();
+        RSWMap match = gp.getMatch();
+        //sync: setCompassTarget and getLocation aren't safe off the main thread
         new BukkitRunnable() {
             public void run() {
                 //Cancel task if player is offline or is no longer tracking target
-                if (!player.isOnline() || !trackingPlayers.containsKey(player) || !trackingPlayers.get(player).equals(target))
+                if (!player.isOnline() || !target.getUniqueId().equals(trackingPlayers.get(player.getUniqueId()))) {
                     this.cancel();
+                    return;
+                }
 
-                    //Cancel task if target is offline
-                else if (!target.isOnline() || search.get().getState() != RSWPlayer.PlayerState.PLAYING) {
+                //Cancel task if target is offline, out of the match, or the tracker left it
+                if (!target.isOnline() || tracked.getState() != RSWPlayer.PlayerState.PLAYING || gp.getMatch() != match) {
                     if (gp.isInMatch()) {
                         player.setCompassTarget(gp.getMatch().getSpectatorLocation());
                     }
+                    trackingPlayers.remove(player.getUniqueId(), target.getUniqueId());
                     this.cancel();
+                    return;
                 }
 
                 player.setCompassTarget(target.getLocation());
             }
-        }.runTaskTimerAsynchronously(rs.getPlugin(), 5L, 30L);
+        }.runTaskTimer(rs.getPlugin(), 5L, 30L);
+    }
+
+    @Override
+    public void stopTracking(UUID uuid) {
+        this.trackingPlayers.remove(uuid);
+        //and anyone who was tracking them
+        this.trackingPlayers.values().removeIf(uuid::equals);
     }
 
     @Override

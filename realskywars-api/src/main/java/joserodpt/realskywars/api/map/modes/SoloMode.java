@@ -144,7 +144,7 @@ public class SoloMode extends RSWMap {
                     }
                     break;
                 default:
-                    if (this.getPlayerCount() == this.getMaxPlayers()) {
+                    if (this.isFull()) {
                         if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
                             spectate(p, SpectateType.EXTERNAL, null);
                             return;
@@ -217,53 +217,64 @@ public class SoloMode extends RSWMap {
 
     @Override
     public void checkWin() {
-        if (this.getPlayerCount() == 1 && super.getState() != MapState.FINISHING) {
-            this.setState(MapState.FINISHING);
+        if (super.getState() != MapState.PLAYING || this.getPlayerCount() > 1) {
+            return;
+        }
 
-            RSWPlayer p = getPlayers().get(0);
-            p.setInvincible(true);
+        //the last players died together or left: nobody to crown, but the match still has to end
+        if (this.getPlayerCount() == 0) {
+            super.endWithoutWinner();
+            return;
+        }
 
-            super.getMapTimer().killTask();
-            super.getTimeCounterTask().cancel();
+        this.setState(MapState.FINISHING);
 
-            super.getRealSkywarsAPI().getPlayerManagerAPI().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(TranslatableLine.WINNER_BROADCAST.with(WINNER, p.getDisplayName()).with(MAP, super.getName()).with(DISPLAYNAME, super.getDisplayName()).get(gamePlayer, true)));
+        RSWPlayer p = getPlayers().get(0);
+        p.setInvincible(true);
 
-            if (this.isInstantEndEnabled()) {
+        super.stopMatchTimers();
+
+        super.getRealSkywarsAPI().getPlayerManagerAPI().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(TranslatableLine.WINNER_BROADCAST.with(WINNER, p.getDisplayName()).with(MAP, super.getName()).with(DISPLAYNAME, super.getDisplayName()).get(gamePlayer, true)));
+
+        //counted here so an instant end still gives the win, its coins and stats
+        if (p.getPlayer() != null) {
+            p.addStatistic(RSWPlayer.Statistic.SOLO_WIN, 1, this.isRanked());
+        }
+
+        if (this.isInstantEndEnabled()) {
+            this.sendLog(p, true);
+            this.kickPlayers(null);
+            this.resetArena(OperationReason.RESET);
+        } else {
+            super.setFinishingTimer(new CountdownTimer(super.getRealSkywarsAPI().getPlugin(), this.getTimeEndGame(), () -> {
+                super.getBossBar().tick();
+                if (p.getPlayer() != null) {
+                    p.setInvincible(true);
+                    p.executeWinBlock(this.getTimeEndGame() - 2);
+                }
+
+                for (RSWPlayer g : super.getAllPlayers()) {
+                    g.delCage();
+                    g.sendMessage(TranslatableLine.MATCH_END.with(TIME, Text.formatSeconds(this.getTimeEndGame())).get(g, true));
+                }
+            }, () -> {
+                super.getBossBar().tick();
                 this.sendLog(p, true);
                 this.kickPlayers(null);
                 this.resetArena(OperationReason.RESET);
-            } else {
-                super.setFinishingTimer(new CountdownTimer(super.getRealSkywarsAPI().getPlugin(), this.getTimeEndGame(), () -> {
-                    super.getBossBar().tick();
-                    if (p.getPlayer() != null) {
-                        p.setInvincible(true);
-                        p.addStatistic(RSWPlayer.Statistic.SOLO_WIN, 1, this.isRanked());
-                        p.executeWinBlock(this.getTimeEndGame() - 2);
-                    }
+            }, (t) -> {
+                super.getAllPlayers().forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), this.getTimeEndGame()));
+                super.getBossBar().tick();
+                if (p.getPlayer() != null) {
+                    FireworkUtils.spawnRandomFirework(p.getLocation());
+                }
+            }));
 
-                    for (RSWPlayer g : super.getAllPlayers()) {
-                        g.delCage();
-                        g.sendMessage(TranslatableLine.MATCH_END.with(TIME, Text.formatSeconds(this.getTimeEndGame())).get(g, true));
-                    }
-                }, () -> {
-                    super.getBossBar().tick();
-                    this.sendLog(p, true);
-                    this.kickPlayers(null);
-                    this.resetArena(OperationReason.RESET);
-                }, (t) -> {
-                    super.getAllPlayers().forEach(rswPlayer -> rswPlayer.setBarNumber(t.getSecondsLeft(), this.getTimeEndGame()));
-                    super.getBossBar().tick();
-                    if (p.getPlayer() != null) {
-                        FireworkUtils.spawnRandomFirework(p.getLocation());
-                    }
-                }));
-
-                super.getFinishingTimer().scheduleTimer();
-            }
-
-            super.getChests().forEach(RSWChest::cancelTasks);
-            super.getChests().forEach(RSWChest::clearHologram);
+            super.getFinishingTimer().scheduleTimer();
         }
+
+        super.getChests().forEach(RSWChest::cancelTasks);
+        super.getChests().forEach(RSWChest::clearHologram);
     }
 
     @Override

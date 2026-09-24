@@ -53,11 +53,20 @@ import joserodpt.realskywars.plugin.managers.PlayerManager;
 import joserodpt.realskywars.plugin.managers.ShopManager;
 import joserodpt.realskywars.plugin.managers.WorldManager;
 import net.milkbowl.vault.economy.Economy;
+import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.utils.PlayerInput;
+import joserodpt.realskywars.plugin.gui.GUIManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class RealSkywars extends RealSkywarsAPI {
 
@@ -200,6 +209,19 @@ public class RealSkywars extends RealSkywarsAPI {
     public void reload() {
         mapManagerAPI.endMaps(false);
 
+        //every open GUI and pending prompt was built from the old config and holds the old player objects
+        GUIManager.closeAllGUIs();
+        PlayerInput.clearAll();
+
+        //remember the parties, which point at the player objects loadPlayers() is about to replace
+        Map<UUID, List<UUID>> parties = new HashMap<>();
+        for (RSWPlayer p : playerManagerAPI.getPlayers()) {
+            if (p.hasParty() && p.getParty().isOwner(p)) {
+                parties.put(p.getUUID(), p.getParty().getMembers().stream().map(RSWPlayer::getUUID).collect(Collectors.toList()));
+            }
+        }
+        partiesManagerAPI.invites.clear();
+
         RSWConfig.reload();
         RSWMapsConfig.reload();
         RSWLanguagesOldConfig.reload();
@@ -212,17 +234,42 @@ public class RealSkywars extends RealSkywarsAPI {
         EPICChestConfig.reload();
 
         languageManagerAPI.loadLanguages();
-        playerManagerAPI.stopScoreboards();
-        playerManagerAPI.loadPlayers();
+
+        //before loadPlayers(), which resolves each player's chosen kit and bought items against these
         RSWShopsConfig.reload();
         RSWKitsConfig.reload();
         kitManager.loadKits();
+        shopManagerAPI.loadShopItems();
+
+        playerManagerAPI.stopScoreboards();
+        playerManagerAPI.loadPlayers();
+        restoreParties(parties);
 
         achievementsManagerAPI.loadAchievements();
         leaderboardManagerAPI.refreshLeaderboards();
 
         mapManagerAPI.loadMaps();
         lobbyManagerAPI.loadLobby();
+    }
+
+    private void restoreParties(Map<UUID, List<UUID>> parties) {
+        parties.forEach((ownerUUID, memberUUIDs) -> {
+            Player ownerPlayer = Bukkit.getPlayer(ownerUUID);
+            RSWPlayer owner = ownerPlayer == null ? null : playerManagerAPI.getPlayer(ownerPlayer);
+            if (owner == null) {
+                return;
+            }
+            owner.createParty();
+            for (UUID memberUUID : memberUUIDs) {
+                Player memberPlayer = memberUUID == null ? null : Bukkit.getPlayer(memberUUID);
+                RSWPlayer member = memberPlayer == null ? null : playerManagerAPI.getPlayer(memberPlayer);
+                if (member != null) {
+                    //silently, it's the same party as before the reload
+                    owner.getParty().getMembers().add(member);
+                    member.joinParty(owner);
+                }
+            }
+        });
     }
 
     @Override

@@ -48,6 +48,11 @@ public abstract class PlayerManagerAPI {
 
     public abstract void trackPlayer(RSWPlayer gp);
 
+    /**
+     * Stops the compass tracker of this player and of anyone tracking them.
+     */
+    public abstract void stopTracking(UUID uuid);
+
     public abstract List<UUID> getTeleporting();
 
     public abstract Map<UUID, RSWMap> getFastJoin();

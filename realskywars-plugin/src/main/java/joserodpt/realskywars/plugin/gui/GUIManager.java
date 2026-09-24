@@ -16,6 +16,7 @@ package joserodpt.realskywars.plugin.gui;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.chests.TierViewer;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.RSWLanguage;
 import joserodpt.realskywars.api.config.TranslatableLine;
@@ -26,10 +27,16 @@ import joserodpt.realskywars.api.utils.GUIBuilder;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.plugin.gui.guis.AchievementViewerGUI;
 import joserodpt.realskywars.plugin.gui.guis.GameHistoryGUI;
+import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
+import joserodpt.realskywars.plugin.gui.guis.MapDashboardGUI;
+import joserodpt.realskywars.plugin.gui.guis.MapEventEditorGUI;
+import joserodpt.realskywars.plugin.gui.guis.MapSettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
+import joserodpt.realskywars.plugin.gui.guis.PlayerGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerItemsGUI;
 import joserodpt.realskywars.plugin.gui.guis.SettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.ShopGUI;
+import joserodpt.realskywars.plugin.gui.guis.VoteGUI;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -39,6 +46,26 @@ import java.util.Collections;
 import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.NAME;
 
 public class GUIManager {
+
+    /**
+     * Closes every open RealSkywars GUI, used on reload.
+     */
+    public static void closeAllGUIs() {
+        GUIBuilder.closeAll();
+        TierViewer.closeAll();
+        AchievementViewerGUI.closeAll();
+        GameHistoryGUI.closeAll();
+        KitSettingsGUI.closeAll();
+        MapDashboardGUI.closeAll();
+        MapEventEditorGUI.closeAll();
+        MapSettingsGUI.closeAll();
+        MapsListGUI.closeAll();
+        PlayerGUI.closeAll();
+        PlayerItemsGUI.closeAll();
+        SettingsGUI.closeAll();
+        ShopGUI.closeAll();
+        VoteGUI.closeAll();
+    }
 
     public static void openSpectate(RSWPlayer p) {
         GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_SPECTATE_TITLE.get(p), 54, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
@@ -128,8 +155,7 @@ public class GUIManager {
         if (!p.isInMatch()) {
             inventory.addItem(e -> {
                 p.closeInventory();
-                GameHistoryGUI v = new GameHistoryGUI(p);
-                v.openInventory(p);
+                GameHistoryGUI.openAsync(p);
             }, Itens.createItem(Material.FILLED_MAP, 1, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 16);
 
             if (!RSWConfig.file().getBoolean("Config.Disable-Language-Selection")) {

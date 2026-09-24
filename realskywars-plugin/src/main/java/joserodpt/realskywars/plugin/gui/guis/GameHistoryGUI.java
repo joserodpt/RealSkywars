@@ -17,11 +17,13 @@ package joserodpt.realskywars.plugin.gui.guis;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
+import joserodpt.realskywars.api.database.PlayerGameHistoryRow;
 import joserodpt.realskywars.api.player.RSWGameHistoryStats;
 import joserodpt.realskywars.api.player.RSWGameLog;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Pagination;
+import joserodpt.realskywars.api.utils.Pair;
 import joserodpt.realskywars.plugin.gui.GUIManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -32,11 +34,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -56,13 +61,30 @@ public class GameHistoryGUI {
     int pageNumber = 0;
     Pagination<RSWGameLog> p;
 
-    public GameHistoryGUI(RSWPlayer rswp) {
+    //the history query hits the database, so it runs async and the GUI is built back on the main thread
+    public static void openAsync(RSWPlayer rswp) {
+        final Player player = rswp.getPlayer();
+        if (player == null) {
+            return;
+        }
+        final Plugin plugin = RealSkywarsAPI.getInstance().getPlugin();
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            final Pair<Collection<PlayerGameHistoryRow>, RSWGameHistoryStats> response = RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerGameHistory(player);
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                if (!player.isOnline()) {
+                    return;
+                }
+                new GameHistoryGUI(rswp, response).openInventory(rswp);
+            });
+        });
+    }
+
+    private GameHistoryGUI(RSWPlayer rswp, Pair<Collection<PlayerGameHistoryRow>, RSWGameHistoryStats> response) {
         this.uuid = rswp.getUUID();
         this.rswp = rswp;
         this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(rswp));
 
         List<RSWGameLog> items = new ArrayList<>();
-        var response = RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerGameHistory(rswp.getPlayer());
         this.stats = response.getValue();
 
         if (response.getKey().isEmpty()) {
@@ -75,23 +97,34 @@ public class GameHistoryGUI {
         fillChest(this.p.getPage(this.pageNumber));
     }
 
+    //used on reload so nobody keeps clicking a GUI built from the old config
+    public static void closeAll() {
+        for (final GameHistoryGUI current : new ArrayList<>(inventories.values())) {
+            final Player p = Bukkit.getPlayer(current.uuid);
+            if (p != null && p.getOpenInventory().getTopInventory().equals(current.getInventory())) {
+                p.closeInventory();
+            }
+        }
+        inventories.clear();
+    }
+
     public static Listener getListener() {
         return new Listener() {
             @EventHandler
             public void onClick(InventoryClickEvent e) {
                 HumanEntity clicker = e.getWhoClicked();
                 if (clicker instanceof Player) {
-                    if (e.getCurrentItem() == null) {
-                        return;
-                    }
                     UUID uuid = clicker.getUniqueId();
                     if (inventories.containsKey(uuid)) {
                         GameHistoryGUI current = inventories.get(uuid);
-                        if (e.getInventory().getHolder() != current.getInventory().getHolder()) {
+                        if (!current.getInventory().equals(e.getInventory())) {
                             return;
                         }
 
                         e.setCancelled(true);
+                        if (e.getCurrentItem() == null) {
+                            return;
+                        }
                         RSWPlayer p = RealSkywarsAPI.getInstance().getPlayerManagerAPI().getPlayer((Player) clicker);
 
                         switch (e.getRawSlot()) {
@@ -144,6 +177,15 @@ public class GameHistoryGUI {
             }
 
             @EventHandler
+            public void onDrag(final InventoryDragEvent e) {
+                final GameHistoryGUI current = inventories.get(e.getWhoClicked().getUniqueId());
+                //dragging over this GUI's slots would drop the dragged items into it
+                if (current != null && current.getInventory().equals(e.getInventory())) {
+                    e.setCancelled(true);
+                }
+            }
+
+            @EventHandler
             public void onClose(InventoryCloseEvent e) {
                 if (e.getPlayer() instanceof Player) {
                     if (e.getInventory() == null) {
@@ -151,8 +193,9 @@ public class GameHistoryGUI {
                     }
                     Player p = (Player) e.getPlayer();
                     UUID uuid = p.getUniqueId();
-                    if (inventories.containsKey(uuid)) {
-                        inventories.get(uuid).unregister();
+                    final GameHistoryGUI current = inventories.get(uuid);
+                    if (current != null && e.getInventory().equals(current.getInventory())) {
+                        current.unregister();
                     }
                 }
             }
@@ -214,9 +257,7 @@ public class GameHistoryGUI {
         InventoryView openInv = player.getPlayer().getOpenInventory();
         if (openInv != null) {
             Inventory openTop = player.getPlayer().getOpenInventory().getTopInventory();
-            if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
-                openTop.setContents(inv.getContents());
-            } else {
+            if (!inv.equals(openTop)) {
                 player.getPlayer().openInventory(inv);
             }
             register();

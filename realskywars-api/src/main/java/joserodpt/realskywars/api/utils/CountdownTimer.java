@@ -90,7 +90,10 @@ public class CountdownTimer implements Runnable {
     }
 
     public void killTask() {
-        Bukkit.getScheduler().cancelTask(this.assignedTaskId);
+        //never scheduled, nothing to cancel (and unboxing the null id would throw)
+        if (this.assignedTaskId != null) {
+            Bukkit.getScheduler().cancelTask(this.assignedTaskId);
+        }
     }
 
     /**

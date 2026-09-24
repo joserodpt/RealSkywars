@@ -16,13 +16,16 @@ package joserodpt.realskywars.plugin.listeners;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realskywars.api.cages.RSWCage;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.Container;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
@@ -55,17 +58,43 @@ public class EventListener implements Listener {
     @EventHandler
     public void projectileHitEvent(ProjectileHitEvent e) {
         RSWMap match = rs.getMapManagerAPI().getMap(e.getEntity().getWorld());
-        if (match != null && match.getProjectileTier() == RSWMap.ProjectileType.BREAK_BLOCKS) {
+        if (match != null && match.getState() == RSWMap.MapState.PLAYING && match.getProjectileTier() == RSWMap.ProjectileType.BREAK_BLOCKS) {
             Projectile projectile = e.getEntity();
             if (projectile instanceof EnderPearl) {
                 return;
             }
 
             Block block = e.getHitBlock();
-            if (block == null)
+            if (block == null || !canProjectileBreak(match, block))
                 return;
             block.breakNaturally();
         }
+    }
+
+    private boolean canProjectileBreak(RSWMap match, Block block) {
+        //bedrock, barriers and the like
+        if (block.getType().getHardness() < 0) {
+            return false;
+        }
+        //chests hold the loot and are tracked by the map, and other containers would spill theirs
+        if (block.getState() instanceof Container) {
+            return false;
+        }
+        //a schematic map's reset only restores its arena
+        if (match.getMapCuboid() != null && !match.getMapCuboid().contains(block)) {
+            return false;
+        }
+        //the cage walls and floor, which are rebuilt by the map rather than the reset
+        for (RSWCage cage : match.getCages()) {
+            Location l = cage.getLocation();
+            int dx = Math.abs(block.getX() - l.getBlockX());
+            int dz = Math.abs(block.getZ() - l.getBlockZ());
+            int dy = block.getY() - l.getBlockY();
+            if (dx <= 2 && dz <= 2 && dy >= -1 && dy <= 3) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @EventHandler
@@ -76,6 +105,9 @@ public class EventListener implements Listener {
 
             RSWMap m = rs.getMapManagerAPI().getMap(name);
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(event.getPlayer());
+            if (p == null) {
+                return;
+            }
 
             if (m != null && (event.getPlayer().isOp() || p.getPlayer().hasPermission("rs.admin"))) {
                 m.addSign(event.getBlock());
@@ -89,6 +121,10 @@ public class EventListener implements Listener {
     public void onServerPing(ServerListPingEvent event) {
         if (RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
             List<RSWMap> maps = new ArrayList<>(rs.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL));
+            //no maps loaded (yet, or they all failed to load)
+            if (maps.isEmpty()) {
+                return;
+            }
             RSWMap map = maps.get(0);
             event.setMaxPlayers(maps.size() == 1 ? map.getMaxPlayers() : 1);
 

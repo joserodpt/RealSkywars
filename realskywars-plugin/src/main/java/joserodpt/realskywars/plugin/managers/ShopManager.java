@@ -30,6 +30,7 @@ import org.bukkit.Particle;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ShopManager extends ShopManagerAPI {
@@ -57,10 +58,18 @@ public class ShopManager extends ShopManagerAPI {
             return;
         }
 
+        if (!RSWShopsConfig.file().isSection("Shops")) {
+            rs.getLogger().warning("shops.yml has no Shops section, so the shop is empty.");
+            return;
+        }
+
         for (String category : RSWShopsConfig.file().getSection("Shops").getRoutesAsStrings(false)) {
             RSWBuyableItem.ItemCategory cat = RSWBuyableItem.ItemCategory.getCategoryByName(category);
             if (cat == null) {
                 rs.getLogger().warning("Unknown shop category " + category + "! Skipping it.");
+                continue;
+            }
+            if (!RSWShopsConfig.file().isSection("Shops." + category)) {
                 continue;
             }
             for (String item : RSWShopsConfig.file().getSection("Shops." + category).getRoutesAsStrings(false)) {
@@ -232,9 +241,11 @@ public class ShopManager extends ShopManagerAPI {
     public Collection<RSWBuyableItem> getBoughtItems(RSWBuyableItem.ItemCategory t, RSWPlayer p) {
         Map<String, RSWBuyableItem> items = new HashMap<>();
         if (t == RSWBuyableItem.ItemCategory.KIT) {
-            rs.getDatabaseManagerAPI().getPlayerBoughtItemsCategory(p.getPlayer(), t).stream().map(playerBoughtItemsRow -> rs.getKitManagerAPI().getKit(playerBoughtItemsRow)).forEach(rswKit -> items.put(rswKit.getConfigKey(), rswKit));
+            //a kit or item deleted since it was bought resolves to null, so skip it
+            rs.getDatabaseManagerAPI().getPlayerBoughtItemsCategory(p.getPlayer(), t).stream().map(playerBoughtItemsRow -> rs.getKitManagerAPI().getKit(playerBoughtItemsRow)).filter(Objects::nonNull).forEach(rswKit -> items.put(rswKit.getConfigKey(), rswKit));
         } else {
             rs.getDatabaseManagerAPI().getPlayerBoughtItemsCategory(p.getPlayer(), t).stream().map(playerBoughtItemsRow -> this.shopItems.get(playerBoughtItemsRow.getItemID()))
+                    .filter(Objects::nonNull)
                     .forEach(rswBuyableItem -> items.put(rswBuyableItem.getConfigKey(), rswBuyableItem));
         }
 

@@ -25,6 +25,7 @@ import joserodpt.realskywars.api.shop.RSWBuyableItem;
 import joserodpt.realskywars.api.shop.items.RSWParticleItem;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Pagination;
+import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.plugin.gui.GUIManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -36,6 +37,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -61,6 +63,8 @@ public class PlayerItemsGUI {
     private final RSWPlayer rswp;
     private final Map<Integer, RSWBuyableItem> display = new HashMap<>();
     private RSWBuyableItem.ItemCategory cat;
+    //spectator shop amounts chosen by this player, keyed by item config key; the item objects are shared by everyone
+    private final Map<String, Integer> specAmounts = new HashMap<>();
 
     private boolean cancelOpen = false;
 
@@ -138,11 +142,30 @@ public class PlayerItemsGUI {
                 37, 38, 39, 40, 41, 42, 43};
         for (RSWBuyableItem item : items) {
             if (item != null) {
-                inv.setItem(slots[pointer], item.getIcon(this.rswp));
+                inv.setItem(slots[pointer], cat == RSWBuyableItem.ItemCategory.SPEC_SHOP && !item.isDummy() ? ShopGUI.specShopIcon(item, getSpecAmount(item), this.rswp) : item.getIcon(this.rswp));
                 display.put(slots[pointer], item);
                 ++pointer;
             }
         }
+    }
+
+    private int getSpecAmount(RSWBuyableItem item) {
+        return specAmounts.getOrDefault(item.getConfigKey(), 1);
+    }
+
+    private void addSpecAmount(RSWBuyableItem item, int i) {
+        specAmounts.put(item.getConfigKey(), Math.max(1, Math.min(item.getMaterial().getMaxStackSize(), getSpecAmount(item) + i)));
+    }
+
+    //used on reload so nobody keeps clicking a GUI built from the old config
+    public static void closeAll() {
+        for (final PlayerItemsGUI current : new ArrayList<>(inventories.values())) {
+            final Player p = Bukkit.getPlayer(current.rswp.getUUID());
+            if (p != null && p.getOpenInventory().getTopInventory().equals(current.getInventory())) {
+                p.closeInventory();
+            }
+        }
+        inventories.clear();
     }
 
     public static Listener getListener() {
@@ -151,17 +174,17 @@ public class PlayerItemsGUI {
             public void onClick(InventoryClickEvent e) {
                 HumanEntity clicker = e.getWhoClicked();
                 if (clicker instanceof Player) {
-                    if (e.getCurrentItem() == null) {
-                        return;
-                    }
                     UUID uuid = clicker.getUniqueId();
                     if (inventories.containsKey(uuid)) {
                         PlayerItemsGUI current = inventories.get(uuid);
-                        if (e.getInventory().getHolder() != current.getInventory().getHolder()) {
+                        if (!current.getInventory().equals(e.getInventory())) {
                             return;
                         }
 
                         e.setCancelled(true);
+                        if (e.getCurrentItem() == null) {
+                            return;
+                        }
                         RSWPlayer p = RealSkywarsAPI.getInstance().getPlayerManagerAPI().getPlayer((Player) clicker);
 
                         switch (e.getRawSlot()) {
@@ -224,22 +247,24 @@ public class PlayerItemsGUI {
                             if (current.cat == RSWBuyableItem.ItemCategory.SPEC_SHOP) {
                                 switch (e.getClick()) {
                                     case SWAP_OFFHAND:
-                                        clicked.addAmount(1);
-                                        current.inv.setItem(e.getRawSlot(), clicked.getIcon(current.rswp));
+                                        current.addSpecAmount(clicked, 1);
+                                        current.inv.setItem(e.getRawSlot(), ShopGUI.specShopIcon(clicked, current.getSpecAmount(clicked), current.rswp));
                                         break;
                                     case DROP:
-                                        clicked.addAmount(-1);
-                                        current.inv.setItem(e.getRawSlot(), clicked.getIcon(current.rswp));
+                                        current.addSpecAmount(clicked, -1);
+                                        current.inv.setItem(e.getRawSlot(), ShopGUI.specShopIcon(clicked, current.getSpecAmount(clicked), current.rswp));
                                         break;
                                     default:
-                                        if (p.getPlayer().hasPermission(clicked.getPermission())) {
-                                            TransactionManager cm = new TransactionManager(p, clicked.getPrice(), TransactionManager.Operations.REMOVE, false);
+                                        if (ShopGUI.canBuy(p, clicked)) {
+                                            final int amount = current.getSpecAmount(clicked);
+                                            final double price = ShopGUI.specShopPrice(clicked, amount);
+                                            TransactionManager cm = new TransactionManager(p, price, TransactionManager.Operations.REMOVE, false);
                                             p.closeInventory();
 
                                             if (cm.removeCoins()) {
-                                                p.getWorld().dropItem(p.getLocation(), new ItemStack(clicked.getMaterial(), clicked.getAmount()));
+                                                p.getWorld().dropItem(p.getLocation(), new ItemStack(clicked.getMaterial(), amount));
 
-                                                p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.with(NAME, clicked.getDisplayName()).with(COINS, clicked.getPriceFormatted()).get(p, true));
+                                                p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.with(NAME, clicked.getDisplayName()).with(COINS, Text.formatDouble(price)).get(p, true));
                                             } else {
                                                 p.sendMessage(TranslatableLine.INSUFICIENT_COINS.with(COINS, RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoinsFormatted(p)).get(p, true));
                                             }
@@ -299,6 +324,15 @@ public class PlayerItemsGUI {
             }
 
             @EventHandler
+            public void onDrag(final InventoryDragEvent e) {
+                final PlayerItemsGUI current = inventories.get(e.getWhoClicked().getUniqueId());
+                //dragging over this GUI's slots would drop the dragged items into it
+                if (current != null && current.getInventory().equals(e.getInventory())) {
+                    e.setCancelled(true);
+                }
+            }
+
+            @EventHandler
             public void onClose(InventoryCloseEvent e) {
                 if (e.getPlayer() instanceof Player) {
                     if (e.getInventory() == null) {
@@ -306,8 +340,9 @@ public class PlayerItemsGUI {
                     }
                     Player p = (Player) e.getPlayer();
                     UUID uuid = p.getUniqueId();
-                    if (inventories.containsKey(uuid)) {
-                        inventories.get(uuid).unregister();
+                    final PlayerItemsGUI current = inventories.get(uuid);
+                    if (current != null && e.getInventory().equals(current.getInventory())) {
+                        current.unregister();
                     }
                 }
             }
@@ -331,11 +366,10 @@ public class PlayerItemsGUI {
         InventoryView openInv = player.getPlayer().getOpenInventory();
         if (openInv != null) {
             Inventory openTop = player.getPlayer().getOpenInventory().getTopInventory();
-            if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
-                openTop.setContents(inv.getContents());
-            } else {
+            if (!inv.equals(openTop)) {
                 player.getPlayer().openInventory(inv);
             }
+            register();
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
         }
     }

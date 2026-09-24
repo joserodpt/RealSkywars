@@ -15,7 +15,6 @@ package joserodpt.realskywars.plugin.managers;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import com.j256.ormlite.stmt.QueryBuilder;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.database.PlayerDataRow;
 import joserodpt.realskywars.api.leaderboards.RSWLeaderboard;
@@ -26,7 +25,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class LeaderboardManager extends LeaderboardManagerAPI {
     private final RealSkywarsAPI rs;
@@ -50,10 +48,8 @@ public class LeaderboardManager extends LeaderboardManagerAPI {
 
     @Override
     public void refreshLeaderboard(RSWLeaderboard.RSWLeaderboardCategories l) throws SQLException {
-        QueryBuilder<PlayerDataRow, UUID> qb = rs.getDatabaseManagerAPI().getQueryDao().queryBuilder();
-        qb.orderBy(l.getDBName(), false);
-        RSWLeaderboard lb = getLeaderboard(l, rs.getDatabaseManagerAPI().getQueryDao().query(qb.prepare()));
-        this.leaderboards.put(l, lb);
+        //queried off the main thread, only the top rows, and swapped in back on the main thread
+        rs.getDatabaseManagerAPI().getTopPlayers(l.getDBName(), 10, rows -> this.leaderboards.put(l, getLeaderboard(l, rows)));
     }
 
     @Override
@@ -76,7 +72,8 @@ public class LeaderboardManager extends LeaderboardManagerAPI {
 
     @Override
     public RSWLeaderboard getLeaderboard(RSWLeaderboard.RSWLeaderboardCategories l) {
-        return this.leaderboards.get(l);
+        //empty until the first async refresh lands, rather than null
+        return this.leaderboards.getOrDefault(l, new RSWLeaderboard());
     }
 
 }

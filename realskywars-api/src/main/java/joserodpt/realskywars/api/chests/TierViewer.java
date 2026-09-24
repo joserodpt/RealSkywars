@@ -31,10 +31,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -132,16 +134,26 @@ public class TierViewer {
         InventoryView openInv = player.getOpenInventory();
         if (openInv != null) {
             Inventory openTop = player.getOpenInventory().getTopInventory();
-            if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
-                openTop.setContents(inv.getContents());
-            } else {
+            if (!inv.equals(openTop)) {
                 player.openInventory(inv);
             }
+            register();
         }
     }
 
     public Inventory getInventory() {
         return inv;
+    }
+
+    //used on reload so nobody keeps clicking a GUI built from the old config
+    public static void closeAll() {
+        for (final TierViewer current : new ArrayList<>(inventories.values())) {
+            final Player p = Bukkit.getPlayer(current.uuid);
+            if (p != null && p.getOpenInventory().getTopInventory().equals(current.getInventory())) {
+                p.closeInventory();
+            }
+        }
+        inventories.clear();
     }
 
     public static Listener getListener() {
@@ -150,17 +162,17 @@ public class TierViewer {
             public void onClick(InventoryClickEvent e) {
                 HumanEntity clicker = e.getWhoClicked();
                 if (clicker instanceof Player) {
-                    if (e.getCurrentItem() == null) {
-                        return;
-                    }
                     UUID uuid = clicker.getUniqueId();
                     if (inventories.containsKey(uuid)) {
                         TierViewer current = inventories.get(uuid);
-                        if (e.getInventory().getHolder() != current.getInventory().getHolder()) {
+                        if (!current.getInventory().equals(e.getInventory())) {
                             return;
                         }
 
                         e.setCancelled(true);
+                        if (e.getCurrentItem() == null) {
+                            return;
+                        }
                         RSWPlayer p = RealSkywarsAPI.getInstance().getPlayerManagerAPI().getPlayer((Player) clicker);
 
                         switch (e.getRawSlot()) {
@@ -219,6 +231,15 @@ public class TierViewer {
             }
 
             @EventHandler
+            public void onDrag(final InventoryDragEvent e) {
+                final TierViewer current = inventories.get(e.getWhoClicked().getUniqueId());
+                //dragging over this GUI's slots would drop the dragged items into it
+                if (current != null && current.getInventory().equals(e.getInventory())) {
+                    e.setCancelled(true);
+                }
+            }
+
+            @EventHandler
             public void onClose(InventoryCloseEvent e) {
                 if (e.getPlayer() instanceof Player) {
                     if (e.getInventory() == null) {
@@ -226,8 +247,9 @@ public class TierViewer {
                     }
                     Player p = (Player) e.getPlayer();
                     UUID uuid = p.getUniqueId();
-                    if (inventories.containsKey(uuid)) {
-                        inventories.get(uuid).unregister();
+                    final TierViewer current = inventories.get(uuid);
+                    if (current != null && e.getInventory().equals(current.getInventory())) {
+                        current.unregister();
                     }
                 }
             }

@@ -30,12 +30,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public abstract class DatabaseManagerAPI {
     @NotNull
     protected abstract String getDatabaseURL();
-
-    protected abstract void getPlayerData();
 
     public abstract Pair<Collection<PlayerGameHistoryRow>, RSWGameHistoryStats> getPlayerGameHistory(Player p);
 
@@ -60,4 +59,26 @@ public abstract class DatabaseManagerAPI {
     public abstract Dao<PlayerDataRow, UUID> getQueryDao();
 
     public abstract Pair<Boolean, String> didPlayerBoughtItem(RSWPlayer p, RSWBuyableItem item);
+
+    /**
+     * Loads a player's rows into the cache. Blocks until done, so call it off the main thread (the
+     * async pre login does).
+     */
+    public abstract void preloadPlayer(UUID uuid, String name);
+
+    /**
+     * Drops a player who quit from the cache, once every write queued before this call is done.
+     */
+    public abstract void unloadPlayer(UUID uuid);
+
+    /**
+     * The top rows ordered by a playerdata column, queried off the main thread. The callback runs on
+     * the main thread.
+     */
+    public abstract void getTopPlayers(String column, long limit, Consumer<List<PlayerDataRow>> callback);
+
+    /**
+     * Waits for the queued writes and closes the connection.
+     */
+    public abstract void close();
 }

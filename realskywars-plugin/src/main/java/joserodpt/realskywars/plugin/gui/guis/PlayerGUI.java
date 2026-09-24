@@ -29,6 +29,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -63,26 +64,46 @@ public class PlayerGUI {
         inv.setItem(2, Itens.createItem(Material.MAP, 1, TranslatableLine.ITEM_STATS_NAME.with(PLAYER, target.getDisplayName()).get(p), lore));
     }
 
+    //used on reload so nobody keeps clicking a GUI built from the old config
+    public static void closeAll() {
+        for (final PlayerGUI current : new ArrayList<>(inventories.values())) {
+            final Player p = Bukkit.getPlayer(current.uuid);
+            if (p != null && p.getOpenInventory().getTopInventory().equals(current.getInventory())) {
+                p.closeInventory();
+            }
+        }
+        inventories.clear();
+    }
+
     public static Listener getListener() {
         return new Listener() {
             @EventHandler
             public void onClick(InventoryClickEvent e) {
                 HumanEntity clicker = e.getWhoClicked();
                 if (clicker instanceof Player) {
-                    if (e.getCurrentItem() == null) {
-                        return;
-                    }
                     Player p = (Player) clicker;
                     if (p != null) {
                         UUID uuid = p.getUniqueId();
                         if (inventories.containsKey(uuid)) {
                             PlayerGUI current = inventories.get(uuid);
-                            if (!e.getInventory().getType().name().equalsIgnoreCase(current.getInventory().getType().name())) {
+                            if (!current.getInventory().equals(e.getInventory())) {
                                 return;
                             }
                             e.setCancelled(true);
+                            if (e.getCurrentItem() == null) {
+                                return;
+                            }
                         }
                     }
+                }
+            }
+
+            @EventHandler
+            public void onDrag(final InventoryDragEvent e) {
+                final PlayerGUI current = inventories.get(e.getWhoClicked().getUniqueId());
+                //dragging over this GUI's slots would drop the dragged items into it
+                if (current != null && current.getInventory().equals(e.getInventory())) {
+                    e.setCancelled(true);
                 }
             }
 
@@ -94,8 +115,9 @@ public class PlayerGUI {
                     }
                     Player p = (Player) e.getPlayer();
                     UUID uuid = p.getUniqueId();
-                    if (inventories.containsKey(uuid)) {
-                        inventories.get(uuid).unregister();
+                    final PlayerGUI current = inventories.get(uuid);
+                    if (current != null && e.getInventory().equals(current.getInventory())) {
+                        current.unregister();
 
                         if (refresh.containsKey(uuid)) {
                             Bukkit.getScheduler().cancelTask(refresh.get(uuid));
@@ -115,9 +137,7 @@ public class PlayerGUI {
         InventoryView openInv = player.getPlayer().getOpenInventory();
         if (openInv != null) {
             Inventory openTop = player.getPlayer().getOpenInventory().getTopInventory();
-            if (openTop != null && openTop.getType().name().equalsIgnoreCase(inv.getType().name())) {
-                openTop.setContents(inv.getContents());
-            } else {
+            if (!inv.equals(openTop)) {
                 player.getPlayer().openInventory(inv);
             }
             register();

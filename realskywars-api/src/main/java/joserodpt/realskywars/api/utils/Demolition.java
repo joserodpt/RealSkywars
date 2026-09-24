@@ -15,6 +15,7 @@ package joserodpt.realskywars.api.utils;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import fr.skytasul.guardianbeam.Laser;
 import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.cages.RSWCage;
 import org.bukkit.Bukkit;

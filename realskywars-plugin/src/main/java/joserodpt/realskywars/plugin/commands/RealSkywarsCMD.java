@@ -76,6 +76,15 @@ import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLine
 public class RealSkywarsCMD extends BaseCommandWA {
 
     private final String onlyPlayer = "[RealSkywars] Only players can run this command.";
+    private static final String INVALID_NAME = "&cNames can only use letters, digits, _ and -.";
+
+    /**
+     * Map and kit names end up as world folder names, YAML keys and file names, where a dot, a slash or
+     * a space breaks things (a dot is a YAML path separator), so only allow the safe characters.
+     */
+    private static boolean isValidName(String name) {
+        return name != null && name.matches("[A-Za-z0-9_-]+");
+    }
     public RealSkywarsAPI rs;
 
     public RealSkywarsCMD(RealSkywarsAPI rs) {
@@ -155,6 +164,10 @@ public class RealSkywarsCMD extends BaseCommandWA {
             TranslatableLine.CMD_NO_MAP_FOUND.sendDefault(commandSender, true);
             return;
         }
+        if (!isValidName(newName)) {
+            Text.send(commandSender, rs.getLanguageManagerAPI().getPrefix() + INVALID_NAME);
+            return;
+        }
         if (rs.getMapManagerAPI().getMap(newName) != null) {
             Text.send(commandSender, TranslatableLine.MAP_EXISTS.getDefault());
             return;
@@ -182,6 +195,11 @@ public class RealSkywarsCMD extends BaseCommandWA {
                 case CREATE:
                     if (cost == null) {
                         p.sendMessage(rs.getLanguageManagerAPI().getPrefix() + "Cost value not accepted.");
+                        return;
+                    }
+
+                    if (!isValidName(Text.strip(Text.color(name)))) {
+                        Text.send(commandSender, rs.getLanguageManagerAPI().getPrefix() + INVALID_NAME);
                         return;
                     }
 
@@ -678,6 +696,12 @@ public class RealSkywarsCMD extends BaseCommandWA {
                 return;
             }
 
+            //the schematic's extension is dropped from the map name, so it's the rest that has to be safe
+            if (!isValidName(Text.strip(mapname).replace(".schematic", "").replace(".schem", ""))) {
+                Text.send(commandSender, rs.getLanguageManagerAPI().getPrefix() + INVALID_NAME);
+                return;
+            }
+
             if (wt.equals(RSWWorld.WorldType.SCHEMATIC) && !WorldEditUtils.schemFileExists(mapname)) {
                 Text.send(commandSender, rs.getLanguageManagerAPI().getPrefix() + "&cNo " + mapname + "&c found in RealSkywars/maps. Did you forget to add .schem?");
                 return;
@@ -792,14 +816,23 @@ public class RealSkywarsCMD extends BaseCommandWA {
     @WrongUsage("&c/rsw reset <map>")
     @SuppressWarnings("unused")
     public void resetcmd(final CommandSender commandSender, @Suggestion("#maps") String mapSTR) {
-        RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
+        //the console gets the default language, like the other admin commands
+        RSWPlayer p = commandSender instanceof Player ? rs.getPlayerManagerAPI().getPlayer((Player) commandSender) : null;
         RSWMap map = rs.getMapManagerAPI().getMap(mapSTR);
         if (map != null) {
-            TranslatableLine.ARENA_RESET.send(p, true);
+            send(commandSender, p, TranslatableLine.ARENA_RESET);
             map.reset();
-            TranslatableLine.MAP_RESET_DONE.send(p, true);
+            send(commandSender, p, TranslatableLine.MAP_RESET_DONE);
         } else {
-            TranslatableLine.CMD_NO_MAP_FOUND.send(p, true);
+            send(commandSender, p, TranslatableLine.CMD_NO_MAP_FOUND);
+        }
+    }
+
+    private static void send(CommandSender sender, RSWPlayer p, TranslatableLine line) {
+        if (p != null) {
+            line.send(p, true);
+        } else {
+            line.sendDefault(sender, true);
         }
     }
 

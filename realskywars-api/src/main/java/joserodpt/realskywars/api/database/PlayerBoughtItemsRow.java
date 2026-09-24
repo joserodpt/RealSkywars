@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
-@DatabaseTable(tableName = "realscoreboard_player_bought_items")
+@DatabaseTable(tableName = "realskywars_player_bought_items")
 public class PlayerBoughtItemsRow {
     @DatabaseField(columnName = "id", canBeNull = false, allowGeneratedIdInsert = true, generatedId = true)
     private @NotNull UUID id;

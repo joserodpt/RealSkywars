@@ -67,6 +67,7 @@ import joserodpt.realskywars.plugin.gui.guis.ShopGUI;
 import joserodpt.realskywars.plugin.gui.guis.VoteGUI;
 import joserodpt.realskywars.plugin.listeners.EventListener;
 import joserodpt.realskywars.plugin.listeners.PlayerListener;
+import joserodpt.realskywars.plugin.listeners.ProtectionListener;
 import joserodpt.realskywars.plugin.managers.DatabaseManager;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -147,11 +148,17 @@ public class RealSkywarsPlugin extends JavaPlugin {
         try {
             realSkywars.setDatabaseManager(new DatabaseManager(realSkywars));
         } catch (SQLException a) {
+            //every player load and save goes through it, so there is nothing useful left to run
             getLogger().severe("Error while creating Database Manager for RealSkywars: " + a.getMessage());
+            getLogger().severe("Check sql.yml. RealSkywars will now disable itself.");
+            HandlerList.unregisterAll(this);
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
         }
 
         pm.registerEvents(new PlayerListener(realSkywars), this);
         pm.registerEvents(new EventListener(realSkywars), this);
+        pm.registerEvents(new ProtectionListener(realSkywars), this);
         pm.registerEvents(PlayerInput.getListener(), this);
         pm.registerEvents(GUIBuilder.getListener(), this);
         pm.registerEvents(GameHistoryGUI.getListener(), this);
@@ -164,7 +171,6 @@ public class RealSkywarsPlugin extends JavaPlugin {
         pm.registerEvents(MapsListGUI.getListener(), this);
         pm.registerEvents(TierViewer.getListener(), this);
         pm.registerEvents(AchievementViewerGUI.getListener(), this);
-        pm.registerEvents(GameHistoryGUI.getListener(), this);
         pm.registerEvents(KitSettingsGUI.getListener(), this);
         pm.registerEvents(VoteGUI.getListener(), this);
         pm.registerEvents(SettingsGUI.getListener(), this);
@@ -282,9 +288,8 @@ public class RealSkywarsPlugin extends JavaPlugin {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, realSkywars.getLeaderboardManagerAPI()::refreshLeaderboards, RSWConfig.file().getInt("Config.Refresh-Leaderboards"), RSWConfig.file().getInt("Config.Refresh-Leaderboards"));
 
         new UpdateChecker(this, 105115).getVersion(version -> {
-            if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
-                this.getLogger().info("The plugin is updated to the latest version.");
-            } else {
+            //a dev build is ahead of Spigot, and an unreadable reply isn't an update either
+            if (UpdateChecker.isNewer(version, this.getDescription().getVersion())) {
                 this.newUpdate = true;
                 this.getLogger().warning("There is a new update available! Version: " + version + " https://www.spigotmc.org/resources/105115/");
             }
@@ -349,6 +354,11 @@ public class RealSkywarsPlugin extends JavaPlugin {
         //NPE in here would hide whatever actually stopped the plugin loading
         if (realSkywars != null) {
             realSkywars.getMapManagerAPI().endMaps(true);
+
+            //after endMaps, whose kicks queue the final saves, so those are written before the connection goes
+            if (realSkywars.getDatabaseManagerAPI() != null) {
+                realSkywars.getDatabaseManagerAPI().close();
+            }
         }
 
         if (RSWConfig.file() != null && RSWConfig.file().getBoolean("Config.Bungeecord.Enabled")) {
