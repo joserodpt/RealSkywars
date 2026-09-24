@@ -61,6 +61,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.DISPLAYNAME;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.MAP;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.MODE;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.TIME;
+
 public abstract class RSWMap {
 
     private final String name;
@@ -839,10 +844,10 @@ public abstract class RSWMap {
                     }
 
                     if (!RSWConfig.file().getBoolean("Config.Disable-Map-Starting-Countdown.Message")) {
-                        p.sendMessage(TranslatableLine.ARENA_START_COUNTDOWN.get(p, true).replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
+                        p.sendMessage(TranslatableLine.ARENA_START_COUNTDOWN.with(TIME, Text.formatSeconds(t.getSecondsLeft())).get(p, true));
                     }
                     if (!RSWConfig.file().getBoolean("Config.Disable-Map-Starting-Countdown.Actionbar")) {
-                        p.sendActionbar(TranslatableLine.ARENA_START_COUNTDOWN.get(p).replace("%time%", Text.formatSeconds(t.getSecondsLeft())));
+                        p.sendActionbar(TranslatableLine.ARENA_START_COUNTDOWN.with(TIME, Text.formatSeconds(t.getSecondsLeft())).get(p));
                     }
 
                     p.setBarNumber(t.getSecondsLeft(), this.getTimeToStart());
@@ -1038,7 +1043,7 @@ public abstract class RSWMap {
     public ItemStack getIconForPlayer(RSWPlayer p) {
         return Itens.createItem(this.getState().getStateMaterial(this.isRanked()),
                 Math.min(64, Math.max(1, this.getPlayerCount())),
-                TranslatableLine.ITEM_MAP_NAME.get(p).replace("%map%", this.getName()).replace("%displayname%", this.getDisplayName()).replace("%mode%", this.getGameMode().getDisplayName(p)) + (this.isRanked() ? " &bRANKED" : ""),
+                TranslatableLine.ITEM_MAP_NAME.with(MAP, this.getName()).with(DISPLAYNAME, this.getDisplayName()).with(MODE, this.getGameMode().getDisplayName(p)).get(p) + (this.isRanked() ? " &bRANKED" : ""),
                 variableListForIcon(TranslatableList.ITEMS_MAP_DESCRIPTION.get(p)));
     }
 

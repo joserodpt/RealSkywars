@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.THING;
+
 public class VoteGUI {
 
     private static Map<UUID, VoteGUI> inventories = new HashMap<>();
@@ -146,7 +148,7 @@ public class VoteGUI {
                                     if (p.getPlayer().hasPermission("rsw.basic")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.CHESTS, 1);
 
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_CHEST_BASIC.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_CHEST_BASIC.get(p)).get(p, true));
                                     } else {
                                         p.closeInventory();
                                         TranslatableLine.CMD_NO_PERM.send(p, true);
@@ -160,7 +162,7 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rsw.normal")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.CHESTS, 2);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_CHEST_NORMAL.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_CHEST_NORMAL.get(p)).get(p, true));
                                     } else {
                                         TranslatableLine.CMD_NO_PERM.send(p, true);
                                         p.closeInventory();
@@ -174,7 +176,7 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rsw.epic")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.CHESTS, 3);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_CHEST_EPIC.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_CHEST_EPIC.get(p)).get(p, true));
 
                                     } else {
                                         TranslatableLine.CMD_NO_PERM.send(p, true);
@@ -192,7 +194,7 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rsw.day")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 1);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_TIME_DAY.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_TIME_DAY.get(p)).get(p, true));
                                     } else {
                                         TranslatableLine.CMD_NO_PERM.send(p, true);
                                         p.closeInventory();
@@ -207,7 +209,7 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rsw.sunset")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 2);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_TIME_SUNSET.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_TIME_SUNSET.get(p)).get(p, true));
                                     } else {
                                         TranslatableLine.CMD_NO_PERM.send(p, true);
                                         p.closeInventory();
@@ -221,7 +223,7 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rsw.night")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 3);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_TIME_NIGHT.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_TIME_NIGHT.get(p)).get(p, true));
                                     } else {
                                         TranslatableLine.CMD_NO_PERM.send(p, true);
                                         p.closeInventory();
@@ -235,7 +237,7 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rsw.rain")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 4);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_TIME_RAIN.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_TIME_RAIN.get(p)).get(p, true));
                                     } else {
                                         TranslatableLine.CMD_NO_PERM.send(p, true);
                                         p.closeInventory();
@@ -251,7 +253,7 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rsw.normal-projectile")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.PROJECTILES, 1);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_PROJECTILE_NORMAL.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_PROJECTILE_NORMAL.get(p)).get(p, true));
                                     } else {
                                         TranslatableLine.CMD_NO_PERM.send(p, true);
                                         p.closeInventory();
@@ -265,7 +267,7 @@ public class VoteGUI {
                                 } else {
                                     if (p.getPlayer().hasPermission("rsw.break-projectile")) {
                                         p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.PROJECTILES, 2);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.get(p, true).replace("%thing%", TranslatableLine.VOTE_PROJECTILE_BREAK.get(p)));
+                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_PROJECTILE_BREAK.get(p)).get(p, true));
                                     } else {
                                         TranslatableLine.CMD_NO_PERM.send(p, true);
                                         p.closeInventory();

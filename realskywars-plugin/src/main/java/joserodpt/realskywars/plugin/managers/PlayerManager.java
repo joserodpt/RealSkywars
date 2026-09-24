@@ -39,6 +39,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.LANGUAGE;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.PLAYER;
+
 public class PlayerManager extends PlayerManagerAPI {
     private final RealSkywarsAPI rs;
 
@@ -229,7 +232,7 @@ public class PlayerManager extends PlayerManagerAPI {
     @Override
     public void setLanguage(RSWPlayer player, RSWLanguage l) {
         player.setLanguage(l.getKey());
-        player.sendMessage(TranslatableLine.LANGUAGE_SET.get(player, true).replace("%language%", l.getDisplayName()));
+        player.sendMessage(TranslatableLine.LANGUAGE_SET.with(LANGUAGE, l.getDisplayName()).get(player, true));
         player.closeInventory();
     }
 
@@ -284,7 +287,7 @@ public class PlayerManager extends PlayerManagerAPI {
 
         //Credit GITHUB PlayerCompass
         trackingPlayers.put(player, target);
-        gp.sendMessage(TranslatableLine.TRACK_FOUND.get(gp, true).replace("%player%", target.getDisplayName()));
+        gp.sendMessage(TranslatableLine.TRACK_FOUND.with(PLAYER, target.getDisplayName()).get(gp, true));
 
         new BukkitRunnable() {
             public void run() {

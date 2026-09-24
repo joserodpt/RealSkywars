@@ -68,6 +68,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.COINS;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.PLAYERS;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.ROOMS;
+
 @Command(value = "realskywars", alias = {"sw", "rsw"})
 public class RealSkywarsCMD extends BaseCommandWA {
 
@@ -116,7 +120,7 @@ public class RealSkywarsCMD extends BaseCommandWA {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
             Collection<RSWMap> tmp = rs.getMapManagerAPI().getMaps(MapManagerAPI.MapGamemodes.ALL);
-            p.sendMessage(TranslatableLine.CMD_MAPS.get(p).replace("%rooms%", "" + tmp.size()));
+            p.sendMessage(TranslatableLine.CMD_MAPS.with(ROOMS, "" + tmp.size()).get(p));
             for (RSWMap s : tmp) {
                 TextComponent a = new TextComponent(Text.color("&7- &f" + s.getDisplayName()));
                 a.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rsw map " + s.getName()));
@@ -279,7 +283,7 @@ public class RealSkywarsCMD extends BaseCommandWA {
     public void balancecmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            Text.send(p.getPlayer(), TranslatableLine.CMD_COINS.get(p).replace("%coins%", rs.getCurrencyAdapterAPI().getCoinsFormatted(p)));
+            Text.send(p.getPlayer(), TranslatableLine.CMD_COINS.with(COINS, rs.getCurrencyAdapterAPI().getCoinsFormatted(p)).get(p));
         } else {
             commandSender.sendMessage(onlyPlayer);
         }
@@ -564,7 +568,7 @@ public class RealSkywarsCMD extends BaseCommandWA {
     public void playerscmd(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            p.sendMessage(TranslatableLine.CMD_PLAYERS.get(p, true).replace("%players%", rs.getPlayerManagerAPI().getPlayers().size() + ""));
+            p.sendMessage(TranslatableLine.CMD_PLAYERS.with(PLAYERS, rs.getPlayerManagerAPI().getPlayers().size() + "").get(p, true));
             for (RSWPlayer pair : rs.getPlayerManagerAPI().getPlayers()) {
                 if (pair.getPlayer() != null) {
                     TextComponent a = new TextComponent(Text.color("&7- &f" + pair.getName()));

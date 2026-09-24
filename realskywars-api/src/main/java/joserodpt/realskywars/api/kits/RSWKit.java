@@ -31,6 +31,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.AMOUNT;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.ITEM;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.PRICE;
+
 public class RSWKit extends RSWBuyableItem {
     public enum Perks {ENDER}
 
@@ -68,7 +72,7 @@ public class RSWKit extends RSWBuyableItem {
         List<String> desc = new ArrayList<>();
 
         if (!boughtPair.getKey() && super.getPrice() != 0)
-            desc.add(TranslatableLine.KIT_PRICE.get(p).replace("%price%", super.getPriceFormatted()));
+            desc.add(TranslatableLine.KIT_PRICE.with(PRICE, super.getPriceFormatted()).get(p));
 
         //contents
         if (this.hasItems()) {
@@ -76,7 +80,7 @@ public class RSWKit extends RSWBuyableItem {
             desc.add(TranslatableLine.KIT_CONTAINS.get(p));
 
             for (ItemStack s : this.getKitInventory().getListInventory()) {
-                desc.add(TranslatableLine.KIT_ITEM.get(p).replace("%amount%", s.getAmount() + "").replace("%item%", RealSkywarsAPI.getInstance().getLanguageManagerAPI().getMaterialName(p, s.getType())));
+                desc.add(TranslatableLine.KIT_ITEM.with(AMOUNT, s.getAmount() + "").with(ITEM, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getMaterialName(p, s.getType())).get(p));
             }
         }
 

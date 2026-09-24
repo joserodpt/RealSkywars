@@ -21,6 +21,9 @@ import joserodpt.realskywars.api.currency.CurrencyAdapterAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.COINS;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.PLAYER;
+
 public class TransactionManager {
     private RSWPlayer fromPlayer;
     private Double operationQuantity = 0D;
@@ -64,14 +67,14 @@ public class TransactionManager {
             switch (o) {
                 case SEND:
                     if (this.operationQuantity == null) {
-                        this.fromPlayer.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(this.fromPlayer).replace("%coins%", ca.getCoinsFormatted(this.fromPlayer)));
+                        this.fromPlayer.sendMessage(TranslatableLine.INSUFICIENT_COINS.with(COINS, ca.getCoinsFormatted(this.fromPlayer)).get(this.fromPlayer));
                         return;
                     }
 
                     if (ca.getCoins(this.fromPlayer) >= operationQuantity) {
                         this.transferCoins();
                     } else {
-                        this.fromPlayer.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(this.fromPlayer).replace("%coins%", ca.getCoinsFormatted(this.fromPlayer)));
+                        this.fromPlayer.sendMessage(TranslatableLine.INSUFICIENT_COINS.with(COINS, ca.getCoinsFormatted(this.fromPlayer)).get(this.fromPlayer));
                     }
                     break;
                 case SET:
@@ -131,14 +134,14 @@ public class TransactionManager {
 
     public void transferCoins() {
         ca.transferCoins(this.toPlayer, this.fromPlayer, this.operationQuantity);
-        this.fromPlayer.sendMessage(TranslatableLine.SENDER_COINS.get(this.fromPlayer, true).replace("%coins%", Text.formatDouble(this.operationQuantity)).replace("%player%", this.toPlayer.getDisplayName()));
-        this.toPlayer.sendMessage(TranslatableLine.RECIEVER_COINS.get(this.fromPlayer, true).replace("%coins%", Text.formatDouble(this.operationQuantity)).replace("%player%", this.fromPlayer.getDisplayName()));
+        this.fromPlayer.sendMessage(TranslatableLine.SENDER_COINS.with(COINS, Text.formatDouble(this.operationQuantity)).with(PLAYER, this.toPlayer.getDisplayName()).get(this.fromPlayer, true));
+        this.toPlayer.sendMessage(TranslatableLine.RECIEVER_COINS.with(COINS, Text.formatDouble(this.operationQuantity)).with(PLAYER, this.fromPlayer.getDisplayName()).get(this.fromPlayer, true));
     }
 
     public void addCoins() {
         ca.addCoins(this.toPlayer, this.operationQuantity);
 
-        this.toPlayer.sendMessage(TranslatableLine.ADDED_COINS.get(this.toPlayer, true).replace("%coins%", Text.formatDouble(this.operationQuantity)));
+        this.toPlayer.sendMessage(TranslatableLine.ADDED_COINS.with(COINS, Text.formatDouble(this.operationQuantity)).get(this.toPlayer, true));
         if (!this.console) {
             this.fromPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + "Coins added to Player " + this.toPlayer.getName());
         } else {
@@ -153,7 +156,7 @@ public class TransactionManager {
     public void setCoins() {
         ca.setCoins(this.toPlayer, this.operationQuantity);
 
-        this.toPlayer.sendMessage(TranslatableLine.SET_COINS.get(this.fromPlayer, true).replace("%coins%", Text.formatDouble(this.operationQuantity)));
+        this.toPlayer.sendMessage(TranslatableLine.SET_COINS.with(COINS, Text.formatDouble(this.operationQuantity)).get(this.fromPlayer, true));
         if (!this.console) {
             this.fromPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + "Coins have been set Player " + this.toPlayer.getName());
         } else {

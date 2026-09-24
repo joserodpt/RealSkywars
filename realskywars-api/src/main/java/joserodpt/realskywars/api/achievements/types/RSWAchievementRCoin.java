@@ -25,6 +25,10 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.ACHIEVEMENT;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.GOAL;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.REWARD;
+
 public class RSWAchievementRCoin implements RSWAchievement {
 
     private final RSWPlayer.PlayerStatistics at;
@@ -50,7 +54,7 @@ public class RSWAchievementRCoin implements RSWAchievement {
     @Override
     public void giveAchievement(RSWPlayer p) {
         new TransactionManager(p, (Double) this.getReward(), TransactionManager.Operations.ADD, true);
-        p.sendMessage(TranslatableLine.ACHIEVEMENT_GET.get(p, true).replace("%achievement%", this.goal + " - " + this.getAchievementName()).replace("%reward%", this.getRewardName()));
+        p.sendMessage(TranslatableLine.ACHIEVEMENT_GET.with(ACHIEVEMENT, this.goal + " - " + this.getAchievementName()).with(REWARD, this.getRewardName()).get(p, true));
     }
 
     @Override
@@ -76,6 +80,6 @@ public class RSWAchievementRCoin implements RSWAchievement {
     @Override
     public ItemStack getItem(RSWPlayer p) {
         return Itens.createItem(p.getStatistics(this.getType(), false) >= this.getGoal() ? Material.GREEN_CONCRETE : Material.RED_CONCRETE
-                , 1, TranslatableLine.ACHIEVEMENT_GOAL.get(p).replace("%goal%", String.valueOf(this.getGoal())), Collections.singletonList(TranslatableLine.ACHIEVEMENT_REWARD.get(p).replace("%reward%", this.getReward().toString()) + " " + TranslatableLine.ACHIEVEMENT_NAME_COINS.get(p)));
+                , 1, TranslatableLine.ACHIEVEMENT_GOAL.with(GOAL, String.valueOf(this.getGoal())).get(p), Collections.singletonList(TranslatableLine.ACHIEVEMENT_REWARD.with(REWARD, this.getReward().toString()).get(p) + " " + TranslatableLine.ACHIEVEMENT_NAME_COINS.get(p)));
     }
 }

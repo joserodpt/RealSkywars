@@ -31,6 +31,10 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.DISPLAYNAME;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.MAP;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.MODE;
+
 public class RSWPlayerScoreboard {
 
     private FastBoard fb = null;
@@ -99,16 +103,16 @@ public class RSWPlayerScoreboard {
                             break;
                         case CAGE:
                             lista = TranslatableList.SCOREBOARD_CAGE_LINES.get(p);
-                            tit = TranslatableLine.SCOREBOARD_CAGE_TITLE.get(p).replace("%map%", p.getMatch().getName()).replace("%displayname%", p.getMatch().getDisplayName()).replace("%mode%", p.getMatch().getGameMode().name());
+                            tit = TranslatableLine.SCOREBOARD_CAGE_TITLE.with(MAP, p.getMatch().getName()).with(DISPLAYNAME, p.getMatch().getDisplayName()).with(MODE, p.getMatch().getGameMode().name()).get(p);
                             break;
                         case SPECTATOR:
                         case EXTERNAL_SPECTATOR:
                             lista = TranslatableList.SCOREBOARD_SPECTATOR_LINES.get(p);
-                            tit = TranslatableLine.SCOREBOARD_SPECTATOR_TITLE.get(p).replace("%map%", p.getMatch().getName()).replace("%displayname%", p.getMatch().getDisplayName()).replace("%mode%", p.getMatch().getGameMode().name());
+                            tit = TranslatableLine.SCOREBOARD_SPECTATOR_TITLE.with(MAP, p.getMatch().getName()).with(DISPLAYNAME, p.getMatch().getDisplayName()).with(MODE, p.getMatch().getGameMode().name()).get(p);
                             break;
                         case PLAYING:
                             lista = TranslatableList.SCOREBOARD_PLAYING_LINES.get(p);
-                            tit = TranslatableLine.SCOREBOARD_PLAYING_TITLE.get(p).replace("%map%", p.getMatch().getName()).replace("%displayname%", p.getMatch().getDisplayName()).replace("%mode%", p.getMatch().getGameMode().name());
+                            tit = TranslatableLine.SCOREBOARD_PLAYING_TITLE.with(MAP, p.getMatch().getName()).with(DISPLAYNAME, p.getMatch().getDisplayName()).with(MODE, p.getMatch().getGameMode().name()).get(p);
                             break;
                         default:
                             throw new IllegalStateException("Unexpected value SCOREBOARD!!! : " + p.getState());

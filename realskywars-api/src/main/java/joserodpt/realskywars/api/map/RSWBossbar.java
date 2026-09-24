@@ -23,6 +23,8 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.TIME;
+
 public class RSWBossbar {
 
     private final RSWMap map;
@@ -44,7 +46,7 @@ public class RSWBossbar {
 
         switch (map.getState()) {
             case PLAYING:
-                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_RUNTIME.getSingle().replace("%time%", Text.formatSeconds(map.getMapTimer().getSecondsLeft())));
+                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_RUNTIME.with(TIME, Text.formatSeconds(map.getMapTimer().getSecondsLeft())).getSingle());
                 double div = (double) map.getMapTimer().getSecondsLeft() / (double) map.getMaxGameTime();
                 this.bossBar.setProgress(div);
                 break;
@@ -79,7 +81,7 @@ public class RSWBossbar {
                 break;
             case STARTING:
                 int time = map.getStartMapTimer() == null ? 0 : map.getStartMapTimer().getSecondsLeft();
-                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_STARTING.getSingle().replace("%time%", Text.formatSeconds(time)));
+                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_STARTING.with(TIME, Text.formatSeconds(time)).getSingle());
                 double div = (double) time / (double) map.getTimeToStart();
                 if (div <= 1 && div >= 0) {
                     this.bossBar.setProgress(div);

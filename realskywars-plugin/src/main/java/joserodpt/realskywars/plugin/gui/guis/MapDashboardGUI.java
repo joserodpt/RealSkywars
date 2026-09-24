@@ -40,6 +40,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.STATUS;
+
 public class MapDashboardGUI {
     private static final Map<UUID, MapDashboardGUI> inventories = new HashMap<>();
     private Inventory inv;
@@ -149,7 +151,7 @@ public class MapDashboardGUI {
                                 }
                                 current.loadInv();
 
-                                p.sendMessage(TranslatableLine.GAME_STATUS_SET.get(gp, true).replace("%status%", current.game.getState().getDisplayName(gp)));
+                                p.sendMessage(TranslatableLine.GAME_STATUS_SET.with(STATUS, current.game.getState().getDisplayName(gp)).get(gp, true));
                                 break;
                             case 13:
                                 // settings

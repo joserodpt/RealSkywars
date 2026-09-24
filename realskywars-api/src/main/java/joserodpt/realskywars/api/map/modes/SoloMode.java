@@ -42,6 +42,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.DISPLAYNAME;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.MAP;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.MAXPLAYERS;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.PLAYER;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.PLAYERS;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.TIME;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.WINNER;
+
 public class SoloMode extends RSWMap {
 
     private final Map<Location, RSWCage> cages;
@@ -161,7 +169,7 @@ public class SoloMode extends RSWMap {
                     }
 
                     for (RSWPlayer ws : this.getAllPlayers()) {
-                        ws.sendMessage(TranslatableLine.PLAYER_JOIN_ARENA.get(p, true).replace("%player%", p.getDisplayName()).replace("%players%", getPlayerCount() + "").replace("%maxplayers%", getMaxPlayers() + ""));
+                        ws.sendMessage(TranslatableLine.PLAYER_JOIN_ARENA.with(PLAYER, p.getDisplayName()).with(PLAYERS, getPlayerCount() + "").with(MAXPLAYERS, getMaxPlayers() + "").get(p, true));
                     }
 
                     if (p.getInventory() != null) {
@@ -212,7 +220,7 @@ public class SoloMode extends RSWMap {
             super.getMapTimer().killTask();
             super.getTimeCounterTask().cancel();
 
-            super.getRealSkywarsAPI().getPlayerManagerAPI().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(TranslatableLine.WINNER_BROADCAST.get(gamePlayer, true).replace("%winner%", p.getDisplayName()).replace("%map%", super.getName()).replace("%displayname%", super.getDisplayName())));
+            super.getRealSkywarsAPI().getPlayerManagerAPI().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(TranslatableLine.WINNER_BROADCAST.with(WINNER, p.getDisplayName()).with(MAP, super.getName()).with(DISPLAYNAME, super.getDisplayName()).get(gamePlayer, true)));
 
             if (this.isInstantEndEnabled()) {
                 this.sendLog(p, true);
@@ -229,7 +237,7 @@ public class SoloMode extends RSWMap {
 
                     for (RSWPlayer g : super.getAllPlayers()) {
                         g.delCage();
-                        g.sendMessage(TranslatableLine.MATCH_END.get(g, true).replace("%time%", Text.formatSeconds(this.getTimeEndGame())));
+                        g.sendMessage(TranslatableLine.MATCH_END.with(TIME, Text.formatSeconds(this.getTimeEndGame())).get(g, true));
                     }
                 }, () -> {
                     super.getBossBar().tick();

@@ -31,6 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.PLAYER;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.TEAM;
+
 public class RSWTeam {
 
     private final int id;
@@ -69,7 +72,7 @@ public class RSWTeam {
      *                 out of the waiting lobby.
      */
     public void addMember(RSWPlayer p, boolean intoCage) {
-        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.TEAM_BROADCAST_JOIN.get(rswPlayer, true).replace("%player%", p.getName())));
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.TEAM_BROADCAST_JOIN.with(PLAYER, p.getName()).get(rswPlayer, true)));
 
         this.members.add(p);
         p.setTeam(this);
@@ -84,7 +87,7 @@ public class RSWTeam {
         }
 
         this.teamBukkit.addEntry(p.getName());
-        p.sendMessage(TranslatableLine.TEAM_JOIN.get(p, true).replace("%team%", getName()));
+        p.sendMessage(TranslatableLine.TEAM_JOIN.with(TEAM, getName()).get(p, true));
     }
 
     /**
@@ -102,7 +105,7 @@ public class RSWTeam {
     public void removeMember(RSWPlayer p) {
         this.members.remove(p);
 
-        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.TEAM_BROADCAST_LEAVE.get(rswPlayer, true).replace("%player%", p.getName())));
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.TEAM_BROADCAST_LEAVE.with(PLAYER, p.getName()).get(rswPlayer, true)));
 
         if (this.playing && members.isEmpty()) {
             this.eliminated = true;
@@ -112,7 +115,7 @@ public class RSWTeam {
         //reads getPlayerCage() right after this to demolish an eliminated team's cage
         this.tc.forgetPlayer(p);
         this.teamBukkit.removeEntry(p.getName());
-        p.sendMessage(TranslatableLine.TEAM_LEAVE.get(p, true).replace("%team%", getName()));
+        p.sendMessage(TranslatableLine.TEAM_LEAVE.with(TEAM, getName()).get(p, true));
     }
 
     public Boolean isTeamFull() {

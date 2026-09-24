@@ -21,6 +21,22 @@ import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Text;
 import org.bukkit.command.CommandSender;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+/**
+ * Every line the plugin says, as a constant pointing at its route in the language files.
+ *
+ * <p>Placeholders are filled with {@link #with(TranslatableLinePlaceholder, Object)}, which hands
+ * back a new {@link Message} with the same ways of reading the line as the constant has:</p>
+ *
+ * <pre>{@code
+ * TranslatableLine.PARTY_JOIN.with(PLAYER, p.getDisplayName()).get(owner);
+ * }</pre>
+ *
+ * <p>Placeholders are replaced before the line is coloured, so a value can carry colour codes of
+ * its own. Callers used to {@code .replace} them into the already coloured string.</p>
+ */
 public enum TranslatableLine {
 
     SOLO_MODE(".Modes.Solo"),
@@ -264,13 +280,51 @@ public enum TranslatableLine {
         this.configPath = configPath;
     }
 
+    /** Starts a message from this line with one placeholder filled; chain more with {@link Message#with}. */
+    public Message with(TranslatableLinePlaceholder placeholder, Object value) {
+        return new Message(this).with(placeholder, value);
+    }
+
     public String getSingle() {
-        String value = RSWConfig.file().getString("Config.Languages." + this.configPath);
-        return Text.color(value == null ? this.configPath : value);
+        return new Message(this).getSingle();
     }
 
     public String getInLanguage(String l) {
-        return Text.color(resolve(l));
+        return new Message(this).getInLanguage(l);
+    }
+
+    public String get(RSWPlayer player) {
+        return new Message(this).get(player);
+    }
+
+    public String get(RSWPlayer player, boolean prefix) {
+        return new Message(this).get(player, prefix);
+    }
+
+    public String getDefault() {
+        return new Message(this).getDefault();
+    }
+
+    public void sendDefault(CommandSender p, boolean prefix) {
+        new Message(this).sendDefault(p, prefix);
+    }
+
+    public void sendSingle(RSWPlayer p) {
+        new Message(this).sendSingle(p);
+    }
+
+    public void send(RSWPlayer p, boolean prefix) {
+        new Message(this).send(p, prefix);
+    }
+
+    public String getPath() {
+        return this.configPath;
+    }
+
+    /** The line as written in config.yml's language section, for lines that are not translated. */
+    private String rawSingle() {
+        String value = RSWConfig.file().getString("Config.Languages." + this.configPath);
+        return value == null ? this.configPath : value;
     }
 
     /**
@@ -294,40 +348,90 @@ public enum TranslatableLine {
         return value == null ? this.configPath : value;
     }
 
-    public String get(RSWPlayer player) {
-        return get(player, false);
-    }
-
-    public String get(RSWPlayer player, boolean prefix) {
-        return Text.color((prefix ? RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() : "") + getInLanguage(player.getLanguage()));
-    }
-
-    public String getDefault() {
+    private static String defaultLanguage() {
         String configuredLanguage = RSWConfig.file().getString("Config.Languages.Default-Language");
         if (configuredLanguage == null) {
             configuredLanguage = RSWConfig.file().getString("Config.Default-Language");
         }
 
-        return getInLanguage(configuredLanguage != null ? configuredLanguage : RealSkywarsAPI.getInstance().getLanguageManagerAPI().getDefaultLanguage());
+        return configuredLanguage != null ? configuredLanguage : RealSkywarsAPI.getInstance().getLanguageManagerAPI().getDefaultLanguage();
     }
 
-    public void sendDefault(CommandSender p, boolean prefix) {
-        p.sendMessage(prefix ? RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + getDefault() : getDefault());
+    private static String prefix() {
+        return RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix();
     }
 
-    public void sendSingle(RSWPlayer p) {
-        if (p.getPlayer() != null) {
-            p.sendMessage(getSingle());
+    /** The tokens a line may contain. {@code MAXPLAYERS} is written {@code %maxplayers%}. */
+    public enum TranslatableLinePlaceholder {
+        ACHIEVEMENT, AMOUNT, COINS, DISPLAYNAME, GOAL, ITEM, LANGUAGE, MAP, MAXPLAYERS, MODE, NAME,
+        PLAYER, PLAYERS, PRICE, REWARD, ROOMS, STATUS, TEAM, THING, TIME, TYPE, WINNER;
+
+        private final String token = "%" + this.name().toLowerCase() + "%";
+
+        public String getToken() {
+            return this.token;
         }
     }
 
-    public void send(RSWPlayer p, boolean prefix) {
-        if (p.getPlayer() != null) {
-            p.sendMessage(get(p, prefix));
-        }
-    }
+    /**
+     * One line with its placeholders filled in. A new one per message and never shared, so nothing
+     * set here can leak into the next.
+     */
+    public static final class Message {
+        private final TranslatableLine line;
+        private final Map<TranslatableLinePlaceholder, String> values = new LinkedHashMap<>();
 
-    public String getPath() {
-        return this.configPath;
+        private Message(TranslatableLine line) {
+            this.line = line;
+        }
+
+        /** Fills a placeholder. Setting the same one again replaces its value. */
+        public Message with(TranslatableLinePlaceholder placeholder, Object value) {
+            this.values.put(placeholder, String.valueOf(value));
+            return this;
+        }
+
+        private String fill(String raw) {
+            for (final Map.Entry<TranslatableLinePlaceholder, String> entry : this.values.entrySet()) {
+                raw = raw.replace(entry.getKey().getToken(), entry.getValue());
+            }
+            return Text.color(raw);
+        }
+
+        public String getSingle() {
+            return this.fill(this.line.rawSingle());
+        }
+
+        public String getInLanguage(String l) {
+            return this.fill(this.line.resolve(l));
+        }
+
+        public String get(RSWPlayer player) {
+            return this.get(player, false);
+        }
+
+        public String get(RSWPlayer player, boolean prefix) {
+            return this.fill((prefix ? prefix() : "") + this.line.resolve(player.getLanguage()));
+        }
+
+        public String getDefault() {
+            return this.getInLanguage(defaultLanguage());
+        }
+
+        public void sendDefault(CommandSender p, boolean prefix) {
+            p.sendMessage(prefix ? prefix() + this.getDefault() : this.getDefault());
+        }
+
+        public void sendSingle(RSWPlayer p) {
+            if (p.getPlayer() != null) {
+                p.sendMessage(this.getSingle());
+            }
+        }
+
+        public void send(RSWPlayer p, boolean prefix) {
+            if (p.getPlayer() != null) {
+                p.sendMessage(this.get(p, prefix));
+            }
+        }
     }
 }

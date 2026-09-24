@@ -36,6 +36,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collections;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.NAME;
+
 public class GUIManager {
 
     public static void openSpectate(RSWPlayer p) {
@@ -46,7 +48,7 @@ public class GUIManager {
             if (s.getPlayer() != null) {
                 inventory.addItem(e -> {
                     p.teleport(s.getPlayer().getLocation());
-                    p.sendMessage(TranslatableLine.COMPASS_TELEPORT.get(p, true).replace("%name%", s.getDisplayName()));
+                    p.sendMessage(TranslatableLine.COMPASS_TELEPORT.with(NAME, s.getDisplayName()).get(p, true));
                 }, Itens.createHead(s.getPlayer(), 1, "&b" + s.getDisplayName(), Collections.singletonList("&c" + String.format("%.2f", s.getPlayer().getHealth()))), i);
                 ++i;
             }

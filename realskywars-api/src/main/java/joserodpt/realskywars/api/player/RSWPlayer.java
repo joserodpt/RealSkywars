@@ -50,6 +50,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.PLAYER;
+
 public class RSWPlayer {
 
     private Player player;
@@ -576,7 +578,7 @@ public class RSWPlayer {
     public void leaveParty() {
         this.playerParty.playerLeave(this);
         this.playerParty = null;
-        this.sendMessage(TranslatableLine.PARTY_LEAVE.get(this, true).replace("%player%", this.getDisplayName()));
+        this.sendMessage(TranslatableLine.PARTY_LEAVE.with(PLAYER, this.getDisplayName()).get(this, true));
     }
 
     public MapViewerPref getPlayerMapViewerPref() {

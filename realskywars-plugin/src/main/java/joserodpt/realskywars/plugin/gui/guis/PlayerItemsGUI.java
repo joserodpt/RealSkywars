@@ -47,6 +47,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.COINS;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.NAME;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.TYPE;
+
 public class PlayerItemsGUI {
 
     private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "&6");
@@ -235,9 +239,9 @@ public class PlayerItemsGUI {
                                             if (cm.removeCoins()) {
                                                 p.getWorld().dropItem(p.getLocation(), new ItemStack(clicked.getMaterial(), clicked.getAmount()));
 
-                                                p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.get(p, true).replace("%name%", clicked.getDisplayName()).replace("%coins%", clicked.getPriceFormatted()));
+                                                p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.with(NAME, clicked.getDisplayName()).with(COINS, clicked.getPriceFormatted()).get(p, true));
                                             } else {
-                                                p.sendMessage(TranslatableLine.INSUFICIENT_COINS.get(p, true).replace("%coins%", RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoinsFormatted(p)));
+                                                p.sendMessage(TranslatableLine.INSUFICIENT_COINS.with(COINS, RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoinsFormatted(p)).get(p, true));
                                             }
                                         } else {
                                             TranslatableLine.SHOP_NO_PERM.send(p, true);
@@ -271,7 +275,7 @@ public class PlayerItemsGUI {
                                         p.setWinBlock(clicked.getExtrasMap().containsKey("Random-Blocks") ? "Random-Blocks" : clicked.getMaterial().name());
                                         break;
                                 }
-                                p.sendMessage(TranslatableLine.PROFILE_SELECTED.get(p, true).replace("%name%", clicked.getDisplayName()).replace("%type%", current.cat.getCategoryTitle(p)));
+                                p.sendMessage(TranslatableLine.PROFILE_SELECTED.with(NAME, clicked.getDisplayName()).with(TYPE, current.cat.getCategoryTitle(p)).get(p, true));
                             }
                         }
                     }

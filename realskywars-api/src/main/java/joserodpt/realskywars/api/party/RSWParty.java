@@ -21,6 +21,8 @@ import joserodpt.realskywars.api.player.RSWPlayer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.PLAYER;
+
 public class RSWParty {
 
     private final RSWPlayer owner;
@@ -35,26 +37,26 @@ public class RSWParty {
         p.joinParty(this.owner);
         this.members.add(p);
 
-        this.owner.sendMessage(TranslatableLine.PARTY_JOIN.get(this.owner).replace("%player%", p.getDisplayName()));
-        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.PARTY_JOIN.get(rswPlayer).replace("%player%", p.getDisplayName())));
+        this.owner.sendMessage(TranslatableLine.PARTY_JOIN.with(PLAYER, p.getDisplayName()).get(this.owner));
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.PARTY_JOIN.with(PLAYER, p.getDisplayName()).get(rswPlayer)));
     }
 
     public void playerLeave(RSWPlayer p) {
-        this.owner.sendMessage(TranslatableLine.PARTY_LEAVE.get(this.owner).replace("%player%", p.getDisplayName()));
-        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.PARTY_LEAVE.get(rswPlayer).replace("%player%", p.getDisplayName())));
+        this.owner.sendMessage(TranslatableLine.PARTY_LEAVE.with(PLAYER, p.getDisplayName()).get(this.owner));
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.PARTY_LEAVE.with(PLAYER, p.getDisplayName()).get(rswPlayer)));
     }
 
     public void kick(RSWPlayer p) {
         this.members.remove(p);
-        this.owner.sendMessage(TranslatableLine.PARTY_KICK.get(this.owner).replace("%player%", p.getDisplayName()));
-        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.PARTY_KICK.get(rswPlayer).replace("%player%", p.getDisplayName())));
+        this.owner.sendMessage(TranslatableLine.PARTY_KICK.with(PLAYER, p.getDisplayName()).get(this.owner));
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.PARTY_KICK.with(PLAYER, p.getDisplayName()).get(rswPlayer)));
     }
 
     public void disband() {
-        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.PARTY_DISBAND.get(rswPlayer).replace("%player%", this.owner.getDisplayName())));
+        this.members.forEach(rswPlayer -> rswPlayer.sendMessage(TranslatableLine.PARTY_DISBAND.with(PLAYER, this.owner.getDisplayName()).get(rswPlayer)));
         this.members.forEach(RSWPlayer::leaveParty);
         this.members.clear();
-        this.owner.sendMessage(TranslatableLine.PARTY_DISBAND.get(this.owner).replace("%player%", this.owner.getDisplayName()));
+        this.owner.sendMessage(TranslatableLine.PARTY_DISBAND.with(PLAYER, this.owner.getDisplayName()).get(this.owner));
         this.owner.leaveParty();
     }
 

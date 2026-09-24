@@ -41,6 +41,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.DISPLAYNAME;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.MAP;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.MAXPLAYERS;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.PLAYER;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.PLAYERS;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.TEAM;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.TIME;
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.WINNER;
+
 public class TeamsMode extends RSWMap {
 
     private int maxMembersTeam = 0;
@@ -143,7 +152,7 @@ public class TeamsMode extends RSWMap {
             }
 
             target.addMember(p, false);
-            p.sendMessage(TranslatableLine.TEAM_AUTO_ASSIGNED.get(p, true).replace("%team%", target.getName()));
+            p.sendMessage(TranslatableLine.TEAM_AUTO_ASSIGNED.with(TEAM, target.getName()).get(p, true));
         }
 
         this.getTeams().forEach(RSWTeam::commitToCage);
@@ -284,7 +293,7 @@ public class TeamsMode extends RSWMap {
 
                     for (RSWPlayer ws : super.getAllPlayers()) {
                         if (p.getPlayer() != null) {
-                            ws.sendMessage(TranslatableLine.PLAYER_JOIN_ARENA.get(ws, true).replace("%player%", p.getDisplayName()).replace("%players%", this.getPlayerCount() + "").replace("%maxplayers%", getMaxPlayers() + ""));
+                            ws.sendMessage(TranslatableLine.PLAYER_JOIN_ARENA.with(PLAYER, p.getDisplayName()).with(PLAYERS, this.getPlayerCount() + "").with(MAXPLAYERS, getMaxPlayers() + "").get(ws, true));
                         }
                     }
 
@@ -358,7 +367,7 @@ public class TeamsMode extends RSWMap {
             super.getMapTimer().killTask();
             super.getTimeCounterTask().cancel();
 
-            super.getRealSkywarsAPI().getPlayerManagerAPI().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(TranslatableLine.WINNER_BROADCAST.get(gamePlayer, true).replace("%winner%", winRSWTeam.getNames()).replace("%map%", super.getName()).replace("%displayname%", super.getDisplayName())));
+            super.getRealSkywarsAPI().getPlayerManagerAPI().getPlayers().forEach(gamePlayer -> gamePlayer.sendMessage(TranslatableLine.WINNER_BROADCAST.with(WINNER, winRSWTeam.getNames()).with(MAP, super.getName()).with(DISPLAYNAME, super.getDisplayName()).get(gamePlayer, true)));
 
             if (this.isInstantEndEnabled()) {
                 winRSWTeam.getMembers().forEach(rswPlayer -> this.sendLog(rswPlayer, true));
@@ -377,8 +386,8 @@ public class TeamsMode extends RSWMap {
 
                     for (RSWPlayer g : super.getAllPlayers()) {
                         if (g.getPlayer() != null) {
-                            g.sendMessage(TranslatableLine.MATCH_END.get(g, true).replace("%time%", Text.formatSeconds(this.getTimeEndGame())));
-                            g.getPlayer().sendTitle("", Text.color(TranslatableLine.TITLE_WIN.get(g).replace("%player%", winRSWTeam.getNames())), 10, 40, 10);
+                            g.sendMessage(TranslatableLine.MATCH_END.with(TIME, Text.formatSeconds(this.getTimeEndGame())).get(g, true));
+                            g.getPlayer().sendTitle("", Text.color(TranslatableLine.TITLE_WIN.with(PLAYER, winRSWTeam.getNames()).get(g)), 10, 40, 10);
                         }
                     }
                 }, () -> {

@@ -40,6 +40,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.PLAYER;
+
 public class PlayerGUI {
 
     private Inventory inv;
@@ -58,7 +60,7 @@ public class PlayerGUI {
                 .map(s -> variables(s, target))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        inv.setItem(2, Itens.createItem(Material.MAP, 1, TranslatableLine.ITEM_STATS_NAME.get(p).replace("%player%", target.getDisplayName()), lore));
+        inv.setItem(2, Itens.createItem(Material.MAP, 1, TranslatableLine.ITEM_STATS_NAME.with(PLAYER, target.getDisplayName()).get(p), lore));
     }
 
     public static Listener getListener() {

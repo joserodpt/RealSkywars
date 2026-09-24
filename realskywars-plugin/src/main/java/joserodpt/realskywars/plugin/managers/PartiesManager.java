@@ -22,6 +22,8 @@ import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.Bukkit;
 
+import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLinePlaceholder.PLAYER;
+
 public class PartiesManager extends PartiesManagerAPI {
     private final RealSkywarsAPI rs;
 
@@ -35,8 +37,8 @@ public class PartiesManager extends PartiesManagerAPI {
             if (emissor.hasParty()) {
                 if (emissor.getParty().isOwner(emissor) && !emissor.getParty().getMembers().contains(recetor)) {
                     invites.put(recetor, emissor);
-                    emissor.sendMessage(TranslatableLine.PARTY_INVITE_SENT.get(emissor, true).replace("%player%", recetor.getDisplayName()));
-                    recetor.sendMessage(TranslatableLine.PARTY_INVITE_RECIEVED.get(recetor, true).replace("%player%", emissor.getDisplayName()));
+                    emissor.sendMessage(TranslatableLine.PARTY_INVITE_SENT.with(PLAYER, recetor.getDisplayName()).get(emissor, true));
+                    recetor.sendMessage(TranslatableLine.PARTY_INVITE_RECIEVED.with(PLAYER, emissor.getDisplayName()).get(recetor, true));
                 } else {
                     TranslatableLine.PARTY_NOT_OWNER.send(emissor, true);
                 }
@@ -51,7 +53,7 @@ public class PartiesManager extends PartiesManagerAPI {
     @Override
     public void acceptInvite(RSWPlayer p) {
         RSWPlayer inviteOwner = this.getInvite(p);
-        p.sendMessage(TranslatableLine.PARTY_ACCEPTEDINVITE.get(p, true).replace("%player%", inviteOwner.getDisplayName()));
+        p.sendMessage(TranslatableLine.PARTY_ACCEPTEDINVITE.with(PLAYER, inviteOwner.getDisplayName()).get(p, true));
         inviteOwner.getParty().playerJoin(p);
     }
 
