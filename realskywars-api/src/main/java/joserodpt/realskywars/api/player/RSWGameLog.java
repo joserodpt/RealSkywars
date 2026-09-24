@@ -25,6 +25,13 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.KILLS;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.MAP;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.PLAYERS;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.RANKED;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.TIME;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.WIN;
+
 public class RSWGameLog {
 
     private String map;
@@ -55,16 +62,14 @@ public class RSWGameLog {
             return Itens.createItem(Material.BUCKET, 1, TranslatableLine.SEARCH_NOTFOUND_NAME.getSingle());
         }
 
-        List<String> list = TranslatableList.GAME_LOG_LIST.get(p);
-
-        for (String s : list) {
-            list.set(list.indexOf(s), s.replace("%players%", String.valueOf(this.players))
-                    .replace("%map%", this.map + " &7[&f" + this.gameMode.getDisplayName(p) + "&7]")
-                    .replace("%ranked%", this.ranked ? "&a&l✔" : "&c&l❌")
-                    .replace("%win%", this.win ? "&a&l✔" : "&c&l❌")
-                    .replace("%kills%", String.valueOf(this.kills))
-                    .replace("%time%", Text.formatSeconds(this.seconds)));
-        }
+        final List<String> list = TranslatableList.GAME_LOG_LIST
+                .with(PLAYERS, this.players)
+                .with(MAP, this.map + " &7[&f" + this.gameMode.getDisplayName(p) + "&7]")
+                .with(RANKED, this.ranked ? "&a&l✔" : "&c&l❌")
+                .with(WIN, this.win ? "&a&l✔" : "&c&l❌")
+                .with(KILLS, this.kills)
+                .with(TIME, Text.formatSeconds(this.seconds))
+                .get(p);
 
         return Itens.createItem(Material.FILLED_MAP, 1, "&f&l" + this.dayandtime, list);
     }

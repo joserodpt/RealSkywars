@@ -28,6 +28,11 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.DISPLAYNAME;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.MAP;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.PLAYERS;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.SPACE;
+
 public class RSWPlayerTab implements RSWPlayerTabInterface {
 
     private final RSWPlayer player;
@@ -82,14 +87,30 @@ public class RSWPlayerTab implements RSWPlayerTabInterface {
 
             String header, footer;
             if (this.player.isInMatch()) {
-                header = String.join("\n", TranslatableList.TAB_HEADER_MATCH.get(this.player)).replace("%map%", this.player.getMatch().getName()).replace("%displayname%", this.player.getMatch().getDisplayName()).replace("%players%", this.player.getMatch().getPlayers().size() + "").replace("%space%", Text.makeSpace());
+                header = String.join("\n", TranslatableList.TAB_HEADER_MATCH
+                        .with(MAP, this.player.getMatch().getName())
+                        .with(DISPLAYNAME, this.player.getMatch().getDisplayName())
+                        .with(PLAYERS, this.player.getMatch().getPlayers().size())
+                        .with(SPACE, Text.makeSpace())
+                        .get(this.player));
                 header = papi(this.player.getPlayer(), header);
-                footer = String.join("\n", TranslatableList.TAB_FOOTER_MATCH.get(this.player)).replace("%map%", this.player.getMatch().getName()).replace("%displayname%", this.player.getMatch().getDisplayName()).replace("%players%", this.player.getMatch().getPlayers().size() + "").replace("%space%", Text.makeSpace());
+                footer = String.join("\n", TranslatableList.TAB_FOOTER_MATCH
+                        .with(MAP, this.player.getMatch().getName())
+                        .with(DISPLAYNAME, this.player.getMatch().getDisplayName())
+                        .with(PLAYERS, this.player.getMatch().getPlayers().size())
+                        .with(SPACE, Text.makeSpace())
+                        .get(this.player));
                 footer = papi(this.player.getPlayer(), footer);
             } else {
-                header = String.join("\n", TranslatableList.TAB_HEADER_OTHER.get(this.player)).replace("%players%", RealSkywarsAPI.getInstance().getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.ALL) + "").replace("%space%", Text.makeSpace());
+                header = String.join("\n", TranslatableList.TAB_HEADER_OTHER
+                        .with(PLAYERS, RealSkywarsAPI.getInstance().getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.ALL))
+                        .with(SPACE, Text.makeSpace())
+                        .get(this.player));
                 header = papi(this.player.getPlayer(), header);
-                footer = String.join("\n", TranslatableList.TAB_FOOTER_OTHER.get(this.player)).replace("%players%", RealSkywarsAPI.getInstance().getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.ALL) + "").replace("%space%", Text.makeSpace());
+                footer = String.join("\n", TranslatableList.TAB_FOOTER_OTHER
+                        .with(PLAYERS, RealSkywarsAPI.getInstance().getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.ALL))
+                        .with(SPACE, Text.makeSpace())
+                        .get(this.player));
                 footer = papi(this.player.getPlayer(), footer);
             }
 

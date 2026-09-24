@@ -135,7 +135,7 @@ public class TransactionManager {
     public void transferCoins() {
         ca.transferCoins(this.toPlayer, this.fromPlayer, this.operationQuantity);
         this.fromPlayer.sendMessage(TranslatableLine.SENDER_COINS.with(COINS, Text.formatDouble(this.operationQuantity)).with(PLAYER, this.toPlayer.getDisplayName()).get(this.fromPlayer, true));
-        this.toPlayer.sendMessage(TranslatableLine.RECIEVER_COINS.with(COINS, Text.formatDouble(this.operationQuantity)).with(PLAYER, this.fromPlayer.getDisplayName()).get(this.fromPlayer, true));
+        this.toPlayer.sendMessage(TranslatableLine.RECIEVER_COINS.with(COINS, Text.formatDouble(this.operationQuantity)).with(PLAYER, this.fromPlayer.getDisplayName()).get(this.toPlayer, true));
     }
 
     public void addCoins() {
@@ -156,7 +156,7 @@ public class TransactionManager {
     public void setCoins() {
         ca.setCoins(this.toPlayer, this.operationQuantity);
 
-        this.toPlayer.sendMessage(TranslatableLine.SET_COINS.with(COINS, Text.formatDouble(this.operationQuantity)).get(this.fromPlayer, true));
+        this.toPlayer.sendMessage(TranslatableLine.SET_COINS.with(COINS, Text.formatDouble(this.operationQuantity)).get(this.toPlayer, true));
         if (!this.console) {
             this.fromPlayer.sendMessage(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + "Coins have been set Player " + this.toPlayer.getName());
         } else {

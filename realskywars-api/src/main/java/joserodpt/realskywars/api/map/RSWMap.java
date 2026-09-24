@@ -22,6 +22,7 @@ import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.RSWMapsConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.config.TranslatableList;
+import joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder;
 import joserodpt.realskywars.api.database.PlayerGameHistoryRow;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.modes.teams.RSWTeam;
@@ -676,7 +677,12 @@ public abstract class RSWMap {
 
     public void sendLog(RSWPlayer p, boolean winner) {
         if (p.getPlayer() != null) {
-            TranslatableList.MAP_END_LOG.get(p).forEach(s -> p.sendCenterMessage(s.replace("%recvcoins%", Text.formatDouble(p.getGameBalance())).replace("%totalcoins%", RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoinsFormatted(p)).replace("%kills%", p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS) + "").replace("%time%", Text.formatSeconds(this.getMapTimer().getPassedSeconds()))));
+            TranslatableList.MAP_END_LOG
+                    .with(TranslatableListPlaceholder.RECVCOINS, Text.formatDouble(p.getGameBalance()))
+                    .with(TranslatableListPlaceholder.TOTALCOINS, RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoinsFormatted(p))
+                    .with(TranslatableListPlaceholder.KILLS, p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS))
+                    .with(TranslatableListPlaceholder.TIME, Text.formatSeconds(this.getMapTimer().getPassedSeconds()))
+                    .get(p).forEach(p::sendCenterMessage);
 
             RealSkywarsAPI.getInstance().getDatabaseManagerAPI().saveNewGameHistory(new PlayerGameHistoryRow(p.getPlayer(), this.getName(), this.getGameMode().name(), this.isRanked(), this.getStartingPlayers(), p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS), winner, this.getTimePassed()), true);
 
@@ -1044,17 +1050,18 @@ public abstract class RSWMap {
         return Itens.createItem(this.getState().getStateMaterial(this.isRanked()),
                 Math.min(64, Math.max(1, this.getPlayerCount())),
                 TranslatableLine.ITEM_MAP_NAME.with(MAP, this.getName()).with(DISPLAYNAME, this.getDisplayName()).with(MODE, this.getGameMode().getDisplayName(p)).get(p) + (this.isRanked() ? " &bRANKED" : ""),
-                variableListForIcon(TranslatableList.ITEMS_MAP_DESCRIPTION.get(p)));
+                this.iconDescription(p));
     }
 
-    private List<String> variableListForIcon(List<String> list) {
+    private List<String> iconDescription(RSWPlayer p) {
+        final List<String> list = TranslatableList.ITEMS_MAP_DESCRIPTION
+                .with(TranslatableListPlaceholder.PLAYERS, this.getPlayerCount())
+                .with(TranslatableListPlaceholder.MAXPLAYERS, this.getMaxPlayers())
+                .get(p);
         if (this.isUnregistered()) {
             list.add("&c&lUNREGISTERED");
         }
-        return list.stream()
-                .map(s -> s.replace("%players%", String.valueOf(this.getPlayerCount()))
-                        .replace("%maxplayers%", String.valueOf(this.getMaxPlayers())))
-                .collect(Collectors.toList());
+        return list;
     }
 
     public abstract RSWMap duplicate(String newName);

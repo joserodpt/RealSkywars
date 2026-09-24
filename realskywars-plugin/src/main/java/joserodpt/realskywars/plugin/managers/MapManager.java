@@ -60,6 +60,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.CAGES;
+
 public class MapManager extends MapManagerAPI {
     private final RealSkywarsAPI rs;
 
@@ -302,7 +304,7 @@ public class MapManager extends MapManagerAPI {
 
         Location loc = new Location(w, 0, 66, 0);
 
-        Text.sendList(p.getPlayer(), Text.replaceVarInList(TranslatableList.EDIT_MAP.get(p), "%cages%", teams + ""));
+        Text.sendList(p.getPlayer(), TranslatableList.EDIT_MAP.with(CAGES, teams).get(p));
 
         p.getInventory().clear();
         RSWPlayerItems.SETUP.giveSet(p);
@@ -590,7 +592,7 @@ public class MapManager extends MapManagerAPI {
 
         p.setGameMode(org.bukkit.GameMode.CREATIVE);
         p.teleport(map.getSpectatorLocation());
-        Text.sendList(p.getPlayer(), Text.replaceVarInList(TranslatableList.EDIT_MAP.get(p), "%cages%", map.getGameMode() == RSWMap.GameMode.SOLO ? String.valueOf(map.getMaxPlayers()) : map.getTeams().size() + ""));
+        Text.sendList(p.getPlayer(), TranslatableList.EDIT_MAP.with(CAGES, map.getGameMode() == RSWMap.GameMode.SOLO ? map.getMaxPlayers() : map.getTeams().size()).get(p));
         p.getInventory().clear();
         RSWPlayerItems.SETUP.giveSet(p);
 

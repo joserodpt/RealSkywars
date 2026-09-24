@@ -27,6 +27,19 @@ import java.util.Collection;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.AVERAGE_KILLS;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.AVERAGE_TIME;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.GAMES;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.LONGEST_TIME;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.LOOSES;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.LOOSES_PERCENTAGE;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.MOST_KILLS;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.RANKED;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.RANKED_PERCENTAGE;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.SHORTEST_TIME;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.WINS;
+import static joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder.WINS_PERCENTAGE;
+
 public class RSWGameHistoryStats {
 
     protected int numberGames, numberWins, numerRanked, shortestTime, longestTime, averageTime, mostKillsInAGame;
@@ -92,24 +105,20 @@ public class RSWGameHistoryStats {
     }
 
     private List<String> getLore(RSWPlayer rswp) {
-        List<String> list = TranslatableList.STATISTIC_GAMES_LIST.get(rswp);
-
-        for (String s : list) {
-            list.set(list.indexOf(s), Text.color(s.replace("%games%", String.valueOf(getNumberGames()))
-                    .replace("%wins%", String.valueOf(getNumberWins()))
-                    .replace("%wins_percentage%", percentage(getNumberWins(), getNumberGames()))
-                    .replace("%looses%", String.valueOf(getNumberLooses()))
-                    .replace("%looses_percentage%", percentage(getNumberLooses(), getNumberGames()))
-                    .replace("%ranked%", String.valueOf(getNumberRanked()))
-                    .replace("%ranked_percentage%", percentage(getNumberRanked(), getNumberGames()))
-                    .replace("%average_kills%", String.valueOf(getAverageKills()))
-                    .replace("%most_kills%", String.valueOf(getMostKillsInAGame()))
-                    .replace("%average_time%", Text.formatSeconds(getAverageTime()))
-                    .replace("%longest_time%", Text.formatSeconds(getLongestTime()))
-                    .replace("%shortest_time%", Text.formatSeconds(getShortestTime()))));
-        }
-
-        return list;
+        return TranslatableList.STATISTIC_GAMES_LIST
+                .with(GAMES, getNumberGames())
+                .with(WINS, getNumberWins())
+                .with(WINS_PERCENTAGE, percentage(getNumberWins(), getNumberGames()))
+                .with(LOOSES, getNumberLooses())
+                .with(LOOSES_PERCENTAGE, percentage(getNumberLooses(), getNumberGames()))
+                .with(RANKED, getNumberRanked())
+                .with(RANKED_PERCENTAGE, percentage(getNumberRanked(), getNumberGames()))
+                .with(AVERAGE_KILLS, getAverageKills())
+                .with(MOST_KILLS, getMostKillsInAGame())
+                .with(AVERAGE_TIME, Text.formatSeconds(getAverageTime()))
+                .with(LONGEST_TIME, Text.formatSeconds(getLongestTime()))
+                .with(SHORTEST_TIME, Text.formatSeconds(getShortestTime()))
+                .get(rswp);
     }
 
     private String percentage(int small, int total) {

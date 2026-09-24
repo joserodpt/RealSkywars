@@ -21,6 +21,7 @@ import joserodpt.realskywars.api.chests.RSWChest;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.config.TranslatableList;
+import joserodpt.realskywars.api.config.TranslatableList.TranslatableListPlaceholder;
 import joserodpt.realskywars.api.managers.world.RSWWorld;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
@@ -199,7 +200,12 @@ public class TeamsMode extends RSWMap {
                         super.getBossBar().addPlayer(p.getPlayer());
 
                         //start msg
-                        TranslatableList.MAP_START.get(p).forEach(s -> p.sendCenterMessage(s.replace("%chests%", super.getChestTier().getDisplayName(p)).replace("%kit%", p.getPlayerKit().getDisplayName()).replace("%project%", super.getProjectileTier().getDisplayName(p)).replace("%time%", super.getTimeType().getDisplayName(p))));
+                        TranslatableList.MAP_START
+                                .with(TranslatableListPlaceholder.CHESTS, super.getChestTier().getDisplayName(p))
+                                .with(TranslatableListPlaceholder.KIT, p.getPlayerKit().getDisplayName())
+                                .with(TranslatableListPlaceholder.PROJECT, super.getProjectileTier().getDisplayName(p))
+                                .with(TranslatableListPlaceholder.TIME, super.getTimeType().getDisplayName(p))
+                                .get(p).forEach(p::sendCenterMessage);
 
                         p.getPlayerKit().give(p);
                         p.setState(RSWPlayer.PlayerState.PLAYING);
