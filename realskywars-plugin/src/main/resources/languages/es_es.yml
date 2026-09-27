@@ -299,7 +299,7 @@ es_es:
         - " &fJuegos: &a%gamesplayed% &7/ &b%rankedgamesplayed%"
         - " &fDerrotas: &a%loses% &7/ &b%rankedloses%"
         - " &b%playing% &fjugando"
-      Title: "&aRealSkywars &fLobby"
+      Title: "&fReal&bSkywars &fLobby"
     Cage:
       Lines:
         - "%space%"

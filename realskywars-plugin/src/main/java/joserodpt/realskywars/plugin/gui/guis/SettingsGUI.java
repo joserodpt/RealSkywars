@@ -161,7 +161,7 @@ public class SettingsGUI {
      */
     public static void open(final RSWPlayer p, final RealSkywarsAPI rsa) {
         final String forMaps = "for maps without their own";
-        final SettingsDialog settings = new SettingsDialog("&f&lReal&c&lSkywars &8| &fSettings")
+        final SettingsDialog settings = new SettingsDialog("&f&lReal&b&lSkywars &8| &fSettings")
                 .icon(Material.BOW)
                 .onSave((player, category) -> player.sendMessage(Text.color("&fSettings saved.")));
         settings.category("&eGeneral", "&7Prefix, language, currency and the lobby")
@@ -244,7 +244,7 @@ public class SettingsGUI {
     public SettingsGUI(RSWPlayer as, RealSkywarsAPI rsa) {
         this.rsa = rsa;
         this.uuid = as.getUUID();
-        this.inv = Bukkit.getServer().createInventory(null, 54, Text.color("&f&lReal&c&lSkywars &8| Settings (" + list.size() + ")"));
+        this.inv = Bukkit.getServer().createInventory(null, 54, Text.color("&f&lReal&b&lSkywars &8| Settings (" + list.size() + ")"));
 
         this.load();
 

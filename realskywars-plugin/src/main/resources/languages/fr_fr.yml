@@ -261,7 +261,7 @@ fr_fr:
         - " &fParties : &a%gamesplayed% &7/ &b%rankedgamesplayed%"
         - " &fDéfaites : &a%loses% &7/ &b%rankedloses%"
         - " &b%playing% &fjouent"
-      Title: "&aRealSkywars &fLobby"
+      Title: "&fReal&bSkywars &fLobby"
     Cage:
       Lines:
         - "%space%"

@@ -303,7 +303,7 @@ pt_pt:
         - " &fJogos: &a%gamesplayed% &7/ &b%rankedgamesplayed%"
         - " &fDerrotas: &a%loses% &7/ &b%rankedloses%"
         - " &b%playing% &fjogando"
-      Title: "&aRealSkywars &fLobby"
+      Title: "&fReal&bSkywars &fLobby"
     Cage:
       Lines:
         - "%space%"
