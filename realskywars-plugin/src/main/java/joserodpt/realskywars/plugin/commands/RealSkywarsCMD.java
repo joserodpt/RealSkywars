@@ -47,6 +47,7 @@ import joserodpt.realskywars.plugin.gui.guis.SettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.ShopGUI;
 import joserodpt.realutils.dialog.Dialogs;
 import joserodpt.realutils.item.ItemStackSpringer;
+import joserodpt.realutils.BuildInfo;
 import joserodpt.realutils.text.Text;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -105,6 +106,8 @@ public class RealSkywarsCMD extends BaseCommandWA {
             }
         } else {
             Text.send(commandSender, "&f&lReal&B&LSkywars &r&6Version &e" + rs.getPlugin().getDescription().getVersion());
+            Text.send(commandSender, "&6Built &e" + BuildInfo.time(rs.getPlugin()));
+            Text.send(commandSender, "&6RealUtils &e" + BuildInfo.realUtilsVersion(rs.getPlugin()));
         }
     }
 

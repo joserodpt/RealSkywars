@@ -15,7 +15,7 @@
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Shared with the other Real* plugins: GUIs, text, items, config, dialogs (1.21.6+) and the chat prompt. -->
-        <realutils.version>1.1.0</realutils.version>
+        <realutils.version>1.3.0</realutils.version>
     </properties>
     <distributionManagement>
         <repository>

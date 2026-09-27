@@ -132,6 +132,8 @@
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <realutils.version>1.1.0</realutils.version>
+    <realutils.version>1.3.0</realutils.version>
+    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss'Z'</maven.build.timestamp.format>
+    <build.time>${maven.build.timestamp}</build.time>
   </properties>
 </project>
