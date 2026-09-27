@@ -18,8 +18,8 @@ package joserodpt.realskywars.api.player;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.map.RSWMap;
-import joserodpt.realskywars.api.utils.Itens;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.api.utils.Format;
+import joserodpt.realutils.item.Items;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -59,7 +59,7 @@ public class RSWGameLog {
 
     public ItemStack getItem(RSWPlayer p) {
         if (this.dummy) {
-            return Itens.createItem(Material.BUCKET, 1, TranslatableLine.SEARCH_NOTFOUND_NAME.getSingle());
+            return Items.createItem(Material.BUCKET, 1, TranslatableLine.SEARCH_NOTFOUND_NAME.getSingle());
         }
 
         final List<String> list = TranslatableList.GAME_LOG_LIST
@@ -68,9 +68,9 @@ public class RSWGameLog {
                 .with(RANKED, this.ranked ? "&a&l✔" : "&c&l❌")
                 .with(WIN, this.win ? "&a&l✔" : "&c&l❌")
                 .with(KILLS, this.kills)
-                .with(TIME, Text.formatSeconds(this.seconds))
+                .with(TIME, Format.formatSeconds(this.seconds))
                 .get(p);
 
-        return Itens.createItem(Material.FILLED_MAP, 1, "&f&l" + this.dayandtime, list);
+        return Items.createItem(Material.FILLED_MAP, 1, "&f&l" + this.dayandtime, list);
     }
 }

@@ -19,10 +19,11 @@ import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.Itens;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.api.utils.Format;
 import joserodpt.realskywars.plugin.RealSkywars;
 import joserodpt.realutils.dialog.Dialogs;
+import joserodpt.realutils.item.Items;
+import joserodpt.realutils.text.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -49,17 +50,17 @@ public class MapDashboardGUI {
     private static final Map<UUID, MapDashboardGUI> inventories = new HashMap<>();
     private Inventory inv;
 
-    private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
-    private final ItemStack specon = Itens.createItem(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &aON &7for dead players."));
-    private final ItemStack rankedon = Itens.createItem(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked is turned &aON&7."));
-    private final ItemStack rankedoff = Itens.createItem(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked is turned &cOFF&7."));
+    private final ItemStack placeholder = Items.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
+    private final ItemStack specon = Items.createItem(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &aON &7for dead players."));
+    private final ItemStack rankedon = Items.createItem(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked is turned &aON&7."));
+    private final ItemStack rankedoff = Items.createItem(Material.DIAMOND_SWORD, 1, "&9Ranked", Collections.singletonList("&7Ranked is turned &cOFF&7."));
 
-    private final ItemStack specoff = Itens.createItem(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &cOFF &7for dead players."));
-    private final ItemStack ieon = Itens.createItem(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &aON&7."));
-    private final ItemStack ieoff = Itens.createItem(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &cOFF&7."));
-    private final ItemStack resetRoom = Itens.createItem(Material.BARRIER, 1, "&9Reset Room", Arrays.asList("&cClick here to reset the room.", "&4NOTE: ALL PLAYERS WILL BE KICKED FROM THE GAME."));
-    private final ItemStack borderon = Itens.createItem(Material.ITEM_FRAME, 1, "&9Border", Collections.singletonList("&7Border is turned &aON&7."));
-    private final ItemStack borderoff = Itens.createItem(Material.ITEM_FRAME, 1, "&9Border", Collections.singletonList("&7Border is turned &cOFF&7."));
+    private final ItemStack specoff = Items.createItem(Material.ENDER_EYE, 1, "&9Spectator", Collections.singletonList("&7Spectator is turned &cOFF &7for dead players."));
+    private final ItemStack ieon = Items.createItem(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &aON&7."));
+    private final ItemStack ieoff = Items.createItem(Material.DRAGON_HEAD, 1, "&9Instant Ending", Collections.singletonList("&7Instant Ending is turned &cOFF&7."));
+    private final ItemStack resetRoom = Items.createItem(Material.BARRIER, 1, "&9Reset Room", Arrays.asList("&cClick here to reset the room.", "&4NOTE: ALL PLAYERS WILL BE KICKED FROM THE GAME."));
+    private final ItemStack borderon = Items.createItem(Material.ITEM_FRAME, 1, "&9Border", Collections.singletonList("&7Border is turned &aON&7."));
+    private final ItemStack borderoff = Items.createItem(Material.ITEM_FRAME, 1, "&9Border", Collections.singletonList("&7Border is turned &cOFF&7."));
 
     //per instance: a static id got overwritten by the next dashboard, leaking the old task and cancelling the new one
     private int refreshTask;
@@ -252,7 +253,7 @@ public class MapDashboardGUI {
 
     private void refresher() {
         refreshTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(RealSkywars.getInstance().getPlugin(), () -> {
-            ItemStack infoMap = Itens.createItem(Material.MAP, 1, "&9Info", Arrays.asList("&fMap type: &b" + game.getRSWWorld().getType().name(), "&fPlayers: &b" + game.getPlayerCount() + "/" + game.getMaxPlayers(), "&fSpectators: &b" + game.getSpectatorsCount(), "&fChest Tier: &b" + game.getChestTier().name(), "", "&fRunning Time: &b" + Text.formatSeconds(game.getTimePassed())));
+            ItemStack infoMap = Items.createItem(Material.MAP, 1, "&9Info", Arrays.asList("&fMap type: &b" + game.getRSWWorld().getType().name(), "&fPlayers: &b" + game.getPlayerCount() + "/" + game.getMaxPlayers(), "&fSpectators: &b" + game.getSpectatorsCount(), "&fChest Tier: &b" + game.getChestTier().name(), "", "&fRunning Time: &b" + Format.formatSeconds(game.getTimePassed())));
             // infoMap
             inv.setItem(4, infoMap);
         }, 0L, 10L);

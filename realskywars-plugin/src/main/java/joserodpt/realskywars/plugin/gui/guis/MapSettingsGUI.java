@@ -17,10 +17,11 @@ package joserodpt.realskywars.plugin.gui.guis;
 
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.Itens;
-import joserodpt.realskywars.api.utils.PlayerInput;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.api.utils.Format;
 import joserodpt.realutils.dialog.DialogForm;
+import joserodpt.realutils.input.PlayerInput;
+import joserodpt.realutils.item.Items;
+import joserodpt.realutils.text.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -45,8 +46,8 @@ public class MapSettingsGUI {
 
     private static final Map<UUID, MapSettingsGUI> inventories = new HashMap<>();
     private Inventory inv;
-    private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
-    private final ItemStack confirm = Itens.createItem(Material.CHEST, 1, "&9Save Settings", Collections.singletonList("&7Click here to confirm your settings."));
+    private final ItemStack placeholder = Items.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
+    private final ItemStack confirm = Items.createItem(Material.CHEST, 1, "&9Save Settings", Collections.singletonList("&7Click here to confirm your settings."));
 
     private final UUID uuid;
     private final RSWMap map;
@@ -76,23 +77,23 @@ public class MapSettingsGUI {
             inv.setItem(slot, placeholder);
         }
 
-        inv.setItem(10, Itens.createItem(Material.ENDER_EYE, 1, "&9Spectator " + styleBool(map.isSpectatorEnabled()), Collections.singletonList("&7Spectate when a player dies. Click to toggle.")));
-        inv.setItem(12, Itens.createItem(Material.FEATHER, 1, "&9Instant Ending " + styleBool(map.isInstantEndEnabled()), Arrays.asList("&7When a player wins, the game is instantly resetted", "&7and all players are teleported to the lobby. Click to toggle.")));
-        inv.setItem(14, Itens.createItem(Material.DIAMOND_SWORD, 1, "&9Ranked " + styleBool(map.isRanked()), Collections.singletonList("&7Ranked Mode toggle. Click to toggle.")));
-        inv.setItem(16, Itens.createItem(Material.ITEM_FRAME, 1, "&9Border " + styleBool(map.isBorderEnabled()), Collections.singletonList("&7Border toggle. Click to toggle.")));
+        inv.setItem(10, Items.createItem(Material.ENDER_EYE, 1, "&9Spectator " + styleBool(map.isSpectatorEnabled()), Collections.singletonList("&7Spectate when a player dies. Click to toggle.")));
+        inv.setItem(12, Items.createItem(Material.FEATHER, 1, "&9Instant Ending " + styleBool(map.isInstantEndEnabled()), Arrays.asList("&7When a player wins, the game is instantly resetted", "&7and all players are teleported to the lobby. Click to toggle.")));
+        inv.setItem(14, Items.createItem(Material.DIAMOND_SWORD, 1, "&9Ranked " + styleBool(map.isRanked()), Collections.singletonList("&7Ranked Mode toggle. Click to toggle.")));
+        inv.setItem(16, Items.createItem(Material.ITEM_FRAME, 1, "&9Border " + styleBool(map.isBorderEnabled()), Collections.singletonList("&7Border toggle. Click to toggle.")));
 
         if (map.getGameMode() == RSWMap.GameMode.TEAMS) {
-            inv.setItem(20, Itens.createItem(Material.WHITE_BANNER, 1, "&9Manual Team Selection " + styleBool(map.isManualTeamSelection()),
+            inv.setItem(20, Items.createItem(Material.WHITE_BANNER, 1, "&9Manual Team Selection " + styleBool(map.isManualTeamSelection()),
                     Arrays.asList("&7Players wait in the waiting lobby and pick their own team", "&7instead of being auto assigned. Click to toggle.",
                             "&8Set the lobby up with /rsw createwaitinglobby.")));
         }
 
-        inv.setItem(22, Itens.createItem(Material.PISTON, 1, "&9Events", Collections.singletonList("&7Click here to edit this map's events.")));
+        inv.setItem(22, Items.createItem(Material.PISTON, 1, "&9Events", Collections.singletonList("&7Click here to edit this map's events.")));
 
-        inv.setItem(28, Itens.createItem(Material.CLOCK, 1, "&9Max Game Time &f" + Text.formatSeconds(map.getMaxGameTime()), Collections.singletonList("&7Click to edit.")));
-        inv.setItem(30, Itens.createItem(Material.CLOCK, 1, "&9End Game Time &f" + Text.formatSeconds(map.getTimeEndGame()), Collections.singletonList("&7Click to edit.")));
-        inv.setItem(32, Itens.createItem(Material.CLOCK, 1, "&9Start Game Time &f" + Text.formatSeconds(map.getTimeToStart()), Collections.singletonList("&7Click to edit.")));
-        inv.setItem(34, Itens.createItem(Material.CLOCK, 1, "&9Invincibility Seconds &f" + Text.formatSeconds(map.getInvincibilitySeconds()), Collections.singletonList("&7Click to edit.")));
+        inv.setItem(28, Items.createItem(Material.CLOCK, 1, "&9Max Game Time &f" + Format.formatSeconds(map.getMaxGameTime()), Collections.singletonList("&7Click to edit.")));
+        inv.setItem(30, Items.createItem(Material.CLOCK, 1, "&9End Game Time &f" + Format.formatSeconds(map.getTimeEndGame()), Collections.singletonList("&7Click to edit.")));
+        inv.setItem(32, Items.createItem(Material.CLOCK, 1, "&9Start Game Time &f" + Format.formatSeconds(map.getTimeToStart()), Collections.singletonList("&7Click to edit.")));
+        inv.setItem(34, Items.createItem(Material.CLOCK, 1, "&9Invincibility Seconds &f" + Format.formatSeconds(map.getInvincibilitySeconds()), Collections.singletonList("&7Click to edit.")));
 
         inv.setItem(40, confirm);
     }
@@ -203,7 +204,7 @@ public class MapSettingsGUI {
                                         break;
                                     }
                                     p.closeInventory();
-                                    new PlayerInput(p, input -> {
+                                    new PlayerInput(p, true, input -> {
                                         try {
                                             int seconds = Integer.parseInt(input);
                                             current.map.setMaxGameTime(seconds);
@@ -222,7 +223,7 @@ public class MapSettingsGUI {
                                         break;
                                     }
                                     p.closeInventory();
-                                    new PlayerInput(p, input -> {
+                                    new PlayerInput(p, true, input -> {
                                         try {
                                             int seconds = Integer.parseInt(input);
                                             current.map.setTimeEndGame(seconds);
@@ -241,7 +242,7 @@ public class MapSettingsGUI {
                                         break;
                                     }
                                     p.closeInventory();
-                                    new PlayerInput(p, input -> {
+                                    new PlayerInput(p, true, input -> {
                                         try {
                                             int seconds = Integer.parseInt(input);
                                             current.map.setTimeToStart(seconds);
@@ -260,7 +261,7 @@ public class MapSettingsGUI {
                                         break;
                                     }
                                     p.closeInventory();
-                                    new PlayerInput(p, input -> {
+                                    new PlayerInput(p, true, input -> {
                                         try {
                                             int seconds = Integer.parseInt(input);
                                             current.map.setInvincibilitySeconds(seconds);

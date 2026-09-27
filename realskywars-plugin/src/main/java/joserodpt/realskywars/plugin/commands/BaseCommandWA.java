@@ -2,7 +2,7 @@ package joserodpt.realskywars.plugin.commands;
 
 import dev.triumphteam.cmd.core.BaseCommand;
 import dev.triumphteam.cmd.core.annotation.SubCommand;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;

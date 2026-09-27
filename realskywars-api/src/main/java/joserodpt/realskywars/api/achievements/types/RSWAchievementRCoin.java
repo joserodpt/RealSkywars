@@ -19,7 +19,7 @@ import joserodpt.realskywars.api.achievements.RSWAchievement;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.TransactionManager;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.Itens;
+import joserodpt.realutils.item.Items;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -79,7 +79,7 @@ public class RSWAchievementRCoin implements RSWAchievement {
 
     @Override
     public ItemStack getItem(RSWPlayer p) {
-        return Itens.createItem(p.getStatistics(this.getType(), false) >= this.getGoal() ? Material.GREEN_CONCRETE : Material.RED_CONCRETE
+        return Items.createItem(p.getStatistics(this.getType(), false) >= this.getGoal() ? Material.GREEN_CONCRETE : Material.RED_CONCRETE
                 , 1, TranslatableLine.ACHIEVEMENT_GOAL.with(GOAL, String.valueOf(this.getGoal())).get(p), Collections.singletonList(TranslatableLine.ACHIEVEMENT_REWARD.with(REWARD, this.getReward().toString()).get(p) + " " + TranslatableLine.ACHIEVEMENT_NAME_COINS.get(p)));
     }
 }

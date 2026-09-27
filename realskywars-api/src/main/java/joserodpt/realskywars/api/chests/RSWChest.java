@@ -28,7 +28,7 @@ import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.map.RSWMapEvent;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.CountdownTimer;
-import joserodpt.realskywars.api.utils.ItemStackSpringer;
+import joserodpt.realutils.item.ItemStackSpringer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

@@ -17,12 +17,9 @@ package joserodpt.realskywars.api.utils;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import joserodpt.realutils.text.Text;
 
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -30,7 +27,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Text {
+/** RealSkywars' own text helpers; colouring and sending are RealUtils' {@link Text}. */
+public class Format {
 
     public static String anonName() {
         List<String> nicks = RSWConfig.file().getStringList("Config.Random-Nicknames");
@@ -44,23 +42,6 @@ public class Text {
         cal.add(Calendar.HOUR_OF_DAY, RSWConfig.file().getInt("Config.Time.Offset"));
         cal.getTime();
         return dateFormat.format(cal.getTime());
-    }
-
-    public static String color(String string) {
-        if (string == null) {
-            return "";
-        }
-        return ForestColorAPI.colorize(string);
-    }
-
-    public static String strip(String s) {
-        return ChatColor.stripColor(s);
-    }
-
-    public static List<String> color(List<?> list) {
-        return list.stream()
-                .map(element -> Text.color((String) element))
-                .collect(Collectors.toList());
     }
 
     public static String formatSeconds(int n) {
@@ -88,18 +69,6 @@ public class Text {
         }
     }
 
-    public static void sendList(Player p, List<String> list) {
-        list.forEach(s -> p.sendMessage(color(s)));
-    }
-
-    public static void sendList(CommandSender p, List<String> list) {
-        list.forEach(s -> p.sendMessage(color(s)));
-    }
-
-    public static void send(CommandSender p, String s) {
-        p.sendMessage(color(s));
-    }
-
     public static CharSequence makeSpace() {
         return Text.color(randSp() + "&b" + randSp() + "&c" + randSp());
     }
@@ -115,30 +84,10 @@ public class Text {
                 .collect(Collectors.toList());
     }
 
-    public static String beautifyEnumName(String name) {
-        if (name == null || name.isEmpty()) {
-            return "Unknown";
-        }
-
-        String[] parts = name.split("_");
-        StringBuilder formattedString = new StringBuilder();
-
-        for (String part : parts) {
-            if (!part.isEmpty()) {
-                formattedString.append(part.substring(0, 1).toUpperCase());
-                if (part.length() > 1) {
-                    formattedString.append(part.substring(1).toLowerCase());
-                }
-            }
-            formattedString.append(" ");
-        }
-        return formattedString.toString().trim();
-    }
-
     private static final int CENTER_PX = 154;
 
     public static String centerMessage(String message) {
-        String[] lines = color(message).split("\n", 40);
+        String[] lines = Text.color(message).split("\n", 40);
         StringBuilder returnMessage = new StringBuilder();
 
         for (String line : lines) {
@@ -176,23 +125,10 @@ public class Text {
         String formattedBalance = gameBalance % 1 == 0 ? String.valueOf(gameBalance.intValue()) : String.valueOf(gameBalance);
 
         if (gameBalance >= 1000) {
-            formattedBalance = formatLargeNumber(gameBalance);
+            formattedBalance = Text.formatNumber(gameBalance);
         }
 
         return formattedBalance;
-    }
-
-    private static String formatLargeNumber(Double number) {
-        String[] suffixes = {"", "k", "M", "B", "T", "Q"};
-        int index = 0;
-
-        while (number >= 1000 && index < suffixes.length - 1) {
-            number /= 1000;
-            index++;
-        }
-
-        DecimalFormat decimalFormat = new DecimalFormat("#.#");
-        return decimalFormat.format(number) + suffixes[index];
     }
 
     public enum DefaultFontInfo {

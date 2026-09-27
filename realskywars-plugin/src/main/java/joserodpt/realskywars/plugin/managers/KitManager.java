@@ -23,8 +23,8 @@ import joserodpt.realskywars.api.kits.KitInventory;
 import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.managers.KitManagerAPI;
 import joserodpt.realskywars.api.shop.RSWBuyableItem;
-import joserodpt.realskywars.api.utils.ItemStackSpringer;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.item.ItemStackSpringer;
+import joserodpt.realutils.text.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 

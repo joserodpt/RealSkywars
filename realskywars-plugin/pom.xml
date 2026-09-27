@@ -14,8 +14,8 @@
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Shared with the other Real* plugins: dialogs (1.21.6+) and the chat prompt. -->
-        <realutils.version>1.0.0</realutils.version>
+        <!-- Shared with the other Real* plugins: GUIs, text, items, config, dialogs (1.21.6+) and the chat prompt. -->
+        <realutils.version>1.1.0</realutils.version>
     </properties>
 
     <build>
@@ -54,6 +54,15 @@
                                 <relocation>
                                     <pattern>io.github.projectunified.unidialog</pattern>
                                     <shadedPattern>joserodpt.realskywars.libs.unidialog</shadedPattern>
+                                </relocation>
+                                <!-- Other plugins shade their own BoostedYAML and bStats: ours can't clash with theirs. -->
+                                <relocation>
+                                    <pattern>dev.dejvokep.boostedyaml</pattern>
+                                    <shadedPattern>joserodpt.realskywars.libs.boostedyaml</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.bstats</pattern>
+                                    <shadedPattern>joserodpt.realskywars.libs.bstats</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -119,7 +128,12 @@
         <dependency>
             <groupId>dev.dejvokep</groupId>
             <artifactId>boosted-yaml</artifactId>
-            <version>1.3</version>
+            <version>1.3.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.decentsoftware-eu</groupId>

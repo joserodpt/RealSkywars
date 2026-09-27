@@ -15,7 +15,7 @@ package joserodpt.realskywars.api.nms;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.text.Text;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;

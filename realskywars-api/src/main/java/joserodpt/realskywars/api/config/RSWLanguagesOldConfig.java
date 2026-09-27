@@ -16,59 +16,40 @@ package joserodpt.realskywars.api.config;
  */
 
 import dev.dejvokep.boostedyaml.YamlDocument;
-import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realutils.config.YamlConfig;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
 
 public class RSWLanguagesOldConfig {
 
     private static final String name = "languages.yml";
-    private static YamlDocument document;
+    private static YamlConfig config;
 
     public static void setup(final JavaPlugin rm) {
         File file = new File(rm.getDataFolder(), name);
         if (!file.exists()) {
-            document = null;
+            config = null;
             return;
         }
 
-        try {
-            document = YamlDocument.create(file);
-        } catch (final IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe("Couldn't setup " + name + "!");
-            RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());
-        }
+        config = YamlConfig.of(rm, file, null).load();
     }
 
     public static YamlDocument file() {
-        return document;
+        return config == null ? null : config.file();
     }
 
     public static void save() {
-        //setup() leaves the document null when the legacy file does not exist
-        if (document == null) {
-            return;
-        }
-
-        try {
-            document.save();
-        } catch (final IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe("Couldn't save " + name + "!");
+        //setup() leaves it null when the legacy file does not exist
+        if (config != null) {
+            config.save();
         }
     }
 
     public static void reload() {
-        if (document == null) {
-            return;
-        }
-
-        try {
-            document.reload();
-        } catch (final IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe("Couldn't reload " + name + "!");
+        if (config != null) {
+            config.reload();
         }
     }
-
 }

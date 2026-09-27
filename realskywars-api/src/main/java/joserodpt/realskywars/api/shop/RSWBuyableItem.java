@@ -19,9 +19,9 @@ import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWShopsConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.Itens;
+import joserodpt.realskywars.api.utils.Format;
 import joserodpt.realskywars.api.utils.Pair;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.item.Items;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -116,7 +116,7 @@ public class RSWBuyableItem {
     }
 
     public String getPriceFormatted() {
-        return Text.formatDouble(this.getPrice());
+        return Format.formatDouble(this.getPrice());
     }
 
     public int getAmount() {
@@ -136,18 +136,18 @@ public class RSWBuyableItem {
 
     public ItemStack getIcon(RSWPlayer p) {
         if (this.dummy) {
-            return Itens.createItem(this.getMaterial(), 1, this.getDisplayName());
+            return Items.createItem(this.getMaterial(), 1, this.getDisplayName());
         }
 
         if (this.getCategory() == ItemCategory.SPEC_SHOP) {
-            return Itens.createItemLoreEnchanted(this.getMaterial(), this.getAmount(), "&b" + this.getDisplayName() + " &fx" + this.getAmount(), Arrays.asList("&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount.", TranslatableLine.SHOP_CLICK_2_BUY.with(COINS, this.getPriceFormatted()).get(p)));
+            return Items.createItemLoreEnchanted(this.getMaterial(), this.getAmount(), "&b" + this.getDisplayName() + " &fx" + this.getAmount(), Arrays.asList("&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount.", TranslatableLine.SHOP_CLICK_2_BUY.with(COINS, this.getPriceFormatted()).get(p)));
         }
 
         Pair<Boolean, String> res = this.isBought(p);
         if (res.getKey()) {
-            return Itens.createItemLoreEnchanted(this.getMaterial(), this.getAmount(), "&b" + this.getDisplayName(), Objects.equals(res.getValue(), "free") ? Collections.singletonList(TranslatableLine.SHOP_CLICK_2_SELECT.get(p)) : Arrays.asList("&f" + TranslatableLine.SHOP_BOUGHT_ON.get(p) + res.getValue(), TranslatableLine.SHOP_CLICK_2_SELECT.get(p)));
+            return Items.createItemLoreEnchanted(this.getMaterial(), this.getAmount(), "&b" + this.getDisplayName(), Objects.equals(res.getValue(), "free") ? Collections.singletonList(TranslatableLine.SHOP_CLICK_2_SELECT.get(p)) : Arrays.asList("&f" + TranslatableLine.SHOP_BOUGHT_ON.get(p) + res.getValue(), TranslatableLine.SHOP_CLICK_2_SELECT.get(p)));
         } else {
-            return Itens.createItem(this.getMaterial(), 1, "&b" + this.getDisplayName(), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_BUY.with(COINS, this.getPriceFormatted()).get(p)));
+            return Items.createItem(this.getMaterial(), 1, "&b" + this.getDisplayName(), Collections.singletonList(TranslatableLine.SHOP_CLICK_2_BUY.with(COINS, this.getPriceFormatted()).get(p)));
         }
     }
 

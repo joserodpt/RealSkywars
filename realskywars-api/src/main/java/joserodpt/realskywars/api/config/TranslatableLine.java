@@ -18,7 +18,7 @@ package joserodpt.realskywars.api.config;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.managers.LanguageManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.text.Text;
 import org.bukkit.command.CommandSender;
 
 import java.util.LinkedHashMap;

@@ -19,10 +19,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import joserodpt.realskywars.api.Debugger;
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.utils.ItemStackSpringer;
-import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.ServerVersionUtil;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.item.ItemStackSpringer;
+import joserodpt.realutils.item.Items;
+import joserodpt.realutils.text.Text;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -65,7 +65,7 @@ public class RSWLanguage {
 
         this.displayName = this.getConfig().getString(this.getKey() + ".Language-Specific.Displayname");
 
-        this.icon = Itens.renameItem(Objects.requireNonNull(ItemStackSpringer.getItemDeSerialized(sectionToMap(this.getKey() + ".Language-Specific.Icon"))), "&e&l" + this.getDisplayName(), generateLore());
+        this.icon = Items.renameItem(Objects.requireNonNull(ItemStackSpringer.getItemDeSerialized(sectionToMap(this.getKey() + ".Language-Specific.Icon"))), "&e&l" + this.getDisplayName(), generateLore());
         translationFile = new File(folder, this.getKey() + ".json");
 
         // download the language file from https://assets.mcasset.cloud/1.21/assets/minecraft/lang/{getTranslationKey()}.json to the translations folder

@@ -16,7 +16,7 @@ package joserodpt.realskywars.api.kits;
  */
 
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.ItemStackSpringer;
+import joserodpt.realutils.item.ItemStackSpringer;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;

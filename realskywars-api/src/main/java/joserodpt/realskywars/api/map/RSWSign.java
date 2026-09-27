@@ -16,7 +16,7 @@ package joserodpt.realskywars.api.map;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.text.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

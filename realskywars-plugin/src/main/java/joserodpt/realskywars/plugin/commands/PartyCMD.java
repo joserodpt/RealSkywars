@@ -22,7 +22,7 @@ import dev.triumphteam.cmd.core.annotation.SubCommand;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.text.Text;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

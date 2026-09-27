@@ -18,7 +18,7 @@ package joserodpt.realskywars.plugin.gui.guis;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.Itens;
+import joserodpt.realutils.item.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -44,7 +44,7 @@ public class VoteGUI {
 
     private static Map<UUID, VoteGUI> inventories = new HashMap<>();
     private Inventory inv;
-    private ItemStack close = Itens.createItem(Material.OAK_DOOR, 1, "&cClose", Collections.singletonList("&fClick here to close this menu."));
+    private ItemStack close = Items.createItem(Material.OAK_DOOR, 1, "&cClose", Collections.singletonList("&fClick here to close this menu."));
     private final UUID uuid;
     private final RSWPlayer p;
 
@@ -64,32 +64,32 @@ public class VoteGUI {
         this.inv.clear();
 
         //selection items
-        this.inv.setItem(10, Itens.createItem(Material.CHEST, 1, TranslatableLine.MENU_CHESTS_TITLE.get(p)));
-        this.inv.setItem(19, Itens.createItem(Material.CLOCK, 1, TranslatableLine.MENU_TIME_TITLE.get(p)));
-        this.inv.setItem(28, Itens.createItem(Material.ARROW, 1, TranslatableLine.MENU_PROJECTILES_TITLE.get(p)));
+        this.inv.setItem(10, Items.createItem(Material.CHEST, 1, TranslatableLine.MENU_CHESTS_TITLE.get(p)));
+        this.inv.setItem(19, Items.createItem(Material.CLOCK, 1, TranslatableLine.MENU_TIME_TITLE.get(p)));
+        this.inv.setItem(28, Items.createItem(Material.ARROW, 1, TranslatableLine.MENU_PROJECTILES_TITLE.get(p)));
 
         this.inv.setItem(37, close);
 
         switch (def) {
             case CHESTS:
-                this.inv.setItem(13, Itens.createItem(Material.WOODEN_SWORD, 1, TranslatableLine.VOTE_CHEST_BASIC.get(p)));
-                this.inv.setItem(14, Itens.createItem(Material.CHEST, 1, TranslatableLine.VOTE_CHEST_NORMAL.get(p)));
-                this.inv.setItem(15, Itens.createItem(Material.ENDER_CHEST, 1, TranslatableLine.VOTE_CHEST_EPIC.get(p)));
+                this.inv.setItem(13, Items.createItem(Material.WOODEN_SWORD, 1, TranslatableLine.VOTE_CHEST_BASIC.get(p)));
+                this.inv.setItem(14, Items.createItem(Material.CHEST, 1, TranslatableLine.VOTE_CHEST_NORMAL.get(p)));
+                this.inv.setItem(15, Items.createItem(Material.ENDER_CHEST, 1, TranslatableLine.VOTE_CHEST_EPIC.get(p)));
                 break;
             case TIME:
-                this.inv.setItem(22, Itens.createItem(Material.YELLOW_CONCRETE, 1, TranslatableLine.VOTE_TIME_DAY.get(p)));
-                this.inv.setItem(23, Itens.createItem(Material.RED_CONCRETE, 1, TranslatableLine.VOTE_TIME_SUNSET.get(p)));
-                this.inv.setItem(24, Itens.createItem(Material.BLACK_CONCRETE, 1, TranslatableLine.VOTE_TIME_NIGHT.get(p)));
-                this.inv.setItem(25, Itens.createItem(Material.WATER_BUCKET, 1, TranslatableLine.VOTE_TIME_RAIN.get(p)));
+                this.inv.setItem(22, Items.createItem(Material.YELLOW_CONCRETE, 1, TranslatableLine.VOTE_TIME_DAY.get(p)));
+                this.inv.setItem(23, Items.createItem(Material.RED_CONCRETE, 1, TranslatableLine.VOTE_TIME_SUNSET.get(p)));
+                this.inv.setItem(24, Items.createItem(Material.BLACK_CONCRETE, 1, TranslatableLine.VOTE_TIME_NIGHT.get(p)));
+                this.inv.setItem(25, Items.createItem(Material.WATER_BUCKET, 1, TranslatableLine.VOTE_TIME_RAIN.get(p)));
                 break;
             case PROJECTILE:
-                this.inv.setItem(31, Itens.createItem(Material.EGG, 1, TranslatableLine.VOTE_PROJECTILE_NORMAL.get(p)));
-                this.inv.setItem(33, Itens.createItem(Material.COBBLESTONE, 1, TranslatableLine.VOTE_PROJECTILE_BREAK.get(p)));
+                this.inv.setItem(31, Items.createItem(Material.EGG, 1, TranslatableLine.VOTE_PROJECTILE_NORMAL.get(p)));
+                this.inv.setItem(33, Items.createItem(Material.COBBLESTONE, 1, TranslatableLine.VOTE_PROJECTILE_BREAK.get(p)));
                 break;
         }
 
         for (int number : new int[]{0, 1, 2, 9, 11, 18, 20, 27, 29, 36, 38, 45, 46, 47}) {
-            this.inv.setItem(number, Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+            this.inv.setItem(number, Items.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
         }
     }
 

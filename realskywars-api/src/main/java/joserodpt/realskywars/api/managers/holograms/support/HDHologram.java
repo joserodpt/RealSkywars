@@ -19,7 +19,7 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.managers.holograms.RSWHologram;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.api.utils.Format;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -40,7 +40,7 @@ public class HDHologram implements RSWHologram {
     @Override
     public void setTime(int time) {
         if (this.holo == null || this.holo.isDeleted()) {
-            this.holo.insertTextLine(1, Text.formatSeconds(time));
+            this.holo.insertTextLine(1, Format.formatSeconds(time));
         }
     }
 

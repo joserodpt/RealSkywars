@@ -20,7 +20,8 @@ import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.api.utils.Format;
+import joserodpt.realutils.text.Text;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -91,25 +92,25 @@ public class RSWPlayerTab implements RSWPlayerTabInterface {
                         .with(MAP, this.player.getMatch().getName())
                         .with(DISPLAYNAME, this.player.getMatch().getDisplayName())
                         .with(PLAYERS, this.player.getMatch().getPlayers().size())
-                        .with(SPACE, Text.makeSpace())
+                        .with(SPACE, Format.makeSpace())
                         .get(this.player));
                 header = papi(this.player.getPlayer(), header);
                 footer = String.join("\n", TranslatableList.TAB_FOOTER_MATCH
                         .with(MAP, this.player.getMatch().getName())
                         .with(DISPLAYNAME, this.player.getMatch().getDisplayName())
                         .with(PLAYERS, this.player.getMatch().getPlayers().size())
-                        .with(SPACE, Text.makeSpace())
+                        .with(SPACE, Format.makeSpace())
                         .get(this.player));
                 footer = papi(this.player.getPlayer(), footer);
             } else {
                 header = String.join("\n", TranslatableList.TAB_HEADER_OTHER
                         .with(PLAYERS, RealSkywarsAPI.getInstance().getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.ALL))
-                        .with(SPACE, Text.makeSpace())
+                        .with(SPACE, Format.makeSpace())
                         .get(this.player));
                 header = papi(this.player.getPlayer(), header);
                 footer = String.join("\n", TranslatableList.TAB_FOOTER_OTHER
                         .with(PLAYERS, RealSkywarsAPI.getInstance().getPlayerManagerAPI().getPlayingPlayers(MapManagerAPI.MapGamemodes.ALL))
-                        .with(SPACE, Text.makeSpace())
+                        .with(SPACE, Format.makeSpace())
                         .get(this.player));
                 footer = papi(this.player.getPlayer(), footer);
             }

@@ -15,7 +15,7 @@ package joserodpt.realskywars.api.chests;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
-import joserodpt.realskywars.api.utils.Itens;
+import joserodpt.realutils.item.Items;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -39,7 +39,7 @@ public class RSWChestItem {
     }
 
     public ItemStack getDisplayItemStack() {
-        return Itens.addLore(this.getItemStack(), Arrays.asList("&fChance: &b" + this.chance + "%", "&7Click here to change the percentage."));
+        return Items.addLore(this.getItemStack(), Arrays.asList("&fChance: &b" + this.chance + "%", "&7Click here to change the percentage."));
     }
 
     public void setChance(int val) {

@@ -19,7 +19,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.api.utils.Format;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +53,7 @@ public class PlayerBoughtItemsRow {
         this.player_name = p.getName();
         this.itemID = ChatColor.stripColor(itemID);
         this.category = category;
-        this.date = Text.getDateAndTime();
+        this.date = Format.getDateAndTime();
     }
 
     public PlayerBoughtItemsRow() {

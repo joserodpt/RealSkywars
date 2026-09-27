@@ -17,8 +17,8 @@ package joserodpt.realskywars.api.map.modes.teams;
 
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.GUIBuilder;
-import joserodpt.realskywars.api.utils.Itens;
+import joserodpt.realutils.gui.GUIBuilder;
+import joserodpt.realutils.item.Items;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -53,7 +53,7 @@ public class TeamSelectorGUI {
         size = Math.min(size, 54);
 
         GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_TEAMSELECT_TITLE.get(p), size, p.getUUID(),
-                Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+                Items.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         int slot = 0;
         for (RSWTeam team : teams) {
@@ -72,7 +72,7 @@ public class TeamSelectorGUI {
         }
 
         inventory.addItem(e -> p.closeInventory(),
-                Itens.createItem(Material.OAK_DOOR, 1, "&cClose",
+                Items.createItem(Material.OAK_DOOR, 1, "&cClose",
                         Collections.singletonList("&fClick here to close this menu.")), size - 1);
 
         inventory.openInventory(p.getPlayer());
@@ -99,6 +99,6 @@ public class TeamSelectorGUI {
         }
 
         String name = team.getColoredName() + " &7(" + team.getMemberCount() + "/" + team.getMaxMembers() + ")";
-        return Itens.createItem(team.getIconMaterial(), Math.max(1, team.getMemberCount()), name, lore);
+        return Items.createItem(team.getIconMaterial(), Math.max(1, team.getMemberCount()), name, lore);
     }
 }

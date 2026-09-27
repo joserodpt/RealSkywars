@@ -19,8 +19,8 @@ import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.Itens;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.item.Items;
+import joserodpt.realutils.text.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -45,10 +45,10 @@ public class KitSettingsGUI {
     public RSWKit kt;
     private static final Map<UUID, KitSettingsGUI> inventories = new HashMap<>();
     private Inventory inv;
-    private ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
-    private ItemStack confirm = Itens.createItem(Material.CHEST, 1, "&9Save Settings", Collections.singletonList("&7Click here to save your settings."));
-    private ItemStack ender_pearl = Itens.createItem(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&aON"));
-    private ItemStack ender_pearl_off = Itens.createItem(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&cOFF"));
+    private ItemStack placeholder = Items.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
+    private ItemStack confirm = Items.createItem(Material.CHEST, 1, "&9Save Settings", Collections.singletonList("&7Click here to save your settings."));
+    private ItemStack ender_pearl = Items.createItem(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&aON"));
+    private ItemStack ender_pearl_off = Items.createItem(Material.ENDER_PEARL, 1, "&9EnderPearl every x Seconds", Collections.singletonList("&cOFF"));
     private final UUID uuid;
 
     public KitSettingsGUI(RSWKit k, UUID id) {

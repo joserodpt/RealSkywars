@@ -18,8 +18,9 @@ package joserodpt.realskywars.api.map;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.config.TranslatableList;
-import joserodpt.realskywars.api.utils.Itens;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.api.utils.Format;
+import joserodpt.realutils.item.Items;
+import joserodpt.realutils.text.Text;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.WorldBorder;
@@ -49,7 +50,7 @@ public class RSWMapEvent {
     }
 
     public String getName() {
-        return Text.color(this.eventType.getName() + " " + Text.formatSeconds(this.getTimeLeft()));
+        return Text.color(this.eventType.getName() + " " + Format.formatSeconds(this.getTimeLeft()));
     }
 
     public int getTimeLeft() {
@@ -100,7 +101,7 @@ public class RSWMapEvent {
     }
 
     public ItemStack getItem() {
-        return Itens.createItem(this.getEventType().getIcon(), 1, this.getEventType().getName() + " &r&f@ &b" + Text.formatSeconds(this.getTimeLeft()), Text.color(Arrays.asList("&a&nLeft-Click&r&f to edit", "&c&nQ (Drop)&r&f to remove")));
+        return Items.createItem(this.getEventType().getIcon(), 1, this.getEventType().getName() + " &r&f@ &b" + Format.formatSeconds(this.getTimeLeft()), Text.color(Arrays.asList("&a&nLeft-Click&r&f to edit", "&c&nQ (Drop)&r&f to remove")));
     }
 
     public void setTime(int seconds) {

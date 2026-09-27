@@ -19,7 +19,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.api.utils.Format;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -109,7 +109,7 @@ public class PlayerDataRow {
         this.lang = RealSkywarsAPI.getInstance().getLanguageManagerAPI().getDefaultLanguage();
         this.prefs_mapviewer = "MAPV_ALL";
         this.prefs_cage_material = "GLASS";
-        this.first_join = Text.getDateAndTime();
+        this.first_join = Format.getDateAndTime();
         this.last_join = this.first_join;
     }
 
@@ -317,7 +317,7 @@ public class PlayerDataRow {
     }
 
     public void setFirstJoin() {
-        this.first_join = Text.getDateAndTime();
+        this.first_join = Format.getDateAndTime();
     }
 
     public void setGamesListLegacy(String s) {
@@ -329,6 +329,6 @@ public class PlayerDataRow {
     }
 
     public void setLastJoin() {
-        this.last_join = Text.getDateAndTime();
+        this.last_join = Format.getDateAndTime();
     }
 }

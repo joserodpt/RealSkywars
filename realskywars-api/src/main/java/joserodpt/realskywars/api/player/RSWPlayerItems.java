@@ -17,8 +17,8 @@ package joserodpt.realskywars.api.player;
 
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.utils.ItemStackSpringer;
-import joserodpt.realskywars.api.utils.Itens;
+import joserodpt.realutils.item.ItemStackSpringer;
+import joserodpt.realutils.item.Items;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -93,7 +93,7 @@ public enum RSWPlayerItems {
         String basePath = "Config.Items." + itemKey;
 
         if (!RSWConfig.file().contains(basePath)) {
-            return Itens.createItem(defaultMaterial, defaultAmount, defaultName);
+            return Items.createItem(defaultMaterial, defaultAmount, defaultName);
         }
 
         Map<String, Object> itemData = new HashMap<>();
@@ -131,7 +131,7 @@ public enum RSWPlayerItems {
         }
 
         ItemStack configuredItem = ItemStackSpringer.getItemDeSerialized(itemData);
-        return configuredItem != null ? configuredItem : Itens.createItem(defaultMaterial, defaultAmount, defaultName);
+        return configuredItem != null ? configuredItem : Items.createItem(defaultMaterial, defaultAmount, defaultName);
     }
 
     public ItemStack get(RSWPlayer p) {

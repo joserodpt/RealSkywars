@@ -22,7 +22,7 @@ import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.managers.MapManagerAPI;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.text.Text;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;

@@ -20,7 +20,7 @@ import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.map.modes.teams.RSWTeam;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.Itens;
+import joserodpt.realutils.item.Items;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -107,7 +107,7 @@ public class PlaceholderMode extends RSWMap {
 
     @Override
     public ItemStack getIconForPlayer(RSWPlayer p) {
-        return Itens.createItem(Material.DEAD_BUSH, 1, TranslatableLine.ITEM_MAP_NOTFOUND_NAME.get(p));
+        return Items.createItem(Material.DEAD_BUSH, 1, TranslatableLine.ITEM_MAP_NOTFOUND_NAME.get(p));
     }
 
     @Override

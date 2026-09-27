@@ -18,7 +18,7 @@ package joserodpt.realskywars.api.database;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import joserodpt.realskywars.api.config.RSWConfig;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.api.utils.Format;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -87,7 +87,7 @@ public class PlayerGameHistoryRow {
         this.kills = kills;
         this.win = win;
         this.time = time;
-        this.date = Text.getDateAndTime();
+        this.date = Format.getDateAndTime();
     }
 
     public PlayerGameHistoryRow() {

@@ -16,7 +16,7 @@ package joserodpt.realskywars.api.map;
  */
 
 import joserodpt.realskywars.api.config.TranslatableLine;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.api.utils.Format;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -46,7 +46,7 @@ public class RSWBossbar {
 
         switch (map.getState()) {
             case PLAYING:
-                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_RUNTIME.with(TIME, Text.formatSeconds(map.getMapTimer().getSecondsLeft())).getSingle());
+                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_RUNTIME.with(TIME, Format.formatSeconds(map.getMapTimer().getSecondsLeft())).getSingle());
                 double div = (double) map.getMapTimer().getSecondsLeft() / (double) map.getMaxGameTime();
                 this.bossBar.setProgress(div);
                 break;
@@ -81,7 +81,7 @@ public class RSWBossbar {
                 break;
             case STARTING:
                 int time = map.getStartMapTimer() == null ? 0 : map.getStartMapTimer().getSecondsLeft();
-                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_STARTING.with(TIME, Text.formatSeconds(time)).getSingle());
+                this.bossBar.setTitle(TranslatableLine.BOSSBAR_ARENA_STARTING.with(TIME, Format.formatSeconds(time)).getSingle());
                 double div = (double) time / (double) map.getTimeToStart();
                 if (div <= 1 && div >= 0) {
                     this.bossBar.setProgress(div);

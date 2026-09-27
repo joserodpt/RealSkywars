@@ -52,9 +52,9 @@ import joserodpt.realskywars.plugin.managers.PartiesManager;
 import joserodpt.realskywars.plugin.managers.PlayerManager;
 import joserodpt.realskywars.plugin.managers.ShopManager;
 import joserodpt.realskywars.plugin.managers.WorldManager;
+import joserodpt.realutils.input.PlayerInput;
 import net.milkbowl.vault.economy.Economy;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.PlayerInput;
 import joserodpt.realskywars.plugin.gui.GUIManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -211,7 +211,7 @@ public class RealSkywars extends RealSkywarsAPI {
 
         //every open GUI and pending prompt was built from the old config and holds the old player objects
         GUIManager.closeAllGUIs();
-        PlayerInput.clearAll();
+        PlayerInput.cancelAll();
 
         //remember the parties, which point at the player objects loadPlayers() is about to replace
         Map<UUID, List<UUID>> parties = new HashMap<>();

@@ -20,13 +20,13 @@ import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.Itens;
-import joserodpt.realskywars.api.utils.Pagination;
-import joserodpt.realskywars.api.utils.PlayerInput;
-import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.plugin.gui.GUIManager;
 import joserodpt.realutils.dialog.SettingsDialog;
 import joserodpt.realutils.dialog.SettingsStore;
+import joserodpt.realutils.gui.Pagination;
+import joserodpt.realutils.input.PlayerInput;
+import joserodpt.realutils.item.Items;
+import joserodpt.realutils.text.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -80,9 +80,9 @@ public class SettingsGUI {
         public ItemStack getItem() {
             if (entryType == 0) {
                 boolean val = RSWConfig.file().getBoolean(configPath);
-                return Itens.createItem(val ? Material.REDSTONE_TORCH : Material.LEVER, 1, this.getName() + " &f- " + (val ? "&a&lON" : "&c&lOFF"), Collections.singletonList("&7Click here to toggle this setting."));
+                return Items.createItem(val ? Material.REDSTONE_TORCH : Material.LEVER, 1, this.getName() + " &f- " + (val ? "&a&lON" : "&c&lOFF"), Collections.singletonList("&7Click here to toggle this setting."));
             } else {
-                return Itens.createItem(Material.OAK_BUTTON, Math.min(64, Math.max(1, RSWConfig.file().getInt(configPath))), this.getName() + ": " + RSWConfig.file().getInt(configPath), Collections.singletonList("&7Click here to change this value."));
+                return Items.createItem(Material.OAK_BUTTON, Math.min(64, Math.max(1, RSWConfig.file().getInt(configPath))), this.getName() + ": " + RSWConfig.file().getInt(configPath), Collections.singletonList("&7Click here to change this value."));
             }
         }
     }
@@ -90,8 +90,8 @@ public class SettingsGUI {
     private static final Map<UUID, SettingsGUI> inventories = new HashMap<>();
     int pageNumber = 0;
     private Pagination<SettingEntry> p;
-    private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
-    private final ItemStack close = Itens.createItem(Material.OAK_DOOR, 1, "&cClose", Collections.singletonList("&fClick here to close this menu."));
+    private final ItemStack placeholder = Items.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "");
+    private final ItemStack close = Items.createItem(Material.OAK_DOOR, 1, "&cClose", Collections.singletonList("&fClick here to close this menu."));
     private final Inventory inv;
     private final UUID uuid;
     private final RealSkywarsAPI rsa;
@@ -316,7 +316,7 @@ public class SettingsGUI {
                                 current.load();
                             } else {
                                 p.closeInventory();
-                                new PlayerInput(p.getPlayer(), input -> {
+                                new PlayerInput(p.getPlayer(), true, input -> {
                                     int val;
                                     try {
                                         val = Integer.parseInt(input);
@@ -415,16 +415,16 @@ public class SettingsGUI {
             inv.setItem(18, placeholder);
             inv.setItem(27, placeholder);
         } else {
-            inv.setItem(18, Itens.createItem(Material.YELLOW_STAINED_GLASS, 1, TranslatableLine.BUTTONS_BACK_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_BACK_DESC.getSingle())));
-            inv.setItem(27, Itens.createItem(Material.YELLOW_STAINED_GLASS, 1, TranslatableLine.BUTTONS_BACK_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_BACK_DESC.getSingle())));
+            inv.setItem(18, Items.createItem(Material.YELLOW_STAINED_GLASS, 1, TranslatableLine.BUTTONS_BACK_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_BACK_DESC.getSingle())));
+            inv.setItem(27, Items.createItem(Material.YELLOW_STAINED_GLASS, 1, TranslatableLine.BUTTONS_BACK_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_BACK_DESC.getSingle())));
         }
 
         if (lastPage()) {
             inv.setItem(26, placeholder);
             inv.setItem(35, placeholder);
         } else {
-            inv.setItem(26, Itens.createItem(Material.GREEN_STAINED_GLASS, 1, TranslatableLine.BUTTONS_NEXT_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_NEXT_DESC.getSingle())));
-            inv.setItem(35, Itens.createItem(Material.GREEN_STAINED_GLASS, 1, TranslatableLine.BUTTONS_NEXT_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_NEXT_DESC.getSingle())));
+            inv.setItem(26, Items.createItem(Material.GREEN_STAINED_GLASS, 1, TranslatableLine.BUTTONS_NEXT_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_NEXT_DESC.getSingle())));
+            inv.setItem(35, Items.createItem(Material.GREEN_STAINED_GLASS, 1, TranslatableLine.BUTTONS_NEXT_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_NEXT_DESC.getSingle())));
         }
 
         this.inv.setItem(49, close);

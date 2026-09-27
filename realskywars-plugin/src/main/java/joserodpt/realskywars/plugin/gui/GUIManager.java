@@ -23,8 +23,6 @@ import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.kits.RSWKit;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.shop.RSWBuyableItem;
-import joserodpt.realskywars.api.utils.GUIBuilder;
-import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.plugin.gui.guis.AchievementViewerGUI;
 import joserodpt.realskywars.plugin.gui.guis.GameHistoryGUI;
 import joserodpt.realskywars.plugin.gui.guis.KitSettingsGUI;
@@ -37,6 +35,8 @@ import joserodpt.realskywars.plugin.gui.guis.PlayerItemsGUI;
 import joserodpt.realskywars.plugin.gui.guis.SettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.ShopGUI;
 import joserodpt.realskywars.plugin.gui.guis.VoteGUI;
+import joserodpt.realutils.gui.GUIBuilder;
+import joserodpt.realutils.item.Items;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -68,7 +68,7 @@ public class GUIManager {
     }
 
     public static void openSpectate(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_SPECTATE_TITLE.get(p), 54, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_SPECTATE_TITLE.get(p), 54, p.getUUID(), Items.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         int i = 0;
         for (RSWPlayer s : p.getMatch().getPlayers()) {
@@ -76,7 +76,7 @@ public class GUIManager {
                 inventory.addItem(e -> {
                     p.teleport(s.getPlayer().getLocation());
                     p.sendMessage(TranslatableLine.COMPASS_TELEPORT.with(NAME, s.getDisplayName()).get(p, true));
-                }, Itens.createHead(s.getPlayer(), 1, "&b" + s.getDisplayName(), Collections.singletonList("&c" + String.format("%.2f", s.getPlayer().getHealth()))), i);
+                }, Items.createHead(s.getPlayer(), 1, "&b" + s.getDisplayName(), Collections.singletonList("&c" + String.format("%.2f", s.getPlayer().getHealth()))), i);
                 ++i;
             }
         }
@@ -84,7 +84,7 @@ public class GUIManager {
     }
 
     public static void openLanguage(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_LANG_TITLE.get(p, true), 18, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_LANG_TITLE.get(p, true), 18, p.getUUID(), Items.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         int i = 0;
 
@@ -111,7 +111,7 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.NETHER_STAR, 1, TranslatableLine.ITEM_MAPS_NAME.get(p)), 12);
+        }, Items.createItem(Material.NETHER_STAR, 1, TranslatableLine.ITEM_MAPS_NAME.get(p)), 12);
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -120,9 +120,9 @@ public class GUIManager {
                     SettingsGUI.open(p, rsa);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.COMPARATOR, 1, "&e&lSettings"), 14);
+        }, Items.createItem(Material.COMPARATOR, 1, "&e&lSettings"), 14);
 
-        inventory.addItem(e -> p.closeInventory(), Itens.createItem(Material.OAK_DOOR, 1, "&cClose",
+        inventory.addItem(e -> p.closeInventory(), Items.createItem(Material.OAK_DOOR, 1, "&cClose",
                 Collections.singletonList("&fClick here to close this menu.")), 26);
 
 
@@ -130,7 +130,7 @@ public class GUIManager {
     }
 
     public static void openPlayerProfile(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_PLAYERP_TITLE.get(p), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+        GUIBuilder inventory = new GUIBuilder(TranslatableLine.MENU_PLAYERP_TITLE.get(p), 27, p.getUUID(), Items.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         inventory.addItem(e -> {
             p.closeInventory();
@@ -140,32 +140,32 @@ public class GUIManager {
                     v.openInventory(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
-        }, Itens.createItem(Material.CHEST, 1, "&6Items", Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 10);
+        }, Items.createItem(Material.CHEST, 1, "&6Items", Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 10);
 
         inventory.addItem(e -> {
             p.closeInventory();
             openAchievementGUI(p);
-        }, Itens.createItem(Material.BOOKSHELF, 1, TranslatableLine.ACHIEVEMENTS.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 12);
+        }, Items.createItem(Material.BOOKSHELF, 1, TranslatableLine.ACHIEVEMENTS.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 12);
 
         inventory.addItem(e -> {
-        }, Itens.createHead(p.getPlayer(), 1, "&9" + p.getName(), p.getStats()), 14);
+        }, Items.createHead(p.getPlayer(), 1, "&9" + p.getName(), p.getStats()), 14);
 
         //settings
         if (!p.isInMatch()) {
             inventory.addItem(e -> {
                 p.closeInventory();
                 GameHistoryGUI.openAsync(p);
-            }, Itens.createItem(Material.FILLED_MAP, 1, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 16);
+            }, Items.createItem(Material.FILLED_MAP, 1, TranslatableLine.MENU_PLAYER_GAME_HISTORY.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 16);
 
             if (!RSWConfig.file().getBoolean("Config.Disable-Language-Selection")) {
                 inventory.addItem(e -> {
                     p.closeInventory();
                     GUIManager.openLanguage(p);
-                }, Itens.createItem(Material.BOOK, 1, TranslatableLine.MENU_LANG_TITLE.get(p), Collections.singletonList("&f> " + RealSkywarsAPI.getInstance().getLanguageManagerAPI().getLanguage(p.getLanguage()).getDisplayName())), 18);
+                }, Items.createItem(Material.BOOK, 1, TranslatableLine.MENU_LANG_TITLE.get(p), Collections.singletonList("&f> " + RealSkywarsAPI.getInstance().getLanguageManagerAPI().getLanguage(p.getLanguage()).getDisplayName())), 18);
             }
 
             if (!RSWConfig.file().getBoolean("Config.Disable-Player-Reset")) {
-                inventory.addItem(e -> p.resetData(), Itens.createItem(Material.BARRIER, 1, TranslatableLine.MENU_PLAYER_RESET_TITLE.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYER_RESET_ALERT.get(p))), 26);
+                inventory.addItem(e -> p.resetData(), Items.createItem(Material.BARRIER, 1, TranslatableLine.MENU_PLAYER_RESET_TITLE.get(p), Collections.singletonList(TranslatableLine.MENU_PLAYER_RESET_ALERT.get(p))), 26);
             }
         }
 
@@ -173,36 +173,36 @@ public class GUIManager {
     }
 
     public static void openAchievementGUI(RSWPlayer p) {
-        GUIBuilder inventory = new GUIBuilder(TranslatableLine.ACHIEVEMENTS.get(p), 27, p.getUUID(), Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
+        GUIBuilder inventory = new GUIBuilder(TranslatableLine.ACHIEVEMENTS.get(p), 27, p.getUUID(), Items.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, ""));
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.KILLS);
             v.openInventory(p);
-        }, Itens.createItem(Material.DIAMOND_SWORD, 1, RSWPlayer.PlayerStatistics.KILLS.getDisplayName(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 10);
+        }, Items.createItem(Material.DIAMOND_SWORD, 1, RSWPlayer.PlayerStatistics.KILLS.getDisplayName(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 10);
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.WINS_SOLO);
             v.openInventory(p);
-        }, Itens.createItem(Material.LEATHER_BOOTS, 1, RSWPlayer.PlayerStatistics.WINS_SOLO.getDisplayName(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 12);
+        }, Items.createItem(Material.LEATHER_BOOTS, 1, RSWPlayer.PlayerStatistics.WINS_SOLO.getDisplayName(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 12);
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.WINS_TEAMS);
             v.openInventory(p);
-        }, Itens.createItem(Material.CHAINMAIL_CHESTPLATE, 1, RSWPlayer.PlayerStatistics.WINS_TEAMS.getDisplayName(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 14);
+        }, Items.createItem(Material.CHAINMAIL_CHESTPLATE, 1, RSWPlayer.PlayerStatistics.WINS_TEAMS.getDisplayName(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 14);
 
         inventory.addItem(e -> {
             p.closeInventory();
             AchievementViewerGUI v = new AchievementViewerGUI(p, RSWPlayer.PlayerStatistics.GAMES_PLAYED);
             v.openInventory(p);
-        }, Itens.createItem(Material.FILLED_MAP, 1, RSWPlayer.PlayerStatistics.GAMES_PLAYED.getDisplayName(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 16);
+        }, Items.createItem(Material.FILLED_MAP, 1, RSWPlayer.PlayerStatistics.GAMES_PLAYED.getDisplayName(p), Collections.singletonList(TranslatableLine.MENU_PLAYERP_VIEWITEM.get(p))), 16);
 
         inventory.addItem(e -> {
             p.closeInventory();
             GUIManager.openPlayerProfile(p);
-        }, Itens.createItem(Material.BIRCH_DOOR, 1, TranslatableLine.BUTTONS_MENU_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_MENU_DESC.getSingle())), 26);
+        }, Items.createItem(Material.BIRCH_DOOR, 1, TranslatableLine.BUTTONS_MENU_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_MENU_DESC.getSingle())), 26);
 
         inventory.openInventory(p.getPlayer());
     }
@@ -234,7 +234,7 @@ public class GUIManager {
                 ShopGUI s = new ShopGUI(p, RSWBuyableItem.ItemCategory.KIT);
                 s.openInventory(p);
             }
-        }, Itens.createItem(Material.BIRCH_DOOR, 1, "Exit Preview"), 53);
+        }, Items.createItem(Material.BIRCH_DOOR, 1, "Exit Preview"), 53);
 
         inventory.openInventory(p.getPlayer());
     }

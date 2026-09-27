@@ -17,7 +17,7 @@ package joserodpt.realskywars.api.config;
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
 import joserodpt.realskywars.api.player.RSWPlayer;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.text.Text;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

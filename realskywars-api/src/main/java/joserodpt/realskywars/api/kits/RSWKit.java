@@ -20,8 +20,8 @@ import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.shop.RSWBuyableItem;
-import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Pair;
+import joserodpt.realutils.item.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -62,9 +62,9 @@ public class RSWKit extends RSWBuyableItem {
         Pair<Boolean, String> res = this.isBought(p);
 
         if (res.getKey()) {
-            return Itens.createItemLoreEnchanted(this.getMaterial(), this.getAmount(), "&r&f" + this.getDisplayName(), Objects.equals(res.getValue(), "free") ? Collections.singletonList(TranslatableLine.KIT_SELECT.get(p)) : this.getDescription(p, res));
+            return Items.createItemLoreEnchanted(this.getMaterial(), this.getAmount(), "&r&f" + this.getDisplayName(), Objects.equals(res.getValue(), "free") ? Collections.singletonList(TranslatableLine.KIT_SELECT.get(p)) : this.getDescription(p, res));
         } else {
-            return Itens.createItem(super.getMaterial(), this.getAmount(), "&r&f" + this.getDisplayName(), this.getDescription(p, res));
+            return Items.createItem(super.getMaterial(), this.getAmount(), "&r&f" + this.getDisplayName(), this.getDescription(p, res));
         }
     }
 

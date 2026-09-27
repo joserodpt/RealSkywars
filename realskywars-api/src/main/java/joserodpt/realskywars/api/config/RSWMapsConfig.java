@@ -16,43 +16,30 @@ package joserodpt.realskywars.api.config;
  */
 
 import dev.dejvokep.boostedyaml.YamlDocument;
-import joserodpt.realskywars.api.RealSkywarsAPI;
+import joserodpt.realutils.config.YamlConfig;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
 
 public class RSWMapsConfig {
 
     private static final String name = "maps.yml";
-    private static YamlDocument document;
+    private static YamlConfig config;
 
     public static void setup(final JavaPlugin rm) {
-        try {
-            document = YamlDocument.create(new File(rm.getDataFolder(), name));
-        } catch (final IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe("Couldn't setup " + name + "!");
-            RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());
-        }
+        //written by the plugin itself, so there is no bundled copy
+        config = YamlConfig.of(rm, new File(rm.getDataFolder(), name), null).load();
     }
 
     public static YamlDocument file() {
-        return document;
+        return config.file();
     }
 
     public static void save() {
-        try {
-            document.save();
-        } catch (final IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe("Couldn't save " + name + "!");
-        }
+        config.save();
     }
 
     public static void reload() {
-        try {
-            document.reload();
-        } catch (final IOException e) {
-            RealSkywarsAPI.getInstance().getLogger().severe("Couldn't reload " + name + "!");
-        }
+        config.reload();
     }
 }

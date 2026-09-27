@@ -60,7 +60,7 @@
     <dependency>
       <groupId>com.github.joserodpt</groupId>
       <artifactId>RealUtils</artifactId>
-      <version>1.0.0</version>
+      <version>1.1.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -109,7 +109,7 @@
   </distributionManagement>
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
+    <realutils.version>1.1.0</realutils.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <realutils.version>1.0.0</realutils.version>
   </properties>
 </project>

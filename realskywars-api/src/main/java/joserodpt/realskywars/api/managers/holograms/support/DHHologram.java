@@ -18,7 +18,7 @@ package joserodpt.realskywars.api.managers.holograms.support;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import joserodpt.realskywars.api.managers.holograms.RSWHologram;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.api.utils.Format;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -37,7 +37,7 @@ public class DHHologram implements RSWHologram {
     @Override
     public void setTime(int seconds) {
         if (this.holo != null) {
-            DHAPI.setHologramLine(this.holo, 1, Text.formatSeconds(seconds));
+            DHAPI.setHologramLine(this.holo, 1, Format.formatSeconds(seconds));
         }
     }
 

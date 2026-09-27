@@ -43,10 +43,8 @@ import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.nms.NMS114R1tov116R3;
 import joserodpt.realskywars.api.nms.NMS117R1;
 import joserodpt.realskywars.api.nms.NMS118R2andUP;
-import joserodpt.realskywars.api.utils.GUIBuilder;
-import joserodpt.realskywars.api.utils.PlayerInput;
+import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.ServerVersionUtil;
-import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.plugin.commands.BaseCommandWA;
 import joserodpt.realskywars.plugin.commands.PartyCMD;
 import joserodpt.realskywars.plugin.commands.RealSkywarsCMD;
@@ -69,11 +67,18 @@ import joserodpt.realskywars.plugin.listeners.EventListener;
 import joserodpt.realskywars.plugin.listeners.PlayerListener;
 import joserodpt.realskywars.plugin.listeners.ProtectionListener;
 import joserodpt.realskywars.plugin.managers.DatabaseManager;
+import joserodpt.realutils.RealUtils;
 import joserodpt.realutils.dialog.Dialogs;
+import joserodpt.realutils.input.PlayerInput;
+import joserodpt.realutils.text.ForestColorAPI;
+import joserodpt.realutils.text.Text;
+import joserodpt.realutils.update.UpdateChecker;
 import net.milkbowl.vault.economy.Economy;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -105,6 +110,9 @@ public class RealSkywarsPlugin extends JavaPlugin {
 
         final long start = System.currentTimeMillis();
         pl = this;
+        //the GUIs' listeners, and hex colours everywhere RealUtils shows text
+        RealUtils.setup(this);
+        Text.colorizer(ForestColorAPI::colorize);
         realSkywars = new RealSkywars(this);
         RealSkywarsAPI.setInstance(realSkywars);
         //setup metrics
@@ -163,9 +171,12 @@ public class RealSkywarsPlugin extends JavaPlugin {
         pm.registerEvents(PlayerInput.getListener(), this);
         //the settings, typed input and map editing are asked for in dialogs on servers that have them
         Dialogs.setup(this, () -> RSWConfig.file().getBoolean("Config.Use-Dialogs", true));
-        Dialogs.colorizer(Text::color);
-        PlayerInput.setup(this);
-        pm.registerEvents(GUIBuilder.getListener(), this);
+        //the prompt's words, in each player's own language
+        PlayerInput.setup(this,
+                p -> Arrays.asList("&l&9Type in chat your input", "&fType &4cancel &fto cancel"),
+                p -> Arrays.asList(line(p, TranslatableLine.DIALOG_INPUT_TITLE), line(p, TranslatableLine.DIALOG_INPUT_DESCRIPTION)),
+                p -> p.sendMessage(Text.color(line(p, TranslatableLine.DIALOG_INPUT_CANCELLED))),
+                p -> p.sendMessage(Text.color("&cAn error occurred.")));
         pm.registerEvents(GameHistoryGUI.getListener(), this);
         pm.registerEvents(MapSettingsGUI.getListener(), this);
         pm.registerEvents(MapDashboardGUI.getListener(), this);
@@ -373,6 +384,12 @@ public class RealSkywarsPlugin extends JavaPlugin {
 
         HandlerList.unregisterAll(this);
         Bukkit.getPluginManager().disablePlugin(this);
+    }
+
+    /** A line in the player's language, or the default one for a player RealSkywars doesn't know yet. */
+    private static String line(final Player p, final TranslatableLine line) {
+        final RSWPlayer player = RealSkywarsAPI.getInstance().getPlayerManagerAPI().getPlayer(p);
+        return player == null ? line.getDefault() : line.get(player);
     }
 
     private boolean setupNMS() {

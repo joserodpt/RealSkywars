@@ -22,7 +22,7 @@ import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.shop.RSWBuyableItem;
 import joserodpt.realskywars.api.shop.items.RSWParticleItem;
 import joserodpt.realskywars.api.shop.items.RSWSpectatorShopItem;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.text.Text;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Particle;

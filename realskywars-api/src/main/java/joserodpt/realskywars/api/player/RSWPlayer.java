@@ -30,9 +30,10 @@ import joserodpt.realskywars.api.party.RSWParty;
 import joserodpt.realskywars.api.player.tab.RSWPlayerTab;
 import joserodpt.realskywars.api.player.tab.RSWPlayerTabInterface;
 import joserodpt.realskywars.api.player.tab.RSWPlayerTabNoStyle;
-import joserodpt.realskywars.api.utils.PlayerInput;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.api.utils.Format;
 import joserodpt.realutils.dialog.Dialogs;
+import joserodpt.realutils.input.PlayerInput;
+import joserodpt.realutils.text.Text;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
@@ -87,7 +88,7 @@ public class RSWPlayer {
     private Boolean invincible = false, bot = false, winblockRandom = false;
 
     public RSWPlayer(Player jog, RSWPlayer.PlayerState estado, int kills, int d, int solowin, int teamwin, Double coi, String lang, int l, int gp, int rankedTotalkills, int rankedDeaths, int rankedWinsSolo, int rankedWinsTEAMS, int rankedLoses, int rankedGamesPlayed) {
-        this.anonName = Text.anonName();
+        this.anonName = Format.anonName();
 
         this.player = jog;
         this.state = estado;
@@ -113,7 +114,7 @@ public class RSWPlayer {
 
     public RSWPlayer(boolean anonName) {
         if (anonName) {
-            this.anonName = Text.anonName();
+            this.anonName = Format.anonName();
         }
         this.bot = true;
     }
@@ -249,7 +250,7 @@ public class RSWPlayer {
         }
         sendMessage("&cAre you sure you want to erase your data? This action is irreversible.");
         sendMessage("&fTo erase your data, type &cyes &fin the chat.");
-        new PlayerInput(this.getPlayer(), input -> {
+        new PlayerInput(this.getPlayer(), true, input -> {
             if (input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("y")) {
                 this.eraseData();
             }
@@ -416,7 +417,7 @@ public class RSWPlayer {
                 .with(LANG, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getLanguage(this.getLanguage()).getDisplayName())
                 .with(KIT, this.getPlayerKit().getDisplayName())
                 .with(CAGE, RealSkywarsAPI.getInstance().getLanguageManagerAPI().getMaterialName(this.getCageBlock()))
-                .with(COINS, Text.formatDouble(RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoins(this)))
+                .with(COINS, Format.formatDouble(RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoins(this)))
                 .with(FIRSTJOIN, RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerData(this.getPlayer()).getFirstJoin())
                 .with(LASTJOIN, RealSkywarsAPI.getInstance().getDatabaseManagerAPI().getPlayerData(this.getPlayer()).getLastJoin())
                 .get(this);
@@ -540,7 +541,7 @@ public class RSWPlayer {
     }
 
     public void sendCenterMessage(String r) {
-        sendMessage(Text.centerMessage(r));
+        sendMessage(Format.centerMessage(r));
     }
 
     public boolean isBot() {

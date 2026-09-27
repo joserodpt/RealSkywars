@@ -23,10 +23,10 @@ import joserodpt.realskywars.api.managers.TransactionManager;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.shop.RSWBuyableItem;
 import joserodpt.realskywars.api.shop.items.RSWParticleItem;
-import joserodpt.realskywars.api.utils.Itens;
-import joserodpt.realskywars.api.utils.Pagination;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.api.utils.Format;
 import joserodpt.realskywars.plugin.gui.GUIManager;
+import joserodpt.realutils.gui.Pagination;
+import joserodpt.realutils.item.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -55,7 +55,7 @@ import static joserodpt.realskywars.api.config.TranslatableLine.TranslatableLine
 
 public class PlayerItemsGUI {
 
-    private final ItemStack placeholder = Itens.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "&6");
+    private final ItemStack placeholder = Items.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, "&6");
     private static final Map<UUID, PlayerItemsGUI> inventories = new HashMap<>();
     private int pageNumber = 0;
     private Pagination<RSWBuyableItem> p;
@@ -106,31 +106,31 @@ public class PlayerItemsGUI {
         }
 
         if (!firstPage()) {
-            inv.setItem(18, Itens.createItem(Material.YELLOW_STAINED_GLASS, 1, TranslatableLine.BUTTONS_BACK_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_BACK_DESC.getSingle())));
-            inv.setItem(27, Itens.createItem(Material.YELLOW_STAINED_GLASS, 1, TranslatableLine.BUTTONS_BACK_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_BACK_DESC.getSingle())));
+            inv.setItem(18, Items.createItem(Material.YELLOW_STAINED_GLASS, 1, TranslatableLine.BUTTONS_BACK_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_BACK_DESC.getSingle())));
+            inv.setItem(27, Items.createItem(Material.YELLOW_STAINED_GLASS, 1, TranslatableLine.BUTTONS_BACK_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_BACK_DESC.getSingle())));
         }
 
         if (!lastPage()) {
-            inv.setItem(26, Itens.createItem(Material.GREEN_STAINED_GLASS, 1, TranslatableLine.BUTTONS_NEXT_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_NEXT_DESC.getSingle())));
-            inv.setItem(35, Itens.createItem(Material.GREEN_STAINED_GLASS, 1, TranslatableLine.BUTTONS_NEXT_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_NEXT_DESC.getSingle())));
+            inv.setItem(26, Items.createItem(Material.GREEN_STAINED_GLASS, 1, TranslatableLine.BUTTONS_NEXT_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_NEXT_DESC.getSingle())));
+            inv.setItem(35, Items.createItem(Material.GREEN_STAINED_GLASS, 1, TranslatableLine.BUTTONS_NEXT_TITLE.getSingle(), Collections.singletonList(TranslatableLine.BUTTONS_NEXT_DESC.getSingle())));
         }
 
         if (RSWConfig.file().getBoolean("Config.Shops.Enable-Cage-Block-Shop")) {
-            inv.setItem(47, Itens.createItem(Material.SPAWNER, 1, TranslatableLine.CAGEBLOCK.get(rswp)));
+            inv.setItem(47, Items.createItem(Material.SPAWNER, 1, TranslatableLine.CAGEBLOCK.get(rswp)));
         } else {
             inv.setItem(47, placeholder);
         }
 
-        inv.setItem(48, Itens.createItem(Material.LEATHER_CHESTPLATE, 1, TranslatableLine.KITS.get(rswp)));
+        inv.setItem(48, Items.createItem(Material.LEATHER_CHESTPLATE, 1, TranslatableLine.KITS.get(rswp)));
 
         if (RSWConfig.file().getBoolean("Config.Shops.Enable-Bow-Particles-Shop")) {
-            inv.setItem(50, Itens.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(rswp)));
+            inv.setItem(50, Items.createItem(Material.BOW, 1, TranslatableLine.BOWPARTICLE.get(rswp)));
         } else {
             inv.setItem(50, placeholder);
         }
 
         if (RSWConfig.file().getBoolean("Config.Shops.Enable-Win-Block-Shop")) {
-            inv.setItem(51, Itens.createItem(Material.FIREWORK_ROCKET, 1, TranslatableLine.WINBLOCK.get(rswp)));
+            inv.setItem(51, Items.createItem(Material.FIREWORK_ROCKET, 1, TranslatableLine.WINBLOCK.get(rswp)));
         } else {
             inv.setItem(51, placeholder);
         }
@@ -264,7 +264,7 @@ public class PlayerItemsGUI {
                                             if (cm.removeCoins()) {
                                                 p.getWorld().dropItem(p.getLocation(), new ItemStack(clicked.getMaterial(), amount));
 
-                                                p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.with(NAME, clicked.getDisplayName()).with(COINS, Text.formatDouble(price)).get(p, true));
+                                                p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.with(NAME, clicked.getDisplayName()).with(COINS, Format.formatDouble(price)).get(p, true));
                                             } else {
                                                 p.sendMessage(TranslatableLine.INSUFICIENT_COINS.with(COINS, RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoinsFormatted(p)).get(p, true));
                                             }

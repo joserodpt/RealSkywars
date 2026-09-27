@@ -28,7 +28,8 @@ import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.player.RSWPlayerItems;
 import joserodpt.realskywars.api.player.tab.RSWPlayerTabInterface;
 import joserodpt.realskywars.api.utils.CountdownTimer;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.api.utils.Format;
+import joserodpt.realutils.text.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -408,7 +409,7 @@ public class TeamsMode extends RSWMap {
 
                 for (RSWPlayer g : super.getAllPlayers()) {
                     if (g.getPlayer() != null) {
-                        g.sendMessage(TranslatableLine.MATCH_END.with(TIME, Text.formatSeconds(this.getTimeEndGame())).get(g, true));
+                        g.sendMessage(TranslatableLine.MATCH_END.with(TIME, Format.formatSeconds(this.getTimeEndGame())).get(g, true));
                         g.getPlayer().sendTitle("", Text.color(TranslatableLine.TITLE_WIN.with(PLAYER, winRSWTeam.getNames()).get(g)), 10, 40, 10);
                     }
                 }

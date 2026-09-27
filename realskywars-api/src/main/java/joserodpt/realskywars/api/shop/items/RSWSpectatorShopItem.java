@@ -18,7 +18,7 @@ package joserodpt.realskywars.api.shop.items;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.shop.RSWBuyableItem;
-import joserodpt.realskywars.api.utils.Itens;
+import joserodpt.realutils.item.Items;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -34,7 +34,7 @@ public class RSWSpectatorShopItem extends RSWBuyableItem {
 
     @Override
     public ItemStack getIcon(RSWPlayer p) {
-        return Itens.createItem(this.getMaterial(), this.getAmount(), "&f" + this.getAmount() + "x " + this.getDisplayName(), Arrays.asList(TranslatableLine.SHOP_CLICK_2_BUY.with(PRICE, this.getPriceFormatted()).get(p), "", "&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount."));
+        return Items.createItem(this.getMaterial(), this.getAmount(), "&f" + this.getAmount() + "x " + this.getDisplayName(), Arrays.asList(TranslatableLine.SHOP_CLICK_2_BUY.with(PRICE, this.getPriceFormatted()).get(p), "", "&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount."));
     }
 
 }

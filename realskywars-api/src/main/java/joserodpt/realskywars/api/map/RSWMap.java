@@ -32,10 +32,11 @@ import joserodpt.realskywars.api.player.tab.RSWPlayerTabInterface;
 import joserodpt.realskywars.api.utils.BungeecordUtils;
 import joserodpt.realskywars.api.utils.CountdownTimer;
 import joserodpt.realskywars.api.utils.Demolition;
-import joserodpt.realskywars.api.utils.Itens;
+import joserodpt.realskywars.api.utils.Format;
 import joserodpt.realskywars.api.utils.MapCuboid;
 import joserodpt.realskywars.api.utils.MathUtils;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.item.Items;
+import joserodpt.realutils.text.Text;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -739,10 +740,10 @@ public abstract class RSWMap {
     public void sendLog(RSWPlayer p, boolean winner) {
         if (p.getPlayer() != null) {
             TranslatableList.MAP_END_LOG
-                    .with(TranslatableListPlaceholder.RECVCOINS, Text.formatDouble(p.getGameBalance()))
+                    .with(TranslatableListPlaceholder.RECVCOINS, Format.formatDouble(p.getGameBalance()))
                     .with(TranslatableListPlaceholder.TOTALCOINS, RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoinsFormatted(p))
                     .with(TranslatableListPlaceholder.KILLS, p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS))
-                    .with(TranslatableListPlaceholder.TIME, Text.formatSeconds(this.getMapTimer().getPassedSeconds()))
+                    .with(TranslatableListPlaceholder.TIME, Format.formatSeconds(this.getMapTimer().getPassedSeconds()))
                     .get(p).forEach(p::sendCenterMessage);
 
             RealSkywarsAPI.getInstance().getDatabaseManagerAPI().saveNewGameHistory(new PlayerGameHistoryRow(p.getPlayer(), this.getName(), this.getGameMode().name(), this.isRanked(), this.getStartingPlayers(), p.getStatistics(RSWPlayer.PlayerStatistics.GAME_KILLS), winner, this.getTimePassed()), true);
@@ -915,10 +916,10 @@ public abstract class RSWMap {
                     }
 
                     if (!RSWConfig.file().getBoolean("Config.Disable-Map-Starting-Countdown.Message")) {
-                        p.sendMessage(TranslatableLine.ARENA_START_COUNTDOWN.with(TIME, Text.formatSeconds(t.getSecondsLeft())).get(p, true));
+                        p.sendMessage(TranslatableLine.ARENA_START_COUNTDOWN.with(TIME, Format.formatSeconds(t.getSecondsLeft())).get(p, true));
                     }
                     if (!RSWConfig.file().getBoolean("Config.Disable-Map-Starting-Countdown.Actionbar")) {
-                        p.sendActionbar(TranslatableLine.ARENA_START_COUNTDOWN.with(TIME, Text.formatSeconds(t.getSecondsLeft())).get(p));
+                        p.sendActionbar(TranslatableLine.ARENA_START_COUNTDOWN.with(TIME, Format.formatSeconds(t.getSecondsLeft())).get(p));
                     }
 
                     p.setBarNumber(t.getSecondsLeft(), this.getTimeToStart());
@@ -1117,7 +1118,7 @@ public abstract class RSWMap {
     }
 
     public ItemStack getIconForPlayer(RSWPlayer p) {
-        return Itens.createItem(this.getState().getStateMaterial(this.isRanked()),
+        return Items.createItem(this.getState().getStateMaterial(this.isRanked()),
                 Math.min(64, Math.max(1, this.getPlayerCount())),
                 TranslatableLine.ITEM_MAP_NAME.with(MAP, this.getName()).with(DISPLAYNAME, this.getDisplayName()).with(MODE, this.getGameMode().getDisplayName(p)).get(p) + (this.isRanked() ? " &bRANKED" : ""),
                 this.iconDescription(p));
@@ -1311,7 +1312,7 @@ public abstract class RSWMap {
         public ItemStack getStateIcon(Boolean ranked) {
             switch (this) {
                 case AVAILABLE:
-                    return Itens.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
+                    return Items.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
                             "&fClick to change the map status.",
                             "",
                             "&aAvailable",
@@ -1322,7 +1323,7 @@ public abstract class RSWMap {
                             "&7Resetting"
                     ));
                 case STARTING:
-                    return Itens.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
+                    return Items.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
                             "&fClick to change the map status.",
                             "",
                             "&7Available",
@@ -1333,7 +1334,7 @@ public abstract class RSWMap {
                             "&7Resetting"
                     ));
                 case WAITING:
-                    return Itens.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
+                    return Items.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
                             "&fClick to change the map status.",
                             "",
                             "&7Available",
@@ -1344,7 +1345,7 @@ public abstract class RSWMap {
                             "&7Resetting"
                     ));
                 case PLAYING:
-                    return Itens.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
+                    return Items.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
                             "&fClick to change the map status.",
                             "",
                             "&7Available",
@@ -1355,7 +1356,7 @@ public abstract class RSWMap {
                             "&7Resetting"
                     ));
                 case FINISHING:
-                    return Itens.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
+                    return Items.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
                             "&fClick to change the map status.",
                             "",
                             "&7Available",
@@ -1366,7 +1367,7 @@ public abstract class RSWMap {
                             "&7Resetting"
                     ));
                 case RESETTING:
-                    return Itens.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
+                    return Items.createItem(getStateMaterial(ranked), 1, "&9Map Status", Arrays.asList(
                             "&fClick to change the map status.",
                             "",
                             "&7Available",
@@ -1377,7 +1378,7 @@ public abstract class RSWMap {
                             "&aResetting"
                     ));
                 default:
-                    return Itens.createItem(Material.BEACON, 1, "&9Map Status", Arrays.asList(
+                    return Items.createItem(Material.BEACON, 1, "&9Map Status", Arrays.asList(
                             "&fClick to change the map status.",
                             "",
                             "&7Available",

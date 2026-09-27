@@ -18,8 +18,8 @@ package joserodpt.realskywars.api.player;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.config.TranslatableList;
 import joserodpt.realskywars.api.database.PlayerGameHistoryRow;
-import joserodpt.realskywars.api.utils.Itens;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.api.utils.Format;
+import joserodpt.realutils.item.Items;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -101,7 +101,7 @@ public class RSWGameHistoryStats {
     }
 
     public ItemStack getItem(RSWPlayer rswp) {
-        return Itens.createItem(Material.BOOKSHELF, 1, TranslatableLine.STATISTIC_NAME.get(rswp), getLore(rswp));
+        return Items.createItem(Material.BOOKSHELF, 1, TranslatableLine.STATISTIC_NAME.get(rswp), getLore(rswp));
     }
 
     private List<String> getLore(RSWPlayer rswp) {
@@ -115,9 +115,9 @@ public class RSWGameHistoryStats {
                 .with(RANKED_PERCENTAGE, percentage(getNumberRanked(), getNumberGames()))
                 .with(AVERAGE_KILLS, getAverageKills())
                 .with(MOST_KILLS, getMostKillsInAGame())
-                .with(AVERAGE_TIME, Text.formatSeconds(getAverageTime()))
-                .with(LONGEST_TIME, Text.formatSeconds(getLongestTime()))
-                .with(SHORTEST_TIME, Text.formatSeconds(getShortestTime()))
+                .with(AVERAGE_TIME, Format.formatSeconds(getAverageTime()))
+                .with(LONGEST_TIME, Format.formatSeconds(getLongestTime()))
+                .with(SHORTEST_TIME, Format.formatSeconds(getShortestTime()))
                 .get(rswp);
     }
 

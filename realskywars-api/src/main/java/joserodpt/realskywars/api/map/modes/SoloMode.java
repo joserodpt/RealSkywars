@@ -31,7 +31,7 @@ import joserodpt.realskywars.api.player.RSWPlayerItems;
 import joserodpt.realskywars.api.player.tab.RSWPlayerTabInterface;
 import joserodpt.realskywars.api.utils.CountdownTimer;
 import joserodpt.realskywars.api.utils.FireworkUtils;
-import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realskywars.api.utils.Format;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -255,7 +255,7 @@ public class SoloMode extends RSWMap {
 
                 for (RSWPlayer g : super.getAllPlayers()) {
                     g.delCage();
-                    g.sendMessage(TranslatableLine.MATCH_END.with(TIME, Text.formatSeconds(this.getTimeEndGame())).get(g, true));
+                    g.sendMessage(TranslatableLine.MATCH_END.with(TIME, Format.formatSeconds(this.getTimeEndGame())).get(g, true));
                 }
             }, () -> {
                 super.getBossBar().tick();
