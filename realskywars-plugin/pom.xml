@@ -133,7 +133,7 @@
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>3.1.0</version>
+            <version>3.2.1</version>
         </dependency>
         <dependency>
             <groupId>com.github.decentsoftware-eu</groupId>
