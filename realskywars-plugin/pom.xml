@@ -14,6 +14,8 @@
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Shared with the other Real* plugins: dialogs (1.21.6+) and the chat prompt. -->
+        <realutils.version>1.0.0</realutils.version>
     </properties>
 
     <build>
@@ -42,6 +44,16 @@
                                 <relocation>
                                     <pattern>fr.skytasul</pattern>
                                     <shadedPattern>joserodpt.realskywars.libs.skytasul</shadedPattern>
+                                </relocation>
+                                <!-- Relocated with UniDialog, so another plugin shading either cannot clash with
+                                     ours; this also rewrites the class names RealUtils loads by name. -->
+                                <relocation>
+                                    <pattern>joserodpt.realutils</pattern>
+                                    <shadedPattern>joserodpt.realskywars.libs.realutils</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>io.github.projectunified.unidialog</pattern>
+                                    <shadedPattern>joserodpt.realskywars.libs.unidialog</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -85,6 +97,13 @@
     </repositories>
 
     <dependencies>
+        <!-- Dialogs and the chat prompt. It brings UniDialog's Spigot and Paper backends with it,
+             picked between at runtime. -->
+        <dependency>
+            <groupId>com.github.joserodpt</groupId>
+            <artifactId>RealUtils</artifactId>
+            <version>${realutils.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>

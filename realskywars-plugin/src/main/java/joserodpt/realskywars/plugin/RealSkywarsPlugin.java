@@ -69,6 +69,7 @@ import joserodpt.realskywars.plugin.listeners.EventListener;
 import joserodpt.realskywars.plugin.listeners.PlayerListener;
 import joserodpt.realskywars.plugin.listeners.ProtectionListener;
 import joserodpt.realskywars.plugin.managers.DatabaseManager;
+import joserodpt.realutils.dialog.Dialogs;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -160,6 +161,10 @@ public class RealSkywarsPlugin extends JavaPlugin {
         pm.registerEvents(new EventListener(realSkywars), this);
         pm.registerEvents(new ProtectionListener(realSkywars), this);
         pm.registerEvents(PlayerInput.getListener(), this);
+        //the settings, typed input and map editing are asked for in dialogs on servers that have them
+        Dialogs.setup(this, () -> RSWConfig.file().getBoolean("Config.Use-Dialogs", true));
+        Dialogs.colorizer(Text::color);
+        PlayerInput.setup(this);
         pm.registerEvents(GUIBuilder.getListener(), this);
         pm.registerEvents(GameHistoryGUI.getListener(), this);
         pm.registerEvents(MapSettingsGUI.getListener(), this);
@@ -350,6 +355,7 @@ public class RealSkywarsPlugin extends JavaPlugin {
     }
 
     public void onDisable() {
+        Dialogs.shutdown();
         //onEnable can bail out before the configs and managers exist, and an
         //NPE in here would hide whatever actually stopped the plugin loading
         if (realSkywars != null) {

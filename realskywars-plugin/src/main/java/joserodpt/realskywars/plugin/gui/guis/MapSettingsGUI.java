@@ -20,6 +20,7 @@ import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.PlayerInput;
 import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.dialog.DialogForm;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -96,6 +97,46 @@ public class MapSettingsGUI {
         inv.setItem(40, confirm);
     }
 
+    /**
+     * The map's four timers as sliders on one dialog. They are applied to the map straight away,
+     * like the switches on this screen, and written out with its Save button.
+     *
+     * @return false if dialogs are not supported, and nothing was shown
+     */
+    private boolean openTimers(final Player p) {
+        final int maxGame = this.map.getMaxGameTime();
+        final int endGame = this.map.getTimeEndGame();
+        final int toStart = this.map.getTimeToStart();
+        final int invincibility = this.map.getInvincibilitySeconds();
+
+        return new DialogForm("&9" + this.map.getName() + " &8| &fTimers", "&7In seconds. Saved with the map's Save button.")
+                .slider("max_game", "&9Max game time", 60, 3600, 30, maxGame).sprite(Material.CLOCK)
+                .slider("end_game", "&9End game time", 0, 120, 1, endGame).sprite(Material.CLOCK)
+                .slider("to_start", "&9Start game time", 5, 300, 5, toStart).sprite(Material.CLOCK)
+                .slider("invincibility", "&9Invincibility seconds", 0, 60, 1, invincibility).sprite(Material.CLOCK)
+                .buttons("&aApply", "&7Back")
+                .open(p, answers -> {
+                    //only what was moved, so an untouched timer keeps a value between two steps
+                    final Double max = answers.moved("max_game", maxGame, 30);
+                    final Double end = answers.moved("end_game", endGame, 1);
+                    final Double start = answers.moved("to_start", toStart, 5);
+                    final Double invincible = answers.moved("invincibility", invincibility, 1);
+                    if (max != null) {
+                        this.map.setMaxGameTime((int) Math.round(max));
+                    }
+                    if (end != null) {
+                        this.map.setTimeEndGame((int) Math.round(end));
+                    }
+                    if (start != null) {
+                        this.map.setTimeToStart((int) Math.round(start));
+                    }
+                    if (invincible != null) {
+                        this.map.setInvincibilitySeconds((int) Math.round(invincible));
+                    }
+                    new MapSettingsGUI(p, this.map).openInventory(p);
+                }, () -> new MapSettingsGUI(p, this.map).openInventory(p), () -> new MapSettingsGUI(p, this.map).openInventory(p));
+    }
+
     private String styleBool(boolean b) {
         return b ? "&7[&a&lON&r&7]" : "&7[&c&lOFF&r&7]";
     }
@@ -157,6 +198,10 @@ public class MapSettingsGUI {
                                     gui.openInventory(p);
                                     break;
                                 case 28:
+                                    //all four timers on one dialog, where the server has them
+                                    if (current.openTimers(p)) {
+                                        break;
+                                    }
                                     p.closeInventory();
                                     new PlayerInput(p, input -> {
                                         try {
@@ -172,6 +217,10 @@ public class MapSettingsGUI {
                                     });
                                     break;
                                 case 30:
+                                    //all four timers on one dialog, where the server has them
+                                    if (current.openTimers(p)) {
+                                        break;
+                                    }
                                     p.closeInventory();
                                     new PlayerInput(p, input -> {
                                         try {
@@ -187,6 +236,10 @@ public class MapSettingsGUI {
                                     });
                                     break;
                                 case 32:
+                                    //all four timers on one dialog, where the server has them
+                                    if (current.openTimers(p)) {
+                                        break;
+                                    }
                                     p.closeInventory();
                                     new PlayerInput(p, input -> {
                                         try {
@@ -202,6 +255,10 @@ public class MapSettingsGUI {
                                     });
                                     break;
                                 case 34:
+                                    //all four timers on one dialog, where the server has them
+                                    if (current.openTimers(p)) {
+                                        break;
+                                    }
                                     p.closeInventory();
                                     new PlayerInput(p, input -> {
                                         try {

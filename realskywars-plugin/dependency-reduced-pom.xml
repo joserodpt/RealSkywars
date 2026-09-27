@@ -35,6 +35,14 @@
                   <pattern>fr.skytasul</pattern>
                   <shadedPattern>joserodpt.realskywars.libs.skytasul</shadedPattern>
                 </relocation>
+                <relocation>
+                  <pattern>joserodpt.realutils</pattern>
+                  <shadedPattern>joserodpt.realskywars.libs.realutils</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>io.github.projectunified.unidialog</pattern>
+                  <shadedPattern>joserodpt.realskywars.libs.unidialog</shadedPattern>
+                </relocation>
               </relocations>
             </configuration>
           </execution>
@@ -116,5 +124,6 @@
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <realutils.version>1.0.0</realutils.version>
   </properties>
 </project>

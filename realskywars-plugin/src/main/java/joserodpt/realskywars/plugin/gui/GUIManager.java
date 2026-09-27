@@ -117,8 +117,7 @@ public class GUIManager {
             p.closeInventory();
             new BukkitRunnable() {
                 public void run() {
-                    SettingsGUI v = new SettingsGUI(p, rsa);
-                    v.openInventory(p);
+                    SettingsGUI.open(p, rsa);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
         }, Itens.createItem(Material.COMPARATOR, 1, "&e&lSettings"), 14);

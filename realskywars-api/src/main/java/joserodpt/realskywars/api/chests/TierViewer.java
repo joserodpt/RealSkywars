@@ -22,6 +22,7 @@ import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Pagination;
 import joserodpt.realskywars.api.utils.PlayerInput;
 import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.dialog.DialogForm;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -36,6 +37,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -68,6 +70,59 @@ public class TierViewer {
         fillChest(this.p.getPage(this.pageNumber));
 
         this.register();
+    }
+
+    /**
+     * Every item in this chest with a slider for its chance, like the list of them in this screen.
+     *
+     * @return false if dialogs are not supported, and nothing was shown
+     */
+    private boolean openChances(final RSWPlayer player) {
+        if (this.items.isEmpty()) {
+            return false;
+        }
+        final DialogForm form = new DialogForm("&8" + this.ct.getDisplayName(player) + " - " + this.cte.name(),
+                "&7The chance of each item appearing in a chest, in percent.");
+        for (final RSWChestItem item : this.items) {
+            form.icon(item.getItemStack().getType(), "&f" + name(item) + " &7- &b" + item.getChance() + "%");
+        }
+        for (int i = 0; i < this.items.size(); i++) {
+            final RSWChestItem item = this.items.get(i);
+            //by position: a chest can hold the same material more than once
+            form.slider("item_" + i, "&f" + name(item) + " &7(%)", 0, 100, 1, item.getChance())
+                    .sprite(item.getItemStack().getType());
+        }
+        form.buttons("&aSave", "&7Back");
+
+        return form.open(player.getPlayer(), answers -> {
+            boolean changed = false;
+            for (int i = 0; i < this.items.size(); i++) {
+                final RSWChestItem item = this.items.get(i);
+                final Double chance = answers.moved("item_" + i, item.getChance(), 1);
+                if (chance != null) {
+                    item.setChance((int) Math.round(chance));
+                    changed = true;
+                }
+            }
+            if (changed) {
+                try {
+                    this.ct.set2ChestRaw(this.cte, this.items);
+                } catch (final IOException e) {
+                    RealSkywarsAPI.getInstance().getLogger().warning("Couldn't save the chest chances: " + e.getMessage());
+                }
+            }
+            new TierViewer(player, this.ct, this.cte).openInventory(player.getPlayer());
+        }, () -> new TierViewer(player, this.ct, this.cte).openInventory(player.getPlayer()),
+                () -> new TierViewer(player, this.ct, this.cte).openInventory(player.getPlayer()));
+    }
+
+    /** The item's own name if it has one, otherwise its material's. */
+    private static String name(final RSWChestItem item) {
+        final ItemStack stack = item.getItemStack();
+        if (stack.hasItemMeta() && stack.getItemMeta().hasDisplayName()) {
+            return stack.getItemMeta().getDisplayName();
+        }
+        return Text.beautifyEnumName(stack.getType().name());
     }
 
     private boolean lastPage() {
@@ -194,6 +249,10 @@ public class TierViewer {
 
                         if (current.display.containsKey(e.getRawSlot())) {
                             RSWChestItem a = current.display.get(e.getRawSlot());
+                            //every item's chance at once, where the server has dialogs
+                            if (current.openChances(p)) {
+                                return;
+                            }
                             p.closeInventory();
 
                             new PlayerInput(p.getPlayer(), input -> {

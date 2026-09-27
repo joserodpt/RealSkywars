@@ -25,6 +25,8 @@ import joserodpt.realskywars.api.utils.Pagination;
 import joserodpt.realskywars.api.utils.PlayerInput;
 import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.plugin.gui.GUIManager;
+import joserodpt.realutils.dialog.SettingsDialog;
+import joserodpt.realutils.dialog.SettingsStore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -152,6 +154,92 @@ public class SettingsGUI {
             new SettingEntry("Coins Per Kill", "Config.Coins.Per-Kill", 1),
             new SettingEntry("Coins Per Death", "Config.Coins.Per-Death", 1)
     );
+
+    /**
+     * Opens the settings: on servers that have dialogs, a menu of categories with every setting in
+     * config.yml; the inventory editor everywhere else.
+     */
+    public static void open(final RSWPlayer p, final RealSkywarsAPI rsa) {
+        final String forMaps = "for maps without their own";
+        final SettingsDialog settings = new SettingsDialog("&f&lReal&c&lSkywars &8| &fSettings")
+                .icon(Material.BOW)
+                .onSave((player, category) -> player.sendMessage(Text.color("&fSettings saved.")));
+        settings.category("&eGeneral", "&7Prefix, language, currency and the lobby")
+                .text("Config.Prefix", "Plugin prefix", 64)
+                .text("Config.Languages.Default-Language", "Default language", 16).note("such as en_us")
+                .toggle("Debug-Mode", "Debug messages").note("after /rsw reload")
+                .toggle("Config.Use-Vault-As-Currency", "Use Vault for coins").note("after a restart")
+                .toggle("Config.Auto-Teleport-To-Lobby", "Send players to the lobby on join").note("after a restart")
+                .toggle("Config.Scoreboard-In-Lobby", "Scoreboard in the lobby")
+                .toggle("Config.Right-Click-Player-Info", "Right-click a player to see their info")
+                .toggle("Config.Enable-Chat-Per-Map", "Chat only reaches players in the same map")
+                .toggle("Config.Pressure-Plate-Join-Game", "Pressure plates join a game")
+                .toggle("Config.Disable-Player-Reset", "Don't reset players when they join a map")
+                .toggle("Config.Disable-Language-Selection", "Don't let players pick their language")
+                .slider("Config.Refresh-Leaderboards", "Seconds between leaderboard refreshes", 30, 3600, 30).note("after a restart")
+                .text("Config.Time.Formatting", "Date and time format", 64)
+                .slider("Config.Time.Offset", "Time offset", -24, 24, 1).note("hours")
+                .toggle("Config.Use-Dialogs", "Use dialogs").note("off: chat and inventory menus");
+        settings.category("&dDisplay", "&7Tab list, scoreboards and countdowns")
+                .toggle("Config.Enable-Tab-Formatting", "Format the tab list").note("for players who join after")
+                .toggle("Config.PlaceholderAPI-In-Scoreboard", "PlaceholderAPI in the scoreboard")
+                .toggle("Config.PlaceholderAPI-In-Tab", "PlaceholderAPI in the tab list")
+                .toggle("Config.Disable-Chest-Animation", "Don't animate chests opening")
+                .toggle("Config.Disable-Map-Starting-Countdown.Message", "No chat countdown before a game")
+                .toggle("Config.Disable-Map-Starting-Countdown.Actionbar", "No action bar countdown before a game");
+        settings.category("&aLobby & Items", "&7Lobby items and where each hotbar item goes")
+                .toggle("Config.Disable-Lobby-Items", "No items in the lobby")
+                .toggle("Config.Disable-Lobby-Void-Teleport", "Don't teleport players who fall in the lobby")
+                .slider("Config.Item-Slots.Lobby.Profile", "Lobby: profile slot", 0, 8, 1)
+                .slider("Config.Item-Slots.Lobby.Maps", "Lobby: maps slot", 0, 8, 1)
+                .slider("Config.Item-Slots.Lobby.Shop", "Lobby: shop slot", 0, 8, 1)
+                .slider("Config.Item-Slots.Cage.Kit", "Cage: kit slot", 0, 8, 1)
+                .slider("Config.Item-Slots.Cage.Team-Select", "Cage: team slot", 0, 8, 1)
+                .slider("Config.Item-Slots.Cage.Vote", "Cage: vote slot", 0, 8, 1)
+                .slider("Config.Item-Slots.Cage.Leave", "Cage: leave slot", 0, 8, 1)
+                .slider("Config.Item-Slots.Spectator.Spectate", "Spectator: spectate slot", 0, 8, 1)
+                .slider("Config.Item-Slots.Spectator.Play-Again", "Spectator: play again slot", 0, 8, 1)
+                .slider("Config.Item-Slots.Spectator.Shop", "Spectator: shop slot", 0, 8, 1)
+                .slider("Config.Item-Slots.Spectator.Leave", "Spectator: leave slot", 0, 8, 1)
+                .slider("Config.Item-Slots.Setup.Cage", "Setup: cage slot", 0, 8, 1)
+                .slider("Config.Item-Slots.Setup.Chest1", "Setup: first chest slot", 0, 8, 1)
+                .slider("Config.Item-Slots.Setup.Chest2", "Setup: second chest slot", 0, 8, 1)
+                .slider("Config.Item-Slots.Setup.Settings", "Setup: settings slot", 0, 8, 1)
+                .slider("Config.Item-Slots.Setup.Save", "Setup: save slot", 0, 8, 1);
+        settings.category("&6Shops", "&7Which shops are open")
+                .toggle("Config.Shops.Enable-Shop", "Shop")
+                .toggle("Config.Shops.Enable-Spectator-Shop", "Spectator shop")
+                .toggle("Config.Shops.Enable-Kit-Shop", "Kit shop")
+                .toggle("Config.Shops.Only-Buy-Kits-Per-Match", "Kits are bought for one match only")
+                .toggle("Config.Shops.Enable-Cage-Block-Shop", "Cage block shop")
+                .toggle("Config.Shops.Enable-Win-Block-Shop", "Win block shop")
+                .toggle("Config.Shops.Enable-Bow-Particles-Shop", "Bow particles shop");
+        settings.category("&cGames", "&7Countdowns, game length, chests and the deathmatch")
+                .slider("Config.Min-Players-ToStart", "Players needed to start", 1, 32, 1)
+                .slider("Config.Time-To-Start", "Countdown before a game", 5, 300, 5).note(forMaps)
+                .slider("Config.Invincibility-Seconds", "Seconds of invincibility at the start", 0, 60, 1).note(forMaps)
+                .slider("Config.Vote-Before-Seconds", "Seconds before the start votes close", 0, 60, 1)
+                .slider("Config.Maximum-Game-Time.Solo", "Longest a solo game lasts", 60, 3600, 30).note(forMaps)
+                .slider("Config.Maximum-Game-Time.Teams", "Longest a teams game lasts", 60, 3600, 30).note(forMaps)
+                .slider("Config.Time-EndGame", "Seconds after a game ends", 0, 120, 1).note(forMaps)
+                .slider("Config.Default-Refill-Time", "Seconds between chest refills", 30, 900, 15)
+                .toggle("Config.Shuffle-Items-In-Chest", "Shuffle the items in chests")
+                .slider("Config.Death-Match-Shrink-Factor", "How fast the deathmatch border shrinks", 1, 10, 1)
+                .slider("Config.Teams.Cage-Transfer-Seconds", "Seconds before teammates share a cage", 0, 30, 1)
+                .slider("Config.Kits.Ender-Pearl-Perk-Give-Interval", "Seconds between ender pearl perk pearls", 5, 600, 5);
+        settings.category("&eCoins", "&7What players earn and lose")
+                .decimal("Config.Coins.Per-Win", "Coins for a win", 0, 1000, 1)
+                .decimal("Config.Coins.Per-Kill", "Coins for a kill", 0, 1000, 1)
+                .decimal("Config.Coins.Per-Death", "Coins for a death", -1000, 1000, 1);
+        settings.category("&9Bungeecord", "&7Running as a Bungeecord game server")
+                .toggle("Config.Bungeecord.Enabled", "Run as a Bungeecord server").note("after a restart")
+                .toggle("Config.Bungeecord.Kick-Player", "Kick players instead of moving them to the lobby")
+                .text("Config.Bungeecord.Lobby-Server", "Lobby server", 64)
+                .toggle("Config.Bungeecord.Map-State-As-Motd", "Show the map's state as the MOTD");
+
+        settings.open(p.getPlayer(), SettingsStore.of(RSWConfig.file()::get, RSWConfig.file()::set, RSWConfig::save),
+                () -> new SettingsGUI(p, rsa).openInventory(p));
+    }
 
     public SettingsGUI(RSWPlayer as, RealSkywarsAPI rsa) {
         this.rsa = rsa;

@@ -222,6 +222,16 @@ pt_pt:
       Reset-Data:
         Title: "&4Resetar Teus Dados"
         Alert: "&cProcede com cautela. Esta ação não pode ser desfeita."
+  # Mostrado em diálogos, nos servidores que os têm (1.21.6 ou mais recente).
+  Dialogs:
+    Input:
+      Title: "&bEntrada"
+      Description: "&fEscreve a tua resposta em baixo."
+      Cancelled: "&fEntrada cancelada."
+    Reset-Data:
+      Question: "&cApagar todos os teus dados? As tuas estatísticas, o histórico de jogos e os itens comprados são apagados, e és expulso para concluir. Isto não pode ser desfeito."
+      Button: "&4Apagar os meus dados"
+    Cancel: "&7Cancelar"
     Shop-Menu-Title: "&fLoja &9Categorias"
     Spectator-Shop-Menu-Title: "&0Loja de &fEspectador"
   Itens:

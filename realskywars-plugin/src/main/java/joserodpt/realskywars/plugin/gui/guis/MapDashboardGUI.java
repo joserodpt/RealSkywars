@@ -22,6 +22,7 @@ import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Text;
 import joserodpt.realskywars.plugin.RealSkywars;
+import joserodpt.realutils.dialog.Dialogs;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -135,6 +136,20 @@ public class MapDashboardGUI {
                         switch (e.getRawSlot()) {
                             // reset
                             case 22:
+                                //asked first where the server has dialogs: everyone in the map is sent out
+                                if (Dialogs.confirm(p, "&9" + current.game.getName() + " &8| &fReset",
+                                        "&fReset &b" + current.game.getName() + "&f? Every player in it is sent out.",
+                                        "&cReset", null,
+                                        () -> {
+                                            TranslatableLine.ARENA_RESET.sendDefault(p, true);
+                                            current.game.reset();
+                                            TranslatableLine.MAP_RESET_DONE.sendDefault(p, true);
+                                            current.loadInv();
+                                            current.openInventory(gp);
+                                        },
+                                        () -> current.openInventory(gp))) {
+                                    break;
+                                }
                                 TranslatableLine.ARENA_RESET.sendDefault(p, true);
                                 current.game.reset();
                                 TranslatableLine.MAP_RESET_DONE.sendDefault(p, true);

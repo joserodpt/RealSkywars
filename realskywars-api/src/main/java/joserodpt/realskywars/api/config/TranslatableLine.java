@@ -139,6 +139,13 @@ public enum TranslatableLine {
     ITEM_TEAMSELECT_NAME(".Itens.Team-Select.Name"),
 
     MENU_PLAYER_RESET_ALERT(".Menus.Player-Profile.Reset-Data.Alert"),
+    //dialogs, on servers that have them (1.21.6 and up)
+    DIALOG_INPUT_TITLE(".Dialogs.Input.Title"),
+    DIALOG_INPUT_DESCRIPTION(".Dialogs.Input.Description"),
+    DIALOG_INPUT_CANCELLED(".Dialogs.Input.Cancelled"),
+    DIALOG_RESET_DATA_QUESTION(".Dialogs.Reset-Data.Question"),
+    DIALOG_RESET_DATA_BUTTON(".Dialogs.Reset-Data.Button"),
+    DIALOG_CANCEL(".Dialogs.Cancel"),
     MENU_PLAYERP_VIEWITEM(".Menus.Player-Profile.View-Item"),
     MENU_PLAYER_RESET_TITLE(".Menus.Player-Profile.Reset-Data.Title"),
     MENU_VOTE_TITLE(".Menus.Vote-Title"),

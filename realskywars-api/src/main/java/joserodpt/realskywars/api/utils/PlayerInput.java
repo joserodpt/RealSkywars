@@ -16,131 +16,52 @@ package joserodpt.realskywars.api.utils;
  */
 
 import joserodpt.realskywars.api.RealSkywarsAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import joserodpt.realskywars.api.config.TranslatableLine;
+import joserodpt.realskywars.api.player.RSWPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.plugin.Plugin;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Asks a player to type something, through RealUtils' prompt: a dialog's text box on servers that
+ * have them, the chat everywhere else. Kept here, with its own constructor and
+ * {@link InputRunnable}, so every screen that asks for input is unchanged.
+ */
 public class PlayerInput {
 
-    //read and taken from the async chat thread, written from the main thread
-    private static final Map<UUID, PlayerInput> inputs = new ConcurrentHashMap<>();
-    private final UUID uuid;
-
-    private final List<String> texts = Text
-            .color(Arrays.asList("&l&9Type in chat your input", "&fType &4cancel &fto cancel"));
-
-    private final InputRunnable runGo;
-    private final InputRunnable runCancel;
-    private final BukkitTask taskId;
-
-    public PlayerInput(Player p, InputRunnable correct, InputRunnable cancel) {
-        this.uuid = p.getUniqueId();
-        p.closeInventory();
-        this.runGo = correct;
-        this.runCancel = cancel;
-        this.taskId = new BukkitRunnable() {
-            public void run() {
-                p.getPlayer().sendTitle(texts.get(0), texts.get(1), 0, 21, 0);
-            }
-        }.runTaskTimer(RealSkywarsAPI.getInstance().getPlugin(), 0L, 20);
-
-        this.register();
+    public PlayerInput(final Player p, final InputRunnable correct, final InputRunnable cancel) {
+        new joserodpt.realutils.input.PlayerInput(p, true, correct::run, cancel::run);
     }
 
-    private void register() {
-        PlayerInput previous = inputs.put(this.uuid, this);
-        //a new prompt replaces an unanswered one, whose title task would otherwise never stop
-        if (previous != null) {
-            previous.taskId.cancel();
-        }
+    /** Where the prompt's words come from, in each player's own language. Called once the plugin is enabled. */
+    public static void setup(final Plugin plugin) {
+        joserodpt.realutils.input.PlayerInput.setup(plugin,
+                p -> Arrays.asList("&l&9Type in chat your input", "&fType &4cancel &fto cancel"),
+                p -> Arrays.asList(line(p, TranslatableLine.DIALOG_INPUT_TITLE), line(p, TranslatableLine.DIALOG_INPUT_DESCRIPTION)),
+                p -> p.sendMessage(Text.color(line(p, TranslatableLine.DIALOG_INPUT_CANCELLED))),
+                p -> p.sendMessage(Text.color("&cAn error occurred.")));
     }
 
-    /**
-     * Drops every pending prompt, used on reload.
-     */
+    /** A line in the player's language, or the default one for a player RealSkywars doesn't know yet. */
+    public static String line(final Player p, final TranslatableLine line) {
+        final RSWPlayer player = RealSkywarsAPI.getInstance().getPlayerManagerAPI().getPlayer(p);
+        return player == null ? line.getDefault() : line.get(player);
+    }
+
+    /** Drops every pending prompt, used on reload. */
     public static void clearAll() {
-        for (UUID uuid : inputs.keySet()) {
-            PlayerInput current = inputs.remove(uuid);
-            if (current != null) {
-                current.taskId.cancel();
-                Player p = Bukkit.getPlayer(uuid);
-                if (p != null) {
-                    p.sendTitle("", "", 0, 1, 0);
-                }
-            }
-        }
+        joserodpt.realutils.input.PlayerInput.cancelAll();
+    }
+
+    public static Listener getListener() {
+        return joserodpt.realutils.input.PlayerInput.getListener();
     }
 
     @FunctionalInterface
     public interface InputRunnable {
         void run(String input) throws IOException;
-    }
-
-    public static Listener getListener() {
-        return new Listener() {
-            @EventHandler
-            public void onPlayerChat(AsyncPlayerChatEvent event) {
-                Player p = event.getPlayer();
-                String input = ChatColor.stripColor(Text.color(event.getMessage()));
-
-                //taken in one step, so two quick messages can't both answer the same prompt
-                PlayerInput current = inputs.remove(p.getUniqueId());
-                if (current != null) {
-                    event.setCancelled(true);
-                    //this is the async chat thread: the task, the title and the callbacks belong on the main one
-                    Bukkit.getScheduler().runTask(RealSkywarsAPI.getInstance().getPlugin(), () -> handleInput(p, input, current));
-                }
-            }
-
-            @EventHandler
-            public void onQuit(PlayerQuitEvent event) {
-                //otherwise the title task runs forever, and their first chat line after rejoining would
-                //answer a prompt from the previous session (like the reset data confirmation)
-                PlayerInput current = inputs.remove(event.getPlayer().getUniqueId());
-                if (current != null) {
-                    current.taskId.cancel();
-                }
-            }
-        };
-    }
-
-    private static void handleInput(Player p, String input, PlayerInput current) {
-        try {
-            current.taskId.cancel();
-            p.sendTitle("", "", 0, 1, 0);
-            boolean cancelled = input.equalsIgnoreCase("cancel");
-            if (cancelled) {
-                p.sendMessage(Text.color("&fInput canceled."));
-            }
-            InputRunnable r = cancelled ? current.runCancel : current.runGo;
-            Bukkit.getScheduler().scheduleSyncDelayedTask(RealSkywarsAPI.getInstance().getPlugin(), () -> {
-                //the prompt was answered by someone who has since logged out
-                if (!p.isOnline()) {
-                    return;
-                }
-                try {
-                    r.run(input);
-                } catch (Exception e) {
-                    Bukkit.getLogger().severe("An error ocourred while running the " + (cancelled ? "cancel" : "runGo") + " runnable.");
-                    Bukkit.getLogger().severe(e.getMessage());
-                }
-            }, 3);
-        } catch (Exception e) {
-            p.sendMessage(Text.color("&cAn error ocourred. Contact JoseGamer_PT on www.spigotmc.org"));
-            RealSkywarsAPI.getInstance().getLogger().severe(e.getMessage());
-        }
     }
 }

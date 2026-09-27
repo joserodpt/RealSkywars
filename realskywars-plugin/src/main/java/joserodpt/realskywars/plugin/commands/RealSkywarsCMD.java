@@ -47,6 +47,7 @@ import joserodpt.realskywars.plugin.gui.guis.PlayerGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerItemsGUI;
 import joserodpt.realskywars.plugin.gui.guis.SettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.ShopGUI;
+import joserodpt.realutils.dialog.Dialogs;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -214,8 +215,14 @@ public class RealSkywarsCMD extends BaseCommandWA {
                 case DELETE:
                     RSWKit k2 = rs.getKitManagerAPI().getKit(name);
                     if (k2 != null) {
-                        rs.getKitManagerAPI().unregisterKit(k2);
-                        TranslatableLine.KIT_DELETE.send(p, true);
+                        final Runnable unregister = () -> {
+                            rs.getKitManagerAPI().unregisterKit(k2);
+                            TranslatableLine.KIT_DELETE.send(p, true);
+                        };
+                        if (!Dialogs.confirm(p.getPlayer(), "&9Kit &8| &fDelete",
+                                "&fDelete the &b" + name + " &fkit? Players who bought it lose it.", "&cDelete", null, unregister, null)) {
+                            unregister.run();
+                        }
                     } else {
                         TranslatableLine.KIT_NOT_FOUND.send(p, true);
                     }
@@ -397,8 +404,7 @@ public class RealSkywarsCMD extends BaseCommandWA {
     public void settings(final CommandSender commandSender) {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
-            SettingsGUI v = new SettingsGUI(p, rs);
-            v.openInventory(p);
+            SettingsGUI.open(p, rs);
         } else {
             commandSender.sendMessage(onlyPlayer);
         }
@@ -789,8 +795,15 @@ public class RealSkywarsCMD extends BaseCommandWA {
     public void deletecmd(final CommandSender commandSender, @Suggestion("#maps") String mapName) {
         RSWMap map = rs.getMapManagerAPI().getMap(mapName);
         if (map != null) {
-            rs.getMapManagerAPI().deleteMap(map);
-            TranslatableLine.MAP_DELETED.sendDefault(commandSender, true);
+            final Runnable delete = () -> {
+                rs.getMapManagerAPI().deleteMap(map);
+                TranslatableLine.MAP_DELETED.sendDefault(commandSender, true);
+            };
+            //asked first where the server has dialogs; the console, and servers without, delete straight away
+            if (!(commandSender instanceof Player) || !Dialogs.confirm((Player) commandSender, "&9" + map.getName() + " &8| &fDelete",
+                    "&fDelete &b" + map.getName() + "&f? Its world and settings are removed for good.", "&cDelete", null, delete, null)) {
+                delete.run();
+            }
         } else {
             TranslatableLine.CMD_NO_MAP_FOUND.sendDefault(commandSender, true);
         }
@@ -820,9 +833,15 @@ public class RealSkywarsCMD extends BaseCommandWA {
         RSWPlayer p = commandSender instanceof Player ? rs.getPlayerManagerAPI().getPlayer((Player) commandSender) : null;
         RSWMap map = rs.getMapManagerAPI().getMap(mapSTR);
         if (map != null) {
-            send(commandSender, p, TranslatableLine.ARENA_RESET);
-            map.reset();
-            send(commandSender, p, TranslatableLine.MAP_RESET_DONE);
+            final Runnable reset = () -> {
+                send(commandSender, p, TranslatableLine.ARENA_RESET);
+                map.reset();
+                send(commandSender, p, TranslatableLine.MAP_RESET_DONE);
+            };
+            if (!(commandSender instanceof Player) || !Dialogs.confirm((Player) commandSender, "&9" + map.getName() + " &8| &fReset",
+                    "&fReset &b" + map.getName() + "&f? Every player in it is sent out.", "&cReset", null, reset, null)) {
+                reset.run();
+            }
         } else {
             send(commandSender, p, TranslatableLine.CMD_NO_MAP_FOUND);
         }

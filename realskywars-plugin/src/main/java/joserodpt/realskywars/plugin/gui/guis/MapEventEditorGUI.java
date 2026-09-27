@@ -24,6 +24,7 @@ import joserodpt.realskywars.api.utils.Itens;
 import joserodpt.realskywars.api.utils.Pagination;
 import joserodpt.realskywars.api.utils.PlayerInput;
 import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.dialog.DialogForm;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -77,6 +78,48 @@ public class MapEventEditorGUI {
             }
         }
         inventories.clear();
+    }
+
+    /**
+     * Every event of this map with a slider for when it happens, in seconds into the game.
+     *
+     * @return false if dialogs are not supported, and nothing was shown
+     */
+    private boolean openTimes(final Player p) {
+        final List<RSWMapEvent> events = this.map.getEvents().stream()
+                .filter(e -> e.getEventType() != RSWMapEvent.EventType.BORDERSHRINK)
+                .collect(Collectors.toList());
+        if (events.isEmpty()) {
+            return false;
+        }
+        int longest = this.map.getMaxGameTime();
+        for (final RSWMapEvent event : events) {
+            longest = Math.max(longest, event.getTime());
+        }
+
+        final DialogForm form = new DialogForm("&9" + this.map.getName() + " &8| &fEvents",
+                "&7When each event happens, in seconds into the game.");
+        for (int i = 0; i < events.size(); i++) {
+            final RSWMapEvent event = events.get(i);
+            form.slider("event_" + i, "&f" + event.getName(), 0, longest, 5, event.getTime())
+                    .sprite(event.getEventType().getIcon());
+        }
+        form.buttons("&aSave", "&7Back");
+
+        return form.open(p, answers -> {
+            boolean changed = false;
+            for (int i = 0; i < events.size(); i++) {
+                final Double time = answers.moved("event_" + i, events.get(i).getTime(), 5);
+                if (time != null) {
+                    events.get(i).setTime((int) Math.round(time));
+                    changed = true;
+                }
+            }
+            if (changed) {
+                this.map.save(RSWMap.Data.EVENTS, true);
+            }
+            new MapEventEditorGUI(p, this.map).openInventory(p);
+        }, () -> new MapEventEditorGUI(p, this.map).openInventory(p), () -> new MapEventEditorGUI(p, this.map).openInventory(p));
     }
 
     public static Listener getListener() {
@@ -137,7 +180,8 @@ public class MapEventEditorGUI {
                             if (e.getClick() == ClickType.DROP) {
                                 current.map.removeEvent(a);
                                 current.refreshPagination();
-                            } else {
+                            } else if (!current.openTimes((Player) clicker)) {
+                                //one dialog with every event's time where the server has them; typed in chat elsewhere
                                 p.closeInventory();
                                 new PlayerInput((Player) clicker, input -> {
                                     try {

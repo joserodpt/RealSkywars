@@ -204,6 +204,16 @@ en_us:
       Reset-Data:
         Title: "&4Reset Your Data"
         Alert: "&cProceed with caution. This action cannot be restored."
+  # Shown in dialogs, on servers that have them (1.21.6 and up).
+  Dialogs:
+    Input:
+      Title: "&bInput"
+      Description: "&fType your input below."
+      Cancelled: "&fInput canceled."
+    Reset-Data:
+      Question: "&cErase all your data? Your stats, game history and bought items are deleted, and you are kicked to finish the reset. This cannot be undone."
+      Button: "&4Erase my data"
+    Cancel: "&7Cancel"
     Shop-Menu-Title: "&fShop &9Categories"
     Spectator-Shop-Menu-Title: "&0Spectator &fShop"
   Itens:

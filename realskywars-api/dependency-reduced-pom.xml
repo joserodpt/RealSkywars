@@ -58,6 +58,12 @@
   </repositories>
   <dependencies>
     <dependency>
+      <groupId>com.github.joserodpt</groupId>
+      <artifactId>RealUtils</artifactId>
+      <version>1.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
       <version>1.18.2-R0.1-SNAPSHOT</version>
@@ -104,5 +110,6 @@
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <realutils.version>1.0.0</realutils.version>
   </properties>
 </project>

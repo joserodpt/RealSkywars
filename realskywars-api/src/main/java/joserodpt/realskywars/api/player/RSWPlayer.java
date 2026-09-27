@@ -32,6 +32,7 @@ import joserodpt.realskywars.api.player.tab.RSWPlayerTabInterface;
 import joserodpt.realskywars.api.player.tab.RSWPlayerTabNoStyle;
 import joserodpt.realskywars.api.utils.PlayerInput;
 import joserodpt.realskywars.api.utils.Text;
+import joserodpt.realutils.dialog.Dialogs;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
@@ -240,19 +241,28 @@ public class RSWPlayer {
     }
 
     public void resetData() {
-        RSWPlayer p = this;
+        //a yes-or-no dialog where the server has them, in the player's language
+        if (Dialogs.confirm(this.getPlayer(), TranslatableLine.MENU_PLAYER_RESET_TITLE.get(this),
+                TranslatableLine.DIALOG_RESET_DATA_QUESTION.get(this), TranslatableLine.DIALOG_RESET_DATA_BUTTON.get(this),
+                TranslatableLine.DIALOG_CANCEL.get(this), this::eraseData, null)) {
+            return;
+        }
         sendMessage("&cAre you sure you want to erase your data? This action is irreversible.");
         sendMessage("&fTo erase your data, type &cyes &fin the chat.");
         new PlayerInput(this.getPlayer(), input -> {
             if (input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("y")) {
-                RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerData(getUUID(), true);
-                RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerGameHistory(getUUID(), true);
-                RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerBoughtItems(getUUID(), true);
-                RealSkywarsAPI.getInstance().getPlayerManagerAPI().removePlayer(p);
-                getPlayer().kickPlayer(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + "§4Your data was cleared with success.\n§cPlease join the server again to complete the reset.");
+                this.eraseData();
             }
         }, input -> {
         });
+    }
+
+    private void eraseData() {
+        RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerData(getUUID(), true);
+        RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerGameHistory(getUUID(), true);
+        RealSkywarsAPI.getInstance().getDatabaseManagerAPI().deletePlayerBoughtItems(getUUID(), true);
+        RealSkywarsAPI.getInstance().getPlayerManagerAPI().removePlayer(this);
+        getPlayer().kickPlayer(RealSkywarsAPI.getInstance().getLanguageManagerAPI().getPrefix() + "§4Your data was cleared with success.\n§cPlease join the server again to complete the reset.");
     }
 
     public String getName() {
