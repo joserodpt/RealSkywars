@@ -105,9 +105,7 @@ public class RealSkywarsCMD extends BaseCommandWA {
                 v.openInventory(p);
             }
         } else {
-            Text.send(commandSender, "&f&lReal&B&LSkywars &r&6Version &e" + rs.getPlugin().getDescription().getVersion());
-            Text.send(commandSender, "&6Built &e" + BuildInfo.time(rs.getPlugin()));
-            Text.send(commandSender, "&6RealUtils &e" + BuildInfo.realUtilsVersion(rs.getPlugin()));
+            BuildInfo.sendAbout(commandSender, rs.getPlugin(), "&f&lReal&b&lSkywars&r");
         }
     }
 
