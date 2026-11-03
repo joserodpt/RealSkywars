@@ -42,6 +42,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
+import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -61,6 +62,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -480,7 +482,16 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         RSWPlayer rswPlayer = rs.getPlayerManagerAPI().getPlayer(event.getPlayer());
-        if (rswPlayer != null && rswPlayer.getState() != RSWPlayer.PlayerState.PLAYING) {
+        if (rswPlayer == null) {
+            return;
+        }
+
+        //in a match, only players who are actually playing may drop; outside one, only the lobby
+        //worlds are ours, so a survival world on the same server is left alone (#55)
+        boolean blocked = rswPlayer.isInMatch()
+                ? rswPlayer.getState() != RSWPlayer.PlayerState.PLAYING
+                : isLobbyWorld(event.getPlayer().getWorld());
+        if (blocked) {
             event.setCancelled(true);
         }
     }
@@ -505,6 +516,11 @@ public class PlayerListener implements Listener {
                     }
 
                     if (match.getState() == RSWMap.MapState.PLAYING) {
+    //whether this world is the lobby or the waiting lobby, the only places RealSkywars owns outside a match
+    private boolean isLobbyWorld(World w) {
+        return rs.getLobbyManagerAPI().isInLobby(w) || rs.getLobbyManagerAPI().isInWaitingLobby(w);
+    }
+
                         damaged.addStatistic(RSWPlayer.Statistic.DEATH, 1, match.isRanked());
 
                         Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
@@ -513,6 +529,23 @@ public class PlayerListener implements Listener {
                             }
 
                             damaged.getPlayer().spigot().respawn();
+    //the lobby items follow the lobby world: taken away when a player leaves it for a world that
+    //isn't ours, and given back when they come in, so they don't linger in other game modes (#55)
+    @EventHandler
+    public void onWorldChange(PlayerChangedWorldEvent e) {
+        RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(e.getPlayer());
+        if (p == null || p.isInMatch()) {
+            return;
+        }
+
+        World to = e.getPlayer().getWorld();
+        if (rs.getLobbyManagerAPI().isInLobby(to)) {
+            RSWPlayerItems.LOBBY.giveSet(p);
+        } else if (!isLobbyWorld(to) && rs.getMapManagerAPI().getMap(to) == null) {
+            RSWPlayerItems.LOBBY.removeSet(p);
+        }
+    }
+
                             match.spectate(damaged, RSWMap.SpectateType.INSIDE_GAME, match.getSpectatorLocation());
                         }, 1);
                     } else if (rs.getLobbyManagerAPI().isInWaitingLobby(damaged.getLocation().getWorld())) {

@@ -47,6 +47,25 @@ public enum RSWPlayerItems {
         return configured != null && item.isSimilar(configured);
     }
 
+    /**
+     * Takes this set's items back out of the player's inventory, wherever they ended up. Only the
+     * LOBBY set is supported: the cage, spectator and setup sets are cleared with the whole inventory
+     * when the match or the setup ends.
+     */
+    public void removeSet(RSWPlayer p) {
+        if (this != LOBBY || p.isBot() || p.getPlayer() == null) {
+            return;
+        }
+
+        ItemStack[] contents = p.getInventory().getContents();
+        for (int i = 0; i < contents.length; i++) {
+            ItemStack item = contents[i];
+            if (ITEM_PROFILE.matches(p, item) || ITEM_MAPS.matches(p, item) || ITEM_SHOP.matches(p, item)) {
+                p.getInventory().setItem(i, null);
+            }
+        }
+    }
+
     public void giveSet(RSWPlayer p) {
         if (p.isBot() || p.getPlayer() == null) {
             return;
