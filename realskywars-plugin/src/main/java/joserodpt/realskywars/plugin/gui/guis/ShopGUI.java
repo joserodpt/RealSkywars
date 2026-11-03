@@ -156,8 +156,19 @@ public class ShopGUI {
         return Items.createItemLoreEnchanted(item.getMaterial(), amount, "&b" + item.getDisplayName() + " &fx" + amount, Arrays.asList("&a&nF (Swap hand)&r&f to increase the item amount.", "&c&nQ (Drop)&r&f to decrease the item amount.", TranslatableLine.SHOP_CLICK_2_BUY.with(COINS, Format.formatDouble(specShopPrice(item, amount))).get(p)));
     }
 
+    //with Only-Buy-Kits-Per-Match a kit is paid for every match it is used in, and never kept
+    public static void buyKitForMatch(RSWPlayer p, RSWKit kit) {
+        TransactionManager cm = new TransactionManager(p, kit.getPrice(), TransactionManager.Operations.REMOVE, false);
+        if (cm.removeCoins()) {
+            p.setKit(kit);
+            p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.with(NAME, kit.getDisplayName()).with(COINS, kit.getPriceFormatted()).get(p, true));
+        } else {
+            p.sendMessage(TranslatableLine.INSUFICIENT_COINS.with(COINS, RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoinsFormatted(p)).get(p, true));
+        }
+    }
+
     //a null or empty permission means the item needs no permission
-    static boolean canBuy(RSWPlayer p, RSWBuyableItem item) {
+    public static boolean canBuy(RSWPlayer p, RSWBuyableItem item) {
         final String perm = item.getPermission();
         return perm == null || perm.isEmpty() || p.getPlayer().hasPermission(perm);
     }
@@ -320,13 +331,7 @@ public class ShopGUI {
 
                                     //if the item is a kit and buy kit per match is enabled
                                     if (a instanceof RSWKit && RSWConfig.file().getBoolean("Config.Shops.Only-Buy-Kits-Per-Match")) {
-                                        TransactionManager cm = new TransactionManager(p, a.getPrice(), TransactionManager.Operations.REMOVE, false);
-                                        if (cm.removeCoins()) {
-                                            p.setKit((RSWKit) a);
-                                            p.sendMessage(TranslatableLine.SHOP_BUY_MESSAGE.with(NAME, a.getDisplayName()).with(COINS, a.getPriceFormatted()).get(p, true));
-                                        } else {
-                                            p.sendMessage(TranslatableLine.INSUFICIENT_COINS.with(COINS, RealSkywarsAPI.getInstance().getCurrencyAdapterAPI().getCoinsFormatted(p)).get(p, true));
-                                        }
+                                        buyKitForMatch(p, (RSWKit) a);
                                         return;
                                     }
 

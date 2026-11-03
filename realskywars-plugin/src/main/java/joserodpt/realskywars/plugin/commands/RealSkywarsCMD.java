@@ -101,8 +101,7 @@ public class RealSkywarsCMD extends BaseCommandWA {
             if (p.getPlayer().isOp() || p.getPlayer().hasPermission("rsw.admin")) {
                 GUIManager.openPluginMenu(p, rs);
             } else {
-                MapsListGUI v = new MapsListGUI(p);
-                v.openInventory(p);
+                MapsListGUI.open(p);
             }
         } else {
             BuildInfo.sendAbout(commandSender, rs.getPlugin(), "&f&lReal&b&lSkywars&r");
@@ -577,8 +576,7 @@ public class RealSkywarsCMD extends BaseCommandWA {
         if (commandSender instanceof Player) {
             RSWPlayer p = rs.getPlayerManagerAPI().getPlayer((Player) commandSender);
             if (p.getMatch() == null) {
-                MapsListGUI v = new MapsListGUI(p);
-                v.openInventory(p);
+                MapsListGUI.open(p);
             } else {
                 TranslatableLine.CMD_ALREADY_IN_MATCH.send(p, true);
             }

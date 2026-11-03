@@ -107,8 +107,7 @@ public class GUIManager {
             p.closeInventory();
             new BukkitRunnable() {
                 public void run() {
-                    MapsListGUI v = new MapsListGUI(p);
-                    v.openInventory(p);
+                    MapsListGUI.open(p);
                 }
             }.runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), 1);
         }, Items.createItem(Material.NETHER_STAR, 1, TranslatableLine.ITEM_MAPS_NAME.get(p)), 12);

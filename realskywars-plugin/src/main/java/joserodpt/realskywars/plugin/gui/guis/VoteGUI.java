@@ -15,6 +15,7 @@ package joserodpt.realskywars.plugin.gui.guis;
  * @link https://github.com/joserodpt/RealSkywars
  */
 
+import joserodpt.realskywars.api.config.RSWConfig;
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.player.RSWPlayer;
@@ -58,6 +59,71 @@ public class VoteGUI {
         this.inv = Bukkit.getServer().createInventory(null, 54, TranslatableLine.MENU_VOTE_TITLE.get(p));
 
         fillChest();
+    }
+
+    //the options of each vote, in order: option n is cast as vote value n + 1
+    public static TranslatableLine[] optionLines(RSWMap.VoteType type) {
+        switch (type) {
+            case CHESTS:
+                return new TranslatableLine[]{TranslatableLine.VOTE_CHEST_BASIC, TranslatableLine.VOTE_CHEST_NORMAL, TranslatableLine.VOTE_CHEST_EPIC};
+            case TIME:
+                return new TranslatableLine[]{TranslatableLine.VOTE_TIME_DAY, TranslatableLine.VOTE_TIME_SUNSET, TranslatableLine.VOTE_TIME_NIGHT, TranslatableLine.VOTE_TIME_RAIN};
+            default:
+                return new TranslatableLine[]{TranslatableLine.VOTE_PROJECTILE_NORMAL, TranslatableLine.VOTE_PROJECTILE_BREAK};
+        }
+    }
+
+    //the permission each option needs, in the same order as optionLines
+    private static String[] optionPermissions(RSWMap.VoteType type) {
+        switch (type) {
+            case CHESTS:
+                return new String[]{"rsw.basic", "rsw.normal", "rsw.epic"};
+            case TIME:
+                return new String[]{"rsw.day", "rsw.sunset", "rsw.night", "rsw.rain"};
+            default:
+                return new String[]{"rsw.normal-projectile", "rsw.break-projectile"};
+        }
+    }
+
+    /**
+     * Whether votes are still taken in this player's match, telling them if not.
+     */
+    public static boolean canVoteNow(RSWPlayer p) {
+        RSWMap match = p.getMatch();
+        if (match == null || p.getState() != RSWPlayer.PlayerState.CAGE) {
+            return false;
+        }
+        if (match.getStartMapTimer() != null && match.getStartMapTimer().getSecondsLeft() <= RSWConfig.file().getInt("Config.Vote-Before-Seconds")) {
+            TranslatableLine.CANT_VOTE.send(p, true);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Casts a vote, used by both this inventory and the Bedrock form.
+     *
+     * @param value the vote value, starting at 1 for the first option
+     * @return false if the player already voted on this or lacks the permission (they are told which)
+     */
+    public static boolean castVote(RSWPlayer p, RSWMap.VoteType type, int value) {
+        TranslatableLine[] lines = optionLines(type);
+        if (value < 1 || value > lines.length) {
+            return false;
+        }
+
+        if (!p.isBot() && p.getMatch().hasVotedFor(type, p.getUUID())) {
+            TranslatableLine.ALREADY_VOTED.send(p, true);
+            return false;
+        }
+        if (!p.getPlayer().hasPermission(optionPermissions(type)[value - 1])) {
+            TranslatableLine.CMD_NO_PERM.send(p, true);
+            return false;
+        }
+
+        p.getMatch().addVote(p.getUUID(), type, value);
+        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, lines[value - 1].get(p)).get(p, true));
+        return true;
     }
 
     public void fillChest() {
@@ -152,137 +218,32 @@ public class VoteGUI {
 
                             //Chest vote
                             case 13:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.CHESTS, p.getUUID())) {
-                                    TranslatableLine.ALREADY_VOTED.send(p, true);
-                                    p.closeInventory();
-                                } else {
-                                    if (p.getPlayer().hasPermission("rsw.basic")) {
-                                        p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.CHESTS, 1);
-
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_CHEST_BASIC.get(p)).get(p, true));
-                                    } else {
-                                        p.closeInventory();
-                                        TranslatableLine.CMD_NO_PERM.send(p, true);
-                                    }
-                                }
-                                break;
                             case 14:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.CHESTS, p.getUUID())) {
-                                    TranslatableLine.ALREADY_VOTED.send(p, true);
-                                    p.closeInventory();
-                                } else {
-                                    if (p.getPlayer().hasPermission("rsw.normal")) {
-                                        p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.CHESTS, 2);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_CHEST_NORMAL.get(p)).get(p, true));
-                                    } else {
-                                        TranslatableLine.CMD_NO_PERM.send(p, true);
-                                        p.closeInventory();
-                                    }
-                                }
-                                break;
                             case 15:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.CHESTS, p.getUUID())) {
-                                    TranslatableLine.ALREADY_VOTED.send(p, true);
+                                if (!castVote(p, RSWMap.VoteType.CHESTS, e.getRawSlot() - 12)) {
                                     p.closeInventory();
-                                } else {
-                                    if (p.getPlayer().hasPermission("rsw.epic")) {
-                                        p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.CHESTS, 3);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_CHEST_EPIC.get(p)).get(p, true));
-
-                                    } else {
-                                        TranslatableLine.CMD_NO_PERM.send(p, true);
-                                        p.closeInventory();
-                                    }
                                 }
                                 break;
 
                             //time vote
-
                             case 22:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.TIME, p.getUUID())) {
-                                    TranslatableLine.ALREADY_VOTED.send(p, true);
-                                    p.closeInventory();
-                                } else {
-                                    if (p.getPlayer().hasPermission("rsw.day")) {
-                                        p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 1);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_TIME_DAY.get(p)).get(p, true));
-                                    } else {
-                                        TranslatableLine.CMD_NO_PERM.send(p, true);
-                                        p.closeInventory();
-                                    }
-                                }
-                                break;
-
                             case 23:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.TIME, p.getUUID())) {
-                                    TranslatableLine.ALREADY_VOTED.send(p, true);
-                                    p.closeInventory();
-                                } else {
-                                    if (p.getPlayer().hasPermission("rsw.sunset")) {
-                                        p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 2);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_TIME_SUNSET.get(p)).get(p, true));
-                                    } else {
-                                        TranslatableLine.CMD_NO_PERM.send(p, true);
-                                        p.closeInventory();
-                                    }
-                                }
-                                break;
                             case 24:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.TIME, p.getUUID())) {
-                                    TranslatableLine.ALREADY_VOTED.send(p, true);
-                                    p.closeInventory();
-                                } else {
-                                    if (p.getPlayer().hasPermission("rsw.night")) {
-                                        p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 3);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_TIME_NIGHT.get(p)).get(p, true));
-                                    } else {
-                                        TranslatableLine.CMD_NO_PERM.send(p, true);
-                                        p.closeInventory();
-                                    }
-                                }
-                                break;
                             case 25:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.TIME, p.getUUID())) {
-                                    TranslatableLine.ALREADY_VOTED.send(p, true);
+                                if (!castVote(p, RSWMap.VoteType.TIME, e.getRawSlot() - 21)) {
                                     p.closeInventory();
-                                } else {
-                                    if (p.getPlayer().hasPermission("rsw.rain")) {
-                                        p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.TIME, 4);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_TIME_RAIN.get(p)).get(p, true));
-                                    } else {
-                                        TranslatableLine.CMD_NO_PERM.send(p, true);
-                                        p.closeInventory();
-                                    }
                                 }
                                 break;
 
                             //projectile vote
                             case 31:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.PROJECTILES, p.getUUID())) {
-                                    TranslatableLine.ALREADY_VOTED.send(p, true);
+                                if (!castVote(p, RSWMap.VoteType.PROJECTILES, 1)) {
                                     p.closeInventory();
-                                } else {
-                                    if (p.getPlayer().hasPermission("rsw.normal-projectile")) {
-                                        p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.PROJECTILES, 1);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_PROJECTILE_NORMAL.get(p)).get(p, true));
-                                    } else {
-                                        TranslatableLine.CMD_NO_PERM.send(p, true);
-                                        p.closeInventory();
-                                    }
                                 }
                                 break;
                             case 33:
-                                if (!p.isBot() && p.getMatch().hasVotedFor(RSWMap.VoteType.PROJECTILES, p.getUUID())) {
-                                    TranslatableLine.ALREADY_VOTED.send(p, true);
+                                if (!castVote(p, RSWMap.VoteType.PROJECTILES, 2)) {
                                     p.closeInventory();
-                                } else {
-                                    if (p.getPlayer().hasPermission("rsw.break-projectile")) {
-                                        p.getMatch().addVote(p.getUUID(), RSWMap.VoteType.PROJECTILES, 2);
-                                        p.sendMessage(TranslatableLine.CAST_VOTE.with(THING, TranslatableLine.VOTE_PROJECTILE_BREAK.get(p)).get(p, true));
-                                    } else {
-                                        TranslatableLine.CMD_NO_PERM.send(p, true);
-                                        p.closeInventory();
-                                    }
                                 }
                                 break;
 

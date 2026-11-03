@@ -17,6 +17,7 @@ package joserodpt.realskywars.api.map.modes.teams;
 
 import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.utils.bedrock.BedrockForms;
 import joserodpt.realutils.gui.GUIBuilder;
 import joserodpt.realutils.item.Items;
 import org.bukkit.Material;
@@ -30,7 +31,7 @@ import java.util.List;
 /**
  * The team picker shown on maps with manual team selection enabled. Built on {@link GUIBuilder},
  * whose listener is already registered by the plugin, so this needs no registration of its own and
- * can be opened straight from {@link TeamsMode}.
+ * can be opened straight from {@link TeamsMode}. Bedrock players get the same picker as a form.
  */
 public class TeamSelectorGUI {
 
@@ -48,6 +49,10 @@ public class TeamSelectorGUI {
         //also what the name, colour and wool are derived from, so the menu reads 1, 2, 3...
         List<RSWTeam> teams = new ArrayList<>(map.getTeams());
         teams.sort(Comparator.comparingInt(RSWTeam::getID));
+
+        if (BedrockForms.isBedrock(p) && openForm(p, map, teams)) {
+            return;
+        }
 
         int size = Math.max(9, (int) (Math.ceil((teams.size() + 1) / 9D) * 9));
         size = Math.min(size, 54);
@@ -90,15 +95,36 @@ public class TeamSelectorGUI {
         }
 
         lore.add("");
-        if (p.getTeam() == team) {
-            lore.add(TranslatableLine.MENU_TEAMSELECT_YOURS.get(p));
-        } else if (team.isTeamFull()) {
-            lore.add(TranslatableLine.TEAM_SELECT_FULL.get(p));
-        } else {
-            lore.add(TranslatableLine.MENU_TEAMSELECT_CLICK.get(p));
+        lore.add(statusLine(p, team));
+
+        return Items.createItem(team.getIconMaterial(), Math.max(1, team.getMemberCount()), label(team), lore);
+    }
+
+    private static boolean openForm(RSWPlayer p, TeamsMode map, List<RSWTeam> teams) {
+        List<String> buttons = new ArrayList<>();
+        for (RSWTeam team : teams) {
+            buttons.add(label(team) + "\n" + statusLine(p, team));
         }
 
-        String name = team.getColoredName() + " &7(" + team.getMemberCount() + "/" + team.getMaxMembers() + ")";
-        return Items.createItem(team.getIconMaterial(), Math.max(1, team.getMemberCount()), name, lore);
+        return BedrockForms.send(p, TranslatableLine.MENU_TEAMSELECT_TITLE.get(p), "", buttons, id -> {
+            if (id < 0 || id >= teams.size()) {
+                return;
+            }
+            if (map.selectTeam(p, teams.get(id))) {
+                //reopen so the counts and the "your team" marker are up to date, like the inventory
+                open(p, map);
+            }
+        });
+    }
+
+    private static String label(RSWTeam team) {
+        return team.getColoredName() + " &7(" + team.getMemberCount() + "/" + team.getMaxMembers() + ")";
+    }
+
+    private static String statusLine(RSWPlayer p, RSWTeam team) {
+        if (p.getTeam() == team) {
+            return TranslatableLine.MENU_TEAMSELECT_YOURS.get(p);
+        }
+        return team.isTeamFull() ? TranslatableLine.TEAM_SELECT_FULL.get(p) : TranslatableLine.MENU_TEAMSELECT_CLICK.get(p);
     }
 }

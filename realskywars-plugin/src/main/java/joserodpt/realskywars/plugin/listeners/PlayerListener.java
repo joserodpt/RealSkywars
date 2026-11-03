@@ -28,7 +28,9 @@ import joserodpt.realskywars.api.map.modes.teams.TeamsMode;
 import joserodpt.realskywars.api.player.RSWPlayer;
 import joserodpt.realskywars.api.player.RSWPlayerItems;
 import joserodpt.realskywars.api.shop.RSWBuyableItem;
+import joserodpt.realskywars.api.utils.bedrock.BedrockForms;
 import joserodpt.realskywars.plugin.gui.GUIManager;
+import joserodpt.realskywars.plugin.gui.bedrock.BedrockMenus;
 import joserodpt.realskywars.plugin.gui.guis.MapSettingsGUI;
 import joserodpt.realskywars.plugin.gui.guis.MapsListGUI;
 import joserodpt.realskywars.plugin.gui.guis.PlayerGUI;
@@ -40,9 +42,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
-import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -60,9 +62,9 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -74,14 +76,43 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 public class PlayerListener implements Listener {
     private final RealSkywarsAPI rs;
 
+    //Geyser fires several interact events for one Bedrock tap, which would open a form more than once
+    private final Map<UUID, Long> bedrockMenuCooldown = new HashMap<>();
+
     public PlayerListener(RealSkywarsAPI rs) {
         this.rs = rs;
+    }
+
+    //true if this Bedrock player opened a menu in the last 600ms; Java players are never held back
+    private boolean bedrockTapRepeated(RSWPlayer p) {
+        if (!BedrockForms.isBedrock(p)) {
+            return false;
+        }
+        long now = System.currentTimeMillis();
+        Long last = bedrockMenuCooldown.put(p.getUUID(), now);
+        return last != null && now - last < 600;
+    }
+
+    //the bow in the cage: owned kits, or the kit shop when kits are bought per match
+    private void openKitMenu(RSWPlayer p) {
+        if (BedrockForms.isBedrock(p)) {
+            boolean sent = RSWConfig.file().getBoolean("Config.Shops.Only-Buy-Kits-Per-Match") ? BedrockMenus.openKitShop(p) : BedrockMenus.openKits(p);
+            if (sent) {
+                return;
+            }
+        }
+        //opens the kit shop itself when kits are bought per match
+        PlayerItemsGUI v = new PlayerItemsGUI(p, RSWBuyableItem.ItemCategory.KIT);
+        v.openInventory(p);
     }
 
     //block commands
@@ -212,6 +243,9 @@ public class PlayerListener implements Listener {
                                 && p.getMatch().isManualTeamSelection()
                                 && RSWPlayerItems.ITEM_TEAMSELECT.matches(p, hand)) {
                             e.setCancelled(true);
+                            if (bedrockTapRepeated(p)) {
+                                return;
+                            }
                             TeamSelectorGUI.open(p, (TeamsMode) p.getMatch());
                             e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                             return;
@@ -238,8 +272,10 @@ public class PlayerListener implements Listener {
                                 switch (e.getPlayer().getInventory().getItemInMainHand().getType()) {
                                     case BOW:
                                         e.setCancelled(true);
-                                        PlayerItemsGUI v = new PlayerItemsGUI(p, RSWBuyableItem.ItemCategory.KIT);
-                                        v.openInventory(p);
+                                        if (bedrockTapRepeated(p)) {
+                                            break;
+                                        }
+                                        openKitMenu(p);
                                         e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                         break;
                                     case MINECART:
@@ -248,19 +284,12 @@ public class PlayerListener implements Listener {
                                         break;
                                     case HOPPER:
                                         e.setCancelled(true);
-
-                                        if (p.getMatch().getStartMapTimer() != null) {
-                                            if (p.getMatch().getStartMapTimer().getSecondsLeft() > RSWConfig.file().getInt("Config.Vote-Before-Seconds")) {
-                                                VoteGUI vg = new VoteGUI(p);
-                                                vg.openInventory(p.getPlayer());
-                                            } else {
-                                                TranslatableLine.CANT_VOTE.send(p, true);
-                                            }
-                                        } else {
-                                            VoteGUI vg = new VoteGUI(p);
-                                            vg.openInventory(p.getPlayer());
+                                        if (bedrockTapRepeated(p) || !VoteGUI.canVoteNow(p)) {
+                                            break;
                                         }
-
+                                        if (!BedrockForms.isBedrock(p) || !BedrockMenus.openVote(p)) {
+                                            new VoteGUI(p).openInventory(p.getPlayer());
+                                        }
                                         break;
                                 }
                                 break;
@@ -331,8 +360,7 @@ public class PlayerListener implements Listener {
                                 break;
                             case NETHER_STAR:
                                 e.setCancelled(true);
-                                MapsListGUI v = new MapsListGUI(p);
-                                v.openInventory(p);
+                                MapsListGUI.open(p);
                                 e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
                                 break;
                             case EMERALD:
@@ -479,6 +507,11 @@ public class PlayerListener implements Listener {
 
     //player join, leave, drop item, player damage, on kill, on hit, on shoot
 
+    //whether this world is the lobby or the waiting lobby, the only places RealSkywars owns outside a match
+    private boolean isLobbyWorld(World w) {
+        return rs.getLobbyManagerAPI().isInLobby(w) || rs.getLobbyManagerAPI().isInWaitingLobby(w);
+    }
+
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         RSWPlayer rswPlayer = rs.getPlayerManagerAPI().getPlayer(event.getPlayer());
@@ -493,6 +526,23 @@ public class PlayerListener implements Listener {
                 : isLobbyWorld(event.getPlayer().getWorld());
         if (blocked) {
             event.setCancelled(true);
+        }
+    }
+
+    //the lobby items follow the lobby world: taken away when a player leaves it for a world that
+    //isn't ours, and given back when they come in, so they don't linger in other game modes (#55)
+    @EventHandler
+    public void onWorldChange(PlayerChangedWorldEvent e) {
+        RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(e.getPlayer());
+        if (p == null || p.isInMatch()) {
+            return;
+        }
+
+        World to = e.getPlayer().getWorld();
+        if (rs.getLobbyManagerAPI().isInLobby(to)) {
+            RSWPlayerItems.LOBBY.giveSet(p);
+        } else if (!isLobbyWorld(to) && rs.getMapManagerAPI().getMap(to) == null) {
+            RSWPlayerItems.LOBBY.removeSet(p);
         }
     }
 
@@ -516,11 +566,6 @@ public class PlayerListener implements Listener {
                     }
 
                     if (match.getState() == RSWMap.MapState.PLAYING) {
-    //whether this world is the lobby or the waiting lobby, the only places RealSkywars owns outside a match
-    private boolean isLobbyWorld(World w) {
-        return rs.getLobbyManagerAPI().isInLobby(w) || rs.getLobbyManagerAPI().isInWaitingLobby(w);
-    }
-
                         damaged.addStatistic(RSWPlayer.Statistic.DEATH, 1, match.isRanked());
 
                         Bukkit.getScheduler().scheduleSyncDelayedTask(rs.getPlugin(), () -> {
@@ -529,23 +574,6 @@ public class PlayerListener implements Listener {
                             }
 
                             damaged.getPlayer().spigot().respawn();
-    //the lobby items follow the lobby world: taken away when a player leaves it for a world that
-    //isn't ours, and given back when they come in, so they don't linger in other game modes (#55)
-    @EventHandler
-    public void onWorldChange(PlayerChangedWorldEvent e) {
-        RSWPlayer p = rs.getPlayerManagerAPI().getPlayer(e.getPlayer());
-        if (p == null || p.isInMatch()) {
-            return;
-        }
-
-        World to = e.getPlayer().getWorld();
-        if (rs.getLobbyManagerAPI().isInLobby(to)) {
-            RSWPlayerItems.LOBBY.giveSet(p);
-        } else if (!isLobbyWorld(to) && rs.getMapManagerAPI().getMap(to) == null) {
-            RSWPlayerItems.LOBBY.removeSet(p);
-        }
-    }
-
                             match.spectate(damaged, RSWMap.SpectateType.INSIDE_GAME, match.getSpectatorLocation());
                         }, 1);
                     } else if (rs.getLobbyManagerAPI().isInWaitingLobby(damaged.getLocation().getWorld())) {
@@ -771,6 +799,7 @@ public class PlayerListener implements Listener {
         if (p != null) {
             p.leave();
         }
+        bedrockMenuCooldown.remove(e.getPlayer().getUniqueId());
         rs.getPlayerManagerAPI().stopTracking(e.getPlayer().getUniqueId());
         rs.getPlayerManagerAPI().getFastJoin().remove(e.getPlayer().getUniqueId());
         //after leave(), whose final save is queued first

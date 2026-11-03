@@ -20,6 +20,8 @@ import joserodpt.realskywars.api.config.TranslatableLine;
 import joserodpt.realskywars.api.map.RSWMap;
 import joserodpt.realskywars.api.map.modes.PlaceholderMode;
 import joserodpt.realskywars.api.player.RSWPlayer;
+import joserodpt.realskywars.api.utils.bedrock.BedrockForms;
+import joserodpt.realskywars.plugin.gui.bedrock.BedrockMenus;
 import joserodpt.realutils.gui.Pagination;
 import joserodpt.realutils.item.Items;
 import org.bukkit.Bukkit;
@@ -63,6 +65,49 @@ public class MapsListGUI {
 
         this.p = new Pagination<>(28, items);
         fillChest(this.p.getPage(pageNumber), p);
+    }
+
+    /**
+     * The maps list for this player: a form for Bedrock players, the inventory for everyone else.
+     */
+    public static void open(RSWPlayer p) {
+        if (BedrockForms.isBedrock(p) && BedrockMenus.openMaps(p)) {
+            return;
+        }
+        new MapsListGUI(p).openInventory(p);
+    }
+
+    //the next filter of the maps list, in a loop
+    public static void cycleViewerPref(RSWPlayer gp) {
+        switch (gp.getPlayerMapViewerPref()) {
+            case MAPV_ALL:
+                gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_AVAILABLE);
+                break;
+            case MAPV_AVAILABLE:
+                gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_WAITING);
+                break;
+            case MAPV_WAITING:
+                gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_STARTING);
+                break;
+            case MAPV_STARTING:
+                gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_SPECTATE);
+                break;
+            case MAPV_SPECTATE:
+                gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.SOLO);
+                break;
+            case SOLO:
+                gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.SOLO_RANKED);
+                break;
+            case SOLO_RANKED:
+                gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.TEAMS);
+                break;
+            case TEAMS:
+                gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.TEAMS_RANKED);
+                break;
+            case TEAMS_RANKED:
+                gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_ALL);
+                break;
+        }
     }
 
     //used on reload so nobody keeps clicking a GUI built from the old config
@@ -118,7 +163,9 @@ public class MapsListGUI {
                         if (current.display.containsKey(e.getRawSlot())) {
                             RSWMap a = current.display.get(e.getRawSlot());
                             if (!(a instanceof PlaceholderMode)) {
-                                a.addPlayer(p);
+                                //close first and join a moment later, so the inventory is gone before the teleport (issue #54)
+                                p.closeInventory();
+                                Bukkit.getScheduler().runTaskLater(RealSkywarsAPI.getInstance().getPlugin(), () -> a.addPlayer(p), 2L);
                             }
                         }
                     }
@@ -126,40 +173,11 @@ public class MapsListGUI {
             }
 
             private void selectNext(RSWPlayer gp, MapsListGUI curr) {
-                switch (gp.getPlayerMapViewerPref()) {
-                    case MAPV_ALL:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_AVAILABLE);
-                        break;
-                    case MAPV_AVAILABLE:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_WAITING);
-                        break;
-                    case MAPV_WAITING:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_STARTING);
-                        break;
-                    case MAPV_STARTING:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_SPECTATE);
-                        break;
-                    case MAPV_SPECTATE:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.SOLO);
-                        break;
-                    case SOLO:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.SOLO_RANKED);
-                        break;
-                    case SOLO_RANKED:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.TEAMS);
-                        break;
-                    case TEAMS:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.TEAMS_RANKED);
-                        break;
-                    case TEAMS_RANKED:
-                        gp.setPlayerMapViewerPref(RSWPlayer.MapViewerPref.MAPV_ALL);
-                        break;
-                }
+                cycleViewerPref(gp);
                 curr.gp = gp;
 
                 gp.closeInventory();
-                MapsListGUI v = new MapsListGUI(gp);
-                v.openInventory(gp);
+                MapsListGUI.open(gp);
                 gp.getPlayer().playSound(gp.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 50);
             }
 

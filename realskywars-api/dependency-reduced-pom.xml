@@ -55,6 +55,10 @@
       <id>jitpack.io</id>
       <url>https://jitpack.io</url>
     </repository>
+    <repository>
+      <id>opencollab</id>
+      <url>https://repo.opencollab.dev/main/</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -97,6 +101,12 @@
       <groupId>com.github.MilkBowl</groupId>
       <artifactId>VaultAPI</artifactId>
       <version>1.7.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.geysermc.floodgate</groupId>
+      <artifactId>api</artifactId>
+      <version>2.2.4-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
